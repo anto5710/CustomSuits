@@ -1,0 +1,15 @@
+name: CustomSuits
+main: gmail.anto5710.mcp.customsuits.CustomSuits.CustomSuitPlugin
+version: 0.1
+description: 몹의 옷을 뺐어 입습니다.
+
+commands:
+    cspn:
+        description: 슈트 생성, cspn <종류> <타겟> <수량> <색>
+    csuit:
+        description: 가장 가까운 플레이어 소유의 슈트 소환 
+    command:
+        description: target <player>   타깃 변경  , party  모든 슈트를 소환 
+    get:
+        description: 
+        
