@@ -1,7 +1,5 @@
 package gmail.anto5710.mcp.customsuits.CustomSuits.suit;
 
-import gmail.anto5710.mcp.customsuits.CustomSuits.SuitUtils;
-
 import java.awt.Color;
 import java.net.Proxy.Type;
 import java.util.ArrayList;

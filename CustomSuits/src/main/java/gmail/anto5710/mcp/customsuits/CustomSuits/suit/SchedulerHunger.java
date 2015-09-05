@@ -1,7 +1,5 @@
 package gmail.anto5710.mcp.customsuits.CustomSuits.suit;
 
-import gmail.anto5710.mcp.customsuits.CustomSuits.SuitUtils;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;

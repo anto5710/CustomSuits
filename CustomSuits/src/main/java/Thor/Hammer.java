@@ -5,9 +5,9 @@ import java.util.Vector;
 
 import javax.persistence.Version;
 
-import gmail.anto5710.mcp.customsuits.CustomSuits.SuitUtils;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.Cooldown;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
+import gmail.anto5710.mcp.customsuits.CustomSuits.suit.SuitUtils;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.WeaponListner;
 
 import org.bukkit.Effect;

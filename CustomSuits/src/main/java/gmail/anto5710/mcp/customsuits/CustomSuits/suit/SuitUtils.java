@@ -1,6 +1,4 @@
-package gmail.anto5710.mcp.customsuits.CustomSuits;
-
-import gmail.anto5710.mcp.customsuits.CustomSuits.suit.WeaponListner;
+package gmail.anto5710.mcp.customsuits.CustomSuits.suit;
 
 import java.util.Random;
 
