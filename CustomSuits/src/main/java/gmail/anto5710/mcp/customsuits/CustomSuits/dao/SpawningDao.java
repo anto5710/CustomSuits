@@ -15,7 +15,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
-import gmail.anto5710.mcp.customsuits.CustomSuits.CustomSuitPlugin;
+import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
 
 /**
  * 이 클래스는 spawing된 엔티티들을 기록하는 역할을 합니다. 구체적으로, 플러그인의 디렉토리에 임의의 파일을 생성해서 사용자가

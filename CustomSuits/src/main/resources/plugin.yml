@@ -5,11 +5,13 @@ description: 몹의 옷을 뺐어 입습니다.
 
 commands:
     cspn:
-        description: 슈트 생성, cspn <종류> <타겟> <수량> <색>
+        description: spawn a suit, cspn <type> <target> <amounts>
     csuit:
-        description: 가장 가까운 플레이어 소유의 슈트 소환 
+        description: summon nearest suit
     command:
-        description: target <player>   타깃 변경  , party  모든 슈트를 소환 
+        description: /command target <player>  target player   ,  /command party   summon all suits,   firework  explode all suits
     get:
-        description: 
-        
+        description: /get gun give gun to player , /get commander give player commander
+    head:
+        description: make that player's head
+     

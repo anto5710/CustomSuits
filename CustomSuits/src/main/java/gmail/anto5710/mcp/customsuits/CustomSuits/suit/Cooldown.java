@@ -1,4 +1,4 @@
-package gmail.anto5710.mcp.customsuits.CustomSuits;
+package gmail.anto5710.mcp.customsuits.CustomSuits.suit;
 
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
