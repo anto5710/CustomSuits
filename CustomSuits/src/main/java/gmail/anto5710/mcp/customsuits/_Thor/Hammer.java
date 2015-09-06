@@ -1,4 +1,4 @@
-package Thor;
+package gmail.anto5710.mcp.customsuits._Thor;
 
 import java.util.HashSet;
 import java.util.Vector;

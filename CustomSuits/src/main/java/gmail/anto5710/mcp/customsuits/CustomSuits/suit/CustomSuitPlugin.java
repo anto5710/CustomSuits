@@ -1,6 +1,7 @@
 package gmail.anto5710.mcp.customsuits.CustomSuits.suit;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.dao.SpawningDao;
+import gmail.anto5710.mcp.customsuits._Thor.Hammer;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -84,8 +85,6 @@ import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 import org.junit.internal.matchers.IsCollectionContaining;
 import org.w3c.dom.ls.LSInput;
-
-import Thor.Hammer;
 
 import com.google.common.primitives.Ints;
 
