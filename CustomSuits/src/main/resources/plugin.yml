@@ -1,6 +1,6 @@
 name: CustomSuits
-main: gmail.anto5710.mcp.customsuits.CustomSuits.CustomSuitPlugin
-version: 0.1
+main: gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin
+version: 0.2
 description: 몹의 옷을 뺐어 입습니다.
 
 commands:
@@ -11,7 +11,10 @@ commands:
     command:
         description: /command target <player>  target player   ,  /command party   summon all suits,   firework  explode all suits
     get:
-        description: /get gun give gun to player , /get commander give player commander
+        description: /get gun give gun to player , /get commander give player commander , /get hammer to get Hammer.
     head:
         description: make that player's head
+    clist:
+        description: get the list about that topic.
+    
      

@@ -1,5 +1,7 @@
 package gmail.anto5710.mcp.customsuits.CustomSuits.suit;
 
+import gmail.anto5710.mcp.customsuits._Thor.Repeat;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -53,6 +55,7 @@ public class SchedulerHunger extends BukkitRunnable {
 		
 			if (this.playerQueue.isEmpty()) {
 				this.mainPlugin.logger.info("EMPTY QUEUQ");
+				Repeat.cancel(getTaskId());
 				
 			
 			}else{

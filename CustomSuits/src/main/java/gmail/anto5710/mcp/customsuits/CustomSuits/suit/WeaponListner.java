@@ -156,18 +156,26 @@ public class WeaponListner implements Listener {
 		
 		
 	}
+
 	@EventHandler
-	public void explodeFireball(ProjectileHitEvent event){
-		if(event.getEntity() instanceof Fireball){
-			if(event.getEntity().getShooter()!=null){
-			Player player =	(Player)event.getEntity().getShooter();
-				if(SuitUtils.CheckItem(CustomSuitPlugin.missileLauncher, player.getItemInHand())){
-					
-					event.getEntity().getWorld().createExplosion(event.getEntity().getLocation(), 5.0F);
+	public void explodeFireball(ProjectileHitEvent event) {
+		if (event.getEntity() instanceof Fireball) {
+			if (event.getEntity().getShooter() != null) {
+				if (event.getEntity().getShooter() instanceof Player) {
+
+					Player player = (Player) event.getEntity().getShooter();
+					if (SuitUtils.CheckItem(CustomSuitPlugin.missileLauncher,
+							player.getItemInHand())) {
+
+						event.getEntity()
+								.getWorld()
+								.createExplosion(
+										event.getEntity().getLocation(), 5.0F);
+					}
 				}
 			}
 		}
-			
+
 	}
 
 	@EventHandler
@@ -208,13 +216,13 @@ public class WeaponListner implements Listener {
 
 	private void launch(Player player, Sound sound , String message , int energy) {
 		
-		Location loc = player.getLocation();
+		Location loc = player.getEyeLocation();
 		
 			Block targetblock = player.getTargetBlock(
-					(HashSet<Byte>) null, 10000);
+					(HashSet<Byte>) null, 500);
 			Location targetloc = targetblock.getLocation();
 		
-			loc.setY(loc.getY() + 1.25);
+			
 			
 			playEffect(targetloc, loc, player,
 					true);
@@ -459,7 +467,7 @@ public class WeaponListner implements Listener {
 							
 							Location targetloc = player.getTargetBlock(
 									(HashSet<Byte>) null, 10000).getLocation();
-							Location locationplayer = player.getLocation();
+							Location locationplayer = player.getEyeLocation();
 							
 							
 							if (!player.isSneaking()) {
@@ -487,9 +495,7 @@ public class WeaponListner implements Listener {
 									player.playSound(player.getLocation(),
 											Sound.IRONGOLEM_HIT, 4.0F, 4.0F);
 
-									locationplayer
-											.setY(locationplayer.getY() + 1.25);
-								
+									
 							
 									
 									CustomSuitPlugin.SetDisplayName(

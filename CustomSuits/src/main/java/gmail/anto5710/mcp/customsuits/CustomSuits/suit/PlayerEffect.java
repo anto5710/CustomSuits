@@ -46,8 +46,10 @@ import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.potion.PotionType;
 import org.bukkit.util.Vector;
 import org.junit.internal.matchers.IsCollectionContaining;
 
@@ -108,6 +110,29 @@ public class PlayerEffect implements Listener {
 		}
 
 		if (Mark(player)) {
+			int level = CustomSuitPlugin.getLevel(player);
+			addpotion(new PotionEffect(PotionEffectType.HEALTH_BOOST, 99999999,
+					((int) level / 16) + 5), player);
+			addpotion(new PotionEffect(PotionEffectType.NIGHT_VISION, 99999999,
+					10 + level), player);
+			addpotion(new PotionEffect(PotionEffectType.FIRE_RESISTANCE,
+					99999999, 10 + level), player);
+			addpotion(new PotionEffect(PotionEffectType.ABSORPTION, 99999999,
+					5 + level), player);
+			addpotion(new PotionEffect(PotionEffectType.HEALTH_BOOST, 99999999,
+					5 + ((int) level / 16)), player);
+			addpotion(new PotionEffect(PotionEffectType.INCREASE_DAMAGE,
+					99999999, 6 + ((int) level / 16)), player);
+			addpotion(new PotionEffect(PotionEffectType.SPEED, 99999999,
+					5 + ((int) level / 32)), player);
+			addpotion(new PotionEffect(PotionEffectType.WATER_BREATHING,
+					99999999, 5 + level), player);
+			addpotion(new PotionEffect(PotionEffectType.JUMP, 99999999, 2),
+					player);
+			addpotion(new PotionEffect(PotionEffectType.REGENERATION, 99999999,
+					8 + (int) level / 16), player);
+			
+
 			Location baseLocation = player.getLocation();
 			if (player.isFlying()) {
 				m = true;
@@ -125,13 +150,11 @@ public class PlayerEffect implements Listener {
 			}
 			if (m) {
 
-				baseLocation.getWorld().playEffect(baseLocation,
-						Effect.MOBSPAWNER_FLAMES, 0, 50);
+				SuitUtils.playEffect(baseLocation, Effect.MOBSPAWNER_FLAMES, 3,
+						0, 40);
 			} else {
-				for (int c = 0; c < 20; c++) {
-					baseLocation.getWorld().playEffect(baseLocation,
-							Effect.TILE_BREAK, material.getId(), 50);
-				}
+				SuitUtils.playEffect(baseLocation, Effect.TILE_BREAK, 3,
+						material.getId(), 40);
 			}
 
 		}
@@ -142,10 +165,10 @@ public class PlayerEffect implements Listener {
 
 		LivingEntity deadEtt = e.getEntity();
 		// deadEtt.getEntityId();
-		if(deadEtt.getType()!=EntityType.PLAYER){
+		if (deadEtt.getType() != EntityType.PLAYER) {
 
-		SpawningDao dao = this.mainPlugin.getDao();
-		dao.remove(deadEtt);
+			SpawningDao dao = this.mainPlugin.getDao();
+			dao.remove(deadEtt);
 		}
 
 	}
@@ -185,12 +208,12 @@ public class PlayerEffect implements Listener {
 				player.getEquipment().setBoots(boots);
 				player.updateInventory();
 				livingentity.damage(10000000D);
-				
-					player.getWorld()
 
-					.playEffect(player.getLocation(), Effect.TILE_BREAK,
-							Material.COBBLESTONE.getId(), 300);
-				
+				player.getWorld()
+
+				.playEffect(player.getLocation(), Effect.TILE_BREAK,
+						Material.COBBLESTONE.getId(), 300);
+
 				player.playSound(player.getLocation(), Sound.ENDERDRAGON_DEATH,
 						9.0F, 9.0F);
 				dao.remove(livingentity);
@@ -242,15 +265,13 @@ public class PlayerEffect implements Listener {
 	public void suit(PlayerToggleSneakEvent p) {
 		Player player = p.getPlayer();
 
-		
 		if (Mark(player)) {
-		if (player.getFoodLevel() < 2) {
-			SuitUtils.Wrong(player, "Energy");
-			
-		}
+			if (player.getFoodLevel() < 2) {
+				SuitUtils.Wrong(player, "Energy");
 
-		else {
+			}
 
+			else {
 
 				int level = CustomSuitPlugin.getLevel(player);
 
@@ -259,30 +280,6 @@ public class PlayerEffect implements Listener {
 				player.setAllowFlight(true);
 				player.setFlying(true);
 				player.setFlySpeed(1.0F);
-				if(!ContainPotionEffect(player,PotionEffectType.HEALTH_BOOST ,((int)level/16)) ){
-					
-					player.removePotionEffect(PotionEffectType.HEALTH_BOOST);
-				}
-				player.addPotionEffect(new PotionEffect(
-						PotionEffectType.NIGHT_VISION, 999999990, 10 + level));
-				player.addPotionEffect(new PotionEffect(
-						PotionEffectType.FIRE_RESISTANCE, 999999990, 10 + level));
-				player.addPotionEffect(new PotionEffect(
-						PotionEffectType.ABSORPTION, 999999990, 5 + level));
-				player.addPotionEffect(new PotionEffect(
-						PotionEffectType.HEALTH_BOOST, 999999990, 5 + ((int)level/16)));
-				player.addPotionEffect(new PotionEffect(
-						PotionEffectType.INCREASE_DAMAGE, 999999990, 12 +((int)level/16)));
-				player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED,
-						999999990, 5 + ((int)level/32)));
-
-				player.addPotionEffect(new PotionEffect(
-						PotionEffectType.WATER_BREATHING, 999999990, 5 + level));
-				player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP,
-						999999990, 2));
-
-				player.addPotionEffect(new PotionEffect(
-						PotionEffectType.REGENERATION, 999999990, 10 + ((int)level/16)));
 
 				player.setFoodLevel(h);
 
@@ -294,11 +291,23 @@ public class PlayerEffect implements Listener {
 		}
 	}
 
-	private boolean ContainPotionEffect(Player player,PotionEffectType type , int level) {
-		
-		for(PotionEffect e: player.getActivePotionEffects()){
-			if(e.getType()==type&&e.getAmplifier()==level){
+	public static void addpotion(PotionEffect effect, Player player) {
+		if (!ContainPotionEffect(player, effect.getType(),
+				effect.getAmplifier())) {
+			player.removePotionEffect(effect.getType());
+		}
+		player.addPotionEffect(effect);
+	}
+
+	public static boolean ContainPotionEffect(Player player,
+			PotionEffectType type, int level) {
+
+		for (PotionEffect e : player.getActivePotionEffects()) {
+
+			if (e.getType().equals(type) && e.getAmplifier() == level) {
+
 				return true;
+
 			}
 		}
 		// TODO Auto-generated method stub
@@ -330,8 +339,6 @@ public class PlayerEffect implements Listener {
 		}
 		return false;
 
-		
-
 	}
 
 	@EventHandler
@@ -344,7 +351,7 @@ public class PlayerEffect implements Listener {
 	@EventHandler
 	public void stopDisabledPlayer(PlayerMoveEvent moveEvent) {
 		Player player = moveEvent.getPlayer();
-		
+
 		if (this.hungerscheduler.getList().contains(player)) {
 			if (player.getGameMode() != GameMode.CREATIVE) {
 
@@ -356,15 +363,15 @@ public class PlayerEffect implements Listener {
 			}
 		}
 	}
+
 	@EventHandler
 	public void RestartToFlyinCreative(PlayerMoveEvent moveEvent) {
 		Player player = moveEvent.getPlayer();
-		
-		if(player.getGameMode()==GameMode.CREATIVE){
+
+		if (player.getGameMode() == GameMode.CREATIVE) {
 			player.setAllowFlight(true);
 		}
 	}
-
 
 	private void removingeffects(Player player) {
 
@@ -384,7 +391,7 @@ public class PlayerEffect implements Listener {
 		player.removePotionEffect(PotionEffectType.NIGHT_VISION);
 		player.removePotionEffect(PotionEffectType.SLOW);
 		player.setFlySpeed(0.1F);
-		
+
 		player.playSound(player.getLocation(), Sound.ANVIL_LAND, 3.0F, 2.0F);
 	}
 

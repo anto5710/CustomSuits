@@ -3,6 +3,7 @@ package gmail.anto5710.mcp.customsuits.CustomSuits.suit;
 import gmail.anto5710.mcp.customsuits.CustomSuits.dao.SpawningDao;
 import gmail.anto5710.mcp.customsuits._Thor.Hammer;
 
+import java.awt.SystemColor;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -234,7 +235,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		enchantment(Boots_Thor, Enchantment.PROTECTION_FALL, 15, true);
 		
 		leathercolor(Chestplate_Thor, DyeColor.GRAY);
-		leathercolor(Leggings_Thor, DyeColor.BLUE);
+		leathercolor(Leggings_Thor, DyeColor.BLACK);
 		
 		inventory.setItem(0, new ItemStack(command));
 
@@ -398,9 +399,9 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		entityMap.put("snowman", Snowman.class);
 		entityMap.put("blaze", Blaze.class);
 		entityMap.put("wolf", Wolf.class);
-		entityMap.put("slime", Slime.class);
+		
 		entityMap.put("witch", Witch.class);
-		entityMap.put("magmacube", MagmaCube.class);
+		
 		entityMap.put("zombie", Zombie.class);
 		entityMap.put("squid", Squid.class);
 		entityMap.put("silverfish", Silverfish.class);
@@ -462,6 +463,27 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 			String label, String[] args) {
 		Server server = getServer();
 		Player spnSender = server.getPlayer(sender.getName());
+		if(command.getName().equals("clist")){
+			if(args.length==0){
+				SuitUtils.Warn(spnSender, "Wrong Commands");
+			}else{
+				if(args[0].equals("entity")){
+					for(String key : entityMap.keySet()){
+						spnSender.sendMessage(ChatColor.BLUE+"[Input]: "+ChatColor.AQUA+key+  ChatColor.BLUE+"    [Entity]: "+ChatColor.AQUA+entityMap.get(key).getSimpleName());
+					}
+				}else if(args[0].equals("color")){
+					for(String key : colorMap.keySet()){
+						
+						
+						spnSender.sendMessage(ChatColor.BLUE+"[Input]: "+ChatColor.AQUA+key );
+					}
+				}
+					else{
+						SuitUtils.Warn(spnSender, "Wrong Commands");
+					}
+				
+			}
+		}
 		if (command.getName().equals("csuit")) {
 
 			Player mp = getServer().getPlayer(sender.getName());
@@ -641,6 +663,10 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 
 	private void spawnentity(String entityName, int creatureCnt,
 			Player spnSender, String targetPlayerName) {
+		if( !entityMap.containsKey(entityName.toLowerCase())){
+			SuitUtils.Warn(spnSender, "Can't find that EntityType,   use '/clist entity'  to get list of EntityType");
+			return;
+		}
 		// args[2] : 수량
 		// args[3] : <종류>의 색상
 
@@ -1005,12 +1031,10 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 	}
 
 	private <T extends Entity> Class<T> loadEntityClass(String entityType) {
-
+		
 		Class<T> cls = (Class<T>) entityMap.get(entityType.toLowerCase());
 
-		if (cls == null) {
-			logger.info("없는 엔티티: " + entityType);
-		}
+	
 
 		return cls;
 

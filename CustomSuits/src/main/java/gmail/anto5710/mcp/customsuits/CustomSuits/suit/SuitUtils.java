@@ -1,6 +1,8 @@
 package gmail.anto5710.mcp.customsuits.CustomSuits.suit;
 
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -19,13 +21,14 @@ import org.bukkit.util.Vector;
 
 public class SuitUtils {
 
-	public static void LineParticle(Location location1, Location location2,
+	public static void LineParticle(Location target,Location location,
 			Player player, Effect effect, int amount, int data,
 			int effectradius, double damage, double radius, boolean isMissile) {
-
-		Vector vectorStart = location2.toVector();
 		
-		Vector vectorEnd = location1.toVector();
+	
+		Vector vectorStart = location.toVector();
+		
+		Vector vectorEnd = target.toVector();
 		
 		Vector difference = vectorStart.subtract(vectorEnd);
 		
@@ -35,7 +38,7 @@ public class SuitUtils {
 			return;
 		}
 
-		Location currentLoc = location1.clone();
+		Location currentLoc = target.clone();
 		double dx = (difference.getX() / distance) * 0.5;
 		double dy = (difference.getY() / distance) * 0.5;
 		double dz = (difference.getZ() / distance) * 0.5;
@@ -51,6 +54,7 @@ public class SuitUtils {
 			
 
 		}
+		
 
 	}
 
