@@ -85,7 +85,7 @@ public class SchedulerHunger extends BukkitRunnable {
 		if (player.isFlying()) {
 
 			if (CustomSuitPlugin.MarkEntity(player)&&player.getGameMode()!=GameMode.CREATIVE) {
-				player.setFoodLevel(player.getFoodLevel() - 2);
+				hunger(player, -2);
 
 				float speed = (float) (player.getFoodLevel() / 20.0D);
 				if (player.getFoodLevel() <= 2) {
@@ -111,7 +111,7 @@ public class SchedulerHunger extends BukkitRunnable {
 		if (CustomSuitPlugin.MarkEntity(player)) {
 			repairarmor(player);
 		
-			player.setFoodLevel(Math.min(player.getFoodLevel() + 1, 20));
+			hunger(player, 1);
 			
 		}
 		
@@ -183,6 +183,15 @@ public class SchedulerHunger extends BukkitRunnable {
 	}
 	public BlockingQueue<Player> getList(){
 		return playerQueue;
+	}
+	public static boolean hunger(Player player , int hunger){
+		int playerhunger = player.getFoodLevel();
+		int result = playerhunger+hunger;
+		if(result>=0&&result<=20){
+			player.setFoodLevel(result);
+			return true;
+		}
+		return false;
 	}
   
 }

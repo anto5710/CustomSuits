@@ -13,8 +13,10 @@ import javax.swing.plaf.metal.MetalBorders.PaletteBorder;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.Cooldown;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.PlayerEffect;
+import gmail.anto5710.mcp.customsuits.CustomSuits.suit.SchedulerHunger;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.SuitUtils;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.WeaponListner;
+import gmail.anto5710.mcp.customsuits.Setting.Values;
 
 import org.bukkit.Effect;
 import org.bukkit.Location;
@@ -49,7 +51,9 @@ import org.bukkit.scheduler.BukkitTask;
 
 public class Hammer implements Listener {
 	CustomSuitPlugin plugin;
-	double HammerDeafultDamage = 20;
+	static double HammerDeafultDamage = Values.HammerDamage;
+	static double RingDamage = Values.HammerExplosionRing;
+	static float Power = Values.HammerExplosionPower;
 	ArrayList<Player>thor  = new ArrayList<>();
 
 	public Hammer(CustomSuitPlugin plugin) {
@@ -99,9 +103,16 @@ public class Hammer implements Listener {
 			if (SuitUtils.CheckItem(CustomSuitPlugin.Hammer,
 					player.getItemInHand())) {
 				if (Thor(player)) {
+					
 					Item dropped = player.getWorld().dropItem(
 							player.getLocation(), player.getItemInHand());
-					player.getInventory().remove(player.getItemInHand());
+					if(player.getItemInHand().getAmount()==1){
+						player.getInventory().setItemInHand(new ItemStack(Material.AIR, 1));
+					}else{
+					
+						player.getInventory().getItemInHand().setAmount(player.getItemInHand().getAmount()-1);
+					}
+						player.updateInventory();
 					dropped.setFallDistance(0);
 
 					Location target = player.getTargetBlock((HashSet<Byte>)null, 1000)
@@ -115,6 +126,7 @@ public class Hammer implements Listener {
 							loc.toVector(), target.toVector(), gravity, 6);
 
 					dropped.setVelocity(v);
+			
 					if (player.isSneaking()) {
 						playEffect(dropped, player, true);
 					} else {
@@ -165,7 +177,7 @@ public class Hammer implements Listener {
 								.addPotionEffect(new PotionEffect(
 										PotionEffectType.WEAKNESS, 100, 100));
 					}
-					strikeLightning(entity.getLocation(), player, 10, 1.5, 2);
+					strikeLightning(entity.getLocation(), player, 10, 1.5, HammerDeafultDamage/10);
 				}
 			}
 		}
@@ -178,11 +190,12 @@ public class Hammer implements Listener {
 				|| event.getAction() == Action.LEFT_CLICK_BLOCK) {
 			if (SuitUtils.CheckItem(CustomSuitPlugin.Hammer,
 					player.getItemInHand())
-					&& Thor(player)) {
+					&& Thor(player)&&SchedulerHunger.hunger(player, -1)) {
 				Location block = player.getTargetBlock((HashSet<Byte>)null, 300).getLocation();
-				SuitUtils.LineParticle(block, player.getLocation(), player, Effect.LAVA_POP, 20, 0, 2, HammerDeafultDamage, 2, true);
-				strikeLightning(block, player, 5, 1.5, HammerDeafultDamage);
-				SuitUtils.createExplosion(block, 5, false, true);
+				SuitUtils.LineParticle(block, player.getEyeLocation(), player, Effect.LAVA_POP, 20, 0, 2, HammerDeafultDamage, 2, true);
+				
+				strikeLightning(block, player, 1, 2.5, HammerDeafultDamage);
+				SuitUtils.createExplosion(block, Power, false, true);
 				}
 			}
 		
@@ -207,8 +220,8 @@ public class Hammer implements Listener {
 				|| event.getAction() == Action.LEFT_CLICK_BLOCK) {
 			if (Thor(player)
 					&& SuitUtils.CheckItem(CustomSuitPlugin.Hammer,
-							player.getItemInHand()) && player.isSneaking()) {
-				for (int i = 2; i < 30; i++) {
+							player.getItemInHand()) && player.isSneaking()&&SchedulerHunger.hunger(player, -4)) {
+				for (double i = 2; i < 50; i+=0.5) {
 					player.setNoDamageTicks(20);
 					getRing(i, player);
 				}
@@ -218,8 +231,13 @@ public class Hammer implements Listener {
 	
 
 	private void playEffect(Item dropped, Player player, boolean isTP) {
-		BukkitTask task = new Repeat(plugin, player, dropped, isTP)
-				.runTaskTimer(plugin, 0, 10);
+		Repeat.listPlayer.put(dropped, player);
+		Repeat.listTp.put(dropped, isTP);
+		if(!Repeat.isRunning(Repeat.id)){
+			BukkitTask task = new Repeat(plugin)
+			.runTaskTimer(plugin, 0, 10);
+		}
+			
 
 	}
 
@@ -248,15 +266,15 @@ public class Hammer implements Listener {
 
 	}
 
-	public void getRing(int size, Player player) {
+	public void getRing(double radiuse, Player player) {
 		int points = 12; // amount of points to be generated
 		for (int i = 0; i < 360; i += 360 / points) {
 			double angle = (i * Math.PI / 180);
-			double x = size * Math.cos(angle);
-			double z = size * Math.sin(angle);
+			double x = radiuse * Math.cos(angle);
+			double z = radiuse * Math.sin(angle);
 			Location loc = player.getLocation().add(x, 1, z);
 			SuitUtils.createExplosion(loc, 6.5F, false, false);
-			Repeat.damage(WeaponListner.findEntity(loc, player, 5),
+			Repeat.damage(WeaponListner.findEntity(loc, player, 5.5),
 					HammerDeafultDamage * 2, player);
 		}
 	}
@@ -266,7 +284,8 @@ public class Hammer implements Listener {
 		Player player =event.getPlayer();
 		if(SuitUtils.CheckItem(CustomSuitPlugin.Hammer, item.getItemStack())){
 				if(Thor(player)){
-		Repeat.cancel(Repeat.id);
+					Repeat.listPlayer.remove(item);
+					Repeat.listTp.remove(item);
 		
 				}else{
 					SuitUtils.playEffect(player.getEyeLocation(), Effect.STEP_SOUND, 5, Material.IRON_BLOCK.getId(), 2);
@@ -285,7 +304,7 @@ public class Hammer implements Listener {
 			return;
 		}
 			thor.add(player);
-		strikeLightning(player.getLocation(), player, 20, 0, 0);
+		strikeLightning(player.getLocation(), player, 20, 0, HammerDeafultDamage);
 
 		SuitUtils.sleep(500);
 		
@@ -301,6 +320,9 @@ public class Hammer implements Listener {
 
 	public static void strikeLightning(Location loc, Player player, int amount,
 			double damageRadius, double damage) {
+		if(loc.getBlock().getType()==Material.AIR){
+			return;
+		}
 		for (int c = 0; c < amount; c++) {
 			loc.getWorld().strikeLightning(loc);
 			Repeat.damage(WeaponListner.findEntity(loc, player, damageRadius),

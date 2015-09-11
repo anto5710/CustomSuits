@@ -18,7 +18,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkEffectMeta;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.util.Vector;
-
 public class SuitUtils {
 
 	public static void LineParticle(Location target,Location location,

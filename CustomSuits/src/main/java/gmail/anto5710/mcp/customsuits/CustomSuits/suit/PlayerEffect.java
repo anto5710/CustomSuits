@@ -1,6 +1,7 @@
 package gmail.anto5710.mcp.customsuits.CustomSuits.suit;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.dao.SpawningDao;
+import gmail.anto5710.mcp.customsuits.Setting.Values;
 
 import java.util.Collection;
 import java.util.List;
@@ -68,7 +69,7 @@ public class PlayerEffect implements Listener {
 	private CustomSuitPlugin mainPlugin;
 	private Logger logger;
 	SchedulerHunger hungerscheduler;
-	String regex = CustomSuitPlugin.regex;
+	String regex = Values.regex;
 
 	public PlayerEffect(CustomSuitPlugin main) {
 		this.mainPlugin = main;
@@ -275,13 +276,13 @@ public class PlayerEffect implements Listener {
 
 				int level = CustomSuitPlugin.getLevel(player);
 
-				int h = player.getFoodLevel();
+				int hunger = player.getFoodLevel();
 
 				player.setAllowFlight(true);
 				player.setFlying(true);
 				player.setFlySpeed(1.0F);
 
-				player.setFoodLevel(h);
+				player.setFoodLevel(hunger);
 
 				hungerscheduler.addFlyingPlayer(player);
 

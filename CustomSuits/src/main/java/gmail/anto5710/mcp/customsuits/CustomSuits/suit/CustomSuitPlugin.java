@@ -1,6 +1,9 @@
 package gmail.anto5710.mcp.customsuits.CustomSuits.suit;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.dao.SpawningDao;
+import gmail.anto5710.mcp.customsuits.Setting.Enchant;
+import gmail.anto5710.mcp.customsuits.Setting.Recipe;
+import gmail.anto5710.mcp.customsuits.Setting.Values;
 import gmail.anto5710.mcp.customsuits._Thor.Hammer;
 
 import java.awt.SystemColor;
@@ -94,9 +97,10 @@ import com.google.common.primitives.Ints;
  *
  */
 public class CustomSuitPlugin extends JavaPlugin implements Listener {
-	static String regex = ChatColor.GOLD+" 【《 》】 "+ChatColor.YELLOW;
-	Logger logger;
+	
+	public 	static Logger logger;
 	static JavaPlugin plugin;
+	
 
 	SchedulerHunger hscheduler;
 	static boolean isPlayed = false;
@@ -107,9 +111,9 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 
 	Map<String, Color> colorMap = new HashMap<>();
 
-	static ItemStack suitremote = new ItemStack(Material.DIODE);
+	public static ItemStack suitremote = new ItemStack(Material.DIODE);
 
-	static ItemStack gunitem = new ItemStack(Material.IRON_BARDING);
+	public static ItemStack gunitem = new ItemStack(Material.IRON_BARDING);
 
 	static ItemStack AmmoForSniper = new ItemStack(Material.GOLD_NUGGET);
 	static ItemStack AmmoForMachineGun = new ItemStack(Material.FLINT);
@@ -141,9 +145,9 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 
 	static Inventory CommandInventory = Bukkit.createInventory(null, 9,
 			"[Command]");
-	static ItemStack missileLauncher = new ItemStack(Material.GOLD_BARDING);
+	public static ItemStack missileLauncher = new ItemStack(Material.GOLD_BARDING);
 	
-	public static ItemStack Hammer =new ItemStack(Material.IRON_AXE, 1, (short) 20);
+	public static ItemStack Hammer =new ItemStack(Material.IRON_AXE, 1, (short) Values.HammerDamage);
 	
 	public static ItemStack Helemt_Thor = new ItemStack(Material.IRON_HELMET);
 	
@@ -159,43 +163,9 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 
 	@Override
 	public void onEnable() {
+		Recipe.addRecipe(getServer());
 		
-		ItemStack Protection = new ItemStack(Material.ENCHANTED_BOOK);
-		enchantmentbook(Protection, Enchantment.PROTECTION_ENVIRONMENTAL, 4, true);
-
-		ItemStack Blast_Protection = new ItemStack(Material.ENCHANTED_BOOK);
-		enchantmentbook(Blast_Protection, Enchantment.PROTECTION_EXPLOSIONS, 4,
-				true);
-
-		ItemStack Fire_Protection = new ItemStack(Material.ENCHANTED_BOOK);
-		enchantmentbook(Fire_Protection, Enchantment.PROTECTION_FIRE, 4, true);
-
-		ItemStack Feather_Falling = new ItemStack(Material.ENCHANTED_BOOK);
-		enchantmentbook(Feather_Falling, Enchantment.PROTECTION_FALL, 4, true);
-
-		ItemStack Respiration = new ItemStack(Material.ENCHANTED_BOOK);
-		enchantmentbook(Respiration, Enchantment.OXYGEN, 3, true);
-
-		ItemStack Aqua_Affinity = new ItemStack(Material.ENCHANTED_BOOK);
-		enchantmentbook(Aqua_Affinity, Enchantment.WATER_WORKER, 2, true);
-
-		ItemStack Thorns = new ItemStack(Material.ENCHANTED_BOOK);
-		enchantmentbook(Thorns, Enchantment.THORNS, 3, true);
-
-		ItemStack Unbreaking = new ItemStack(Material.ENCHANTED_BOOK);
-		enchantmentbook(Unbreaking, Enchantment.DURABILITY, 4, true);
-
-		ItemStack Sharpness = new ItemStack(Material.ENCHANTED_BOOK);
-		enchantmentbook(Sharpness, Enchantment.DAMAGE_ALL, 4, true);
-
-		ItemStack KnockBack = new ItemStack(Material.ENCHANTED_BOOK);
-		enchantmentbook(KnockBack, Enchantment.KNOCKBACK, 3, true);
-
-		ItemStack Fire_Aspect = new ItemStack(Material.ENCHANTED_BOOK);
-		enchantmentbook(Fire_Aspect, Enchantment.FIRE_ASPECT, 3, true);
-
-		ItemStack Looting = new ItemStack(Material.ENCHANTED_BOOK);
-		enchantmentbook(Looting, Enchantment.LOOT_BONUS_MOBS, 3, true);
+	
 
 		ItemStack levelitem = new ItemStack(Material.EXP_BOTTLE);
 		SetDisplayName(ChatColor.GREEN + "[Level]", levelitem);
@@ -206,33 +176,33 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		ItemStack command = new ItemStack(Material.REDSTONE_COMPARATOR);
 		SetDisplayName(ChatColor.RED + "[Command]", command);
 
-		enchantment(Hammer, Enchantment.DAMAGE_ALL, 30, true);
-		enchantment(Hammer, Enchantment.DURABILITY, 10, true);
-		enchantment(Hammer, Enchantment.FIRE_ASPECT, 8, true);
-		enchantment(Hammer, Enchantment.LOOT_BONUS_MOBS, 12, true);
-		enchantment(Hammer, Enchantment.KNOCKBACK, 15, true);
+		Enchant.enchantment(Hammer, Enchantment.DAMAGE_ALL, 30, true);
+		Enchant.enchantment(Hammer, Enchantment.DURABILITY, 10, true);
+		Enchant.enchantment(Hammer, Enchantment.FIRE_ASPECT, 8, true);
+		Enchant.enchantment(Hammer, Enchantment.LOOT_BONUS_MOBS, 12, true);
+		Enchant.enchantment(Hammer, Enchantment.KNOCKBACK, 15, true);
 		
 		SetDisplayName(ChatColor.GOLD+"Thor_Helmet", Helemt_Thor);
 		SetDisplayName(ChatColor.GOLD+"Thor_ChestPlate", Chestplate_Thor);
 		SetDisplayName(ChatColor.GOLD+"Thor_Leggings",Leggings_Thor);
 		SetDisplayName(ChatColor.GOLD+"Thor_Boots", Boots_Thor);
 		
-		enchantment(Helemt_Thor, Enchantment.PROTECTION_FIRE, 15, true);
-		enchantment(Helemt_Thor, Enchantment.DURABILITY, 50, true);
-		enchantment(Helemt_Thor, Enchantment.OXYGEN, 2, true);
-		enchantment(Helemt_Thor, Enchantment.THORNS, 15, true);
+		Enchant.enchantment(Helemt_Thor, Enchantment.PROTECTION_FIRE, 15, true);
+		Enchant.enchantment(Helemt_Thor, Enchantment.DURABILITY, 50, true);
+		Enchant.enchantment(Helemt_Thor, Enchantment.OXYGEN, 2, true);
+		Enchant.enchantment(Helemt_Thor, Enchantment.THORNS, 15, true);
 		
-		enchantment(Chestplate_Thor, Enchantment.PROTECTION_ENVIRONMENTAL, 15, true);
-		enchantment(Chestplate_Thor, Enchantment.THORNS, 15, true);
-		enchantment(Chestplate_Thor, Enchantment.DURABILITY, 50, true);
+		Enchant.enchantment(Chestplate_Thor, Enchantment.PROTECTION_ENVIRONMENTAL, 15, true);
+		Enchant.enchantment(Chestplate_Thor, Enchantment.THORNS, 15, true);
+		Enchant.enchantment(Chestplate_Thor, Enchantment.DURABILITY, 50, true);
 		
-		enchantment(Leggings_Thor, Enchantment.THORNS, 15, true);
-		enchantment(Leggings_Thor, Enchantment.DURABILITY, 50, true);
-		enchantment(Leggings_Thor, Enchantment.PROTECTION_EXPLOSIONS, 15, true);
+		Enchant.enchantment(Leggings_Thor, Enchantment.THORNS, 15, true);
+		Enchant.enchantment(Leggings_Thor, Enchantment.DURABILITY, 50, true);
+		Enchant.enchantment(Leggings_Thor, Enchantment.PROTECTION_EXPLOSIONS, 15, true);
 		
-		enchantment(Boots_Thor, Enchantment.THORNS, 15, true);
-		enchantment(Boots_Thor, Enchantment.DURABILITY, 50, true);
-		enchantment(Boots_Thor, Enchantment.PROTECTION_FALL, 15, true);
+		Enchant.enchantment(Boots_Thor, Enchantment.THORNS, 15, true);
+		Enchant.enchantment(Boots_Thor, Enchantment.DURABILITY, 50, true);
+		Enchant.enchantment(Boots_Thor, Enchantment.PROTECTION_FALL, 15, true);
 		
 		leathercolor(Chestplate_Thor, DyeColor.GRAY);
 		leathercolor(Leggings_Thor, DyeColor.BLACK);
@@ -275,46 +245,46 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		wool.setColor(DyeColor.RED);
 		ItemStack woolitem = wool.toItemStack();
 
-		leggingsinventory.setItem(0, Protection);
-		leggingsinventory.setItem(1, Unbreaking);
-		leggingsinventory.setItem(2, Thorns);
+		leggingsinventory.setItem(0, Enchant.Protection);
+		leggingsinventory.setItem(1, Enchant.Unbreaking);
+		leggingsinventory.setItem(2, Enchant.Thorns);
 		leggingsinventory.setItem(8, woolitem);
 
 		leggingsinventory.setItem(7, new ItemStack(Material.IRON_FENCE));
 
 		chestinventory.setItem(7, new ItemStack(Material.IRON_FENCE));
 
-		chestinventory.setItem(0, Protection);
-		chestinventory.setItem(1, Unbreaking);
-		chestinventory.setItem(2, Thorns);
+		chestinventory.setItem(0, Enchant.Protection);
+		chestinventory.setItem(1, Enchant.Unbreaking);
+		chestinventory.setItem(2, Enchant.Thorns);
 		chestinventory.setItem(8, woolitem);
 
 		bootsinventory.setItem(7, new ItemStack(Material.IRON_FENCE));
 
-		bootsinventory.setItem(0, Fire_Protection);
-		bootsinventory.setItem(1, Unbreaking);
-		bootsinventory.setItem(2, Thorns);
+		bootsinventory.setItem(0, Enchant.Fire_Protection);
+		bootsinventory.setItem(1, Enchant.Unbreaking);
+		bootsinventory.setItem(2, Enchant.Thorns);
 
-		bootsinventory.setItem(4, Feather_Falling);
+		bootsinventory.setItem(4, Enchant.Feather_Falling);
 		bootsinventory.setItem(8, woolitem);
 
 		helmetinventory.setItem(7, new ItemStack(Material.IRON_FENCE));
 
-		helmetinventory.setItem(0, Respiration);
-		helmetinventory.setItem(1, Blast_Protection);
-		helmetinventory.setItem(2, Thorns);
-		helmetinventory.setItem(3, Aqua_Affinity);
-		helmetinventory.setItem(4, Unbreaking);
+		helmetinventory.setItem(0, Enchant.Respiration);
+		helmetinventory.setItem(1, Enchant.Blast_Protection);
+		helmetinventory.setItem(2, Enchant.Thorns);
+		helmetinventory.setItem(3, Enchant.Aqua_Affinity);
+		helmetinventory.setItem(4, Enchant.Unbreaking);
 
 		helmetinventory.setItem(8, woolitem);
 
 		handinventory.setItem(7, new ItemStack(Material.IRON_FENCE));
 
-		handinventory.setItem(0, Unbreaking);
-		handinventory.setItem(1, Sharpness);
-		handinventory.setItem(2, KnockBack);
-		handinventory.setItem(3, Fire_Aspect);
-		handinventory.setItem(4, Looting);
+		handinventory.setItem(0, Enchant.Unbreaking);
+		handinventory.setItem(1, Enchant.Sharpness);
+		handinventory.setItem(2, Enchant.KnockBack);
+		handinventory.setItem(3, Enchant.Fire_Aspect);
+		handinventory.setItem(4, Enchant.Looting);
 
 		ItemStack skull = new ItemStack(397, 1, (short) 0, (byte) 3);
 		SetDisplayName(ChatColor.AQUA + "[Party Protocol]", skull);
@@ -345,46 +315,12 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 
 		SetDisplayName(ChatColor.RED + "[Suit Commander]", suitremote);
 
-		SetDisplayName(ChatColor.RED + "[Knif-1120] " + regex
-				+ WeaponListner.maxformachine + regex
+		SetDisplayName(ChatColor.RED + "[Knif-1120] " + Values.regex
+				+ WeaponListner.maxformachine + Values.regex
 				+ WeaponListner.maxforsniper, gunitem);
 		SetDisplayName(ChatColor.DARK_RED+"[Launcher]", missileLauncher);
 
-		ShapedRecipe suitrecipe = new ShapedRecipe(suitremote);
 
-		suitrecipe.shape("*%*", "_!_", "*%*");
-		suitrecipe.setIngredient('*', Material.GOLD_INGOT);
-		
-		suitrecipe.setIngredient('%', Material.REDSTONE_COMPARATOR);
-		suitrecipe.setIngredient('_', Material.DIODE);
-		suitrecipe.setIngredient('!', Material.COMPASS);
-		
-
-		getServer().addRecipe(suitrecipe);
-
-		ShapedRecipe gunrecipe = new ShapedRecipe(gunitem);
-
-		gunrecipe.shape("&&*", "^$!", "&&*");
-		gunrecipe.setIngredient('&', Material.IRON_INGOT);
-		gunrecipe.setIngredient('*', Material.SULPHUR);
-		gunrecipe.setIngredient('!', Material.IRON_BARDING);
-		gunrecipe.setIngredient('$', Material.REDSTONE);
-		gunrecipe.setIngredient('^', Material.TNT);
-
-		getServer().addRecipe(gunrecipe);
-		
-		ShapedRecipe launcherrecipe = new ShapedRecipe(missileLauncher);
-
-		launcherrecipe.shape("^@@", "$!%", "^@@");
-		
-		launcherrecipe.setIngredient('@', Material.IRON_INGOT);
-		launcherrecipe.setIngredient('$', Material.GOLD_BARDING);
-		launcherrecipe.setIngredient('%', Material.TNT);
-		launcherrecipe.setIngredient('!', Material.PISTON_BASE);
-		launcherrecipe.setIngredient('^', Material.SULPHUR);
-		
-
-		getServer().addRecipe(launcherrecipe);
 
 		entityMap.put("warrior", PigZombie.class);
 		entityMap.put("archer", Skeleton.class);
@@ -1301,21 +1237,9 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		meta.setDisplayName(name);
 		item.setItemMeta(meta);
 	}
+	
 
-	public void enchantmentbook(ItemStack item, Enchantment enchantment, int level,
-			boolean IgnoreLevelLimit) {
-		EnchantmentStorageMeta Meta = (EnchantmentStorageMeta) item
-				.getItemMeta();
-		
-		Meta.addStoredEnchant(enchantment, level, IgnoreLevelLimit);
-		item.setItemMeta(Meta);
-	}
-	public void enchantment(ItemStack item, Enchantment enchantment, int level,
-			boolean IgnoreLevelLimit) {
-		ItemMeta Meta = item.getItemMeta();
-		Meta.addEnchant(enchantment, level, IgnoreLevelLimit);
-		item.setItemMeta(Meta);
-	}
+	
 	public static void reset(Player p , HashMap<Player, Inventory>map , Inventory inventory){
 		if(!map.containsKey(p)){
 			Inventory Newinventory = Bukkit.createInventory(null, inventory.getSize(), inventory.getName()+":"+p.getDisplayName());
@@ -1356,5 +1280,6 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		
 
 	}
+	
 	
 }
