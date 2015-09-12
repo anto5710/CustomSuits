@@ -4,8 +4,6 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
-import javax.security.auth.callback.CallbackHandler;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Effect;
@@ -21,15 +19,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkEffectMeta;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.util.Vector;
-
-
 public class SuitUtils {
 
 	public static void LineParticle(Location target,Location location,
 			Player player, Effect effect, int amount, int data,
 			int effectradius, double damage, double radius, boolean isMissile) {
-		
-		
 		
 	
 		Vector vectorStart = location.toVector();

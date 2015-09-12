@@ -70,11 +70,7 @@ public class Repeat extends BukkitRunnable {
 		}
 		
 	}
-	/**
-	 * 
-	 * @param taskID - TaskId Of That Task
-	 * @return - Return If That Task is Running
-	 */
+
 	public static boolean isRunning(int taskID){
 		BukkitScheduler scheduler = Bukkit.getScheduler();
 		
@@ -84,14 +80,7 @@ public class Repeat extends BukkitRunnable {
 		return false;
 		
 	}
-	/**
-	 * 
-	 * @param item
-	 * @param loc
-	 * @param TaskID
-	 * @param player
-	 * @param isTeleport
-	 */
+	
 	private void Run(Item item, Location loc, int TaskID, Player player,
 			boolean isTeleport) {
 		if (isFire(item)) {
@@ -192,6 +181,5 @@ public class Repeat extends BukkitRunnable {
 
 	}
 
-	// What you want to schedule goes here
-
+	
 }

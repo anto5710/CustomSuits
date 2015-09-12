@@ -67,11 +67,7 @@ public class Hammer implements Listener {
 		this.plugin = plugin;
 	}
 	
-	/**
-	 * Play the Effect of Thor and Remove Thor's Effect when Thor Dead Or Removed
-	 * @param event - PlayerMoveEvent
-	 * 
-	 */
+	
 	@EventHandler
 	public void ThorMove(PlayerMoveEvent event) {
 		Player player = event.getPlayer();
@@ -100,24 +96,14 @@ public class Hammer implements Listener {
 		}
 	}
 	
-	/**
-	 * 
-	 * @param PotionEffectType - Removing PotionEffectType
-	 * @param player - Player to remove PotionEffect
-	 */
+	
 	public void removePotionEffect(PotionEffectType PotionEffectType, Player player) {
 		if(player.hasPotionEffect(PotionEffectType)){
 			player.removePotionEffect(PotionEffectType);
 		}
 		
 	}
-	/**
-	 * If Thor didn't Armed , Set Thor Armed
-	 * Else Throw the Hammer
-	 * @param event - This event called When Thor Right Click the Hammer
-	 * 
-	 * 
-	 */
+
 	@EventHandler
 	public void ThrowHammer(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
@@ -172,11 +158,7 @@ public class Hammer implements Listener {
 		}
 
 	}
-	/**
-	 * Cancel The Event If that itemstack is Thor's Hammer
-	 * @param event - Called When Hammer Removed
-	 * 
-	 */
+	
 	@EventHandler
 	public void ItemRemovedCancel(ItemDespawnEvent event){
 		Item item = event.getEntity();
@@ -184,11 +166,7 @@ public class Hammer implements Listener {
 			event.setCancelled(true);
 		}
 	}
-	/**
-	 * Add Effects to Damaged Entity
-	 * @param event - Called When Entity Damaged By Thor's Hammers
-	 *  
-	 */
+	
 	@EventHandler
 	public void DamageLightning(EntityDamageByEntityEvent event) {
 		Entity damager = event.getDamager();
@@ -218,11 +196,7 @@ public class Hammer implements Listener {
 			}
 		}
 	}
-	/**
-	 * Launch the Lightning Missile
-	 * @param event - When Player try to launch the Lightning Missile
-	 *
-	 */
+	
 	@EventHandler
 	public void Lightning(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
@@ -240,12 +214,7 @@ public class Hammer implements Listener {
 			}
 		
 	}
-	/**
-	 * Cancel the Lightning Damage Event for Thor 
-	 * @param event- When Thor damaged by Lightning
-	 * 
-	 * 
-	 */
+	
 	
 	@EventHandler
 	public void LightningDamagedThor(EntityDamageEvent event){
@@ -258,12 +227,7 @@ public class Hammer implements Listener {
 			}
 		}
 	}
-	/**
-	 * Spell Explosion Ring
-	 * @param event - When Thor try to use Explosion Ring Skill
-	 * 
-	 *
-	 */
+	
 	@EventHandler
 	public void ExplosionRing(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
@@ -280,12 +244,7 @@ public class Hammer implements Listener {
 		}
 	}
 	
-	/**
-	 * 
-	 * @param dropped - Hammer
-	 * @param player - Thor
-	 * @param isTeleport - Telepoting Player to Hammer Landed Location
-	 */
+	
 	public void playEffect(Item dropped, Player player, boolean isTeleport) {
 		Repeat.listPlayer.put(dropped, player);
 		Repeat.listTeleport.put(dropped, isTeleport);
@@ -296,11 +255,7 @@ public class Hammer implements Listener {
 			
 
 	}
-	/**
-	 * 
-	 * @param player - Player to Check
-	 * @return Return true If Player has Thor's Armor more than 2
-	 */
+	
 	public static boolean Thor(Player player) {
 		int count = 0;
 		if (SuitUtils.CheckItem(CustomSuitPlugin.Helemt_Thor, player.getEquipment()
@@ -325,13 +280,7 @@ public class Hammer implements Listener {
 		return false;
 
 	}
-    /**
-     * Make a Explosion Ring
-     * @param radius - The Radius Of Circle
-     * @param player - Player 
-     * 
-     * 
-     */
+   
 	public void getRing(double radius, Player player) {
 		int points = 12; // amount of points to be generated
 		for (int i = 0; i < 360; i += 360 / points) {
@@ -344,12 +293,6 @@ public class Hammer implements Listener {
 					HammerDeafultDamage * 2, player);
 		}
 	}
-	/**
-	 *  Cancel If The Player is not Thor
-	 * @param event - When Player Pick up the Hammer
-	 * 
-	 * 
-	 */
 	@EventHandler
 	public void pickupHammer(PlayerPickupItemEvent event){
 		Item item = event.getItem();
@@ -368,11 +311,7 @@ public class Hammer implements Listener {
 				}
 		}
 	}
-	/**
-	 *  Set that Player to Thor
-	 * @param player - Player to set Thor
-	 *
-	 */
+	
 	public void setThor(Player player) {
 		if(thor.size()==0){
 			thor.add(player);
@@ -397,20 +336,13 @@ public class Hammer implements Listener {
 		player.getWorld().setThundering(true);
 		
 	}
-	/**
-	 * Strike Lightning
-	 * @param location - Location to Stike
-	 * @param player - Player
-	 * @param amount - The amount of Lightning
-	 * @param damageRadius - Radius of Damage 
-	 * @param damage - Lightning's Damage
-	 */
-	public static void strikeLightning(Location location, Player player, int amount,
+
+	public static void strikeLightning(Location loc, Player player, int amount,
 			double damageRadius, double damage) {
 	
 		for (int c = 0; c < amount; c++) {
-			location.getWorld().strikeLightning(location);
-			Repeat.damage(WeaponListner.findEntity(location, player, damageRadius),
+			loc.getWorld().strikeLightning(loc);
+			Repeat.damage(WeaponListner.findEntity(loc, player, damageRadius),
 					damage, player);
 		}
 	}
