@@ -44,6 +44,8 @@ public class Values {
 			+ ChatColor.AQUA + "Zoom in ("
 			+ ChatColor.RED + "Out" + ChatColor.AQUA
 			+ ")";
+	final public static String NoSuchEntity =ChatColor.BLUE + "[Info]: "
+			+ ChatColor.AQUA + "No such entity";
 	
 	final public static double SniperDamage =30 ;
 	final public static double SniperRadius = 0.75;

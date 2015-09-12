@@ -1,5 +1,7 @@
 package gmail.anto5710.mcp.customsuits.CustomSuits.suit;
 
+import gmail.anto5710.mcp.customsuits.Setting.Values;
+
 import java.time.temporal.ChronoUnit;
 
 import org.bukkit.Bukkit;
@@ -91,7 +93,7 @@ public class SuitInventoryGUI implements Listener {
 
 	@EventHandler
 	public void clickPlayer(InventoryClickEvent e) {
-		Player Click = (Player) e.getWhoClicked();
+		Player WhoClicked = (Player) e.getWhoClicked();
 		if (e.getClick() == ClickType.LEFT) {
 			if (e.getClickedInventory().getName().contains("[Online Players]")) {
 				if (e.getClickedInventory().getItem(e.getSlot()) != null) {
@@ -102,14 +104,13 @@ public class SuitInventoryGUI implements Listener {
 						if (item.getItemMeta().getDisplayName() != null) {
 							String name = item.getItemMeta().getDisplayName();
 						
-							Player player = Click.getServer().getPlayer(name);
+							Player player = WhoClicked.getServer().getPlayer(name);
 
-							if (PlayerEffect.Mark(Click)) {
-								CustomSuitPlugin.targetPlayer(Click, player);
+							if (CustomSuitPlugin.MarkEntity(WhoClicked)) {
+								CustomSuitPlugin.targetPlayer(WhoClicked, player);
 								e.setCancelled(true);
 							} else {
-								Click.sendMessage(ChatColor.BLUE + "[Info]: "
-										+ ChatColor.AQUA + "No such entity");
+								WhoClicked.sendMessage(Values.NoSuchEntity);
 								e.setCancelled(true);
 							}
 						}

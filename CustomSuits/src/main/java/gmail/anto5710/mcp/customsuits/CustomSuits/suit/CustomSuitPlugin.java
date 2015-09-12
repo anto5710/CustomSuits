@@ -1104,10 +1104,10 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		}
 	}
 
-	public static boolean MarkEntity(LivingEntity p) {
-		if (p.getEquipment().getLeggings() != null) {
+	public static boolean MarkEntity(LivingEntity LivingEntity) {
+		if (LivingEntity.getEquipment().getLeggings() != null) {
 
-			String leggings = p.getEquipment().getLeggings().getItemMeta()
+			String leggings = LivingEntity.getEquipment().getLeggings().getItemMeta()
 					.getDisplayName();
 			if (leggings != null) {
 				if (leggings.contains("Mark:")) {
@@ -1117,8 +1117,8 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 
 			}
 		}
-		if (p.getEquipment().getHelmet() != null) {
-			String helmetname = p.getEquipment().getHelmet().getItemMeta()
+		if (LivingEntity.getEquipment().getHelmet() != null) {
+			String helmetname = LivingEntity.getEquipment().getHelmet().getItemMeta()
 					.getDisplayName();
 			if (helmetname != null) {
 
@@ -1156,8 +1156,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		}
 		if (entity == null) {
 
-			player.sendMessage(ChatColor.BLUE + "[Info]: " + ChatColor.AQUA
-					+ "No such entity");
+			player.sendMessage(Values.NoSuchEntity);
 		}
 
 		return entity;
@@ -1221,8 +1220,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 			}
 		}
 		if (!isPlayed) {
-			whoClicked.sendMessage(ChatColor.BLUE + "[Info]: " + ChatColor.AQUA
-					+ "No such entity");
+			whoClicked.sendMessage(Values.NoSuchEntity);
 		} else {
 			whoClicked.sendMessage(ChatColor.BLUE + "[Info]: " + ChatColor.AQUA
 					+ "Fireworks");
