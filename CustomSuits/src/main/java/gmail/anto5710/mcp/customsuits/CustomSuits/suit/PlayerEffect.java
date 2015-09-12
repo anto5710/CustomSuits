@@ -65,6 +65,7 @@ import org.junit.internal.matchers.IsCollectionContaining;
  * @author anto5710
  *
  */
+
 public class PlayerEffect implements Listener {
 	private CustomSuitPlugin mainPlugin;
 	private Logger logger;
@@ -76,7 +77,7 @@ public class PlayerEffect implements Listener {
 		logger = mainPlugin.getLogger();
 		hungerscheduler = main.hscheduler;
 	}
-
+	
 	@EventHandler
 	public void kill(PlayerDeathEvent e) {
 		Player p = (Player) e.getEntity();

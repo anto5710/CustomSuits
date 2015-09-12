@@ -4,6 +4,8 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
+import javax.security.auth.callback.CallbackHandler;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Effect;
@@ -11,6 +13,7 @@ import org.bukkit.FireworkEffect;
 import org.bukkit.FireworkEffect.Type;
 import org.bukkit.Location;
 import org.bukkit.Sound;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Ambient;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
@@ -18,11 +21,15 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkEffectMeta;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.util.Vector;
+
+
 public class SuitUtils {
 
 	public static void LineParticle(Location target,Location location,
 			Player player, Effect effect, int amount, int data,
 			int effectradius, double damage, double radius, boolean isMissile) {
+		
+		
 		
 	
 		Vector vectorStart = location.toVector();
@@ -168,5 +175,10 @@ public class SuitUtils {
 			}
 		}
 		return false;
+	}
+	public static Block getTargetBlock(Player player , int MaxDistance){
+		Block targetblock = player.getTargetBlock((HashSet<Byte>)null, MaxDistance);
+		return targetblock;
+		
 	}
 }

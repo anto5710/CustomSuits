@@ -16,8 +16,10 @@ public class Values {
 
 	final public static double HammerDamage = 20;
 	final public static double LightningMissile = 20 ;
+	final public static int LightningMissileHunger = -1;
 	final public static double HammerExplosionRing = 20;
 	final public static float HammerExplosionPower = 5;
+	final public static int HammerExplosionRingHunger = -4;
 	
 	final public static double SniperDamage =30 ;
 	final public static double SniperRadius = 0.75;

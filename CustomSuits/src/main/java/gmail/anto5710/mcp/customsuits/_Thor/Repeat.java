@@ -30,17 +30,18 @@ public class Repeat extends BukkitRunnable {
 
 	private final JavaPlugin plugin;
 
-	static int id = 0;
+	static int taskID = 0;
 
 	static HashMap<Item, Player> listPlayer = new HashMap<>();
-	static HashMap<Item, Boolean> listTp = new HashMap<>();
+	static HashMap<Item, Boolean> listTeleport = new HashMap<>();
 
 	public Repeat(JavaPlugin plugin) {
 		this.plugin = plugin;
 
 	}
-
+	
 	@Override
+	
 	public void run() {
 		Location loc;
 		
@@ -52,23 +53,28 @@ public class Repeat extends BukkitRunnable {
 			Item item = list.get(0);
 
 			loc = item.getLocation();
-			this.id = getTaskId();
+			this.taskID = getTaskId();
 			Player player = listPlayer.get(item);
-			boolean isTP = listTp.get(item);
-			Run(item, loc, id, player, isTP);
+			boolean isTP = listTeleport.get(item);
+			Run(item, loc, taskID, player, isTP);
 			
 		} else if(listPlayer.size()>1){
 			for (Item item : listPlayer.keySet()) {
 				loc = item.getLocation();
-				this.id = getTaskId();
+				this.taskID = getTaskId();
 				Player player = listPlayer.get(item);
-				boolean isTP = listTp.get(item);
+				boolean isTP = listTeleport.get(item);
 
-				Run(item, loc, id, player, isTP);
+				Run(item, loc, taskID, player, isTP);
 			}
 		}
 		
 	}
+	/**
+	 * 
+	 * @param taskID - TaskId Of That Task
+	 * @return - Return If That Task is Running
+	 */
 	public static boolean isRunning(int taskID){
 		BukkitScheduler scheduler = Bukkit.getScheduler();
 		
@@ -78,8 +84,16 @@ public class Repeat extends BukkitRunnable {
 		return false;
 		
 	}
-	private void Run(Item item, Location loc, int id, Player player,
-			boolean isTP) {
+	/**
+	 * 
+	 * @param item
+	 * @param loc
+	 * @param TaskID
+	 * @param player
+	 * @param isTeleport
+	 */
+	private void Run(Item item, Location loc, int TaskID, Player player,
+			boolean isTeleport) {
 		if (isFire(item)) {
 			player.getInventory().addItem(item.getItemStack());
 			item.remove();
@@ -89,7 +103,7 @@ public class Repeat extends BukkitRunnable {
 
 		item.setPickupDelay(10);
 		java.util.List<Entity> list;
-		if (!isTP) {
+		if (!isTeleport) {
 			SuitUtils.playEffect(loc, Effect.LAVA_POP, 55, 0, 4);
 			list = WeaponListner.findEntity(loc, player, 4);
 			damage(list, 40, player);
@@ -97,7 +111,7 @@ public class Repeat extends BukkitRunnable {
 			SuitUtils.playEffect(loc, Effect.PORTAL, 55, 0, 4);
 		}
 		if (isOnGround(item)) {
-			if (!isTP) {
+			if (!isTeleport) {
 				SuitUtils.playEffect(loc, Effect.ENDER_SIGNAL, 30, 0, 5);
 				item.getWorld().strikeLightning(item.getLocation());
 				player.getInventory().addItem(item.getItemStack());
@@ -145,13 +159,13 @@ public class Repeat extends BukkitRunnable {
 		return false;
 	}
 
-	private void remove(Item item) {
+	public static void remove(Item item) {
 		
 		if (listPlayer.containsKey(item)) {
 			listPlayer.remove(item);
 		}
-		if (listTp.containsKey(item)) {
-			listTp.remove(item);
+		if (listTeleport.containsKey(item)) {
+			listTeleport.remove(item);
 		}
 
 	}

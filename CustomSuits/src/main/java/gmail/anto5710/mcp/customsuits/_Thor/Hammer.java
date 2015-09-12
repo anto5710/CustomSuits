@@ -54,15 +54,24 @@ import org.bukkit.scheduler.BukkitTask;
 
 public class Hammer implements Listener {
 	CustomSuitPlugin plugin;
+	
 	static double HammerDeafultDamage = Values.HammerDamage;
+	
 	static double RingDamage = Values.HammerExplosionRing;
+	
 	static float Power = Values.HammerExplosionPower;
+	
 	ArrayList<Player>thor  = new ArrayList<>();
 
 	public Hammer(CustomSuitPlugin plugin) {
 		this.plugin = plugin;
 	}
 	
+	/**
+	 * Play the Effect of Thor and Remove Thor's Effect when Thor Dead Or Removed
+	 * @param event - PlayerMoveEvent
+	 * 
+	 */
 	@EventHandler
 	public void ThorMove(PlayerMoveEvent event) {
 		Player player = event.getPlayer();
@@ -90,14 +99,25 @@ public class Hammer implements Listener {
 			removePotionEffect(PotionEffectType.FIRE_RESISTANCE, player);
 		}
 	}
-
-	public void removePotionEffect(PotionEffectType regeneration, Player player) {
-		if(player.hasPotionEffect(regeneration)){
-			player.removePotionEffect(regeneration);
+	
+	/**
+	 * 
+	 * @param PotionEffectType - Removing PotionEffectType
+	 * @param player - Player to remove PotionEffect
+	 */
+	public void removePotionEffect(PotionEffectType PotionEffectType, Player player) {
+		if(player.hasPotionEffect(PotionEffectType)){
+			player.removePotionEffect(PotionEffectType);
 		}
 		
 	}
-
+	/**
+	 * If Thor didn't Armed , Set Thor Armed
+	 * Else Throw the Hammer
+	 * @param event - This event called When Thor Right Click the Hammer
+	 * 
+	 * 
+	 */
 	@EventHandler
 	public void ThrowHammer(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
@@ -106,30 +126,34 @@ public class Hammer implements Listener {
 			if (SuitUtils.CheckItem(CustomSuitPlugin.Hammer,
 					player.getItemInHand())) {
 				if (Thor(player)) {
-					
 					Item dropped = player.getWorld().dropItem(
 							player.getLocation(), player.getItemInHand());
-					if(player.getItemInHand().getAmount()==1){
-						player.getInventory().setItemInHand(new ItemStack(Material.AIR, 1));
-					}else{
-					
-						player.getInventory().getItemInHand().setAmount(player.getItemInHand().getAmount()-1);
+					if (player.getItemInHand().getAmount() == 1) {
+						player.getInventory().setItemInHand(
+								new ItemStack(Material.AIR, 1));
+					} else {
+
+						player.getInventory()
+								.getItemInHand()
+								.setAmount(
+										player.getItemInHand().getAmount() - 1);
 					}
-						player.updateInventory();
+					player.updateInventory();
 					dropped.setFallDistance(0);
 
-					Location target = player.getTargetBlock((HashSet<Byte>)null, 1000)
-							.getLocation();
+					Location TargetLocation = SuitUtils.getTargetBlock(player,
+							500).getLocation();
 					Location loc = dropped.getLocation();
 					loc.setY(loc.getY() + 2);
 
 					double gravity = 0.0165959600149011612D;
 					dropped.teleport(loc);
 					org.bukkit.util.Vector v = SuitUtils.calculateVelocity(
-							loc.toVector(), target.toVector(), gravity, 6);
+							loc.toVector(), TargetLocation.toVector(), gravity,
+							6);
 
 					dropped.setVelocity(v);
-			
+
 					if (player.isSneaking()) {
 						playEffect(dropped, player, true);
 					} else {
@@ -148,6 +172,11 @@ public class Hammer implements Listener {
 		}
 
 	}
+	/**
+	 * Cancel The Event If that itemstack is Thor's Hammer
+	 * @param event - Called When Hammer Removed
+	 * 
+	 */
 	@EventHandler
 	public void ItemRemovedCancel(ItemDespawnEvent event){
 		Item item = event.getEntity();
@@ -155,7 +184,11 @@ public class Hammer implements Listener {
 			event.setCancelled(true);
 		}
 	}
-
+	/**
+	 * Add Effects to Damaged Entity
+	 * @param event - Called When Entity Damaged By Thor's Hammers
+	 *  
+	 */
 	@EventHandler
 	public void DamageLightning(EntityDamageByEntityEvent event) {
 		Entity damager = event.getDamager();
@@ -185,7 +218,11 @@ public class Hammer implements Listener {
 			}
 		}
 	}
-
+	/**
+	 * Launch the Lightning Missile
+	 * @param event - When Player try to launch the Lightning Missile
+	 *
+	 */
 	@EventHandler
 	public void Lightning(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
@@ -193,17 +230,23 @@ public class Hammer implements Listener {
 				|| event.getAction() == Action.LEFT_CLICK_BLOCK) {
 			if (SuitUtils.CheckItem(CustomSuitPlugin.Hammer,
 					player.getItemInHand())
-					&& Thor(player)&&SchedulerHunger.hunger(player, -1)) {
-				Location block = player.getTargetBlock((HashSet<Byte>)null, 300).getLocation();
-				SuitUtils.LineParticle(block, player.getEyeLocation(), player, Effect.LAVA_POP, 20, 0, 2, HammerDeafultDamage, 2, true);
+					&& Thor(player)&&SchedulerHunger.hunger(player, Values.LightningMissileHunger)) {
+				Location targetblock = SuitUtils.getTargetBlock(player, 300).getLocation();
+				SuitUtils.LineParticle(targetblock, player.getEyeLocation(), player, Effect.LAVA_POP, 20, 0, 2, HammerDeafultDamage, 2, true);
 				
-				strikeLightning(block, player, 1, 2.5, HammerDeafultDamage);
-				SuitUtils.createExplosion(block, Power, false, true);
+				strikeLightning(targetblock, player, 1, 2.5, HammerDeafultDamage);
+				SuitUtils.createExplosion(targetblock, Power, false, true);
 				}
 			}
 		
 	}
-
+	/**
+	 * Cancel the Lightning Damage Event for Thor 
+	 * @param event- When Thor damaged by Lightning
+	 * 
+	 * 
+	 */
+	
 	@EventHandler
 	public void LightningDamagedThor(EntityDamageEvent event){
 		Entity entity = event.getEntity();
@@ -215,7 +258,12 @@ public class Hammer implements Listener {
 			}
 		}
 	}
-
+	/**
+	 * Spell Explosion Ring
+	 * @param event - When Thor try to use Explosion Ring Skill
+	 * 
+	 *
+	 */
 	@EventHandler
 	public void ExplosionRing(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
@@ -223,42 +271,51 @@ public class Hammer implements Listener {
 				|| event.getAction() == Action.LEFT_CLICK_BLOCK) {
 			if (Thor(player)
 					&& SuitUtils.CheckItem(CustomSuitPlugin.Hammer,
-							player.getItemInHand()) && player.isSneaking()&&SchedulerHunger.hunger(player, -4)) {
-				for (double i = 2; i < 50; i+=0.5) {
+							player.getItemInHand()) && player.isSneaking()&&SchedulerHunger.hunger(player, Values.HammerExplosionRingHunger)) {
+				for (double count = 2; count < 50; count+=0.5) {
 					player.setNoDamageTicks(20);
-					getRing(i, player);
+					getRing(count, player);
 				}
 			}
 		}
 	}
 	
-
-	private void playEffect(Item dropped, Player player, boolean isTP) {
+	/**
+	 * 
+	 * @param dropped - Hammer
+	 * @param player - Thor
+	 * @param isTeleport - Telepoting Player to Hammer Landed Location
+	 */
+	public void playEffect(Item dropped, Player player, boolean isTeleport) {
 		Repeat.listPlayer.put(dropped, player);
-		Repeat.listTp.put(dropped, isTP);
-		if(!Repeat.isRunning(Repeat.id)){
+		Repeat.listTeleport.put(dropped, isTeleport);
+		if(!Repeat.isRunning(Repeat.taskID)){
 			BukkitTask task = new Repeat(plugin)
 			.runTaskTimer(plugin, 0, 10);
 		}
 			
 
 	}
-
-	public static boolean Thor(Player p) {
+	/**
+	 * 
+	 * @param player - Player to Check
+	 * @return Return true If Player has Thor's Armor more than 2
+	 */
+	public static boolean Thor(Player player) {
 		int count = 0;
-		if (SuitUtils.CheckItem(CustomSuitPlugin.Helemt_Thor, p.getEquipment()
+		if (SuitUtils.CheckItem(CustomSuitPlugin.Helemt_Thor, player.getEquipment()
 				.getHelmet())) {
 			count++;
 		}
-		if (SuitUtils.CheckItem(CustomSuitPlugin.Chestplate_Thor, p
+		if (SuitUtils.CheckItem(CustomSuitPlugin.Chestplate_Thor, player
 				.getEquipment().getChestplate())) {
 			count++;
 		}
-		if (SuitUtils.CheckItem(CustomSuitPlugin.Leggings_Thor, p
+		if (SuitUtils.CheckItem(CustomSuitPlugin.Leggings_Thor, player
 				.getEquipment().getLeggings())) {
 			count++;
 		}
-		if (SuitUtils.CheckItem(CustomSuitPlugin.Boots_Thor, p.getEquipment()
+		if (SuitUtils.CheckItem(CustomSuitPlugin.Boots_Thor, player.getEquipment()
 				.getBoots())) {
 			count++;
 		}
@@ -268,39 +325,54 @@ public class Hammer implements Listener {
 		return false;
 
 	}
-
-	public void getRing(double radiuse, Player player) {
+    /**
+     * Make a Explosion Ring
+     * @param radius - The Radius Of Circle
+     * @param player - Player 
+     * 
+     * 
+     */
+	public void getRing(double radius, Player player) {
 		int points = 12; // amount of points to be generated
 		for (int i = 0; i < 360; i += 360 / points) {
 			double angle = (i * Math.PI / 180);
-			double x = radiuse * Math.cos(angle);
-			double z = radiuse * Math.sin(angle);
+			double x = radius * Math.cos(angle);
+			double z = radius * Math.sin(angle);
 			Location loc = player.getLocation().add(x, 1, z);
 			SuitUtils.createExplosion(loc, 6.5F, false, false);
 			Repeat.damage(WeaponListner.findEntity(loc, player, 5.5),
 					HammerDeafultDamage * 2, player);
 		}
 	}
+	/**
+	 *  Cancel If The Player is not Thor
+	 * @param event - When Player Pick up the Hammer
+	 * 
+	 * 
+	 */
 	@EventHandler
 	public void pickupHammer(PlayerPickupItemEvent event){
 		Item item = event.getItem();
 		Player player =event.getPlayer();
 		if(SuitUtils.CheckItem(CustomSuitPlugin.Hammer, item.getItemStack())){
 				if(Thor(player)){
-					Repeat.listPlayer.remove(item);
-					Repeat.listTp.remove(item);
+					Repeat.remove(item);
 		
 				}else{
 					SuitUtils.playEffect(player.getEyeLocation(), Effect.STEP_SOUND, 5, Material.IRON_BLOCK.getId(), 2);
 					player.playSound(player.getLocation(), Sound.IRONGOLEM_DEATH, 10F, 8F);
-					player.damage(HammerDeafultDamage, item);
+					
 					event.setCancelled(true);
 					
 					
 				}
 		}
 	}
-	
+	/**
+	 *  Set that Player to Thor
+	 * @param player - Player to set Thor
+	 *
+	 */
 	public void setThor(Player player) {
 		if(thor.size()==0){
 			thor.add(player);
@@ -325,13 +397,20 @@ public class Hammer implements Listener {
 		player.getWorld().setThundering(true);
 		
 	}
-
-	public static void strikeLightning(Location loc, Player player, int amount,
+	/**
+	 * Strike Lightning
+	 * @param location - Location to Stike
+	 * @param player - Player
+	 * @param amount - The amount of Lightning
+	 * @param damageRadius - Radius of Damage 
+	 * @param damage - Lightning's Damage
+	 */
+	public static void strikeLightning(Location location, Player player, int amount,
 			double damageRadius, double damage) {
 	
 		for (int c = 0; c < amount; c++) {
-			loc.getWorld().strikeLightning(loc);
-			Repeat.damage(WeaponListner.findEntity(loc, player, damageRadius),
+			location.getWorld().strikeLightning(location);
+			Repeat.damage(WeaponListner.findEntity(location, player, damageRadius),
 					damage, player);
 		}
 	}
