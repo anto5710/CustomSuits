@@ -1,20 +1,27 @@
 name: CustomSuits
 main: gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin
-version: 0.2
-description: 몹의 옷을 뺐어 입습니다.
+description: The Special Suits.
+version: 0.2.2
+auther: §b[anto5710]
 
 commands:
     cspn:
-        description: spawn a suit, cspn <type> <target> <amounts>
+        description: §bSpawn a suit.
+        usage: "§4[Usage]: §c/cspn [Type] [TargetPlayer] [Amount]" 
     csuit:
-        description: summon nearest suit
+        description: §bSummon nearest suit.
+        usage: "§4[Usage]: §c/csuit"
     command:
-        description: /command target <player>  target player   ,  /command party   summon all suits,   firework  explode all suits
+        description: §bCommand for your suits.
+        usage: "§4[Usage]: §ccommad [target + <Player> / party / firework]"
     get:
-        description: /get gun give gun to player , /get commander give player commander , /get hammer to get Hammer.
+        description: §bGet the This Plugin's Items.
+        usage: "§4[Usage]: §cget [commander / hammer / laucner]"
     head:
-        description: make that player's head
+        description: §bMake that player's head
+        usage: "§4[Usage]: §chead / head <Player>"
     clist:
-        description: get the list about that topic.
+        description: §bGet the list about that topic.
+        usage: "§4[Usage]: §cclist [Color / Entity]"
     
      

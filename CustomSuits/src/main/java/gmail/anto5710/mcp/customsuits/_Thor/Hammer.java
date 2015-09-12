@@ -23,6 +23,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -37,6 +38,8 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.ItemDespawnEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.player.PlayerAnimationEvent;
+import org.bukkit.event.player.PlayerAnimationType;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
@@ -59,7 +62,7 @@ public class Hammer implements Listener {
 	public Hammer(CustomSuitPlugin plugin) {
 		this.plugin = plugin;
 	}
-
+	
 	@EventHandler
 	public void ThorMove(PlayerMoveEvent event) {
 		Player player = event.getPlayer();
@@ -293,9 +296,11 @@ public class Hammer implements Listener {
 					player.damage(HammerDeafultDamage, item);
 					event.setCancelled(true);
 					
+					
 				}
 		}
 	}
+	
 	public void setThor(Player player) {
 		if(thor.size()==0){
 			thor.add(player);
@@ -316,13 +321,14 @@ public class Hammer implements Listener {
 		player.updateInventory();
 
 		player.playSound(player.getLocation(), Sound.ENDERMAN_STARE, 7.0F, 7.0F);
+		player.getWorld().setStorm(true);
+		player.getWorld().setThundering(true);
+		
 	}
 
 	public static void strikeLightning(Location loc, Player player, int amount,
 			double damageRadius, double damage) {
-		if(loc.getBlock().getType()==Material.AIR){
-			return;
-		}
+	
 		for (int c = 0; c < amount; c++) {
 			loc.getWorld().strikeLightning(loc);
 			Repeat.damage(WeaponListner.findEntity(loc, player, damageRadius),
