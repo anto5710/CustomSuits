@@ -14,9 +14,11 @@ import gmail.anto5710.mcp.customsuits.CustomSuits.suit.Cooldown;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.PlayerEffect;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.SchedulerHunger;
-import gmail.anto5710.mcp.customsuits.CustomSuits.suit.SuitUtils;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.WeaponListner;
+import gmail.anto5710.mcp.customsuits.Setting.PotionEffects;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
+import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
+import gmail.anto5710.mcp.customsuits.Utils.ThorUtils;
 
 import org.bukkit.Effect;
 import org.bukkit.Location;
@@ -61,7 +63,7 @@ public class Hammer implements Listener {
 	
 	static float Power = Values.HammerExplosionPower;
 	
-	ArrayList<Player>thor  = new ArrayList<>();
+	static ArrayList<Player>thor  = new ArrayList<>();
 
 	public Hammer(CustomSuitPlugin plugin) {
 		this.plugin = plugin;
@@ -75,89 +77,30 @@ public class Hammer implements Listener {
 			Location location = player.getLocation();
 
 			SuitUtils.playEffect(location, Effect.MAGIC_CRIT, 15, 0, 4);
-			PlayerEffect.addpotion(new PotionEffect(PotionEffectType.HEALTH_BOOST, 99999999, 20),player);
-			PlayerEffect.addpotion(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 99999999, 15),player);
-			PlayerEffect.addpotion(new PotionEffect(PotionEffectType.SPEED, 99999999, 5),player);
-			PlayerEffect.addpotion(new PotionEffect(PotionEffectType.JUMP, 99999999, 3),player);
-			PlayerEffect.addpotion(new PotionEffect(PotionEffectType.WATER_BREATHING, 99999999, 2),player);
-			PlayerEffect.addpotion(new PotionEffect(PotionEffectType.FAST_DIGGING, 99999999, 10),player);
-			PlayerEffect.addpotion(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 99999999, 10), player);
-			PlayerEffect.addpotion(new PotionEffect(PotionEffectType.REGENERATION, 99999999, 20),player);
+			PlayerEffect.addpotion(PotionEffects.Thor_FAST_DIGGING, player);
+			PlayerEffect.addpotion(PotionEffects.Thor_FIRE_RESISTANCE, player);
+			PlayerEffect.addpotion(PotionEffects.Thor_HEALTH_BOOST, player);
+			PlayerEffect.addpotion(PotionEffects.Thor_INCREASE_DAMAGE, player);
+			PlayerEffect.addpotion(PotionEffects.Thor_JUMP, player);
+			PlayerEffect.addpotion(PotionEffects.Thor_REGENERATION, player);
+			PlayerEffect.addpotion(PotionEffects.Thor_SPEED, player);
+			PlayerEffect.addpotion(PotionEffects.Thor_WATER_BREATHING, player);
 		}
 		else if(!CustomSuitPlugin.MarkEntity(player)){
-			removePotionEffect(PotionEffectType.HEALTH_BOOST,player);
-			removePotionEffect(PotionEffectType.INCREASE_DAMAGE,player);
-			removePotionEffect(PotionEffectType.SPEED,player);
-			removePotionEffect(PotionEffectType.FAST_DIGGING,player);
-		    removePotionEffect(PotionEffectType.JUMP,player);
-			removePotionEffect(PotionEffectType.WATER_BREATHING,player);
-			removePotionEffect(PotionEffectType.REGENERATION,player);
-			removePotionEffect(PotionEffectType.FIRE_RESISTANCE, player);
+			ThorUtils.removePotionEffect(PotionEffects.Thor_FAST_DIGGING, player);
+			ThorUtils.removePotionEffect(PotionEffects.Thor_FIRE_RESISTANCE, player);
+			ThorUtils.removePotionEffect(PotionEffects.Thor_HEALTH_BOOST, player);
+			ThorUtils.removePotionEffect(PotionEffects.Thor_INCREASE_DAMAGE, player);
+			ThorUtils.removePotionEffect(PotionEffects.Thor_JUMP, player);
+			ThorUtils.removePotionEffect(PotionEffects.Thor_REGENERATION, player);
+			ThorUtils.removePotionEffect(PotionEffects.Thor_SPEED, player);
+			ThorUtils.removePotionEffect(PotionEffects.Thor_WATER_BREATHING, player);
 		}
 	}
 	
 	
-	public void removePotionEffect(PotionEffectType PotionEffectType, Player player) {
-		if(player.hasPotionEffect(PotionEffectType)){
-			player.removePotionEffect(PotionEffectType);
-		}
-		
-	}
 
-	@EventHandler
-	public void ThrowHammer(PlayerInteractEvent event) {
-		Player player = event.getPlayer();
-		if (event.getAction() == Action.RIGHT_CLICK_AIR
-				|| event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-			if (SuitUtils.CheckItem(CustomSuitPlugin.Hammer,
-					player.getItemInHand())) {
-				if (Thor(player)) {
-					Item dropped = player.getWorld().dropItem(
-							player.getLocation(), player.getItemInHand());
-					if (player.getItemInHand().getAmount() == 1) {
-						player.getInventory().setItemInHand(
-								new ItemStack(Material.AIR, 1));
-					} else {
-
-						player.getInventory()
-								.getItemInHand()
-								.setAmount(
-										player.getItemInHand().getAmount() - 1);
-					}
-					player.updateInventory();
-					dropped.setFallDistance(0);
-
-					Location TargetLocation = SuitUtils.getTargetBlock(player,
-							500).getLocation();
-					Location loc = dropped.getLocation();
-					loc.setY(loc.getY() + 2);
-
-					double gravity = 0.0165959600149011612D;
-					dropped.teleport(loc);
-					org.bukkit.util.Vector v = SuitUtils.calculateVelocity(
-							loc.toVector(), TargetLocation.toVector(), gravity,
-							6);
-
-					dropped.setVelocity(v);
-
-					if (player.isSneaking()) {
-						playEffect(dropped, player, true);
-					} else {
-
-						playEffect(dropped, player, false);
-					}
-					player.playSound(player.getLocation(), Sound.ANVIL_LAND,
-							6.0F, 6.0F);
-					player.playSound(player.getLocation(), Sound.IRONGOLEM_HIT,
-							4.0F, 2.0F);
-				} else {
-					setThor(player);
-
-				}
-			}
-		}
-
-	}
+	
 	
 	@EventHandler
 	public void ItemRemovedCancel(ItemDespawnEvent event){
@@ -191,7 +134,7 @@ public class Hammer implements Listener {
 								.addPotionEffect(new PotionEffect(
 										PotionEffectType.WEAKNESS, 100, 100));
 					}
-					strikeLightning(entity.getLocation(), player, 10, 1.5, HammerDeafultDamage/10);
+					ThorUtils.strikeLightning(entity.getLocation(), player, 10, 1.5, HammerDeafultDamage/10);
 				}
 			}
 		}
@@ -208,53 +151,33 @@ public class Hammer implements Listener {
 				Location targetblock = SuitUtils.getTargetBlock(player, 300).getLocation();
 				SuitUtils.LineParticle(targetblock, player.getEyeLocation(), player, Effect.LAVA_POP, 20, 0, 2, HammerDeafultDamage, 2, true);
 				
-				strikeLightning(targetblock, player, 1, 2.5, HammerDeafultDamage);
+				ThorUtils.strikeLightning(targetblock, player, 1, 2.5, HammerDeafultDamage);
 				SuitUtils.createExplosion(targetblock, Power, false, true);
 				}
 			}
 		
 	}
-	
-	
 	@EventHandler
-	public void LightningDamagedThor(EntityDamageEvent event){
-		Entity entity = event.getEntity();
-		if(entity instanceof Player){
-			Player player = (Player) entity;
-			if(Thor(player)&&event.getCause()==DamageCause.LIGHTNING){
-				event.setCancelled(true);
-				
-			}
-		}
-	}
-	
-	@EventHandler
-	public void ExplosionRing(PlayerInteractEvent event) {
+	public void BackToThor(PlayerInteractEvent event){
 		Player player = event.getPlayer();
-		if (event.getAction() == Action.LEFT_CLICK_AIR
-				|| event.getAction() == Action.LEFT_CLICK_BLOCK) {
-			if (Thor(player)
-					&& SuitUtils.CheckItem(CustomSuitPlugin.Hammer,
-							player.getItemInHand()) && player.isSneaking()&&SchedulerHunger.hunger(player, Values.HammerExplosionRingHunger)) {
-				for (double count = 2; count < 50; count+=0.5) {
-					player.setNoDamageTicks(20);
-					getRing(count, player);
+		if(event.getAction()==Action.LEFT_CLICK_AIR||event.getAction() ==Action.LEFT_CLICK_BLOCK){
+			if(player.isSneaking()){
+				if(Repeat.listPlayer.containsValue(player)){
+					Item hammer =ThorUtils.getKey(Repeat.listPlayer , player);
+					if(Repeat.listTeleport.containsKey(hammer)){
+						Repeat.listTeleport.remove(hammer);
+					}
+					ItemStack HammerItem = hammer.getItemStack();
+					player.getInventory().addItem(HammerItem);
+					hammer.remove();
+					
 				}
 			}
 		}
 	}
 	
 	
-	public void playEffect(Item dropped, Player player, boolean isTeleport) {
-		Repeat.listPlayer.put(dropped, player);
-		Repeat.listTeleport.put(dropped, isTeleport);
-		if(!Repeat.isRunning(Repeat.taskID)){
-			BukkitTask task = new Repeat(plugin)
-			.runTaskTimer(plugin, 0, 10);
-		}
-			
-
-	}
+	
 	
 	public static boolean Thor(Player player) {
 		int count = 0;
@@ -281,25 +204,14 @@ public class Hammer implements Listener {
 
 	}
    
-	public void getRing(double radius, Player player) {
-		int points = 12; // amount of points to be generated
-		for (int i = 0; i < 360; i += 360 / points) {
-			double angle = (i * Math.PI / 180);
-			double x = radius * Math.cos(angle);
-			double z = radius * Math.sin(angle);
-			Location loc = player.getLocation().add(x, 1, z);
-			SuitUtils.createExplosion(loc, 6.5F, false, false);
-			Repeat.damage(WeaponListner.findEntity(loc, player, 5.5),
-					HammerDeafultDamage * 2, player);
-		}
-	}
+
 	@EventHandler
 	public void pickupHammer(PlayerPickupItemEvent event){
 		Item item = event.getItem();
 		Player player =event.getPlayer();
 		if(SuitUtils.CheckItem(CustomSuitPlugin.Hammer, item.getItemStack())){
 				if(Thor(player)){
-					Repeat.remove(item);
+					ThorUtils.remove(item);
 		
 				}else{
 					SuitUtils.playEffect(player.getEyeLocation(), Effect.STEP_SOUND, 5, Material.IRON_BLOCK.getId(), 2);
@@ -312,7 +224,7 @@ public class Hammer implements Listener {
 		}
 	}
 	
-	public void setThor(Player player) {
+	public static void setThor(Player player) {
 		if(thor.size()==0){
 			thor.add(player);
 		}
@@ -320,7 +232,7 @@ public class Hammer implements Listener {
 			return;
 		}
 			thor.add(player);
-		strikeLightning(player.getLocation(), player, 20, 0, HammerDeafultDamage);
+			ThorUtils.strikeLightning(player.getLocation(), player, 20, 0, HammerDeafultDamage);
 
 		SuitUtils.sleep(500);
 		
@@ -331,19 +243,11 @@ public class Hammer implements Listener {
 		player.getEquipment().setBoots(CustomSuitPlugin.Boots_Thor);
 		player.updateInventory();
 
-		player.playSound(player.getLocation(), Sound.ENDERMAN_STARE, 7.0F, 7.0F);
+		player.playSound(player.getLocation(), Values.ThorChangeSound, 7.0F, 7.0F);
 		player.getWorld().setStorm(true);
 		player.getWorld().setThundering(true);
 		
 	}
 
-	public static void strikeLightning(Location loc, Player player, int amount,
-			double damageRadius, double damage) {
 	
-		for (int c = 0; c < amount; c++) {
-			loc.getWorld().strikeLightning(loc);
-			Repeat.damage(WeaponListner.findEntity(loc, player, damageRadius),
-					damage, player);
-		}
-	}
 }

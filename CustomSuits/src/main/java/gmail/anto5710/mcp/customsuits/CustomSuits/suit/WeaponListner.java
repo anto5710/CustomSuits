@@ -1,6 +1,8 @@
 package gmail.anto5710.mcp.customsuits.CustomSuits.suit;
 
 import gmail.anto5710.mcp.customsuits.Setting.Values;
+import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
+import gmail.anto5710.mcp.customsuits.Utils.WeaponUtils;
 
 import java.awt.Color;
 import java.net.Proxy.Type;
@@ -64,16 +66,16 @@ public class WeaponListner implements Listener {
 	static int maxforsniper = Values.SnipeAmmoAmount;
 
 	static double damage = 0;
-	static double radius = 0;
+	public static double radius = 0;
 	static int amount = 0;
 	float power = 0;
 	static int effectradius = 0;
 
 	String regex = Values.regex;
 
-	CustomSuitPlugin plugin;
+	public static CustomSuitPlugin plugin;
 
-	private HashMap<Player, Boolean> charging = new HashMap<>();
+	public static HashMap<Player, Boolean> charging = new HashMap<>();
 	public static HashMap<Player, Boolean> cooldowns = new HashMap<>();
 
 	public WeaponListner(CustomSuitPlugin plugin) {
@@ -88,8 +90,8 @@ public class WeaponListner implements Listener {
 			if (CustomSuitPlugin.MarkEntity(player)) {
 
 				if (player.getItemInHand() != null) {
-					if (player.getItemInHand().getType() == Material.NETHER_STAR) {
-						if (SchedulerHunger.hunger(player, -18)) {
+					if (player.getItemInHand().getType() == Values.SuitLauncher) {
+						if (SchedulerHunger.hunger(player, Values.SuitShieldHunger)) {
 
 							player.setNoDamageTicks(200 * CustomSuitPlugin
 									.getLevel(player));
@@ -102,7 +104,7 @@ public class WeaponListner implements Listener {
 									+ ChatColor.AQUA + "No Damage Time for: "
 									+ ChatColor.DARK_AQUA + sec + " Seconds! ");
 
-							player.playSound(player.getLocation(), Sound.FUSE,
+							player.playSound(player.getLocation(), Values.SuitShieldSound,
 									2.0F, 2.0F);
 						} else {
 
@@ -123,7 +125,7 @@ public class WeaponListner implements Listener {
 				|| clickevent.getAction() == Action.RIGHT_CLICK_BLOCK) {
 			if (SuitUtils.CheckItem(CustomSuitPlugin.missileLauncher,
 					player.getItemInHand())) {
-				Material ammoMaterial = Material.FIREWORK_CHARGE;
+				Material ammoMaterial = Values.LauncherAmmo;
 
 				ItemStack ammo = new ItemStack(ammoMaterial, 1);
 				if (player.getInventory().contains(ammoMaterial, 1)) {
@@ -131,7 +133,7 @@ public class WeaponListner implements Listener {
 					player.updateInventory();
 
 					player.playSound(player.getLocation(),
-							Sound.FIREWORK_LAUNCH, 5.0F, 5.0F);
+						Values.LauncherSound, 5.0F, 5.0F);
 					fireball(player);
 				} else {
 					SuitUtils.Wrong(player, "Missile");
@@ -143,8 +145,7 @@ public class WeaponListner implements Listener {
 	}
 
 	private void fireball(Player player) {
-		Location targetloc = player.getTargetBlock((HashSet<Byte>) null, 10000)
-				.getLocation();
+		Location targetloc = SuitUtils.getTargetBlock(player, 10000).getLocation();
 		Location locationplayer = player.getLocation();
 		Vector vector = targetloc.toVector()
 				.subtract(locationplayer.toVector()).normalize().multiply(2);
@@ -179,7 +180,7 @@ public class WeaponListner implements Listener {
 
 	@EventHandler
 	public void onPlayerLeftClick(PlayerInteractEvent clickevent) {
-		Material nether_star = Material.NETHER_STAR;
+		Material launcher = Values.SuitLauncher;
 		if ((clickevent.getAction() == Action.LEFT_CLICK_AIR)
 				|| (clickevent.getAction() == Action.LEFT_CLICK_BLOCK)) {
 
@@ -192,7 +193,7 @@ public class WeaponListner implements Listener {
 			loc.setY(loc.getY() + 1.25D);
 
 			if (CustomSuitPlugin.MarkEntity(player)) {
-				if (player.getItemInHand().getType() == nether_star) {
+				if (player.getItemInHand().getType() == launcher) {
 					if (player.isSneaking()) {
 						energy = Values.MissileHunger;
 						sound = Values.MissileSound;
@@ -215,7 +216,7 @@ public class WeaponListner implements Listener {
 
 		Location loc = player.getEyeLocation();
 
-		Block targetblock = player.getTargetBlock((HashSet<Byte>) null, 500);
+		Block targetblock = SuitUtils.getTargetBlock(player, 500);
 		Location targetloc = targetblock.getLocation();
 
 		playEffect(targetloc, loc, player, true);
@@ -230,7 +231,7 @@ public class WeaponListner implements Listener {
 
 		setOption(isMissile, player);
 
-		damage = damage * (CustomSuitPlugin.getLevel(player) / 1 + 1);
+		damage = damage * (CustomSuitPlugin.getLevel(player)  + 1);
 
 		Effect effect = Effect.TILE_BREAK;
 		int data = Material.ANVIL.getId();
@@ -278,15 +279,7 @@ public class WeaponListner implements Listener {
 		}
 	}
 
-	/**
-	 * +--------------------
-	 * 
-	 * @param near
-	 * @param currentLoc
-	 * @param player
-	 * @param radius
-	 * @return
-	 */
+	
 
 	public static void breakblock(Block block) {
 		Material material = block.getType();
@@ -297,8 +290,7 @@ public class WeaponListner implements Listener {
 			block.breakNaturally();
 			SuitUtils.playEffect(block.getLocation(), Effect.TILE_BREAK, 50,
 					material.getId(), 10);
-			SuitUtils.playEffect(block.getLocation(), Effect.STEP_SOUND, 50,
-					material.getId(), 10);
+		
 		}
 	}
 
@@ -310,7 +302,7 @@ public class WeaponListner implements Listener {
 		for (Entity entity : near) {
 			if (entity instanceof Damageable && entity != player
 					&& entity != player.getVehicle()
-					&& distance(currentLoc, entity, radius)) {
+					&& SuitUtils.distance(currentLoc, entity, radius)) {
 				list.add(entity);
 
 			}
@@ -319,26 +311,7 @@ public class WeaponListner implements Listener {
 
 	}
 
-	public static void damageandeffect(Location currentLoc, double damage,
-			Player player, boolean isMissile) {
-		for (Entity entity : findEntity(currentLoc, player, radius)) {
 
-			if (player != entity && entity instanceof Damageable) {
-				Damageable damageable = (Damageable) entity;
-
-				if (!isMissile) {
-					if (currentLoc.distance(entity.getLocation()) <= 0.5) {
-						damage = damage * 2;
-						firework(currentLoc, player);
-					}
-				}
-				damageable.damage(damage);
-			}
-		}
-		/*
-		 * 1 d0.5
-		 */
-	}
 
 	public static void firework(Location location, Player player) {
 
@@ -352,22 +325,7 @@ public class WeaponListner implements Listener {
 
 	}
 
-	public static boolean distance(Location currentLoc, Entity e, double radius) {
-		Location entityLoc = e.getLocation();
-		double EntityX = entityLoc.getX();
-		double EntityY = entityLoc.getY();
-		double EntityZ = entityLoc.getZ();
-		double X = currentLoc.getX();
-		double Y = currentLoc.getY();
-		double Z = currentLoc.getZ();
 
-		if (X - radius <= EntityX && EntityX <= X + radius
-				&& Y - 1.5 <= EntityY && EntityY <= Y + 1.5
-				&& Z - radius <= EntityZ && EntityZ <= Z + radius) {
-			return true;
-		}
-		return false;
-	}
 
 	@EventHandler
 	public void charge(PlayerInteractEvent clickevent) {
@@ -378,7 +336,7 @@ public class WeaponListner implements Listener {
 				|| clickevent.getAction() == Action.RIGHT_CLICK_BLOCK) {
 			if (CustomSuitPlugin.MarkEntity(player)) {
 
-				if (checkgun(player, player.getItemInHand(), item)) {
+				if (WeaponUtils.checkgun(player, player.getItemInHand(), item)) {
 					String name = item.getItemMeta().getDisplayName();
 					String gunname = player.getItemInHand().getItemMeta()
 							.getDisplayName();
@@ -390,14 +348,14 @@ public class WeaponListner implements Listener {
 						int snipe = Integer.parseInt(names[2]);
 						if (cnt == 0 && !player.isSneaking()) {
 
-							int ammoamount = charge(player, names[0],
+							int ammoamount = WeaponUtils.charge(player, names[0],
 									Material.FLINT, maxformachine, cnt, snipe);
 							CustomSuitPlugin.SetDisplayName((names[0] + regex
 									+ ammoamount + regex + snipe),
 									player.getItemInHand());
 						}
 						if (snipe == 0 && player.isSneaking()) {
-							int ammoamount = charge(player, names[0],
+							int ammoamount = WeaponUtils.charge(player, names[0],
 									Material.GHAST_TEAR, maxforsniper, cnt,
 									snipe);
 
@@ -419,7 +377,7 @@ public class WeaponListner implements Listener {
 			Snowball snowball = (Snowball) damager;
 			Entity shooter = (Entity) snowball.getShooter();
 			if (shooter instanceof Player) {
-				if (checkgun(((Player) shooter),
+				if (WeaponUtils.checkgun(((Player) shooter),
 						((Player) shooter).getItemInHand(),
 						CustomSuitPlugin.gunitem)) {
 					event.setDamage(Values.MachineGunDamage);
@@ -439,7 +397,7 @@ public class WeaponListner implements Listener {
 				|| clickevent.getAction() == Action.RIGHT_CLICK_BLOCK) {
 			if (CustomSuitPlugin.MarkEntity(player)) {
 
-				if (checkgun(player, player.getItemInHand(), item)) {
+				if (WeaponUtils.checkgun(player, player.getItemInHand(), item)) {
 					String name = item.getItemMeta().getDisplayName();
 					String gunname = player.getItemInHand().getItemMeta()
 							.getDisplayName();
@@ -450,7 +408,7 @@ public class WeaponListner implements Listener {
 						int cnt = Integer.parseInt(names[1]);
 						int snipe = Integer.parseInt(names[2]);
 
-						if (!ischarging(player)) {
+						if (!WeaponUtils.ischarging(player)) {
 
 							Location targetloc = player.getTargetBlock(
 									(HashSet<Byte>) null, 10000).getLocation();
@@ -459,7 +417,7 @@ public class WeaponListner implements Listener {
 							if (!player.isSneaking()) {
 
 								cnt = Integer.parseInt(names[1]);
-								if (cnt != 0 && isCooldown(player) == false
+								if (cnt != 0 && WeaponUtils.isCooldown(player) == false
 										&& player.isSneaking() == false) {
 									for (int c = 0; c < 3; c++) {
 
@@ -502,11 +460,11 @@ public class WeaponListner implements Listener {
 
 							} else {
 								if (snipe != 0) {
-									if (!isCooldown(player)) {
+									if (!WeaponUtils.isCooldown(player)) {
 										if (player
 												.hasPotionEffect(PotionEffectType.SLOW) == false) {
 
-											setRandomLoc(targetloc, 6);
+											WeaponUtils.setRandomLoc(targetloc, 6);
 
 										}
 
@@ -525,7 +483,7 @@ public class WeaponListner implements Listener {
 
 										playEffect(targetloc, locationplayer,
 												player, false);
-										cooldown(2, player);
+										WeaponUtils.cooldown(2, player);
 
 										CustomSuitPlugin.SetDisplayName(
 												values[0] + regex + (cnt)
@@ -544,115 +502,6 @@ public class WeaponListner implements Listener {
 
 	}
 
-	public boolean checkgun(Player player, ItemStack checkitem, ItemStack same) {
-		if (player.getItemInHand().getType() == same.getType()) {
 
-			if (player.getItemInHand().getItemMeta().getDisplayName() != null
-					&& player.getItemInHand().getItemMeta().getDisplayName()
-							.contains(regex)) {
-
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private void setRandomLoc(Location loc, double a) {
-
-		double b = a / 2;
-		double random = (Math.random() * a) - b;
-
-		loc.setX(loc.getX() + random);
-		random = (Math.random() * a) - b;
-		loc.setY(loc.getY() + random);
-		random = (Math.random() * a) - b;
-		loc.setZ(loc.getZ() + random);
-	}
-
-	private int charge(Player player, String name, Material ammomat,
-			int amount, int cnt, int snipe) {
-
-		int ammoamount = 0;
-
-		ItemStack ammo = new ItemStack(ammomat, 1);
-		if (player.getInventory().contains(ammomat, 1)) {
-			charging.put(player, true);
-			for (int i = 0; i < amount; i++) {
-				if (player.getInventory().contains(ammomat, 1)) {
-
-					player.getInventory().removeItem(ammo);
-
-					ammoamount++;
-				}
-			}
-
-			player.updateInventory();
-
-			player.playSound(player.getLocation(), Sound.LEVEL_UP, 4.0F, 1.0F);
-			cooldown(2.0, player);
-			SuitUtils.sleep(2000);
-
-			player.playSound(player.getLocation(), Sound.ANVIL_LAND, 4.0F, 4.0F);
-			player.playSound(player.getLocation(), Sound.EXPLODE, 4.0F, 4.0F);
-			player.playSound(player.getLocation(), Sound.VILLAGER_HIT, 4.0F,
-					4.0F);
-			player.playSound(player.getLocation(), Sound.CLICK, 4.0F, 4.0F);
-			player.playSound(player.getLocation(), Sound.CREEPER_HISS, 4.0F,
-					4.0F);
-
-			cooldown(0.5, player);
-			SuitUtils.sleep(500);
-			player.playSound(player.getLocation(), Sound.IRONGOLEM_HIT, 4.0F,
-					4.0F);
-
-			player.playSound(player.getLocation(), Sound.DIG_WOOD, 15.0F, 3.5F);
-			player.playSound(player.getLocation(), Sound.DOOR_CLOSE, 4.0F, 2.5F);
-			player.playSound(player.getLocation(), Sound.DOOR_OPEN, 4.0F, 4.0F);
-			charging.put(player, false);
-
-		} else {
-			SuitUtils.Wrong(player, "Ammo");
-			player.playSound(player.getLocation(), Sound.NOTE_STICKS, 6.0F,
-					6.0F);
-		}
-		return ammoamount;
-	}
-
-	private boolean ischarging(Player player) {
-		if (!charging.containsKey(player)) {
-			return false;
-		} else {
-			if (charging.get(player) == false) {
-				return false;
-			}
-		}
-
-		return true;
-	}
-
-	private boolean isCooldown(Player player) {
-		if (cooldowns.containsKey(player)) {
-			if (cooldowns.get(player) == false) {
-				return false;
-			} else {
-				return true;
-			}
-		} else {
-
-			return false;
-		}
-	}
-
-	private void cooldown(double msec, Player player) {
-
-		// 1 tick = 0.05 sec
-		// 1 sec = 20 tick
-		long tick = (long) msec * 20;
-
-		WeaponListner.cooldowns.put(player, true);
-
-		BukkitTask task = new Cooldown(plugin, player).runTaskLater(plugin,
-				tick);
-	}
 
 }

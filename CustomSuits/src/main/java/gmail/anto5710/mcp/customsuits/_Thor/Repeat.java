@@ -6,8 +6,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
-import gmail.anto5710.mcp.customsuits.CustomSuits.suit.SuitUtils;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.WeaponListner;
+import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
+import gmail.anto5710.mcp.customsuits.Utils.ThorUtils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
@@ -32,8 +33,8 @@ public class Repeat extends BukkitRunnable {
 
 	static int taskID = 0;
 
-	static HashMap<Item, Player> listPlayer = new HashMap<>();
-	static HashMap<Item, Boolean> listTeleport = new HashMap<>();
+	public static HashMap<Item, Player> listPlayer = new HashMap<>();
+	public static HashMap<Item, Boolean> listTeleport = new HashMap<>();
 
 	public Repeat(JavaPlugin plugin) {
 		this.plugin = plugin;
@@ -83,10 +84,10 @@ public class Repeat extends BukkitRunnable {
 	
 	private void Run(Item item, Location loc, int TaskID, Player player,
 			boolean isTeleport) {
-		if (isFire(item)) {
+		if (ThorUtils.isFire(item)) {
 			player.getInventory().addItem(item.getItemStack());
 			item.remove();
-			remove(item);
+			ThorUtils.remove(item);
 
 		}
 
@@ -95,11 +96,11 @@ public class Repeat extends BukkitRunnable {
 		if (!isTeleport) {
 			SuitUtils.playEffect(loc, Effect.LAVA_POP, 55, 0, 4);
 			list = WeaponListner.findEntity(loc, player, 4);
-			damage(list, 40, player);
+			ThorUtils.damage(list, 40, player);
 		} else {
 			SuitUtils.playEffect(loc, Effect.PORTAL, 55, 0, 4);
 		}
-		if (isOnGround(item)) {
+		if (ThorUtils.isOnGround(item)) {
 			if (!isTeleport) {
 				SuitUtils.playEffect(loc, Effect.ENDER_SIGNAL, 30, 0, 5);
 				item.getWorld().strikeLightning(item.getLocation());
@@ -108,78 +109,25 @@ public class Repeat extends BukkitRunnable {
 
 				list = WeaponListner.findEntity(loc, player, 4);
 
-				damage(list, 80, player);
+				ThorUtils.damage(list, 80, player);
 				SuitUtils.createExplosion(loc, 6F, false, true);
-				remove(item);
+				ThorUtils.remove(item);
 			} else {
 				player.teleport(loc);
 				item.getWorld().strikeLightning(item.getLocation());
 				player.getInventory().addItem(item.getItemStack());
 				item.remove();
-				Hammer.strikeLightning(loc, player, 20,1.5,Hammer
+				ThorUtils.strikeLightning(loc, player, 20,1.5,Hammer
 						.HammerDeafultDamage);
-				remove(item);
+				ThorUtils.remove(item);
 			}
 
 		}
 	}
 
-	private boolean isFire(Item item) {
-	if	((item.getFireTicks() == -1 || item.getFireTicks() == 0) == false){
-		return false;
-	}
-		return false;
-	}
 
-	private boolean isOnGround(Item item) {
-		if(item.isOnGround()){
-			return true;
-		}
-		Location location = item.getLocation();
-		double Y = location.getY()-1;
-		
-			Block block = new Location(location.getWorld(), location.getX(), Y, location.getZ()).getBlock();
-			Material matareial = block.getType();
-			if(matareial!=Material.AIR&&matareial !=Material.WATER){
-				return true;
-			}
-		
-		
-		return false;
-	}
 
-	public static void remove(Item item) {
-		
-		if (listPlayer.containsKey(item)) {
-			listPlayer.remove(item);
-		}
-		if (listTeleport.containsKey(item)) {
-			listTeleport.remove(item);
-		}
-
-	}
-
-	public static void cancel(int taskId) {
-
-		BukkitScheduler scheduler = Bukkit.getScheduler();
-
-		scheduler.cancelTask(taskId);
-
-	}
-
-	public static void damage(java.util.List<Entity> list, double damage,
-			Player player) {
-		if (list.contains(player)) {
-			list.remove(player);
-		}
-		for (Entity e : list) {
-			if (e instanceof Damageable) {
-				((Damageable) e).damage(damage);
-
-			}
-		}
-
-	}
+	
 
 	
 }

@@ -1,4 +1,6 @@
-package gmail.anto5710.mcp.customsuits.CustomSuits.suit;
+package gmail.anto5710.mcp.customsuits.Utils;
+
+import gmail.anto5710.mcp.customsuits.CustomSuits.suit.WeaponListner;
 
 import java.util.HashSet;
 import java.util.Random;
@@ -13,6 +15,7 @@ import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Ambient;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -49,7 +52,7 @@ public class SuitUtils {
 		
 					playEffect(currentLoc, effect, amount, data, effectradius);
 
-			WeaponListner
+		WeaponUtils
 					.damageandeffect(currentLoc, damage, player, isMissile);
 			
 
@@ -117,7 +120,22 @@ public class SuitUtils {
         double dz = to.getBlockZ() - from.getBlockZ();
         return dx * dx + dz * dz;
     }
- 
+	public static boolean distance(Location currentLoc, Entity e, double radius) {
+		Location entityLoc = e.getLocation();
+		double EntityX = entityLoc.getX();
+		double EntityY = entityLoc.getY();
+		double EntityZ = entityLoc.getZ();
+		double X = currentLoc.getX();
+		double Y = currentLoc.getY();
+		double Z = currentLoc.getZ();
+
+		if (X - radius <= EntityX && EntityX <= X + radius
+				&& Y - 1.5 <= EntityY && EntityY <= Y + 1.5
+				&& Z - radius <= EntityZ && EntityZ <= Z + radius) {
+			return true;
+		}
+		return false;
+	}
 	public static void createExplosion(Location location, float power , boolean setFire , boolean BlockBreak ){
 		
 		double x = location.getX();
