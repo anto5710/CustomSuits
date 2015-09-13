@@ -7,7 +7,7 @@ auther: §b[anto5710]
 commands:
     cspn:
         description: §bSpawn a suit.
-        usage: "§4[Usage]: §c/cspn [Type] [TargetPlayer] [Amount]" 
+        usage: "§4[Usage]: §c/cspn [Type / [VehicleType + : + Amount]] [TargetPlayer] [Amount]" 
     csuit:
         description: §bSummon nearest suit.
         usage: "§4[Usage]: §c/csuit"
