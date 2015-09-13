@@ -148,7 +148,6 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 	static HashMap<Player, Inventory> equipment = new HashMap<>();
 	static HashMap<Player, Inventory> armorequipment = new HashMap<>();
 	
-	static HashMap<Player, Inventory> Vehicleequipment = new HashMap<>();
 	
 
 	static List<Player> onlinesplayer;
