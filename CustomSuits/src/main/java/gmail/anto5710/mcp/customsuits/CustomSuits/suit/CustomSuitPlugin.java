@@ -22,6 +22,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.crypto.AEADBadTagException;
+import javax.print.attribute.standard.MediaSize.NA;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -33,6 +34,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Server;
 import org.bukkit.Sound;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -63,6 +65,7 @@ import org.bukkit.entity.Skeleton;
 import org.bukkit.entity.Slime;
 import org.bukkit.entity.Snowman;
 import org.bukkit.entity.Squid;
+import org.bukkit.entity.Vehicle;
 import org.bukkit.entity.Witch;
 import org.bukkit.entity.Wither;
 import org.bukkit.entity.Wolf;
@@ -133,6 +136,8 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 			"[Leggings]");
 	static Inventory handinventory = Bukkit.createInventory(null, 9, "[Hand]");
 
+	
+	
 	private static SpawningDao dao;
 	static HashMap<Player, Inventory> handequipment = new HashMap<>();
 	static HashMap<Player, Inventory> chestequipment = new HashMap<>();
@@ -142,6 +147,9 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 
 	static HashMap<Player, Inventory> equipment = new HashMap<>();
 	static HashMap<Player, Inventory> armorequipment = new HashMap<>();
+	
+	static HashMap<Player, Inventory> Vehicleequipment = new HashMap<>();
+	
 
 	static List<Player> onlinesplayer;
 
@@ -158,6 +166,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 	public static ItemStack Leggings_Thor = new ItemStack(Material.LEATHER_LEGGINGS);
 	
 	public static ItemStack Boots_Thor = new ItemStack(Material.IRON_BOOTS);
+	
 
 	@Override
 	public void onLoad() {
@@ -177,6 +186,9 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 
 		ItemStack command = new ItemStack(Material.REDSTONE_COMPARATOR);
 		SetDisplayName(ChatColor.RED + "[Command]", command);
+		
+		ItemStack vehiclearmor = new ItemStack(Material.SADDLE);
+		SetDisplayName(ChatColor.DARK_AQUA+"[Vehicle Armor]",vehiclearmor);
 
 		Enchant.enchantment(Hammer, Enchantment.DAMAGE_ALL, 30, true);
 		Enchant.enchantment(Hammer, Enchantment.DURABILITY, 10, true);
@@ -514,15 +526,20 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 
 				String entityName = args[0];
 				String targetPlayerName = args[1];
-				int creatureCnt = Integer.parseInt(args[2]);
+				int creatureCnt = 0;
+				try {
+					 creatureCnt = Integer.parseInt(args[2]);
+				} catch (NumberFormatException e) {
+					
+				}
+				
 				spawnentity(entityName, creatureCnt, spnSender,
 						targetPlayerName);
 				Inventory inventory = CustomSuitPlugin.inventory;
 				
 				spnSender.openInventory(inventory);
 
-				// args[0] : <종류>
-				// args[1] : <targetID>
+				
 				}
 			}
 			else {
@@ -603,12 +620,35 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 
 	private void spawnentity(String entityName, int creatureCnt,
 			Player spnSender, String targetPlayerName) {
-		if( !entityMap.containsKey(entityName.toLowerCase())){
-			SuitUtils.Warn(spnSender, "Can't find that EntityType,   use '/clist entity'  to get list of EntityType");
+		String VehicleName = "";
+		String EntityName = "";
+		int vehicleCount = 1;
+		String[]Names = null;
+		if(entityName.contains(":")){
+			Names = entityName.split(":");
+			entityName = Names[0].toLowerCase();
+			if(Names.length ==2||Names.length ==3){
+				VehicleName = Names[1].toLowerCase();
+				if(!entityMap.containsKey(VehicleName)){
+					SuitUtils.Warn(spnSender, Values.CantFindEntityType);
+					return;
+				}
+				if(Names.length==3){
+					try {
+						 vehicleCount = Integer.parseInt(Names[2]);
+					} catch (NumberFormatException e) {
+					
+					}
+					 
+				}
+			}
+			
+		}
+		if( !entityMap.containsKey(entityName)){
+			SuitUtils.Warn(spnSender, Values.CantFindEntityType);
 			return;
 		}
-		// args[2] : 수량
-		// args[3] : <종류>의 색상
+		
 
 		int height = 1;
 		int width = 1;
@@ -649,6 +689,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 								if (spnSender.getInventory().contains(type, 1)) {
 
 									Class<Entity> entityClass = loadEntityClass(entityName);
+									Class<Entity> vehicleClass = loadEntityClass(VehicleName);
 									Location loc = spnSender.getLocation();
 
 									this.logger.info("entity class: "
@@ -663,7 +704,6 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 													loc.getZ() - (height / 2)
 															+ ccnt),
 													entityClass);
-
 									int entityID = spawnedEntity.getEntityId();
 									logger.info("ENTITY ID: " + entityID
 											+ " by " + spnSender.getName()
@@ -672,69 +712,27 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 									if(spawnedEntity instanceof Creature){
 										((Creature) spawnedEntity).setTarget(targetPlayer);
 										}
-									
 
 									dao.saveEntity(spawnedEntity, spnSender);
+									
+									
+									
 									spnSender.getInventory().removeItem(
 											material);
 									spnSender.updateInventory();
 									spnSender.playSound(loc, Sound.ANVIL_USE,
 											1.5F, 1.5F);
-									LivingEntity livingentity = (LivingEntity) spawnedEntity;
-									livingentity.setRemoveWhenFarAway(false);
-									addPotionEffects(
-											livingentity,
-											new PotionEffect[] {
-													new PotionEffect(
-															PotionEffectType.FIRE_RESISTANCE,
-															999999990, 10),
-													new PotionEffect(
-															PotionEffectType.FIRE_RESISTANCE,
-															999999990, 10),
-													new PotionEffect(
-															PotionEffectType.ABSORPTION,
-															999999990, 10),
-													new PotionEffect(
-															PotionEffectType.HEALTH_BOOST,
-															999999990, 10),
-													new PotionEffect(
-															PotionEffectType.INCREASE_DAMAGE,
-															999999990, 10),
-													new PotionEffect(
-															PotionEffectType.SPEED,
-															999999990, 10),
-													new PotionEffect(
-															PotionEffectType.WATER_BREATHING,
-															999999990, 10) });
-									if (livingentity.getType() == EntityType.SKELETON
-											|| livingentity.getType() == EntityType.ZOMBIE
-											|| livingentity.getType() == EntityType.PIG_ZOMBIE) {
-										setEquipment(targetPlayer,
-												armorequipment.get(spnSender),
-												spnSender, livingentity,
-												entityName);
-									} 
-									
-									 if (livingentity instanceof Enderman) {
-										 setMaterialForEnderMan((Enderman) livingentity,Material.TNT);
+									if(spawnedEntity instanceof LivingEntity){
+									EntityAddData((LivingEntity)spawnedEntity, spnSender, targetPlayer, EntityName);
 									}
-									 if(livingentity instanceof Horse){
-										 setHorseData((Horse)livingentity, entityName, spnSender , true );
-									 }
-									 
-									if (livingentity instanceof Wolf) {
-										
-										((Wolf)livingentity).setAngry(true);
+									if(VehicleName!=""){
+										if(vehicleCount==1||Names.length==2){
+											Entity Vehicle = spawnedEntity.getWorld().spawn(spawnedEntity.getLocation(), vehicleClass);
+											setVehicleData(spawnedEntity, Vehicle, spnSender, targetPlayer, EntityName);
+										}else if(vehicleCount>1){
+										CreateVehicles      ( spnSender ,targetPlayer, spawnedEntity , spnSender.getWorld().spawn(spawnedEntity.getLocation(), vehicleClass) ,VehicleName,vehicleCount );
+										}
 									}
-									if (livingentity instanceof IronGolem) {
-										
-										((IronGolem)livingentity).setPlayerCreated(false);
-									}
-									if (livingentity instanceof Creeper) {
-										((Creeper) livingentity).setPowered(true);;
-										
-									}
-
 								} else {
 									
 									SuitUtils.Wrong(spnSender, "Material");
@@ -749,6 +747,95 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		}
 	
 
+	}
+
+	private void CreateVehicles(Player spnSender,Player targetPlayer, Entity spawnedEntity,
+			Entity Vehicle, String EntityName, int vehicleCount) {
+		
+		
+		for(int c= 0; c<vehicleCount ; c++){
+			setVehicleData(spawnedEntity, Vehicle, spnSender, targetPlayer, EntityName);
+
+			spawnedEntity =Vehicle;
+			Location loc = spawnedEntity.getLocation();
+		
+			Vehicle = spawnedEntity.getWorld().spawn(loc,spawnedEntity.getClass() );
+		
+	
+		}
+		
+	}
+
+	private void setVehicleData(Entity spawnedEntity,Entity Vehicle, Player spnSender , Player targetPlayer , String EntityName) {
+		dao.saveEntity(Vehicle, spnSender);
+		if(Vehicle instanceof LivingEntity){
+			EntityAddData((LivingEntity)Vehicle, spnSender, targetPlayer, EntityName);
+		}
+		
+		if(Vehicle instanceof Creature){
+		((Creature) spawnedEntity).setTarget(targetPlayer);
+		}
+		Vehicle.setPassenger(spawnedEntity);
+		
+		
+	}
+
+	private void EntityAddData(LivingEntity livingentity , Player spnSender ,Player targetPlayer, String entityName) {
+	
+		livingentity.setRemoveWhenFarAway(false);
+		addPotionEffects(
+				livingentity,
+				new PotionEffect[] {
+						new PotionEffect(
+								PotionEffectType.FIRE_RESISTANCE,
+								999999990, 10),
+						new PotionEffect(
+								PotionEffectType.FIRE_RESISTANCE,
+								999999990, 10),
+						new PotionEffect(
+								PotionEffectType.ABSORPTION,
+								999999990, 10),
+						new PotionEffect(
+								PotionEffectType.HEALTH_BOOST,
+								999999990, 10),
+						new PotionEffect(
+								PotionEffectType.INCREASE_DAMAGE,
+								999999990, 10),
+						new PotionEffect(
+								PotionEffectType.SPEED,
+								999999990, 10),
+						new PotionEffect(
+								PotionEffectType.WATER_BREATHING,
+								999999990, 10) });
+		if (livingentity.getType() == EntityType.SKELETON
+				|| livingentity.getType() == EntityType.ZOMBIE
+				|| livingentity.getType() == EntityType.PIG_ZOMBIE) {
+			setEquipment(spnSender,
+					armorequipment.get(spnSender),
+					spnSender, livingentity,
+					entityName);
+		} 
+		
+		 if (livingentity instanceof Enderman) {
+			 setMaterialForEnderMan((Enderman) livingentity,Material.TNT);
+		}
+		 if(livingentity instanceof Horse){
+			 setHorseData((Horse)livingentity, entityName, spnSender , true );
+		 }
+		 
+		if (livingentity instanceof Wolf) {
+			
+			((Wolf)livingentity).setAngry(true);
+		}
+		if (livingentity instanceof IronGolem) {
+			
+			((IronGolem)livingentity).setPlayerCreated(false);
+		}
+		if (livingentity instanceof Creeper) {
+			((Creeper) livingentity).setPowered(true);;
+			
+		}
+		
 	}
 
 	private void setHorseData(Horse horse, String entityName , Player spnSender, boolean isAdult ) {
@@ -798,7 +885,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		
 	}
 
-	private void setEquipment(Player targetPlayer, Inventory inventoryitem,
+	private void setEquipment(Player Player, Inventory inventoryitem,
 			Player player, LivingEntity spawnedEntity, String entityName) {
 
 
@@ -809,7 +896,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 
 		livingEntity.setHealth(livingEntity.getMaxHealth());
 
-		livingEntity.setCustomName(targetPlayer.getName() + "|" + "Mark");
+		livingEntity.setCustomName(Player.getName() + "|" + "Mark");
 		ItemStack itemForCreature = createItemForCreature(livingEntity);
 		livingEntity.getEquipment().setItemInHand(itemForCreature);
 
@@ -934,26 +1021,13 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 			item = new ItemStack(Material.TNT);
 		} else {
 			item = new ItemStack(Material.NETHER_STAR);
-			// c.getEquipment().setItemInHand( new
-			// ItemStack(Material.DIAMOND_BLOCK));
+			
 
 		}
 		return item;
 	}
 
-	/**
-	 * 주어진 숫자가 솟수(prime number)인지를 판단합니다. 몹을 생성할 때 수량이 소수이면 일자로 생성합니다. 그 밖에는
-	 * 1이외의 가장 작은 약수와 , 전체/가장 작은 약수 를 가로, 세로로 직사각형 모양으로 소환합니다.
-	 * 
-	 * ex) 16 Z
-	 * 
-	 * 
-	 * +----------------------> X | **** | **** | *P** | | | | v Z X
-	 * +++++++++++++++++ X Z
-	 * 
-	 * @param spcnt
-	 * @return
-	 */
+	
 	private boolean isprime(int spcnt) {
 		boolean returna = true;
 		if (spcnt == 1) {
@@ -980,13 +1054,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 
 	}
 
-	private Color chooseColor(String colorName) {
-		Color color = colorMap.get(colorName.toLowerCase());
-		if (color == null) {
-			logger.info("color가 없다: " + colorName);
-		}
-		return color;
-	}
+	
 
 	public static void addPotionEffects(LivingEntity ett, PotionEffect... effects) {
 		PotionEffect[] arrayOfPotionEffect;
@@ -1027,45 +1095,40 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 					double dz = (difference.getZ() / distance) * 0.5;
 					for (int i = 0; i <=distance; i++) {
 						currentLoc.add(dx , dy , dz);
+						
 						entity.teleport(currentLoc);
 
 						entity.getWorld().playEffect(currentLoc, Effect.MOBSPAWNER_FLAMES, 0,
 								50);
-						sleep(100);
+						
+						
 
 					}
 
-					ItemStack h = liveentity.getEquipment().getHelmet();
-					ItemStack ch = liveentity.getEquipment().getChestplate();
+					ItemStack helmet = liveentity.getEquipment().getHelmet();
+					ItemStack chestplate = liveentity.getEquipment().getChestplate();
 
 					if (MarkEntity(liveentity)
 							&& dao.isCreatedBy(liveentity, player)) {
+						Location location = player.getLocation();
 						if (liveentity.getEquipment().getHelmet() != null) {
 
-							player.getEquipment().setHelmet(h);
+							player.getEquipment().setHelmet(helmet);
 							player.playSound(player.getLocation(),
 									Sound.ANVIL_LAND, 9.0F, 9.0F);
 							player.playSound(player.getLocation(),
 									Sound.VILLAGER_HIT, 9.0F, 9.0F);
-							player.getWorld()
-									
-									.playEffect(player.getLocation(),
-											Effect.TILE_BREAK,
-											Material.COBBLESTONE.getId(),200);
+							SuitUtils.playEffect(location, Values.SuitGetEffect, 20, Values.SuitGetEffectData, 5);
 							sleep(500);
 						}
 						if (liveentity.getEquipment().getChestplate() != null) {
 
-							player.getEquipment().setChestplate(ch);
+							player.getEquipment().setChestplate(chestplate);
 							player.playSound(player.getLocation(),
 									Sound.ANVIL_LAND, 9.0F, 9.0F);
 							player.playSound(player.getLocation(),
 									Sound.VILLAGER_HIT, 9.0F, 9.0F);
-							player.getWorld()
-									
-									.playEffect(player.getLocation(),
-											Effect.TILE_BREAK,
-											Material.COBBLESTONE.getId(), 200);
+							SuitUtils.playEffect(location, Values.SuitGetEffect, 20, Values.SuitGetEffectData, 5);
 							sleep(200);
 						}
 						if (liveentity.getEquipment().getLeggings() != null) {
@@ -1077,11 +1140,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 									Sound.ANVIL_LAND, 9.0F, 9.0F);
 							player.playSound(player.getLocation(),
 									Sound.VILLAGER_HIT, 9.0F, 9.0F);
-							player.getWorld()
-									
-									.playEffect(player.getLocation(),
-											Effect.TILE_BREAK,
-											Material.COBBLESTONE.getId(),  200);
+							SuitUtils.playEffect(location, Values.SuitGetEffect, 20, Values.SuitGetEffectData, 5);
 							sleep(400);
 						}
 						if (liveentity.getEquipment().getBoots() != null) {
@@ -1092,19 +1151,13 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 									Sound.ANVIL_LAND, 9.0F, 9.0F);
 							player.playSound(player.getLocation(),
 									Sound.VILLAGER_HIT, 9.0F, 9.0F);
-							player.getWorld()
-									
-									.playEffect(player.getLocation(),
-											Effect.TILE_BREAK,
-											Material.COBBLESTONE.getId(),
-										 200);
+							SuitUtils.playEffect(location, Values.SuitGetEffect, 20, Values.SuitGetEffectData, 5);
 						}
 
 						liveentity.damage(1000000.0D);
 						player.playSound(player.getLocation(),
 								Sound.ENDERDRAGON_DEATH, 9.0F, 9.0F);
-						player.sendMessage(ChatColor.BLUE + "[Info]: "
-								+ ChatColor.AQUA + "You called an armor");
+						player.sendMessage(Values.SuitCallMessage);
 						player.updateInventory();
 					}
 				}
@@ -1144,21 +1197,21 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 
 	}
 
-	private static Entity returnEntity(List<Entity> near, Player player) {
+	private static Entity returnEntity(List<Entity> ListEntity, Player player) {
 		
 		Entity entity = null;
 		Location location = player.getLocation();
 		double distance = 1000;
-		for (Entity e : near) {
-			if (e.getLocation().distance(location) < distance
-					&& e.getType() != EntityType.PLAYER) {
-				if (e.getType() == EntityType.PIG_ZOMBIE
-						|| e.getType() == EntityType.SKELETON) {
-					LivingEntity le = (LivingEntity) e;
-					if (dao.isCreatedBy(e, player)) {
+		for (Entity Entity : ListEntity) {
+			if (Entity.getLocation().distance(location) < distance
+					&& Entity.getType() != EntityType.PLAYER) {
+				if (Entity.getType() == EntityType.PIG_ZOMBIE
+						|| Entity.getType() == EntityType.SKELETON) {
+					
+					if (dao.isCreatedBy(Entity, player)) {
 
-						distance = e.getLocation().distance(location);
-						entity = e;
+						distance = Entity.getLocation().distance(location);
+						entity = Entity;
 					}
 				}
 			}

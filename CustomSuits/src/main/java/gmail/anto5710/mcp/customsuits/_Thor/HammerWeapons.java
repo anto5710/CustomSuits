@@ -79,17 +79,7 @@ public class HammerWeapons implements Listener{
 		}
 
 	}
-	@EventHandler
-	public void LightningDamagedThor(EntityDamageEvent event){
-		Entity entity = event.getEntity();
-		if(entity instanceof Player){
-			Player player = (Player) entity;
-			if(Hammer.Thor(player)&&event.getCause()==DamageCause.LIGHTNING){
-				event.setCancelled(true);
-				
-			}
-		}
-	}
+	
 	
 	@EventHandler
 	public void ExplosionRing(PlayerInteractEvent event) {
@@ -101,7 +91,7 @@ public class HammerWeapons implements Listener{
 							player.getItemInHand()) && player.isSneaking()&&SchedulerHunger.hunger(player, Values.HammerExplosionRingHunger)) {
 				for (double count = 2; count < 50; count+=0.5) {
 					player.setNoDamageTicks(20);
-					ThorUtils.getRing(6, player, 6.5F, Hammer.HammerDeafultDamage*2, false, false);
+					ThorUtils.getRing(6, player, Values.HammerExplosionPower, Values.HammerExplosionRing, false, false);
 				}
 			}
 		}

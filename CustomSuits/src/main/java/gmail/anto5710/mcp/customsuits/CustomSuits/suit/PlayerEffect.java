@@ -138,10 +138,10 @@ public class PlayerEffect implements Listener {
 			}
 			if (m) {
 
-				SuitUtils.playEffect(baseLocation, Effect.MOBSPAWNER_FLAMES, 3,
+				SuitUtils.playEffect(baseLocation, Values.SuitDefaultFlyEffect, 3,
 						0, 40);
 			} else {
-				SuitUtils.playEffect(baseLocation, Effect.TILE_BREAK, 3,
+				SuitUtils.playEffect(baseLocation, Values.SuitOnGroundEffect, 3,
 						material.getId(), 40);
 			}
 
@@ -196,7 +196,7 @@ public class PlayerEffect implements Listener {
 				player.updateInventory();
 				
 
-				SuitUtils.playEffect(player.getEyeLocation(), Effect.TILE_BREAK, 30, Material.COBBLESTONE.getId(), 5);
+				SuitUtils.playEffect(player.getEyeLocation(), Values.SuitGetEffect, 30, Values.SuitGetEffectData, 5);
 
 				player.playSound(player.getLocation(), Values.SuitSound,
 						9.0F, 9.0F);
@@ -242,7 +242,7 @@ public class PlayerEffect implements Listener {
 	}
 
 	@EventHandler
-	public void suit(PlayerToggleSneakEvent p) {
+	public void onPlayerSneak(PlayerToggleSneakEvent p) {
 		Player player = p.getPlayer();
 
 		if (CustomSuitPlugin.MarkEntity(player)) {
@@ -265,7 +265,7 @@ public class PlayerEffect implements Listener {
 
 				hungerscheduler.addFlyingPlayer(player);
 
-				player.playSound(player.getLocation(), Sound.WITHER_SPAWN,
+				player.playSound(player.getLocation(), Values.SuitSneakSound,
 						1.0F, 1.0F);
 			}
 		}

@@ -243,6 +243,17 @@ public class Hammer implements Listener {
 				}
 		}
 	}
+	@EventHandler
+	public void LightningDamagedThor(EntityDamageEvent event){
+		Entity entity = event.getEntity();
+		if(entity instanceof Player){
+			Player player = (Player) entity;
+			if(Hammer.Thor(player)&&event.getCause()==DamageCause.LIGHTNING){
+				event.setCancelled(true);
+				
+			}
+		}
+	}
 	
 	public static void setThor(Player player) {
 		if(thor.size()==0){

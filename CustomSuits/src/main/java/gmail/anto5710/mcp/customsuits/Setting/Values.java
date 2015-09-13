@@ -41,7 +41,19 @@ public class Values {
 	final public static Sound HammerTeleportSound = Sound.ENDERMAN_TELEPORT;
 	
 	final public static Material SuitLauncher = Material.NETHER_STAR;
+	
+	final public static Effect SuitDefaultFlyEffect = Effect.MOBSPAWNER_FLAMES;
+	final public static Effect SuitOnGroundEffect = Effect.TILE_BREAK;
+	
+	final public static Effect SuitGetEffect = Effect.TILE_BREAK;
+	final public static int SuitGetEffectData = Material.COBBLESTONE.getId();
+	
 	final public static Sound SuitSound = Sound.ENDERDRAGON_DEATH;
+	final public static Sound SuitSneakSound = Sound.WITHER_SPAWN;
+	final public static String SuitCallMessage =ChatColor.BLUE + "[Info]: "
+			+ ChatColor.AQUA + "You called an armor";
+	final public static String CantFindEntityType = "Can't find that EntityType,   use '/clist entity'  to get list of EntityType";
+	
 	final public static String ZoomOnMessage = ChatColor.BLUE + "[Info]: "
 			+ ChatColor.AQUA + "Zoom in ("
 			+ ChatColor.RED + "On" + ChatColor.AQUA
@@ -52,6 +64,9 @@ public class Values {
 			+ ")";
 	final public static String NoSuchEntity =ChatColor.BLUE + "[Info]: "
 			+ ChatColor.AQUA + "No such entity";
+	final public static int SuitFlyDisableWhen = 2;
+	final public static int SuitEnoughFly = 10;
+	final public static String FlyEnergyWarn ="FlySpeed Decreasing";
 	
 	final public static double SniperDamage =30 ;
 	final public static double SniperRadius = 0.75;

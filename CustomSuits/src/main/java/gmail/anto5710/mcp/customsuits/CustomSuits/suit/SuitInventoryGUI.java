@@ -270,6 +270,7 @@ public class SuitInventoryGUI implements Listener {
 						CustomSuitPlugin.armorequipment.get(e.getWhoClicked()));
 				e.setCancelled(true);
 			}
+			
 
 		}
 	}

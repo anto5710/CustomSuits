@@ -1,5 +1,6 @@
 package gmail.anto5710.mcp.customsuits.CustomSuits.suit;
 
+import gmail.anto5710.mcp.customsuits.Setting.Values;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 import gmail.anto5710.mcp.customsuits.Utils.ThorUtils;
 import gmail.anto5710.mcp.customsuits._Thor.Repeat;
@@ -90,19 +91,19 @@ public class SchedulerHunger extends BukkitRunnable {
 				
 
 				float speed = (float) (player.getFoodLevel() / 20.0D);
-				if (!hunger(player, -2)) {
+				if (!hunger(player, -Values.SuitFlyDisableWhen)) {
 					
 					player.setFlying(false);
 					player.setAllowFlight(false);
 				} else {
 					player.setFlySpeed(speed);
 				}
-				if (player.getFoodLevel() < 10) {
+				if (player.getFoodLevel() < Values.SuitEnoughFly) {
 					
 					
-					SuitUtils.Wrong(player, "Fly Energy");
+					SuitUtils.Warn(player, Values.FlyEnergyWarn);
 				}
-				if (player.getFoodLevel() <= 2) {
+				if (player.getFoodLevel() <= Values.SuitFlyDisableWhen) {
 					SuitUtils.Wrong(player, "Fly Energy");
 					
 					player.setFlying(false);
@@ -124,30 +125,30 @@ public class SchedulerHunger extends BukkitRunnable {
 	private void repairarmor(Player p) {
 		if (p.getEquipment().getHelmet() != null) {
 
-			short h = p.getEquipment().getHelmet().getDurability();
-			if(h!=0){
-			p.getEquipment().getHelmet().setDurability((short) (h - 1));
+			short HelemtDurability = p.getEquipment().getHelmet().getDurability();
+			if(HelemtDurability!=0){
+			p.getEquipment().getHelmet().setDurability((short) (HelemtDurability - 1));
 			}
 			
 		}
 		if (p.getEquipment().getChestplate() != null) {
-			short c = p.getEquipment().getChestplate().getDurability();
-			if(c!=0){
-			p.getEquipment().getChestplate().setDurability((short) (c - 1));
+			short ChestplateDurability = p.getEquipment().getChestplate().getDurability();
+			if(ChestplateDurability!=0){
+			p.getEquipment().getChestplate().setDurability((short) (ChestplateDurability - 1));
 			}
 
 		}
 		if (p.getEquipment().getLeggings() != null) {
 
-			short l = p.getEquipment().getLeggings().getDurability();
-			if(l!=0){
-			p.getEquipment().getLeggings().setDurability((short) (l - 1));
+			short leggingsDurability = p.getEquipment().getLeggings().getDurability();
+			if(leggingsDurability!=0){
+			p.getEquipment().getLeggings().setDurability((short) (leggingsDurability - 1));
 			}
 		}
 		if (p.getEquipment().getBoots() != null) {
-			short b = p.getEquipment().getBoots().getDurability();
-			if(b!=0){
-			p.getEquipment().getBoots().setDurability((short) (b - 1));
+			short BootsDurability = p.getEquipment().getBoots().getDurability();
+			if(BootsDurability!=0){
+			p.getEquipment().getBoots().setDurability((short) (BootsDurability - 1));
 			}
 
 		}
