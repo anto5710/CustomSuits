@@ -8,6 +8,7 @@ import gmail.anto5710.mcp.customsuits.CustomSuits.suit.PlayerEffect;
 import gmail.anto5710.mcp.customsuits.Utils.ThorUtils;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Ghast;
@@ -33,6 +34,11 @@ public class Values {
 	final public static float HammerExplosionPower = 5;
 	final public static int HammerExplosionRingHunger = -4;
 	final public static Sound ThorChangeSound = Sound.ENDERMAN_STARE;
+	final public static Effect HammerDefaultEffect = Effect.LAVA_POP;
+	final public static Effect HammerTeleportEffect =Effect.PORTAL;
+	final public static Effect HammerBackEffect = Effect.HEART;
+	final public static Effect HammerHitGround = Effect.ENDER_SIGNAL;
+	final public static Sound HammerTeleportSound = Sound.ENDERMAN_TELEPORT;
 	
 	final public static Material SuitLauncher = Material.NETHER_STAR;
 	final public static Sound SuitSound = Sound.ENDERDRAGON_DEATH;
@@ -69,6 +75,10 @@ public class Values {
 	final public static String BimMessage =  ChatColor.BLUE + "[Info]: " + ChatColor.AQUA
 			+ "Fired a Repulser Bim!";
 	final public static Sound BimSound = Sound.BLAZE_BREATH;
+	final public static Effect SuitProjectileEffect = Effect.TILE_BREAK;
+	final public static int SuitBim_MissileEffectData = Material.DIAMOND_BLOCK.getId();
+	
+	
 	
 	final public static Sound SuitShieldSound = Sound.FUSE;
 	final public static int SuitShieldHunger = -18;

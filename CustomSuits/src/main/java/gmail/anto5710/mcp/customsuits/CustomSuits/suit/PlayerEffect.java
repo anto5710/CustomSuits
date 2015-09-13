@@ -149,14 +149,15 @@ public class PlayerEffect implements Listener {
 	}
 
 	@EventHandler
-	public void onEntityDeath(EntityDeathEvent e) {
-
-		LivingEntity deadEtt = e.getEntity();
-		// deadEtt.getEntityId();
-		if (deadEtt.getType() != EntityType.PLAYER) {
+	public void onEntityDeath(EntityDeathEvent event) {
+		Entity DeadEntity = event.getEntity();
+		if(SpawningDao.spawnMap.containsKey(DeadEntity.getEntityId())){
+		
+		if (DeadEntity instanceof Player==false) {
 
 			SpawningDao dao = this.mainPlugin.getDao();
-			dao.remove(deadEtt);
+			dao.remove(DeadEntity);
+			}
 		}
 
 	}

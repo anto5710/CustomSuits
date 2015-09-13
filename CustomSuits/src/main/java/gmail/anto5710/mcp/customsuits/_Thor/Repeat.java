@@ -7,6 +7,7 @@ import java.util.HashSet;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.WeaponListner;
+import gmail.anto5710.mcp.customsuits.Setting.Values;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 import gmail.anto5710.mcp.customsuits.Utils.ThorUtils;
 
@@ -21,6 +22,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Horse.Variant;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -94,15 +96,15 @@ public class Repeat extends BukkitRunnable {
 		item.setPickupDelay(10);
 		java.util.List<Entity> list;
 		if (!isTeleport) {
-			SuitUtils.playEffect(loc, Effect.LAVA_POP, 55, 0, 4);
+			SuitUtils.playEffect(loc, Values.HammerDefaultEffect, 55, 0, 4);
 			list = WeaponListner.findEntity(loc, player, 4);
 			ThorUtils.damage(list, 40, player);
 		} else {
-			SuitUtils.playEffect(loc, Effect.PORTAL, 55, 0, 4);
+			SuitUtils.playEffect(loc, Values.HammerTeleportEffect, 55, 0, 4);
 		}
 		if (ThorUtils.isOnGround(item)) {
 			if (!isTeleport) {
-				SuitUtils.playEffect(loc, Effect.ENDER_SIGNAL, 30, 0, 5);
+				SuitUtils.playEffect(loc, Values.HammerHitGround, 30, 0, 5);
 				item.getWorld().strikeLightning(item.getLocation());
 				player.getInventory().addItem(item.getItemStack());
 				item.remove();
@@ -114,6 +116,7 @@ public class Repeat extends BukkitRunnable {
 				ThorUtils.remove(item);
 			} else {
 				player.teleport(loc);
+				player.playSound(player.getLocation(), Values.HammerTeleportSound, 6.0F,6.0F);
 				item.getWorld().strikeLightning(item.getLocation());
 				player.getInventory().addItem(item.getItemStack());
 				item.remove();

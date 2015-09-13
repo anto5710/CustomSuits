@@ -187,10 +187,10 @@ public class WeaponListner implements Listener {
 			Player player = clickevent.getPlayer();
 			String message = Values.BimMessage;
 
-			Location loc = player.getLocation();
+			Location loc = player.getEyeLocation();
 			int energy = Values.BimHunger;
 			Sound sound = Values.BimSound;
-			loc.setY(loc.getY() + 1.25D);
+			
 
 			if (CustomSuitPlugin.MarkEntity(player)) {
 				if (player.getItemInHand().getType() == launcher) {
@@ -226,27 +226,27 @@ public class WeaponListner implements Listener {
 
 	}
 
-	private void playEffect(Location location1, Location location2,
+	private void playEffect(Location to, Location from,
 			Player player, boolean isMissile) {
 
 		setOption(isMissile, player);
 
 		damage = damage * (CustomSuitPlugin.getLevel(player)  + 1);
 
-		Effect effect = Effect.TILE_BREAK;
+		Effect effect = Values.SuitProjectileEffect;
 		int data = Material.ANVIL.getId();
 		if (isMissile) {
 
-			data = Material.DIAMOND_BLOCK.getId();
+			data =Values.SuitBim_MissileEffectData;
 		}
 
-		SuitUtils.LineParticle(location1, location2, player, effect, amount,
+		SuitUtils.LineParticle(to, from, player, effect, amount,
 				data, effectradius, damage, 200, isMissile);
 		if (isMissile) {
-			SuitUtils.createExplosion(location1, power, false, true);
+			SuitUtils.createExplosion(to, power, false, true);
 
 		} else {
-			breakblock(location1.getBlock());
+			breakblock(to.getBlock());
 
 		}
 

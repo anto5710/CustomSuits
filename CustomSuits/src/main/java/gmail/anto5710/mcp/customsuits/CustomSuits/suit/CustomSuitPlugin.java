@@ -6,6 +6,7 @@ import gmail.anto5710.mcp.customsuits.Setting.Recipe;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 import gmail.anto5710.mcp.customsuits._Thor.Hammer;
+import gmail.anto5710.mcp.customsuits._Thor.HammerWeapons;
 
 import java.awt.SystemColor;
 import java.io.File;
@@ -377,6 +378,8 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		manager.registerEvents(new WeaponListner(this), this);
 		manager.registerEvents(new SuitInventoryGUI(this), this);
 		manager.registerEvents(new Hammer(this), this);
+		manager.registerEvents(new HammerWeapons(this), this);
+		
 		
 	
 
@@ -1006,21 +1009,27 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 						&& dao.isCreatedBy(liveentity, player)) {
 
 					Location entitylocation = liveentity.getLocation();
-					int c = (int) Math.ceil(entitylocation
-							.distance(playerlocation) / 2) - 1;
-					if (c <= 0) {
+					Vector vectorStart = entitylocation.toVector();
+					
+					Vector vectorEnd = playerlocation.toVector();
+					
+					Vector difference = vectorStart.subtract(vectorEnd);
+					
+					
+					double distance = difference.length();
+					if (distance < 0) {
 						return;
 					}
-					Vector v = playerlocation.toVector()
-							.subtract(entitylocation.toVector()).normalize()
-							.multiply(2);
-					Location l = entitylocation.clone();
 
-					for (int i = 0; i < c; i++) {
-						l.add(v);
-						entity.teleport(l);
+					Location currentLoc = playerlocation.clone();
+					double dx = (difference.getX() / distance) * 0.5;
+					double dy = (difference.getY() / distance) * 0.5;
+					double dz = (difference.getZ() / distance) * 0.5;
+					for (int i = 0; i <=distance; i++) {
+						currentLoc.add(dx , dy , dz);
+						entity.teleport(currentLoc);
 
-						l.getWorld().playEffect(l, Effect.MOBSPAWNER_FLAMES, 0,
+						entity.getWorld().playEffect(currentLoc, Effect.MOBSPAWNER_FLAMES, 0,
 								50);
 						sleep(100);
 

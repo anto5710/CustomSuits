@@ -30,7 +30,7 @@ public class SpawningDao {
 	private Logger logger;
 	private File entityFile;
 
-	private Map<String, String> spnMap = new HashMap<>();
+	public static Map<String, String> spawnMap = new HashMap<>();
 
 	public SpawningDao(CustomSuitPlugin plugin) {
 		this.plugin = plugin;
@@ -58,7 +58,7 @@ public class SpawningDao {
 			while (sc.hasNextLine()) {
 				String line = sc.nextLine();
 				String[] values = line.split(":");
-				spnMap.put(values[0], values[1]);
+				spawnMap.put(values[0], values[1]);
 			}
 			sc.close();
 		} catch (FileNotFoundException e) {
@@ -70,7 +70,7 @@ public class SpawningDao {
 
 	public void saveEntity(Entity spawnedEntity, Player spawner) {
 
-		spnMap.put("" + spawnedEntity.getEntityId(), "" + spawner.getName());
+		spawnMap.put("" + spawnedEntity.getEntityId(), "" + spawner.getName());
 
 		String line = String.format("%s:%s", spawnedEntity.getEntityId(),
 				spawner.getName());
@@ -92,21 +92,21 @@ public class SpawningDao {
 	 * 
 	 * @param RemovedEntity - Removed or Dead Suit Entity
 	 */
-	public void remove(LivingEntity RemovedEntity) {
+	public void remove(Entity RemovedEntity) {
 		
 		String entityID = String.valueOf(RemovedEntity.getEntityId());
 
 		
-		spnMap.remove(entityID);
-		System.out.println("removed. current size: " + spnMap.size());
+		spawnMap.remove(entityID);
+		System.out.println("removed. current size: " + spawnMap.size());
 		try {
-			writeToFile(spnMap);
+			writeToFile(spawnMap);
 		} catch (FileNotFoundException e) {
 			
 			e.printStackTrace();
 		}
 	
-
+		
 	}
 
 	public void writeToFile(Map<String, String> map)
@@ -142,9 +142,9 @@ public class SpawningDao {
 		String entityID = entity.getEntityId() + "";
 		String playername = player.getName();
 
-		if (spnMap.containsKey(entityID)) {
+		if (spawnMap.containsKey(entityID)) {
 
-			if (playername.equals(spnMap.get(entityID))) {
+			if (playername.equals(spawnMap.get(entityID))) {
 				return true;
 			}
 

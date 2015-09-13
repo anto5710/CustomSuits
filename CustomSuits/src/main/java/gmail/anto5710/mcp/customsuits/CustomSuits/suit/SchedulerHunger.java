@@ -87,10 +87,10 @@ public class SchedulerHunger extends BukkitRunnable {
 		if (player.isFlying()) {
 
 			if (CustomSuitPlugin.MarkEntity(player)&&player.getGameMode()!=GameMode.CREATIVE) {
-				hunger(player, -2);
+				
 
 				float speed = (float) (player.getFoodLevel() / 20.0D);
-				if (player.getFoodLevel() <= 2) {
+				if (!hunger(player, -2)) {
 					
 					player.setFlying(false);
 					player.setAllowFlight(false);

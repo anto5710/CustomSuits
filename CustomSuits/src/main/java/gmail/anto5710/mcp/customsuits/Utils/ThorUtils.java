@@ -1,5 +1,6 @@
 package gmail.anto5710.mcp.customsuits.Utils;
 
+import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.PlayerEffect;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.WeaponListner;
 import gmail.anto5710.mcp.customsuits._Thor.Repeat;
@@ -12,6 +13,7 @@ import javax.swing.text.Position;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
@@ -23,10 +25,13 @@ import org.bukkit.scheduler.BukkitScheduler;
 
 public class ThorUtils {
 
-	public static Item getKey(HashMap<Item, Player> HashMap, Player player) {
-		for(Item item: HashMap.keySet()){
-			if(HashMap.get(item)==player){
-				return item;
+	public static Item getItem(World world, Player player) {
+		for(Entity entity : world.getEntitiesByClass(Item.class)){
+			if(entity instanceof Item){
+				Item item = (Item) entity;
+				if(SuitUtils.CheckItem(CustomSuitPlugin.Hammer, item.getItemStack())){
+					return item;
+				}
 			}
 		}
 	

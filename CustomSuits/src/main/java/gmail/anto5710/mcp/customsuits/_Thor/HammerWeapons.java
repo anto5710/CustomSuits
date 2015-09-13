@@ -72,9 +72,8 @@ public class HammerWeapons implements Listener{
 							6.0F, 6.0F);
 					player.playSound(player.getLocation(), Sound.IRONGOLEM_HIT,
 							4.0F, 2.0F);
-				} else {
+				} else{
 					Hammer.setThor(player);
-
 				}
 			}
 		}

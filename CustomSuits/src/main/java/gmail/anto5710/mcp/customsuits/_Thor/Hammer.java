@@ -19,6 +19,7 @@ import gmail.anto5710.mcp.customsuits.Setting.PotionEffects;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 import gmail.anto5710.mcp.customsuits.Utils.ThorUtils;
+import gmail.anto5710.mcp.customsuits.Utils.WeaponUtils;
 
 import org.bukkit.Effect;
 import org.bukkit.Location;
@@ -36,8 +37,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityCombustByBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.ItemDespawnEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerAnimationEvent;
@@ -103,14 +106,6 @@ public class Hammer implements Listener {
 	
 	
 	@EventHandler
-	public void ItemRemovedCancel(ItemDespawnEvent event){
-		Item item = event.getEntity();
-		if(SuitUtils.CheckItem(CustomSuitPlugin.Hammer, item.getItemStack())){
-			event.setCancelled(true);
-		}
-	}
-	
-	@EventHandler
 	public void DamageLightning(EntityDamageByEntityEvent event) {
 		Entity damager = event.getDamager();
 		Entity entity = event.getEntity();
@@ -161,17 +156,42 @@ public class Hammer implements Listener {
 	public void BackToThor(PlayerInteractEvent event){
 		Player player = event.getPlayer();
 		if(event.getAction()==Action.LEFT_CLICK_AIR||event.getAction() ==Action.LEFT_CLICK_BLOCK){
-			if(player.isSneaking()){
-				if(Repeat.listPlayer.containsValue(player)){
-					Item hammer =ThorUtils.getKey(Repeat.listPlayer , player);
-					if(Repeat.listTeleport.containsKey(hammer)){
-						Repeat.listTeleport.remove(hammer);
+			if(!player.isSneaking()&&Thor(player)){
+				
+					Location playerlocation = player.getLocation();
+					Item hammer =ThorUtils.getItem(player.getWorld() , player);
+					
+					Location entitylocation = hammer.getLocation();
+					org.bukkit.util.Vector vectorStart = entitylocation.toVector();
+					
+					org.bukkit.util.Vector vectorEnd = playerlocation.toVector();
+					
+					org.bukkit.util.Vector difference = vectorStart.subtract(vectorEnd);
+					
+					
+					double distance = difference.length();
+					if (distance < 0) {
+						return;
 					}
-					ItemStack HammerItem = hammer.getItemStack();
-					player.getInventory().addItem(HammerItem);
-					hammer.remove();
+
+					Location currentLoc = playerlocation.clone();
+					double dx = (difference.getX() / distance) * 0.5;
+					double dy = (difference.getY() / distance) * 0.5;
+					double dz = (difference.getZ() / distance) * 0.5;
+					for (int i = 0; i <=distance; i++) {
+						currentLoc.add(dx , dy , dz);
+						
+						hammer.teleport(currentLoc);
+
+						SuitUtils.playEffect(currentLoc, Effect.HEART, 55, 0, 4);
+						
+
+					
+			
 					
 				}
+					hammer.teleport(playerlocation);
+					player.playSound(playerlocation, Sound.ENDERMAN_TELEPORT, 6.0F,6.0F);
 			}
 		}
 	}
