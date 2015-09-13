@@ -25,7 +25,7 @@ public class Cooldown extends BukkitRunnable{
         	player.playSound(player.getLocation(), Sound.DOOR_OPEN, 4.0F, 4.0F);	
 	    WeaponListner.cooldowns.put(player, false);
 	    
-	        // What you want to schedule goes here
+	       
 	        
 	    }
 }
