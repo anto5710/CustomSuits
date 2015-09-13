@@ -103,8 +103,12 @@ public class ThorUtils {
 	public static void cancel(int taskId) {
 
 		BukkitScheduler scheduler = Bukkit.getScheduler();
-
-		scheduler.cancelTask(taskId);
+		try {
+			
+			scheduler.cancelTask(taskId);
+		} catch (IllegalStateException e) {
+			
+		}
 
 	}
 
