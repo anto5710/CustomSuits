@@ -4,7 +4,7 @@
 
 	<groupId>gmail.anto5710.mcp.customsuits</groupId>
 	<artifactId>CustomSuits</artifactId>
-	<version>0.2.2</version>
+	<version>0.2.4</version>
 	<packaging>jar</packaging>
 
 	<name>CustomSuits</name>

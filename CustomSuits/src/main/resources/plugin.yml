@@ -1,7 +1,7 @@
 name: CustomSuits
 main: gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin
 description: The Special Suits.
-version: 0.2.2
+version: 0.2.4
 auther: §b[anto5710]
 
 commands:
