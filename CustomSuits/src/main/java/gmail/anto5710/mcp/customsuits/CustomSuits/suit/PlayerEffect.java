@@ -335,6 +335,7 @@ public class PlayerEffect implements Listener {
 
 		player.setFlying(false);
 		player.setAllowFlight(false);
+		player.setFlySpeed(0.5F);
 
 		hungerscheduler.removeflyingplayer(player);
 
