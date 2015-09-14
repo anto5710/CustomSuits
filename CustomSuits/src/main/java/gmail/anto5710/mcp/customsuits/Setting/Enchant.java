@@ -27,7 +27,7 @@ public class Enchant {
 	
 	public Enchant(CustomSuitPlugin plugin){
 		this.plugin = plugin;
-		enchantBooks();
+		
 	}
 	
 	
@@ -46,7 +46,7 @@ public class Enchant {
 		Meta.addEnchant(enchantment, level, IgnoreLevelLimit);
 		item.setItemMeta(Meta);
 	}
-	public void enchantBooks(){
+	public static void enchantBooks(){
 	
 		enchantmentbook(Protection, Enchantment.PROTECTION_ENVIRONMENTAL, 4, true);
 

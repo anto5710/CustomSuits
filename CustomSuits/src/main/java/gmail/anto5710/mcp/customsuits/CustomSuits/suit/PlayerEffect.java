@@ -175,10 +175,10 @@ public class PlayerEffect implements Listener {
 
 		SpawningDao dao = this.mainPlugin.getDao();
 
-		if (dao.isCreatedBy(entity, player)&&entity instanceof Vehicle==false) {
+		if (dao.isCreatedBy(entity, player)) {
 
 			LivingEntity livingentity = (LivingEntity) entity;
-			if (CustomSuitPlugin.MarkEntity(livingentity)) {
+			if (livingentity.getEquipment()!=null) {
 
 				
 
@@ -196,14 +196,14 @@ public class PlayerEffect implements Listener {
 				player.updateInventory();
 				
 
+				dao.remove(livingentity);
+				livingentity.damage(10000000000000000D);
 				SuitUtils.playEffect(player.getEyeLocation(), Values.SuitGetEffect, 30, Values.SuitGetEffectData, 5);
 
 				player.playSound(player.getLocation(), Values.SuitSound,
 						9.0F, 9.0F);
 				
 			}
-			dao.remove(livingentity);
-			livingentity.damage(90000000D);
 		}
 	}
 
@@ -213,7 +213,7 @@ public class PlayerEffect implements Listener {
 		if (event.getAction() == Action.LEFT_CLICK_AIR
 				|| event.getAction() == Action.LEFT_CLICK_BLOCK) {
 			if (CustomSuitPlugin.MarkEntity(player)) {
-				if (player.getItemInHand().getItemMeta().getDisplayName() != null) {
+				if (SuitUtils.CheckItem(CustomSuitPlugin.gunitem, player.getItemInHand())) {
 
 					String name = CustomSuitPlugin.getGun().getItemMeta()
 							.getDisplayName();

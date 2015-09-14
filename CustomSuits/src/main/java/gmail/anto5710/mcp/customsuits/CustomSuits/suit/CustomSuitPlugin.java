@@ -174,7 +174,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 	@Override
 	public void onEnable() {
 		Recipe.addRecipe(getServer());
-		
+		Enchant.enchantBooks();
 	
 
 		ItemStack levelitem = new ItemStack(Material.EXP_BOTTLE);
@@ -420,6 +420,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 			}else{
 				if(args[0].equals("entity")){
 					for(String key : entityMap.keySet()){
+					
 						spnSender.sendMessage(ChatColor.BLUE+"[Input]: "+ChatColor.AQUA+key+  ChatColor.BLUE+"    [Entity]: "+ChatColor.AQUA+entityMap.get(key).getSimpleName());
 					}
 				}else if(args[0].equals("color")){
@@ -809,7 +810,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		if (livingentity.getType() == EntityType.SKELETON
 				|| livingentity.getType() == EntityType.ZOMBIE
 				|| livingentity.getType() == EntityType.PIG_ZOMBIE) {
-			setEquipment(spnSender,
+			setEquipment(
 					armorequipment.get(spnSender),
 					spnSender, livingentity,
 					entityName);
@@ -884,7 +885,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		
 	}
 
-	private void setEquipment(Player Player, Inventory inventoryitem,
+	private void setEquipment( Inventory inventoryitem,
 			Player player, LivingEntity spawnedEntity, String entityName) {
 
 
@@ -895,7 +896,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 
 		livingEntity.setHealth(livingEntity.getMaxHealth());
 
-		livingEntity.setCustomName(Player.getName() + "|" + "Mark");
+		livingEntity.setCustomName(player.getName() + "|" + Values.SuitName);
 		ItemStack itemForCreature = createItemForCreature(livingEntity);
 		livingEntity.getEquipment().setItemInHand(itemForCreature);
 
@@ -986,7 +987,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 			}
 			if (map.get(player) != null) {
 
-				SetDisplayName(ChatColor.AQUA + "Mark:" + level, item);
+				SetDisplayName(ChatColor.AQUA +Values.SuitName +Values.SuitInforegex + level, item);
 				ItemMeta meta = item.getItemMeta();
 
 				int size = map.get(player).getSize();
@@ -995,16 +996,20 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 					for (int i = 0; i <= size - 1; i++) {
 						if (map.get(player).getItem(i) != null) {
 							if (map.get(player).getItem(i).getType() == Material.ENCHANTED_BOOK) {
-								EnchantmentStorageMeta echmeta = (EnchantmentStorageMeta) map
+								
+								EnchantmentStorageMeta enchantmeta = (EnchantmentStorageMeta) map
 										.get(player).getItem(i).getItemMeta();
-								for (Enchantment key : echmeta
-										.getStoredEnchants().keySet()) {
+								
+								Map<Enchantment, Integer> Enchantments = enchantmeta.getStoredEnchants();
+								
+								for (Enchantment key : Enchantments.keySet()) {
 
-									meta.addEnchant(key, echmeta
+									meta.addEnchant(key, enchantmeta
 											.getStoredEnchants().get(key), true);
 
 								}
 								item.setItemMeta(meta);
+								
 							}
 						}
 					}
@@ -1065,17 +1070,21 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 	}
 
 	private static void playSpawningEffect(Entity entity, Player player) {
+		try {
+			
+		
+		
 		Location playerlocation = player.getLocation();
 
-		LivingEntity liveentity = (LivingEntity) entity;
+		LivingEntity livingentity = (LivingEntity) entity;
 
 		if (entity.getType() != EntityType.PLAYER) {
 			if (entity.getType() == EntityType.SKELETON
 					|| entity.getType() == EntityType.PIG_ZOMBIE) {
-				if (MarkEntity(liveentity)
-						&& dao.isCreatedBy(liveentity, player)) {
+				if (MarkEntity(livingentity)
+						&& dao.isCreatedBy(livingentity, player)) {
 
-					Location entitylocation = liveentity.getLocation();
+					Location entitylocation = livingentity.getLocation();
 					Vector vectorStart = entitylocation.toVector();
 					
 					Vector vectorEnd = playerlocation.toVector();
@@ -1104,13 +1113,13 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 
 					}
 
-					ItemStack helmet = liveentity.getEquipment().getHelmet();
-					ItemStack chestplate = liveentity.getEquipment().getChestplate();
+					ItemStack helmet = livingentity.getEquipment().getHelmet();
+					ItemStack chestplate = livingentity.getEquipment().getChestplate();
 
-					if (MarkEntity(liveentity)
-							&& dao.isCreatedBy(liveentity, player)) {
+					if (MarkEntity(livingentity)
+							&& dao.isCreatedBy(livingentity, player)) {
 						Location location = player.getLocation();
-						if (liveentity.getEquipment().getHelmet() != null) {
+						if (livingentity.getEquipment().getHelmet() != null) {
 
 							player.getEquipment().setHelmet(helmet);
 							player.playSound(player.getLocation(),
@@ -1120,7 +1129,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 							SuitUtils.playEffect(location, Values.SuitGetEffect, 20, Values.SuitGetEffectData, 5);
 							sleep(500);
 						}
-						if (liveentity.getEquipment().getChestplate() != null) {
+						if (livingentity.getEquipment().getChestplate() != null) {
 
 							player.getEquipment().setChestplate(chestplate);
 							player.playSound(player.getLocation(),
@@ -1130,9 +1139,9 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 							SuitUtils.playEffect(location, Values.SuitGetEffect, 20, Values.SuitGetEffectData, 5);
 							sleep(200);
 						}
-						if (liveentity.getEquipment().getLeggings() != null) {
+						if (livingentity.getEquipment().getLeggings() != null) {
 
-							ItemStack cl = liveentity.getEquipment()
+							ItemStack cl = livingentity.getEquipment()
 									.getLeggings();
 							player.getEquipment().setLeggings(cl);
 							player.playSound(player.getLocation(),
@@ -1142,9 +1151,9 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 							SuitUtils.playEffect(location, Values.SuitGetEffect, 20, Values.SuitGetEffectData, 5);
 							sleep(400);
 						}
-						if (liveentity.getEquipment().getBoots() != null) {
+						if (livingentity.getEquipment().getBoots() != null) {
 
-							ItemStack b = liveentity.getEquipment().getBoots();
+							ItemStack b = livingentity.getEquipment().getBoots();
 							player.getEquipment().setBoots(b);
 							player.playSound(player.getLocation(),
 									Sound.ANVIL_LAND, 9.0F, 9.0F);
@@ -1153,7 +1162,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 							SuitUtils.playEffect(location, Values.SuitGetEffect, 20, Values.SuitGetEffectData, 5);
 						}
 
-						liveentity.damage(1000000.0D);
+						livingentity.damage(1000000.0D);
 						player.playSound(player.getLocation(),
 								Sound.ENDERDRAGON_DEATH, 9.0F, 9.0F);
 						player.sendMessage(Values.SuitCallMessage);
@@ -1163,32 +1172,32 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 
 			}
 		}
+		} catch (NullPointerException e) {
+		}
 	}
 
 	public static boolean MarkEntity(LivingEntity LivingEntity) {
+		
 		if (LivingEntity.getEquipment().getLeggings() != null) {
-
-			String leggings = LivingEntity.getEquipment().getLeggings().getItemMeta()
-					.getDisplayName();
-			if (leggings != null) {
-				if (leggings.contains("Mark:")) {
-
+			ItemStack Check = LivingEntity.getEquipment().getLeggings();
+			if(Check.getItemMeta().getDisplayName()!=null){
+				if(Check.getItemMeta().getDisplayName().contains(Values.SuitName+Values.SuitInforegex)){
 					return true;
 				}
-
 			}
+			
+				
 		}
 		if (LivingEntity.getEquipment().getHelmet() != null) {
-			String helmetname = LivingEntity.getEquipment().getHelmet().getItemMeta()
-					.getDisplayName();
-			if (helmetname != null) {
-
-				if (helmetname.contains("Mark:")) {
-
+			
+			ItemStack Check = LivingEntity.getEquipment().getHelmet();
+			
+			if(Check.getItemMeta().getDisplayName()!=null){
+				if(Check.getItemMeta().getDisplayName().contains(Values.SuitName+Values.SuitInforegex)){
 					return true;
-
 				}
 			}
+			
 		}
 		return false;
 
@@ -1300,11 +1309,11 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 	
 
 	
-	public static void reset(Player p , HashMap<Player, Inventory>map , Inventory inventory){
-		if(!map.containsKey(p)){
-			Inventory Newinventory = Bukkit.createInventory(null, inventory.getSize(), inventory.getName()+":"+p.getDisplayName());
+	public static void reset(Player player , HashMap<Player, Inventory>map , Inventory inventory){
+		if(!map.containsKey(player)){
+			Inventory Newinventory = Bukkit.createInventory(null, inventory.getSize(), inventory.getName()+":"+player.getDisplayName());
 			Newinventory.setContents(inventory.getContents());
-			map.put(p, Newinventory);
+			map.put(player, Newinventory);
 		}
 	}
 	
@@ -1314,9 +1323,9 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 			String leggings = p.getEquipment().getLeggings().getItemMeta()
 					.getDisplayName();
 			if (leggings != null) {
-				if (leggings.contains("Mark:")) {
+				if (leggings.contains(Values.SuitName+Values.SuitInforegex)) {
 
-					String[]values = leggings.split(":");
+					String[]values = leggings.split(Values.SuitInforegex);
 					return Integer.parseInt(values[1]);
 				}
 
@@ -1327,9 +1336,9 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 					.getDisplayName();
 			if (helmetname != null) {
 
-				if (helmetname.contains("Mark:")) {
+				if (helmetname.contains(Values.SuitName+Values.SuitInforegex)) {
 
-					String[]values = helmetname.split(":");
+					String[]values = helmetname.split(Values.SuitInforegex);
 					return Integer.parseInt(values[1]);
 
 				}

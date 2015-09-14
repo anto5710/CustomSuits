@@ -76,6 +76,9 @@ public class Values {
 	final public static Material SniperAmmo = Material.GHAST_TEAR;
 	
 	final public static String regex = ChatColor.GOLD+" 【《 》】 "+ChatColor.YELLOW;
+	final public static String SuitInforegex = ChatColor.DARK_AQUA+":"+ChatColor.AQUA;
+	final public static String SuitName = "[Mark]";
+	
 	
 	final public static double MachineGunDamage =6 ;
 	final public static int MachineGunAmmoAmount = 50;

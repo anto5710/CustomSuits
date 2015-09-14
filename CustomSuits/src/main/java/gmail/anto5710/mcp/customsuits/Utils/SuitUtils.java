@@ -177,7 +177,7 @@ public class SuitUtils {
 		return false;
 	}
 
-	private static boolean checkName(ItemStack sample, ItemStack check) {
+	public static boolean checkName(ItemStack sample, ItemStack check) {
 		if(sample.getItemMeta().getDisplayName()==null&&sample.getItemMeta().getDisplayName()==null){
 			return true;
 		}

@@ -1,6 +1,7 @@
 package gmail.anto5710.mcp.customsuits.CustomSuits.suit;
 
 import gmail.anto5710.mcp.customsuits.Setting.Values;
+import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 
 import java.time.temporal.ChronoUnit;
 
@@ -233,14 +234,7 @@ public class SuitInventoryGUI implements Listener {
 		if (e.getAction() == Action.RIGHT_CLICK_AIR
 				|| e.getAction() == Action.RIGHT_CLICK_BLOCK) {
 			Material m = CustomSuitPlugin.suitremote.getType();
-			if (e.getItem().getType() == m) {
-				if (e.getItem().getItemMeta().getDisplayName() != null) {
-					if (e.getItem()
-							.getItemMeta()
-							.getDisplayName()
-							.contains(
-									CustomSuitPlugin.suitremote.getItemMeta()
-											.getDisplayName())) {
+			if(SuitUtils.CheckItem(CustomSuitPlugin.suitremote,player.getItemInHand())){
 						CustomSuitPlugin.resetInventory((Player) e.getPlayer());
 
 
@@ -248,10 +242,10 @@ public class SuitInventoryGUI implements Listener {
 								CustomSuitPlugin.equipment.get(e.getPlayer()));
 						e.setCancelled(true);
 					}
-				}
 			}
+			
 		}
-	}
+	
 
 	@EventHandler
 	public void clickMenu(InventoryClickEvent e) {
