@@ -87,7 +87,7 @@ public class Values {
 	final public static double Bim = 35;
 	final public static float BimExplosionPower =4F ;
 	final public static int BimEffectRadius = 2;
-	final public static int BimEffectAmount =40 ;
+	final public static int BimEffectAmount =5 ;
 	final public static double BimRadius =2 ;
 	final public static int BimHunger =-2 ;
 	final public static String BimMessage =  ChatColor.BLUE + "[Info]: " + ChatColor.AQUA
@@ -104,7 +104,7 @@ public class Values {
 	final public static double Missile =75 ;
 	final public static float MissileExplosionPower =50F ;
 	final public static int MissileEffectRadius = 2;
-	final public static int MissileEffectAmount =40 ;
+	final public static int MissileEffectAmount =10 ;
 	final public static double MissileRadius =2 ;
 	final public static int MissileHunger =- 8;
 	final public static String MissileMessage =  ChatColor.BLUE + "[Info]: " + ChatColor.AQUA

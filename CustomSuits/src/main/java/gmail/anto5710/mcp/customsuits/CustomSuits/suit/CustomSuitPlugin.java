@@ -783,6 +783,9 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 	private void EntityAddData(LivingEntity livingentity , Player spnSender ,Player targetPlayer, String entityName) {
 	
 		livingentity.setRemoveWhenFarAway(false);
+		if(livingentity instanceof Horse){
+			setHorseData((Horse)livingentity, entityName, spnSender , true );
+		}
 		addPotionEffects(
 				livingentity,
 				new PotionEffect[] {
@@ -819,9 +822,6 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		 if (livingentity instanceof Enderman) {
 			 setMaterialForEnderMan((Enderman) livingentity,Material.TNT);
 		}
-		 if(livingentity instanceof Horse){
-			 setHorseData((Horse)livingentity, entityName, spnSender , true );
-		 }
 		 
 		if (livingentity instanceof Wolf) {
 			
@@ -864,12 +864,13 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		 }
 		 
 		 horse.setVariant(varient);
+		 if(item!=null){
 		 if(item.getType()==Material.IRON_BARDING||item.getType()==Material.GOLD_BARDING||item.getType()==Material.DIAMOND_BARDING){
 			 if(varient == Variant.HORSE){
 				 horseinventory.setItem(1, item);
 			 }
 		 }
-		
+		 }
 		 horseinventory.addItem(new ItemStack(Material.SADDLE));
 		
 	}
@@ -1267,21 +1268,21 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 	public static void spawnfireworks(Player whoClicked) {
 		isPlayed = false;
 		List<Entity> list = whoClicked.getWorld().getEntities();
-		for (Entity e : list) {
-			if (dao.isCreatedBy(e, whoClicked)) {
-				e.getWorld().createExplosion(e.getLocation(), 8.0F);
-				Damageable d = (Damageable) e;
-				d.damage(10000.0D, whoClicked);
-				Location location = e.getLocation();
+		for (Entity entity : list) {
+			if (dao.isCreatedBy(entity, whoClicked)&&entity instanceof Damageable) {
+				entity.getWorld().createExplosion(entity.getLocation(), 8.0F);
+				Damageable damgaeable = (Damageable) entity;
+				damgaeable.damage(1000000.0D, whoClicked);
+				Location location = entity.getLocation();
 				Firework firework = (Firework) location.getWorld().spawnEntity(
 						location, EntityType.FIREWORK);
-				Random r = new Random();
+				Random random = new Random();
 				FireworkEffect effect = FireworkEffect.builder()
-						.flicker(r.nextBoolean())
+						.flicker(random.nextBoolean())
 						.withColor(org.bukkit.Color.RED)
 						.withFade(org.bukkit.Color.RED)
 						.with(org.bukkit.FireworkEffect.Type.STAR)
-						.trail(r.nextBoolean()).build();
+						.trail(random.nextBoolean()).build();
 
 				FireworkMeta meta = firework.getFireworkMeta();
 				meta.addEffect(effect);

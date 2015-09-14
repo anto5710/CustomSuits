@@ -34,6 +34,7 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.LightningStrike;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -41,10 +42,12 @@ import org.bukkit.event.entity.EntityCombustByBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.ItemDespawnEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.event.player.PlayerAnimationType;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
@@ -52,6 +55,7 @@ import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitTask;
@@ -66,7 +70,7 @@ public class Hammer implements Listener {
 	
 	static float Power = Values.HammerExplosionPower;
 	
-	static ArrayList<Player>thor  = new ArrayList<>();
+	static Player thor;
 
 	public Hammer(CustomSuitPlugin plugin) {
 		this.plugin = plugin;
@@ -144,7 +148,7 @@ public class Hammer implements Listener {
 					player.getItemInHand())
 					&& Thor(player)&&SchedulerHunger.hunger(player, Values.LightningMissileHunger)) {
 				Location targetblock = SuitUtils.getTargetBlock(player, 300).getLocation();
-				SuitUtils.LineParticle(targetblock, player.getEyeLocation(), player, Effect.LAVA_POP, 20, 0, 2, HammerDeafultDamage, 2, true);
+				SuitUtils.LineParticle(targetblock, player.getEyeLocation(), player, Effect.LAVA_POP, 5, 0, 2, HammerDeafultDamage, 2, true);
 				
 				ThorUtils.strikeLightning(targetblock, player, 1, 2.5, HammerDeafultDamage);
 				SuitUtils.createExplosion(targetblock, Power, false, true);
@@ -160,7 +164,9 @@ public class Hammer implements Listener {
 				
 					Location playerlocation = player.getLocation();
 					Item hammer =ThorUtils.getItem(player.getWorld() , player);
-					
+					if(hammer ==null){
+						return;
+					}
 					Location entitylocation = hammer.getLocation();
 					org.bukkit.util.Vector vectorStart = entitylocation.toVector();
 					
@@ -243,26 +249,30 @@ public class Hammer implements Listener {
 				}
 		}
 	}
-	@EventHandler
-	public void LightningDamagedThor(EntityDamageEvent event){
-		Entity entity = event.getEntity();
-		if(entity instanceof Player){
-			Player player = (Player) entity;
-			if(Hammer.Thor(player)&&event.getCause()==DamageCause.LIGHTNING){
-				event.setCancelled(true);
-				
-			}
-		}
-	}
+
+
 	
-	public static void setThor(Player player) {
-		if(thor.size()==0){
-			thor.add(player);
-		}
-		if(!thor.contains(player)){
+	public static void toThor(Entity entity) {
+		if(entity instanceof Item){
+			Item item = (Item) entity;
+		if(thor==null){
 			return;
 		}
-			thor.add(player);
+		thor.getInventory().addItem(item.getItemStack());
+		entity.remove();
+		
+		}
+	}
+
+
+	public static void setThor(Player player) {
+		if(thor==null){
+			thor=player;
+		}
+		if(player!=thor){
+			return;
+		}
+			
 			ThorUtils.strikeLightning(player.getLocation(), player, 20, 0, HammerDeafultDamage);
 
 		SuitUtils.sleep(500);

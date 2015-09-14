@@ -174,39 +174,33 @@ public class PlayerEffect implements Listener {
 		
 
 		SpawningDao dao = this.mainPlugin.getDao();
-
-		if (dao.isCreatedBy(entity, player)) {
-
-			LivingEntity livingentity = (LivingEntity) entity;
-			if (livingentity.getEquipment()!=null) {
-
-				
-
-				ItemStack chestItem = livingentity.getEquipment()
-						.getChestplate();
-
-				ItemStack leggings = livingentity.getEquipment().getLeggings();
-				ItemStack boots = livingentity.getEquipment().getBoots();
-				ItemStack helmet = livingentity.getEquipment().getHelmet();
-
-				player.getEquipment().setHelmet(helmet);
-				player.getEquipment().setChestplate(chestItem);
-				player.getEquipment().setLeggings(leggings);
-				player.getEquipment().setBoots(boots);
-				player.updateInventory();
-				
-
-				dao.remove(livingentity);
-				livingentity.damage(10000000000000000D);
-				SuitUtils.playEffect(player.getEyeLocation(), Values.SuitGetEffect, 30, Values.SuitGetEffectData, 5);
-
-				player.playSound(player.getLocation(), Values.SuitSound,
-						9.0F, 9.0F);
-				
-			}
+		
+		if (!dao.isCreatedBy(entity, player)||entity instanceof Vehicle) {
+			return;
 		}
-	}
 
+		LivingEntity livingentity = (LivingEntity) entity;
+
+		// 4개를 다 가지고 있음!
+
+		ItemStack chestItem = livingentity.getEquipment().getChestplate();
+
+		ItemStack leggings = livingentity.getEquipment().getLeggings();
+		ItemStack boots = livingentity.getEquipment().getBoots();
+		ItemStack helmet = livingentity.getEquipment().getHelmet();
+
+		player.getEquipment().setHelmet(helmet);
+		player.getEquipment().setChestplate(chestItem);
+		player.getEquipment().setLeggings(leggings);
+		player.getEquipment().setBoots(boots);
+		livingentity.damage(10000000D);
+
+		SuitUtils.playEffect(player.getLocation(), Values.SuitGetEffect, 20, Values.SuitGetEffectData, 10);
+
+		player.playSound(player.getLocation(),Values.SuitSound, 9.0F, 9.0F);
+		dao.remove(livingentity);
+	}
+	
 	@EventHandler
 	public void zoom(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
