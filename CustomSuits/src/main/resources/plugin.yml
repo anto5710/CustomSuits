@@ -16,7 +16,7 @@ commands:
         usage: "§4[Usage]: §ccommad [target + <Player> / party / firework]"
     get:
         description: §bGet the This Plugin's Items.
-        usage: "§4[Usage]: §cget [commander / hammer / laucner]"
+        usage: "§4[Usage]: §cget [commander / hammer / laucner / man]"
     head:
         description: §bMake that player's head
         usage: "§4[Usage]: §chead / head <Player>"

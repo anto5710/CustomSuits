@@ -38,8 +38,8 @@ public class ManUtils  {
 
 		if (HiddenPlayers.contains(player)) {
 			HiddenPlayers.remove(player);
-			SuitUtils.playEffect(player.getLocation(), Values.ManvisibleEffect, 50, 0, 14);
-			player.playSound(player.getLocation(), Values.ManvisibleSound, 10.0F, 6.0F);
+			SuitUtils.playEffect(player.getLocation(), Values.ManvisibleEffect, 10, 0, 10);
+			player.playSound(player.getLocation(), Values.ManvisibleSound, 16.0F, 16.0F);
 			for (Player playerOnline : player.getServer().getOnlinePlayers()) {
 				if (!playerOnline.canSee(player)) {
 					playerOnline.showPlayer(player);
@@ -51,8 +51,8 @@ public class ManUtils  {
 		}
 		else	if (!(HiddenPlayers.contains(player))) {
 			HiddenPlayers.add(player);
-			SuitUtils.playEffect(player.getLocation(), Values.ManInvisibleEffect, 50, 0, 15);
-			player.playSound(player.getLocation(), Values.ManInvisibleSound, 16.0F, 10.0F);
+			SuitUtils.playEffect(player.getLocation(), Values.ManInvisibleEffect, 150, 0, 100);
+			player.playSound(player.getLocation(), Values.ManInvisibleSound, 16.0F, 16.0F);
 			for (Player playerOnline : player.getServer().getOnlinePlayers()) {
 				playerOnline.hidePlayer(player);
 
