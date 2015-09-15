@@ -14,7 +14,7 @@ public class PotionEffects {
 	final public static PotionEffect Thor_REGENERATION =new PotionEffect(PotionEffectType.REGENERATION, 99999999, 20);
 	
 	
-	
+	final public static PotionEffect Man_Invisiblility = new PotionEffect(PotionEffectType.INVISIBILITY , 999999999 , 30);
 	
 	
 	

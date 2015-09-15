@@ -24,7 +24,10 @@ public class Values {
 	
 	
 	
-	
+	final public static Sound ManInvisibleSound = Sound.CAT_MEOW;
+	final public static Sound ManvisibleSound = Sound.IRONGOLEM_HIT;
+	final public static Effect ManInvisibleEffect = Effect.SNOW_SHOVEL;
+	final public static Effect ManvisibleEffect = Effect.COLOURED_DUST;
    
 
 	final public static double HammerDamage = 20;
@@ -115,6 +118,7 @@ public class Values {
 	final public static float LauncherPower = 5;
 	final public static Material LauncherAmmo = Material.FIREWORK_CHARGE;
 	final public static Sound LauncherSound= Sound.FIREWORK_LAUNCH; 
+	
 	
 	
 }

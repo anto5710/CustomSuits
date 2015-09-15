@@ -1,6 +1,7 @@
 package gmail.anto5710.mcp.customsuits.CustomSuits.suit;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.dao.SpawningDao;
+import gmail.anto5710.mcp.customsuits.Man.Man;
 import gmail.anto5710.mcp.customsuits.Setting.Enchant;
 import gmail.anto5710.mcp.customsuits.Setting.Recipe;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
@@ -166,6 +167,14 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 	
 	public static ItemStack Boots_Thor = new ItemStack(Material.IRON_BOOTS);
 	
+	public static ItemStack Chestplate_Man = new ItemStack(Material.LEATHER_CHESTPLATE);
+	
+	public static ItemStack Leggings_Man = new ItemStack(Material.LEATHER_LEGGINGS);
+	
+	public static ItemStack Boots_Man = new ItemStack(Material.IRON_BOOTS);
+	
+	
+	
 
 	@Override
 	public void onLoad() {
@@ -216,6 +225,12 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		Enchant.enchantment(Boots_Thor, Enchantment.THORNS, 15, true);
 		Enchant.enchantment(Boots_Thor, Enchantment.DURABILITY, 50, true);
 		Enchant.enchantment(Boots_Thor, Enchantment.PROTECTION_FALL, 15, true);
+		Color Chestplate_Man_Color = Color.fromRGB(217, 206, 206);
+		Color Leggings_Man_Color = Color.fromRGB(31, 28, 28);
+		
+		
+		leathercolor(Chestplate_Man, Chestplate_Man_Color);
+		leathercolor(Leggings_Man, Leggings_Man_Color);
 		
 		leatherDyecolor(Chestplate_Thor, DyeColor.GRAY);
 		leatherDyecolor(Leggings_Thor, DyeColor.BLACK);
@@ -377,7 +392,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		colorMap.put("maroon", Color.MAROON);
 		colorMap.put("fuchsia", Color.FUCHSIA);
 		colorMap.put("teal", Color.TEAL);
-
+		
 		PluginManager manager = getServer().getPluginManager();
 
 		this.hscheduler = new SchedulerHunger(this);
@@ -390,6 +405,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		manager.registerEvents(new SuitInventoryGUI(this), this);
 		manager.registerEvents(new Hammer(this), this);
 		manager.registerEvents(new HammerWeapons(this), this);
+		manager.registerEvents(new Man(this), this);
 		
 		
 	
@@ -443,7 +459,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 			spawnsuit(mp);
 		}
 		if (command.getName().equals("get")) {
-			Player p = getServer().getPlayer(sender.getName());
+			Player player = getServer().getPlayer(sender.getName());
 			if (args.length == 0) {
 				SuitUtils.Warn(spnSender, "Wrong Commands");
 			} else {
@@ -451,16 +467,21 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 
 				if (option.endsWith("commander")) {
 
-					p.getInventory().addItem(suitremote);
+					player.getInventory().addItem(suitremote);
 				} else if (option.endsWith("gun")) {
-					p.getInventory().addItem(gunitem);
+					player.getInventory().addItem(gunitem);
 				}
 				 else if (option.endsWith("launcher")) {
-						p.getInventory().addItem(missileLauncher);
+						player.getInventory().addItem(missileLauncher);
 					}
 				 else if (option.endsWith("hammer")) {
-						p.getInventory().addItem(Hammer);
-					}else {
+						player.getInventory().addItem(Hammer);
+					}else if(option.endsWith("man")){
+						player.getInventory().addItem(Chestplate_Man);
+						player.getInventory().addItem(Leggings_Man);
+						player.getInventory().addItem(Boots_Man);
+					}
+					else {
 						SuitUtils.Warn(spnSender, "Wrong Commands");
 				}
 
