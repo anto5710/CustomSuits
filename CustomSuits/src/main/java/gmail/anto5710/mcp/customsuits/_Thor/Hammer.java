@@ -24,7 +24,11 @@ import gmail.anto5710.mcp.customsuits.Utils.WeaponUtils;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Server;
 import org.bukkit.Sound;
+import org.bukkit.World;
+import org.bukkit.World.Environment;
+import org.bukkit.WorldType;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Damageable;
@@ -160,7 +164,7 @@ public class Hammer implements Listener {
 	public void BackToThor(PlayerInteractEvent event){
 		Player player = event.getPlayer();
 		if(event.getAction()==Action.LEFT_CLICK_AIR||event.getAction() ==Action.LEFT_CLICK_BLOCK){
-			if(!player.isSneaking()&&Thor(player)){
+			if(!player.isSneaking()&&player == thor){
 				
 					Location playerlocation = player.getLocation();
 					Item hammer =ThorUtils.getItem(player.getWorld() , player);
@@ -236,7 +240,7 @@ public class Hammer implements Listener {
 		Item item = event.getItem();
 		Player player =event.getPlayer();
 		if(SuitUtils.CheckItem(CustomSuitPlugin.Hammer, item.getItemStack())){
-				if(Thor(player)){
+				if(player==thor){
 					ThorUtils.remove(item);
 		
 				}else{
@@ -252,16 +256,61 @@ public class Hammer implements Listener {
 
 
 	
-	public static void toThor(Entity entity) {
-		if(entity instanceof Item){
-			Item item = (Item) entity;
-		if(thor==null){
+	@EventHandler
+	public void MoveWorldThor(PlayerInteractEvent event){
+		Player player = event.getPlayer();
+		if(!Thor(player)||!player.isSneaking()||player.getItemInHand().getType() !=Material.AIR){
 			return;
 		}
-		thor.getInventory().addItem(item.getItemStack());
-		entity.remove();
 		
-		}
+			if(event.getAction() ==Action.LEFT_CLICK_AIR||event.getAction() ==Action.LEFT_CLICK_BLOCK){
+				Location location = player.getLocation();	
+				Environment world_type  = player.getWorld().getEnvironment();
+				
+				if(event.getAction() ==Action.LEFT_CLICK_AIR){
+					if(player.getWorld().getEnvironment() ==Environment.THE_END){
+					world_type = Environment.NORMAL;
+					}
+					else{
+						world_type =Environment.THE_END;
+					}
+				}
+				else if(event.getAction()==Action.LEFT_CLICK_BLOCK)	{
+					if(player.getWorld().getEnvironment() ==Environment.NETHER){
+						world_type = Environment.NORMAL;
+					}else{
+					world_type =Environment.NETHER;
+					}
+				}
+				
+				
+			
+				World world=	getWorldByType(world_type , player);
+				location.setWorld(world);
+				location.setY(location.getY()+1);
+				ThorUtils.strikeLightning(player.getLocation(), player, 30, 0, 0);
+				SuitUtils.playEffect(player.getLocation(), Values.HammerTeleportEffect, 200, 0, 10);
+				SuitUtils.playEffect(player.getLocation(), Values.HammerHitGround, 100, 0, 10);
+				location = world.getSpawnLocation();
+				player.teleport(location);
+				
+				SuitUtils.playEffect(player.getLocation(), Values.HammerTeleportEffect, 200, 0, 10);
+				SuitUtils.playEffect(player.getLocation(), Values.HammerHitGround, 100, 0, 10);
+				ThorUtils.strikeLightning(location, player, 30, 0, 0);
+				player.playSound(player.getLocation(), Values.HammerTeleportSound, 16.0F, 16.0F);
+			}
+			
+		
+	}
+
+
+	private World getWorldByType(Environment world_type, Player player) {
+			for(World world : player.getServer().getWorlds()){
+				if(world.getEnvironment()==world_type){
+					return world;
+				}
+			}
+		return player.getWorld();
 	}
 
 
@@ -285,8 +334,7 @@ public class Hammer implements Listener {
 		player.updateInventory();
 
 		player.playSound(player.getLocation(), Values.ThorChangeSound, 7.0F, 7.0F);
-		player.getWorld().setStorm(true);
-		player.getWorld().setThundering(true);
+		
 		
 	}
 

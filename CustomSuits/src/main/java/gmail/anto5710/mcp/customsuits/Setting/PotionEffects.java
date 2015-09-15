@@ -4,7 +4,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class PotionEffects {
-	final public static PotionEffect Thor_HEALTH_BOOST= new PotionEffect(PotionEffectType.HEALTH_BOOST, 99999999, 20);
+	final public static PotionEffect Thor_HEALTH_BOOST= new PotionEffect(PotionEffectType.HEALTH_BOOST, 99999999, 45);
 	final public static PotionEffect Thor_INCREASE_DAMAGE =new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 99999999, 15);
 	final public static PotionEffect Thor_SPEED =new PotionEffect(PotionEffectType.SPEED, 99999999, 5);
 	final public static PotionEffect Thor_JUMP =new PotionEffect(PotionEffectType.JUMP, 99999999, 3);
