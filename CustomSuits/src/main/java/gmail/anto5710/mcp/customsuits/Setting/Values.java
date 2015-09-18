@@ -87,7 +87,7 @@ public class Values {
 	final public static int MachineGunAmmoAmount = 50;
 	final public static Material MachineGunAmmo = Material.FLINT;
 	
-	final public static double Bim = 35;
+	final public static double Bim = 15;
 	final public static float BimExplosionPower =4F ;
 	final public static int BimEffectRadius = 2;
 	final public static int BimEffectAmount =5 ;
@@ -104,7 +104,7 @@ public class Values {
 	final public static Sound SuitShieldSound = Sound.FUSE;
 	final public static int SuitShieldHunger = -18;
 	
-	final public static double Missile =75 ;
+	final public static double Missile =35 ;
 	final public static float MissileExplosionPower =50F ;
 	final public static int MissileEffectRadius = 2;
 	final public static int MissileEffectAmount =10 ;

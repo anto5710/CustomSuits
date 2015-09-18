@@ -11,7 +11,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.player.PlayerChannelEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 
 public class Man implements Listener{
@@ -20,14 +23,15 @@ public class Man implements Listener{
 		this.plugin = plugin;
 	}
 	@EventHandler
-	public void DamagedManPlayer(EntityDamageByEntityEvent event){
-		Entity Damager = event.getDamager();
+	public void DamagedManPlayer(EntityDamageEvent event){
+		
 		Entity Entity = event.getEntity();
 		
 		if(Entity instanceof Player){
 			Player player = (Player) Entity;
 			if(ManUtils.Man(player)){
-				ManUtils.setVisible(player);
+				
+				ManUtils.changeVisiblility(player , true ,false);
 			}
 		}
 	}
@@ -43,10 +47,15 @@ public class Man implements Listener{
 		}
 		
 			
-			ManUtils.setVisible(player);
+		ManUtils.changeVisiblility(player , true , true);
 			
 		return;
 		
 	
+	}
+	@EventHandler
+	public void Boost(PlayerToggleFlightEvent event){
+		Player player = event.getPlayer();
+		
 	}
 }
