@@ -65,7 +65,12 @@ public class ManUtils  {
 		return random;
 	}
 	public static void setInvisible(Player player){
-		SuitUtils.playEffect(player.getLocation(), Values.ManInvisibleEffect, 150, 0, 100);
+		try {
+			
+			SuitUtils.playEffect(player.getLocation(), Values.ManInvisibleEffect, 150, 0, 100);
+		} catch (NullPointerException e) {
+			
+		}
 		player.playSound(player.getLocation(), Values.ManInvisibleSound, 16.0F, 16.0F);
 		PlayerEffect.addpotion(PotionEffects.Man_Invisiblility , player);
 		PlayerEffect.addpotion(PotionEffects.Man_Invisible_SPEED , player);
