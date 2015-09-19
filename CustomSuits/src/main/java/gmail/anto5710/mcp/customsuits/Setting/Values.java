@@ -23,11 +23,16 @@ import org.bukkit.potion.PotionEffectType;
 public class Values {
 	
 	
+	final public static Effect ManBoostEffect = Effect.COLOURED_DUST;
 	
 	final public static Sound ManInvisibleSound = Sound.SHOOT_ARROW;
 	final public static Sound ManvisibleSound = Sound.IRONGOLEM_DEATH;
 	final public static Effect ManInvisibleEffect = Effect.SMOKE;
+	final public static Effect ManInvisibleMoveEffect = Effect.SMALL_SMOKE;
 	final public static Effect ManvisibleEffect = Effect.MOBSPAWNER_FLAMES;
+	final public static Effect ManvisibleMoveEffect = Effect.FLAME;
+	final public static int ManBoostHunger = -10;
+	final public static double ManDeafultDamage = 8;
    
 
 	final public static double HammerDamage = 20;
@@ -118,6 +123,7 @@ public class Values {
 	final public static float LauncherPower = 5;
 	final public static Material LauncherAmmo = Material.FIREWORK_CHARGE;
 	final public static Sound LauncherSound= Sound.FIREWORK_LAUNCH; 
+	
 	
 	
 	

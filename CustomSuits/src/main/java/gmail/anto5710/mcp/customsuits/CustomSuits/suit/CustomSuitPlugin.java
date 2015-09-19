@@ -57,6 +57,7 @@ import org.bukkit.entity.Horse.Style;
 import org.bukkit.entity.Horse.Variant;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.IronGolem;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.MagmaCube;
 import org.bukkit.entity.PigZombie;
@@ -173,6 +174,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 	
 	public static ItemStack Boots_Man = new ItemStack(Material.IRON_BOOTS);
 	
+	public static ItemStack Sword_Man = new ItemStack(Material.GOLD_SWORD, 1, (short) Values.ManDeafultDamage);
 	
 	
 
@@ -225,6 +227,29 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		Enchant.enchantment(Boots_Thor, Enchantment.THORNS, 15, true);
 		Enchant.enchantment(Boots_Thor, Enchantment.DURABILITY, 50, true);
 		Enchant.enchantment(Boots_Thor, Enchantment.PROTECTION_FALL, 15, true);
+		
+		
+		Enchant.enchantment(Chestplate_Man, Enchantment.THORNS, 8, true);
+		Enchant.enchantment(Chestplate_Man, Enchantment.PROTECTION_ENVIRONMENTAL, 8, true);
+		Enchant.enchantment(Chestplate_Man, Enchantment.DURABILITY, 8, true);
+		Enchant.enchantment(Leggings_Man, Enchantment.THORNS, 8, true);
+		Enchant.enchantment(Leggings_Man, Enchantment.DURABILITY, 8, true);
+		Enchant.enchantment(Leggings_Man, Enchantment.PROTECTION_ENVIRONMENTAL, 8, true);
+		Enchant.enchantment(Boots_Man, Enchantment.THORNS, 8, true);
+		Enchant.enchantment(Boots_Man, Enchantment.DURABILITY, 8, true);
+		Enchant.enchantment(Boots_Man, Enchantment.PROTECTION_FALL, 8, true);
+		
+		Enchant.enchantment(Sword_Man, Enchantment.DAMAGE_ALL, 10, true);
+
+		Enchant.enchantment(Sword_Man, Enchantment.FIRE_ASPECT, 10, true);
+
+		Enchant.enchantment(Sword_Man, Enchantment.LOOT_BONUS_MOBS, 10, true);
+
+		Enchant.enchantment(Sword_Man, Enchantment.KNOCKBACK, 10, true);
+
+		Enchant.enchantment(Sword_Man, Enchantment.DURABILITY, 10, true);
+		SetDisplayName(ChatColor.YELLOW+"Sword Of Killer",Sword_Man);
+		
 		Color Chestplate_Man_Color = Color.fromRGB(217, 206, 206);
 		Color Leggings_Man_Color = Color.fromRGB(31, 28, 28);
 		
@@ -328,6 +353,13 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		
 		SetDisplayName(ChatColor.GOLD+"Mjöllnir",Hammer );
 
+		SetDisplayName(ChatColor.GRAY+"Leggings", Leggings_Man);
+		SetDisplayName(ChatColor.GRAY
+				+"ChestPlate", Chestplate_Man);
+		SetDisplayName(ChatColor.GRAY+"Boots", Boots_Man);
+
+		
+		
 		CommandInventory.setItem(0, new ItemStack(Material.IRON_FENCE));
 		CommandInventory.setItem(1, helmetM);
 		CommandInventory.setItem(2, new ItemStack(Material.IRON_FENCE));
@@ -343,7 +375,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 
 		SetDisplayName(ChatColor.RED + "[Suit Commander]", suitremote);
 
-		SetDisplayName(ChatColor.RED + "[Knif-1120] " + Values.regex
+		SetDisplayName(ChatColor.RED + "[Knif-1220] " + Values.regex
 				+ WeaponListner.maxformachine + Values.regex
 				+ WeaponListner.maxforsniper, gunitem);
 		SetDisplayName(ChatColor.DARK_RED+"[Launcher]", missileLauncher);
@@ -443,7 +475,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 					for(String key : colorMap.keySet()){
 						
 						
-						spnSender.sendMessage(ChatColor.BLUE+"[Input]: "+ChatColor.AQUA+key );
+						spnSender.sendMessage(ChatColor.BLUE+"[Input]: "+ChatColor.WHITE+key );
 					}
 				}
 					else{
@@ -480,6 +512,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 						player.getInventory().addItem(Chestplate_Man);
 						player.getInventory().addItem(Leggings_Man);
 						player.getInventory().addItem(Boots_Man);
+						player.getInventory().addItem(Sword_Man);
 					}
 					else {
 						SuitUtils.Warn(spnSender, "Wrong Commands");

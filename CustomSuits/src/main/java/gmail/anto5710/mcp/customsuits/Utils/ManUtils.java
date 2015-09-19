@@ -59,11 +59,19 @@ public class ManUtils  {
 		}
 
 	}
+	public static double Random(double a){
+		double b = a / 2;
+		double random = (Math.random() * a) - b;
+		return random;
+	}
 	public static void setInvisible(Player player){
 		SuitUtils.playEffect(player.getLocation(), Values.ManInvisibleEffect, 150, 0, 100);
 		player.playSound(player.getLocation(), Values.ManInvisibleSound, 16.0F, 16.0F);
+		PlayerEffect.addpotion(PotionEffects.Man_Invisiblility , player);
+		PlayerEffect.addpotion(PotionEffects.Man_Invisible_SPEED , player);
 		for (Player playerOnline : player.getServer().getOnlinePlayers()) {
 			playerOnline.hidePlayer(player);
+			
 
 		}
 
@@ -73,6 +81,8 @@ public class ManUtils  {
 	public static void setVisible(Player player){
 		SuitUtils.playEffect(player.getLocation(), Values.ManvisibleEffect, 10, 0, 10);
 		player.playSound(player.getLocation(), Values.ManvisibleSound, 16.0F, 16.0F);
+		ThorUtils.removePotionEffect(PotionEffects.Man_Invisiblility, player);
+		ThorUtils.removePotionEffect(PotionEffects.Man_Invisible_SPEED , player);
 		for (Player playerOnline : player.getServer().getOnlinePlayers()) {
 			if (!playerOnline.canSee(player)) {
 				playerOnline.showPlayer(player);
@@ -82,9 +92,9 @@ public class ManUtils  {
 		}
 		RepeatMan.removePlayer(player);
 	}
-	public static boolean CanSee(Player player){
+	public static boolean CanSee(Player player , boolean CanSee){
 		for(Player playerOnline : player.getServer().getOnlinePlayers()){
-			if(playerOnline.canSee(player)){
+			if(playerOnline.canSee(player) == CanSee){
 				return true;
 			}
 		}
