@@ -46,7 +46,7 @@ public class ThorUtils {
 			double z = radius * Math.sin(angle);
 			Location loc = player.getLocation().add(x, 1, z);
 			SuitUtils.createExplosion(loc, power, setFire, BreakBlocks);
-			damage(WeaponListner.findEntity(loc, player, 5.5),
+			damage(WeaponListner.findEntity(loc, player, 6.5),
 					 damage, player);
 		}
 	}
@@ -100,15 +100,13 @@ public class ThorUtils {
 
 	}
 
-	public static void cancel(int taskId) {
+	public static void cancel(int taskId) throws IllegalStateException{
 
 		BukkitScheduler scheduler = Bukkit.getScheduler();
-		try {
+	
 			
 			scheduler.cancelTask(taskId);
-		} catch (IllegalStateException e) {
-			
-		}
+		
 
 	}
 

@@ -65,7 +65,9 @@ public class RepeatMan extends BukkitRunnable{
 				
 			
 			ManUtils.HiddenPlayers.add(player);
+			if(!thisThread.isInterrupted()){
 			thisThread.interrupt();
+			}
 			}
 		}
 		public static void removePlayer (Player player ){

@@ -231,7 +231,7 @@ public class WeaponListner implements Listener {
 
 		setOption(isMissile, player);
 
-		damage = damage * (CustomSuitPlugin.getLevel(player)  + 1);
+		damage = damage * (CustomSuitPlugin.getLevel(player)/64+1);
 
 		Effect effect = Values.SuitProjectileEffect;
 		int data = Material.ANVIL.getId();

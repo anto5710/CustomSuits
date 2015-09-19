@@ -74,7 +74,7 @@ public class Hammer implements Listener {
 	
 	static float Power = Values.HammerExplosionPower;
 	
-	static Player thor;
+	static Player thor = null;
 
 	public Hammer(CustomSuitPlugin plugin) {
 		this.plugin = plugin;
@@ -137,29 +137,13 @@ public class Hammer implements Listener {
 								.addPotionEffect(new PotionEffect(
 										PotionEffectType.WEAKNESS, 100, 100));
 					}
-					ThorUtils.strikeLightning(entity.getLocation(), player, 10, 1.5, HammerDeafultDamage/10);
+					ThorUtils.strikeLightning(entity.getLocation(), player, 10, 1.5, Values.LightningMissile);
 				}
 			}
 		}
 	}
 	
-	@EventHandler
-	public void Lightning(PlayerInteractEvent event) {
-		Player player = event.getPlayer();
-		if (event.getAction() == Action.LEFT_CLICK_AIR
-				|| event.getAction() == Action.LEFT_CLICK_BLOCK) {
-			if (SuitUtils.CheckItem(CustomSuitPlugin.Hammer,
-					player.getItemInHand())
-					&& Thor(player)&&SchedulerHunger.hunger(player, Values.LightningMissileHunger)) {
-				Location targetblock = SuitUtils.getTargetBlock(player, 300).getLocation();
-				SuitUtils.LineParticle(targetblock, player.getEyeLocation(), player, Effect.LAVA_POP, 5, 0, 2, HammerDeafultDamage, 2, true);
-				
-				ThorUtils.strikeLightning(targetblock, player, 1, 2.5, HammerDeafultDamage);
-				SuitUtils.createExplosion(targetblock, Power, false, true);
-				}
-			}
-		
-	}
+
 	@EventHandler
 	public void BackToThor(PlayerInteractEvent event){
 		Player player = event.getPlayer();
@@ -240,11 +224,11 @@ public class Hammer implements Listener {
 		Item item = event.getItem();
 		Player player =event.getPlayer();
 		if(SuitUtils.CheckItem(CustomSuitPlugin.Hammer, item.getItemStack())){
-				if(player==thor){
+				if(player==thor||thor==null){
 					ThorUtils.remove(item);
 		
 				}else{
-					SuitUtils.playEffect(player.getEyeLocation(), Effect.STEP_SOUND, 5, Material.IRON_BLOCK.getId(), 2);
+					SuitUtils.playEffect(player.getEyeLocation(),Values.HammerPickUpCancel, 2, Values.HammerPickUpCancel_Data, 1);
 					player.playSound(player.getLocation(), Sound.IRONGOLEM_DEATH, 10F, 8F);
 					
 					event.setCancelled(true);

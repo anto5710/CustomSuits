@@ -47,7 +47,7 @@ public class Man implements Listener{
 		
 		if(Entity instanceof Player){
 			Player player = (Player) Entity;
-			if(ManUtils.Man(player)){
+			if(ManUtils.Man(player)&&ManUtils.HiddenPlayers.contains(player)){
 				
 				ManUtils.changeVisiblility(player , true ,false);
 				
@@ -63,7 +63,7 @@ public class Man implements Listener{
 		}
 		Player player = (Player)damager;
 		if(ManUtils.Man(player)){
-			if(SuitUtils.checkName(CustomSuitPlugin.Sword_Man, player.getItemInHand())){
+			if(SuitUtils.CheckItem(CustomSuitPlugin.Sword_Man, player.getItemInHand())){
 				double addDamage_Random = ManUtils.Random(100);
 				
 				event.setDamage((1+addDamage_Random/100)*event.getDamage());
@@ -93,7 +93,7 @@ public class Man implements Listener{
 	}
 
 	@EventHandler
-	public void ManMove(PlayerMoveEvent event){
+	public void ManMove(PlayerMoveEvent event) throws NullPointerException{
 		Player player = event.getPlayer();
 		if(!ManUtils.Man(player)){
 			ThorUtils.removePotionEffect(PotionEffects.Man_FIRE_RESISTANCE, player);

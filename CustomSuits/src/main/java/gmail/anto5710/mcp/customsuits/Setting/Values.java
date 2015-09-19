@@ -36,16 +36,18 @@ public class Values {
    
 
 	final public static double HammerDamage = 20;
-	final public static double LightningMissile = 20 ;
+	final public static double LightningMissile = 25 ;
 	final public static int LightningMissileHunger = -1;
-	final public static double HammerExplosionRing = 20;
-	final public static float HammerExplosionPower = 5;
+	final public static double HammerExplosionRing = 60;
+	final public static float HammerExplosionPower = 10;
 	final public static int HammerExplosionRingHunger = -4;
 	final public static Sound ThorChangeSound = Sound.ENDERMAN_STARE;
 	final public static Effect HammerDefaultEffect = Effect.LAVA_POP;
 	final public static Effect HammerTeleportEffect =Effect.PORTAL;
 	final public static Effect HammerBackEffect = Effect.HEART;
 	final public static Effect HammerHitGround = Effect.ENDER_SIGNAL;
+	final public static Effect HammerPickUpCancel = Effect.STEP_SOUND;
+	final public static int HammerPickUpCancel_Data = Material.IRON_BLOCK.getId();
 	final public static Sound HammerTeleportSound = Sound.ENDERMAN_TELEPORT;
 	
 	final public static Material SuitLauncher = Material.NETHER_STAR;
@@ -76,7 +78,7 @@ public class Values {
 	final public static int SuitEnoughFly = 10;
 	final public static String FlyEnergyWarn ="FlySpeed Decreasing";
 	
-	final public static double SniperDamage =30 ;
+	final public static double SniperDamage =20 ;
 	final public static double SniperRadius = 0.75;
 	final public static int SniperEffectRadius =2 ;
 	final public static int SniperEffectAmount =8 ;
@@ -88,11 +90,11 @@ public class Values {
 	final public static String SuitName = "[Mark]";
 	
 	
-	final public static double MachineGunDamage =6 ;
+	final public static double MachineGunDamage =16 ;
 	final public static int MachineGunAmmoAmount = 50;
 	final public static Material MachineGunAmmo = Material.FLINT;
 	
-	final public static double Bim = 15;
+	final public static double Bim = 12;
 	final public static float BimExplosionPower =4F ;
 	final public static int BimEffectRadius = 2;
 	final public static int BimEffectAmount =5 ;
@@ -109,7 +111,7 @@ public class Values {
 	final public static Sound SuitShieldSound = Sound.FUSE;
 	final public static int SuitShieldHunger = -18;
 	
-	final public static double Missile =35 ;
+	final public static double Missile =20 ;
 	final public static float MissileExplosionPower =50F ;
 	final public static int MissileEffectRadius = 2;
 	final public static int MissileEffectAmount =10 ;

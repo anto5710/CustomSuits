@@ -92,7 +92,7 @@ public class PlayerEffect implements Listener {
 		Material material = Material.STONE;
 		Player player = moveevent.getPlayer();
 
-		Boolean m = false;
+		Boolean IsOnAir = false;
 		if (!CustomSuitPlugin.MarkEntity(player)) {
 			return;
 		}
@@ -110,39 +110,39 @@ public class PlayerEffect implements Listener {
 			addpotion(new PotionEffect(PotionEffectType.HEALTH_BOOST, 99999999,
 					5 + ((int) level / 16)), player);
 			addpotion(new PotionEffect(PotionEffectType.INCREASE_DAMAGE,
-					99999999, 6 + ((int) level / 16)), player);
+					99999999, 5 + ((int) level / 16)), player);
 			addpotion(new PotionEffect(PotionEffectType.SPEED, 99999999,
-					5 + ((int) level / 32)), player);
+					3 + ((int) level / 32)), player);
 			addpotion(new PotionEffect(PotionEffectType.WATER_BREATHING,
 					99999999, 5 + level), player);
 			addpotion(new PotionEffect(PotionEffectType.JUMP, 99999999, 2),
 					player);
 			addpotion(new PotionEffect(PotionEffectType.REGENERATION, 99999999,
-					8 + (int) level / 16), player);
+					6 + (int) level / 16), player);
 			
 
 			Location baseLocation = player.getLocation();
 			if (player.isFlying()) {
-				m = true;
+				IsOnAir = true;
 			} else if (player.isFlying() == false && player.isOnGround()) {
-				Location ploc = player.getLocation();
+				Location playerLocation = player.getLocation();
 				Double playerY = player.getLocation().getY() - 1;
-				ploc.setY(playerY);
-				if (ploc.getBlock().getType() != Material.AIR) {
-					material = ploc.getBlock().getType();
+				playerLocation.setY(playerY);
+				if (playerLocation.getBlock().getType() != Material.AIR) {
+					material = playerLocation.getBlock().getType();
 				} else {
-					m = true;
+					IsOnAir = true;
 				}
 			} else {
-				m = true;
+				IsOnAir = true;
 			}
-			if (m) {
+			if (IsOnAir) {
 
-				SuitUtils.playEffect(baseLocation, Values.SuitDefaultFlyEffect, 3,
-						0, 40);
+				SuitUtils.playEffect(baseLocation, Values.SuitDefaultFlyEffect, 1,
+						0, 5);
 			} else {
-				SuitUtils.playEffect(baseLocation, Values.SuitOnGroundEffect, 3,
-						material.getId(), 40);
+				SuitUtils.playEffect(baseLocation, Values.SuitOnGroundEffect, 1,
+						material.getId(), 5);
 			}
 
 		}

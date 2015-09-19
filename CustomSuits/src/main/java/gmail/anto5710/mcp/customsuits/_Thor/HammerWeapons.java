@@ -6,6 +6,7 @@ import gmail.anto5710.mcp.customsuits.Setting.Values;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 import gmail.anto5710.mcp.customsuits.Utils.ThorUtils;
 
+import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -26,6 +27,24 @@ public class HammerWeapons implements Listener{
 	public HammerWeapons(CustomSuitPlugin plugin){
 		this.plugin = plugin;
 	}
+	@EventHandler
+	public void Lightning(PlayerInteractEvent event) {
+		Player player = event.getPlayer();
+		if (event.getAction() == Action.RIGHT_CLICK_AIR
+				|| event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+			if (
+					player.getItemInHand().getType() ==Material.AIR
+					&& Hammer.Thor(player)&&SchedulerHunger.hunger(player, Values.LightningMissileHunger)) {
+				Location targetblock = SuitUtils.getTargetBlock(player, 300).getLocation();
+				SuitUtils.LineParticle(targetblock, player.getEyeLocation(), player, Effect.LAVA_POP, 3, 0, 2, Values.LightningMissile, 2, true);
+				
+				ThorUtils.strikeLightning(targetblock, player, 1, 4.5, Values.LightningMissile);
+				SuitUtils.createExplosion(targetblock, Hammer.Power, false, true);
+				}
+			}
+		
+	}
+	
 	@EventHandler
 	public void ThrowHammer(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
@@ -89,10 +108,10 @@ public class HammerWeapons implements Listener{
 			if (Hammer.Thor(player)
 					&& SuitUtils.CheckItem(CustomSuitPlugin.Hammer,
 							player.getItemInHand()) && player.isSneaking()&&SchedulerHunger.hunger(player, Values.HammerExplosionRingHunger)) {
-				for (double count = 2; count < 50; count+=0.5) {
+				
 					player.setNoDamageTicks(20);
-					ThorUtils.getRing(6, player, Values.HammerExplosionPower, Values.HammerExplosionRing, false, false);
-				}
+					ThorUtils.getRing(20, player, Values.HammerExplosionPower, Values.HammerExplosionRing, false, true);
+				
 			}
 		}
 	}

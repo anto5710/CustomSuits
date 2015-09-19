@@ -58,19 +58,20 @@ public class SchedulerHunger extends BukkitRunnable {
 		
 			if (this.playerQueue.isEmpty()) {
 				this.mainPlugin.logger.info("EMPTY QUEUQ");
+				
 				ThorUtils.cancel(getTaskId());
 				
 			
 			}else{
-			Iterator<Player> itr = getPlayer().iterator();
+			Iterator<Player> itrerator = getPlayer().iterator();
 			
 			
-			while (itr.hasNext()) {
+			while (itrerator.hasNext()) {
 				
 
 				if (playerQueue.size() == 1) {
-					Player p = itr.next();
-					EffectRun(p);
+					Player player = itrerator.next();
+					EffectRun(player);
 				} else if (playerQueue.size() > 1) {
 					for (Player p : playerQueue) {
 						EffectRun(p);
@@ -81,6 +82,8 @@ public class SchedulerHunger extends BukkitRunnable {
 			}
 		
 	}
+	
+
 	public void EffectRun(Player player) {
 		
 	

@@ -650,7 +650,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 				}
 				p.sendMessage(ChatColor.BLUE + "[Info]: "+ChatColor.AQUA + "Teleported Suit----");
 				isPlayed = true;
-				sleep(100);
+				
 			}
 		}
 		if (!isPlayed) {
@@ -718,9 +718,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 			SuitUtils.Warn(spnSender, Values.CantFindEntityType);
 			return;
 		}
-		if(!colorMap.containsKey(Color.toLowerCase())){
-			Color = null;
-		}
+		
 
 		int height = 1;
 		int width = 1;
@@ -975,17 +973,52 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		livingEntity.setCustomName(player.getName() + "|" + Values.SuitName);
 		ItemStack itemForCreature = createItemForCreature(livingEntity);
 		livingEntity.getEquipment().setItemInHand(itemForCreature);
-
-		 Color icolor = colorMap.get(color);
-		
+		Color icolor = Color.RED;
+		Color HelmetColor  = icolor;
+		Color ChestplateColor = icolor;
+		Color LeggingsColor = icolor;
+		Color BootsColor = icolor;
+		if(colorMap.containsKey(color)){
+		  icolor = colorMap.get(color);
+		}else{
+			if(color.contains(":")){
+				String[]Colors =  color.split(":");
+				if(Colors.length>=1){
+					if(Colors[0]!=null){
+						if(colorMap.containsKey(Colors[0])){
+							HelmetColor = colorMap.get(Colors[0]);
+						}
+					}
+				}
+				if(Colors.length>=2){
+					if(Colors[1]!=null){
+						if(colorMap.containsKey(Colors[1])){
+							ChestplateColor = colorMap.get(Colors[1]);
+						}
+					}
+				}
+				if(Colors.length>=3){
+					if(Colors[2]!=null){
+						if(colorMap.containsKey(Colors[2])){
+							LeggingsColor = colorMap.get(Colors[2]);
+						}
+					}
+				}
+				if(Colors.length>=4){
+					if(Colors[3]!=null){
+						if(colorMap.containsKey(Colors[3])){
+							BootsColor = colorMap.get(Colors[3]);
+						}
+					}
+				}
+			}
+		}
 		 
 		
 		
 			int level = equipment.get(player).getItem(8).getAmount();
 
-			// warrior 이거나 archer인 경우는 갑옷을 입히기 위해서 별도의 처리를 해줍니다.
-			// Material item = Material.LEATHER_BOOTS;
-			// Material hell = Material.LEATHER_HELMET;
+			
 
 			livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY,
 					999999990, 10));
@@ -994,7 +1027,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 			ItemStack helmetitem = inventoryitem.getItem(0);
 
 			if (helmetitem != null) {
-				addData(helmetitem, helmetequipment, level, player, CustomColor, icolor);
+				addData(helmetitem, helmetequipment, level, player, CustomColor, HelmetColor);
 
 				livingEntity.getEquipment().setHelmet(new ItemStack(helmetitem));
 				livingEntity.getEquipment().setHelmetDropChance(0F);
@@ -1002,7 +1035,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 			}
 			ItemStack chestplate = inventoryitem.getItem(2);
 			if (chestplate != null) {
-				addData(chestplate, chestequipment, level, player, CustomColor, icolor);
+				addData(chestplate, chestequipment, level, player, CustomColor, ChestplateColor);
 
 				livingEntity.getEquipment().setChestplate(new ItemStack(chestplate));
 				livingEntity.getEquipment().setChestplateDropChance(0F);
@@ -1010,7 +1043,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 			}
 			ItemStack leggings = inventoryitem.getItem(4);
 			if (leggings != null) {
-				addData(leggings, leggingsequipment, level, player, CustomColor , icolor);
+				addData(leggings, leggingsequipment, level, player, CustomColor , LeggingsColor);
 
 				livingEntity.getEquipment().setLeggings(new ItemStack(leggings));
 				livingEntity.getEquipment().setLeggingsDropChance(0F);
@@ -1019,7 +1052,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 			ItemStack boots = inventoryitem.getItem(6);
 			if (boots != null) {
 
-				addData(boots, bootsequipment, level, player, CustomColor, icolor);
+				addData(boots, bootsequipment, level, player, CustomColor, BootsColor);
 				livingEntity.getEquipment().setBoots(new ItemStack(boots));
 			}
 
