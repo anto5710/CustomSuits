@@ -34,9 +34,10 @@ import org.bukkit.potion.PotionEffectType;
 
 public class Man implements Listener{
 	CustomSuitPlugin plugin;
-	
 	public Man(CustomSuitPlugin plugin){
 		this.plugin = plugin;
+		ManUtils manutils = new ManUtils(plugin);
+		
 	}
 	@EventHandler
 	public void DamagedManPlayer(EntityDamageEvent event){
@@ -80,12 +81,12 @@ public class Man implements Listener{
 		}
 		if(SuitUtils.CheckItem(CustomSuitPlugin.Sword_Man, player.getItemInHand())&&SchedulerHunger.hunger(player, Values.ManBoostHunger)){
 			
+			PlayerEffect.addpotion(PotionEffects.Man_BOOST_REGENARATION, player);
 			PlayerEffect.addpotion(PotionEffects.Man_BOOST_HEALTH_BOOST, player);
 			PlayerEffect.addpotion(PotionEffects.Man_BOOST_SPEED, player);
 			PlayerEffect.addpotion(PotionEffects.Man_BOOST_JUMP, player);
-			PlayerEffect.addpotion(PotionEffects.Man_BOOST_REGENARATION, player);
 			PlayerEffect.addpotion(PotionEffects.Man_BOOST_INCREASE_DAMAGE, player);
-		
+			
 			
 			
 			
@@ -93,20 +94,10 @@ public class Man implements Listener{
 	}
 
 	@EventHandler
-	public void ManMove(PlayerMoveEvent event) throws NullPointerException{
+	public void ManMoveEffect(PlayerMoveEvent event) throws NullPointerException{
 		Player player = event.getPlayer();
-		if(!ManUtils.Man(player)){
-			ThorUtils.removePotionEffect(PotionEffects.Man_FIRE_RESISTANCE, player);
-			ThorUtils.removePotionEffect(PotionEffects.Man_HEALTH_BOOST, player);
-			ThorUtils.removePotionEffect(PotionEffects.Man_INCREASE_DAMAGE, player);
-			ThorUtils.removePotionEffect(PotionEffects.Man_JUMP, player);
-			ThorUtils.removePotionEffect(PotionEffects.Man_SPEED, player);
-			ThorUtils.removePotionEffect(PotionEffects.Man_WATER_BREATHING, player);
-			ThorUtils.removePotionEffect(PotionEffects.Man_WATER_BREATHING, player);
-			ThorUtils.removePotionEffect(PotionEffects.Man_REGENARATION, player);
-			
-			return;
-		}
+	
+		
 		if(Boost(player)){
 			
 				SuitUtils.playEffect(player.getLocation(), Values.ManBoostEffect, 40,0, 5);
@@ -119,7 +110,14 @@ public class Man implements Listener{
 			SuitUtils.playEffect(player.getLocation(), Values.ManvisibleMoveEffect, 1, 0, 1);
 			}
 		}
-		if(!Boost(player)){
+		
+			
+	}
+	@EventHandler
+	public void ManMovePotionEffect(PlayerMoveEvent event){
+		Player player = event.getPlayer();
+		if(ManUtils.Man(player)){
+			if(!Boost(player)){
 			if(!ManUtils.HiddenPlayers.contains(player)){
 				PlayerEffect.addpotion(PotionEffects.Man_SPEED, player);
 			}
@@ -129,14 +127,33 @@ public class Man implements Listener{
 			PlayerEffect.addpotion(PotionEffects.Man_JUMP, player);
 			PlayerEffect.addpotion(PotionEffects.Man_WATER_BREATHING, player);
 			PlayerEffect.addpotion(PotionEffects.Man_REGENARATION, player);
-		
+			}
+		}else if(!CustomSuitPlugin.hasAbillity(player)){
+			removeManEffect(player);
 		}
-			
-	}	
+	}
+	private void removeManEffect(Player player) {
+		ThorUtils.removePotionEffect(PotionEffects.Man_FIRE_RESISTANCE, player);
+		ThorUtils.removePotionEffect(PotionEffects.Man_HEALTH_BOOST, player);
+		ThorUtils.removePotionEffect(PotionEffects.Man_INCREASE_DAMAGE, player);
+		ThorUtils.removePotionEffect(PotionEffects.Man_Invisiblility, player);
+		
+	
+		
+		
+		ThorUtils.removePotionEffect(PotionEffects.Man_JUMP, player);
+		ThorUtils.removePotionEffect(PotionEffects.Man_SPEED, player);
+		ThorUtils.removePotionEffect(PotionEffects.Man_WATER_BREATHING, player);
+		ThorUtils.removePotionEffect(PotionEffects.Man_WATER_BREATHING, player);
+		ThorUtils.removePotionEffect(PotionEffects.Man_REGENARATION, player);
+		
+	}
 	public static boolean Boost(Player player) {
 		if(PlayerEffect.ContainPotionEffect(player, PotionEffects.Man_BOOST_HEALTH_BOOST.getType(), PotionEffects.Man_BOOST_HEALTH_BOOST.getAmplifier())&&
 				PlayerEffect.ContainPotionEffect(player, PotionEffects.Man_BOOST_JUMP.getType(), PotionEffects.Man_BOOST_JUMP.getAmplifier())&&
-				PlayerEffect.ContainPotionEffect(player, PotionEffects.Man_BOOST_SPEED.getType(), PotionEffects.Man_BOOST_SPEED.getAmplifier()))
+				PlayerEffect.ContainPotionEffect(player, PotionEffects.Man_BOOST_SPEED.getType(), PotionEffects.Man_BOOST_SPEED.getAmplifier())&&
+				PlayerEffect.ContainPotionEffect(player, PotionEffects.Man_BOOST_REGENARATION.getType(), PotionEffects.Man_BOOST_REGENARATION.getAmplifier())&&
+				PlayerEffect.ContainPotionEffect(player, PotionEffects.Man_BOOST_INCREASE_DAMAGE.getType(), PotionEffects.Man_BOOST_INCREASE_DAMAGE.getAmplifier()))
 			
 				{
 			return true;
@@ -161,9 +178,5 @@ public class Man implements Listener{
 		
 	
 	}
-	@EventHandler
-	public void Boost(PlayerToggleFlightEvent event){
-		Player player = event.getPlayer();
-		
-	}
+	
 }

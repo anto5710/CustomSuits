@@ -31,8 +31,10 @@ public class Values {
 	final public static Effect ManInvisibleMoveEffect = Effect.SMALL_SMOKE;
 	final public static Effect ManvisibleEffect = Effect.MOBSPAWNER_FLAMES;
 	final public static Effect ManvisibleMoveEffect = Effect.FLAME;
+	final public static int ManInvisibleHunger = -1;
 	final public static int ManBoostHunger = -10;
 	final public static double ManDeafultDamage = 8;
+	final public static long ManHungerDealy = 60;
    
 
 	final public static double HammerDamage = 20;
@@ -41,6 +43,7 @@ public class Values {
 	final public static double HammerExplosionRing = 60;
 	final public static float HammerExplosionPower = 10;
 	final public static int HammerExplosionRingHunger = -4;
+	final public static float HammerExplosionRingRadius = 20;
 	final public static Sound ThorChangeSound = Sound.ENDERMAN_STARE;
 	final public static Effect HammerDefaultEffect = Effect.LAVA_POP;
 	final public static Effect HammerTeleportEffect =Effect.PORTAL;
@@ -77,20 +80,28 @@ public class Values {
 	final public static int SuitFlyDisableWhen = 2;
 	final public static int SuitEnoughFly = 10;
 	final public static String FlyEnergyWarn ="FlySpeed Decreasing";
+	final public static int SuitFlyHunger = -2;
+	final public static int SuitHungerRelod = 1;
+	final public static long SuitHungerDelay = 60;
+	   
+	final public static int spawnSuit_max_target_distance = 200;
+		   
 	
 	final public static double SniperDamage =20 ;
 	final public static double SniperRadius = 0.75;
 	final public static int SniperEffectRadius =2 ;
-	final public static int SniperEffectAmount =8 ;
+	final public static int SniperEffectAmount =3 ;
 	final public static int SnipeAmmoAmount =8 ;
 	final public static Material SniperAmmo = Material.GHAST_TEAR;
+	final public static Effect SniperEffect = Effect.SMALL_SMOKE;
 	
 	final public static String regex = ChatColor.GOLD+" 【《 》】 "+ChatColor.YELLOW;
 	final public static String SuitInforegex = ChatColor.DARK_AQUA+":"+ChatColor.AQUA;
 	final public static String SuitName = "[Mark]";
 	
 	
-	final public static double MachineGunDamage =16 ;
+	final public static double MachineGunDamage =12 ;
+	final public static double MachineGunDamageRadiues =1.5 ;
 	final public static int MachineGunAmmoAmount = 50;
 	final public static Material MachineGunAmmo = Material.FLINT;
 	

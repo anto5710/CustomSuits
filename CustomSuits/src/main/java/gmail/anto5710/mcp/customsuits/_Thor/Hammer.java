@@ -4,6 +4,7 @@ import java.lang.annotation.Target;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 import java.util.Vector;
 
@@ -15,8 +16,10 @@ import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.PlayerEffect;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.SchedulerHunger;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.WeaponListner;
+import gmail.anto5710.mcp.customsuits.Man.Man;
 import gmail.anto5710.mcp.customsuits.Setting.PotionEffects;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
+import gmail.anto5710.mcp.customsuits.Utils.ManUtils;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 import gmail.anto5710.mcp.customsuits.Utils.ThorUtils;
 import gmail.anto5710.mcp.customsuits.Utils.WeaponUtils;
@@ -80,11 +83,24 @@ public class Hammer implements Listener {
 		this.plugin = plugin;
 	}
 	
-	
+	@EventHandler
+	public void DefendOfThor(EntityDamageEvent event){
+		Entity  entity = event.getEntity();
+		if(entity instanceof Player){
+			Player  player= (Player )entity;
+			if(Thor(player)){
+				double addDamage_Random = ThorUtils.Random(100);
+				event.setDamage((1+addDamage_Random/100)*event.getDamage());
+			}
+		}
+	}
 	@EventHandler
 	public void ThorMove(PlayerMoveEvent event) {
 		Player player = event.getPlayer();
 		if (Thor(player)) {
+			if(thor ==null){
+				thor = player;
+			}
 			Location location = player.getLocation();
 
 			SuitUtils.playEffect(location, Effect.MAGIC_CRIT, 15, 0, 4);
@@ -97,7 +113,7 @@ public class Hammer implements Listener {
 			PlayerEffect.addpotion(PotionEffects.Thor_SPEED, player);
 			PlayerEffect.addpotion(PotionEffects.Thor_WATER_BREATHING, player);
 		}
-		else if(!CustomSuitPlugin.MarkEntity(player)){
+		else if(!CustomSuitPlugin.hasAbillity(player)){
 			ThorUtils.removePotionEffect(PotionEffects.Thor_FAST_DIGGING, player);
 			ThorUtils.removePotionEffect(PotionEffects.Thor_FIRE_RESISTANCE, player);
 			ThorUtils.removePotionEffect(PotionEffects.Thor_HEALTH_BOOST, player);
@@ -119,7 +135,7 @@ public class Hammer implements Listener {
 		Entity entity = event.getEntity();
 		if (damager instanceof Player) {
 			Player player = (Player) damager;
-			if (SuitUtils.CheckItem(CustomSuitPlugin.Hammer,
+			if (SuitUtils.CheckItem(CustomSuitPlugin.hammer,
 					player.getItemInHand())) {
 				if (entity instanceof Damageable) {
 					if (entity instanceof LivingEntity) {
@@ -147,7 +163,9 @@ public class Hammer implements Listener {
 	@EventHandler
 	public void BackToThor(PlayerInteractEvent event){
 		Player player = event.getPlayer();
-		if(event.getAction()==Action.LEFT_CLICK_AIR||event.getAction() ==Action.LEFT_CLICK_BLOCK){
+	
+		if(event.getAction()==Action.RIGHT_CLICK_AIR||event.getAction() ==Action.RIGHT_CLICK_BLOCK){
+			
 			if(!player.isSneaking()&&player == thor){
 				
 					Location playerlocation = player.getLocation();
@@ -177,7 +195,7 @@ public class Hammer implements Listener {
 						
 						hammer.teleport(currentLoc);
 
-						SuitUtils.playEffect(currentLoc, Effect.HEART, 55, 0, 4);
+						SuitUtils.playEffect(currentLoc, Values.HammerBackEffect, 55, 0, 4);
 						
 
 					
@@ -223,7 +241,7 @@ public class Hammer implements Listener {
 	public void pickupHammer(PlayerPickupItemEvent event){
 		Item item = event.getItem();
 		Player player =event.getPlayer();
-		if(SuitUtils.CheckItem(CustomSuitPlugin.Hammer, item.getItemStack())){
+		if(SuitUtils.CheckItem(CustomSuitPlugin.hammer, item.getItemStack())){
 				if(player==thor||thor==null){
 					ThorUtils.remove(item);
 		

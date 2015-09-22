@@ -13,13 +13,18 @@ import gmail.anto5710.mcp.customsuits.Setting.Values;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitTask;
 
 import com.google.common.collect.Sets.SetView;
 
 
 
 public class ManUtils  {
-	
+	static CustomSuitPlugin plugin;
+	static RepeatMan repeatman;
+	public ManUtils(CustomSuitPlugin plugin){
+		this.plugin = plugin;
+	}
 	
 	public static ArrayList<Player> HiddenPlayers = new ArrayList<>();
 
@@ -45,7 +50,9 @@ public class ManUtils  {
 
 		}
 		else	if (!(HiddenPlayers.contains(player))) {
+			if(player.getFoodLevel()>=Values.ManInvisibleHunger){
 			setInvisible(player);
+			}
 		
 		}
 		}
@@ -53,7 +60,9 @@ public class ManUtils  {
 			if(CanSee){
 				setVisible(player);
 			}else{
+				if(player.getFoodLevel()>=Values.ManInvisibleHunger){
 				setInvisible(player);
+				}
 				
 			}
 		}
@@ -79,6 +88,9 @@ public class ManUtils  {
 		}
 
 		RepeatMan.addPlayer(player);
+		
+		BukkitTask task = new RepeatMan(plugin).runTaskTimer(plugin, 0, Values.ManHungerDealy);
+		
 		
 	}
 	public static void setVisible(Player player){

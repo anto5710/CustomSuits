@@ -73,8 +73,8 @@ public class SchedulerHunger extends BukkitRunnable {
 					Player player = itrerator.next();
 					EffectRun(player);
 				} else if (playerQueue.size() > 1) {
-					for (Player p : playerQueue) {
-						EffectRun(p);
+					for (Player player : playerQueue) {
+						EffectRun(player);
 					}
 					
 				}
@@ -117,7 +117,7 @@ public class SchedulerHunger extends BukkitRunnable {
 		if (CustomSuitPlugin.MarkEntity(player)) {
 			repairarmor(player);
 		
-			hunger(player, 1);
+			hunger(player, Values.SuitHungerRelod);
 			
 		}
 		
@@ -172,7 +172,7 @@ public class SchedulerHunger extends BukkitRunnable {
 
 		if (playerQueue.contains(flyingPlayer) == false) {
 
-			this.runTaskTimer(mainPlugin, 0, 60);
+			this.runTaskTimer(mainPlugin, 0, Values.SuitHungerDelay);
 			this.playerQueue.add(flyingPlayer);
 			
 			
@@ -180,10 +180,10 @@ public class SchedulerHunger extends BukkitRunnable {
 		}
 	}
 
-	public void removeflyingplayer(Player spp) {
+	public void removeflyingplayer(Player player) {
 		
-		if(playerQueue.contains(spp)){
-		this.playerQueue.remove(spp);
+		if(playerQueue.contains(player)){
+		this.playerQueue.remove(player);
 		}
 
 	}

@@ -1,8 +1,11 @@
 package gmail.anto5710.mcp.customsuits.CustomSuits.suit;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.dao.SpawningDao;
+import gmail.anto5710.mcp.customsuits.Man.Man;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
+import gmail.anto5710.mcp.customsuits.Utils.ManUtils;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
+import gmail.anto5710.mcp.customsuits._Thor.Hammer;
 
 import java.util.Collection;
 import java.util.List;
@@ -22,6 +25,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Horse;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Vehicle;
@@ -40,6 +44,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -86,7 +91,39 @@ public class PlayerEffect implements Listener {
 		}
 	
 	}
-
+	@EventHandler
+	public void ClickspawnSuit(PlayerInteractEvent event){
+		Player player = event.getPlayer();
+		if(!SuitUtils.CheckItem(CustomSuitPlugin.suitremote, player.getItemInHand())){
+			return;
+		}
+		if(event.getAction()!=Action.LEFT_CLICK_AIR&&event.getAction()!=Action.LEFT_CLICK_BLOCK){
+			return;
+		}
+		Location location_entity =SuitUtils.getTargetBlock(player, Values.spawnSuit_max_target_distance).getLocation();
+		if(location_entity == null){
+			location_entity = player.getLocation();
+		}
+		if(!CustomSuitPlugin.target.containsKey(player)){
+			CustomSuitPlugin.target.put(player, "");
+		}
+		if(!CustomSuitPlugin.color.containsKey(player)){
+			CustomSuitPlugin.color.put(player, "red");
+		}
+		if(!CustomSuitPlugin.Type_Map.containsKey(player)){
+			CustomSuitPlugin.Type_Map.put(player, "warrior");
+		}
+		if(!CustomSuitPlugin.amount.containsKey(player)){
+			CustomSuitPlugin.amount.put(player, 1);
+		}
+		String target = CustomSuitPlugin.target.get(player);
+		String entityname = CustomSuitPlugin.Type_Map.get(player);
+		int amount = CustomSuitPlugin.amount.get(player);
+		String color = CustomSuitPlugin.color.get(player);
+		
+		
+		CustomSuitPlugin.spawnentity(entityname, amount, player, target, color , location_entity);
+	}
 	@EventHandler
 	public void onPlayermove(PlayerMoveEvent moveevent) {
 		Material material = Material.STONE;
@@ -204,10 +241,12 @@ public class PlayerEffect implements Listener {
 	@EventHandler
 	public void zoom(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
+		
 		if (event.getAction() == Action.LEFT_CLICK_AIR
 				|| event.getAction() == Action.LEFT_CLICK_BLOCK) {
 			if (CustomSuitPlugin.MarkEntity(player)) {
-				if (SuitUtils.CheckItem(CustomSuitPlugin.gunitem, player.getItemInHand())) {
+				ItemStack item = player.getItemInHand();
+				if (item.getItemMeta().getDisplayName().contains(regex)) {
 
 					String name = CustomSuitPlugin.getGun().getItemMeta()
 							.getDisplayName();
@@ -276,9 +315,9 @@ public class PlayerEffect implements Listener {
 	public static boolean ContainPotionEffect(Player player,
 			PotionEffectType type, int level) {
 
-		for (PotionEffect e : player.getActivePotionEffects()) {
+		for (PotionEffect effect : player.getActivePotionEffects()) {
 
-			if (e.getType().equals(type) && e.getAmplifier() == level) {
+			if (effect.getType().equals(type) && effect.getAmplifier() == level) {
 
 				return true;
 
@@ -296,19 +335,22 @@ public class PlayerEffect implements Listener {
 		hungerscheduler.removeflyingplayer(player);
 
 	}
+	
 
 	@EventHandler
 	public void stopDisabledPlayer(PlayerMoveEvent moveEvent) {
 		Player player = moveEvent.getPlayer();
-
-		if (this.hungerscheduler.getList().contains(player)) {
-			if (player.getGameMode() != GameMode.CREATIVE) {
-
-				if (!CustomSuitPlugin.MarkEntity(player)) {
-					removingeffects(player);
-
-				}
-
+		if(CustomSuitPlugin.hasAbillity(player)){
+			return;
+		}
+			if(player.getFlySpeed()!= 0.5){
+				player.setFlySpeed(0.5F);
+			
+		if (player.getGameMode() != GameMode.CREATIVE) {
+		
+		
+				removingeffects(player);
+				return;
 			}
 		}
 	}
@@ -343,7 +385,7 @@ public class PlayerEffect implements Listener {
 		player.removePotionEffect(PotionEffectType.WATER_BREATHING);
 		player.removePotionEffect(PotionEffectType.NIGHT_VISION);
 		player.removePotionEffect(PotionEffectType.SLOW);
-		player.setFlySpeed(0.1F);
+		
 
 		player.playSound(player.getLocation(), Sound.ANVIL_LAND, 3.0F, 2.0F);
 	}

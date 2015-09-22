@@ -70,9 +70,9 @@ public class SpawningDao {
 
 	public void saveEntity(Entity spawnedEntity, Player spawner) {
 
-		spawnMap.put("" + spawnedEntity.getEntityId(), "" + spawner.getName());
+		spawnMap.put("" + spawnedEntity.getUniqueId(), "" + spawner.getName());
 
-		String line = String.format("%s:%s", spawnedEntity.getEntityId(),
+		String line = String.format("%s:%s", spawnedEntity.getUniqueId(),
 				spawner.getName());
 
 		PrintStream out = null;
@@ -115,9 +115,9 @@ public class SpawningDao {
 		PrintStream out = openFileStream();
 		Iterator<String> itr = map.keySet().iterator();
 		while (itr.hasNext()) {
-			String ettID = itr.next();
-			String spawnername = map.get(ettID);
-			out.println(String.format("%s:%s", ettID, spawnername));
+			String entityID = itr.next();
+			String spawnername = map.get(entityID);
+			out.println(String.format("%s:%s", entityID, spawnername));
 		}
 		out.close();
 
@@ -139,7 +139,7 @@ public class SpawningDao {
 	 */
 	public boolean isCreatedBy(Entity entity, Player player) {
 
-		String entityID = entity.getEntityId() + "";
+		String entityID = entity.getUniqueId() + "";
 		String playername = player.getName();
 
 		if (spawnMap.containsKey(entityID)) {

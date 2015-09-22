@@ -27,14 +27,14 @@ public class HammerWeapons implements Listener{
 	public HammerWeapons(CustomSuitPlugin plugin){
 		this.plugin = plugin;
 	}
+	
 	@EventHandler
 	public void Lightning(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
-		if (event.getAction() == Action.RIGHT_CLICK_AIR
-				|| event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-			if (
-					player.getItemInHand().getType() ==Material.AIR
-					&& Hammer.Thor(player)&&SchedulerHunger.hunger(player, Values.LightningMissileHunger)) {
+		if (event.getAction() == Action.LEFT_CLICK_AIR
+				|| event.getAction() == Action.LEFT_CLICK_BLOCK) {
+			if (player.getItemInHand().getType() == Material.AIR
+					&& Hammer.Thor(player)&&SchedulerHunger.hunger(player, Values.LightningMissileHunger)) { 
 				Location targetblock = SuitUtils.getTargetBlock(player, 300).getLocation();
 				SuitUtils.LineParticle(targetblock, player.getEyeLocation(), player, Effect.LAVA_POP, 3, 0, 2, Values.LightningMissile, 2, true);
 				
@@ -50,7 +50,7 @@ public class HammerWeapons implements Listener{
 		Player player = event.getPlayer();
 		if (event.getAction() == Action.RIGHT_CLICK_AIR
 				|| event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-			if (SuitUtils.CheckItem(CustomSuitPlugin.Hammer,
+			if (SuitUtils.CheckItem(CustomSuitPlugin.hammer,
 					player.getItemInHand())) {
 				if (Hammer.Thor(player)) {
 					Item dropped = player.getWorld().dropItem(
@@ -106,12 +106,14 @@ public class HammerWeapons implements Listener{
 		if (event.getAction() == Action.LEFT_CLICK_AIR
 				|| event.getAction() == Action.LEFT_CLICK_BLOCK) {
 			if (Hammer.Thor(player)
-					&& SuitUtils.CheckItem(CustomSuitPlugin.Hammer,
+					&& SuitUtils.CheckItem(CustomSuitPlugin.hammer,
 							player.getItemInHand()) && player.isSneaking()&&SchedulerHunger.hunger(player, Values.HammerExplosionRingHunger)) {
-				
+				Location playerLocation = player.getLocation();
+				for(int radius = 2 ; radius< Values.HammerExplosionRingRadius ; radius+=3){
 					player.setNoDamageTicks(20);
-					ThorUtils.getRing(20, player, Values.HammerExplosionPower, Values.HammerExplosionRing, false, true);
-				
+					ThorUtils.getRing(radius, player, Values.HammerExplosionPower, Values.HammerExplosionRing, false, true);
+				}
+				player.teleport(playerLocation);
 			}
 		}
 	}

@@ -29,7 +29,7 @@ public class ThorUtils {
 		for(Entity entity : world.getEntitiesByClass(Item.class)){
 			if(entity instanceof Item){
 				Item item = (Item) entity;
-				if(SuitUtils.CheckItem(CustomSuitPlugin.Hammer, item.getItemStack())){
+				if(SuitUtils.CheckItem(CustomSuitPlugin.hammer, item.getItemStack())){
 					return item;
 				}
 			}
@@ -121,6 +121,11 @@ public class ThorUtils {
 
 			}
 		}
+	}
+	public static double Random(double a ){
+		double b = a / 2;
+		double random = (Math.random() * a) - b;
+		return random;
 	}
 	public static void strikeLightning(Location loc, Player player, int amount,
 			double damageRadius, double damage) {

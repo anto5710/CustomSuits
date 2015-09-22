@@ -2,6 +2,7 @@ package gmail.anto5710.mcp.customsuits.CustomSuits.suit;
 
 import gmail.anto5710.mcp.customsuits.Setting.Values;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
+import gmail.anto5710.mcp.customsuits.Utils.ThorUtils;
 import gmail.anto5710.mcp.customsuits.Utils.WeaponUtils;
 
 import java.awt.Color;
@@ -233,7 +234,7 @@ public class WeaponListner implements Listener {
 
 		damage = damage * (CustomSuitPlugin.getLevel(player)/64+1);
 
-		Effect effect = Values.SuitProjectileEffect;
+		Effect effect = Values.SniperEffect;
 		int data = Material.ANVIL.getId();
 		if (isMissile) {
 
@@ -371,16 +372,19 @@ public class WeaponListner implements Listener {
 	}
 
 	@EventHandler
-	public void damageByGun(EntityDamageByEntityEvent event) {
-		Entity damager = event.getDamager();
-		if (damager.getType() == EntityType.SNOWBALL) {
-			Snowball snowball = (Snowball) damager;
+	public void damageByGun(ProjectileHitEvent event) {
+	Projectile projectile = event.getEntity();
+		if (projectile.getType() == EntityType.SNOWBALL) {
+			Snowball snowball = (Snowball) projectile;
 			Entity shooter = (Entity) snowball.getShooter();
 			if (shooter instanceof Player) {
 				if (WeaponUtils.checkgun(((Player) shooter),
 						((Player) shooter).getItemInHand(),
 						CustomSuitPlugin.gunitem)) {
-					event.setDamage(Values.MachineGunDamage);
+					List<Entity>list =findEntity(projectile.getLocation(),((Player)shooter) , Values.MachineGunDamageRadiues);
+						ThorUtils.damage(list, damage, (Player)shooter);
+					
+					
 
 				}
 			}

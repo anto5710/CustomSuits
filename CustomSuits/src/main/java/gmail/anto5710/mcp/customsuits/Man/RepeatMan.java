@@ -2,9 +2,10 @@ package gmail.anto5710.mcp.customsuits.Man;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.SchedulerHunger;
+import gmail.anto5710.mcp.customsuits.Setting.Values;
 import gmail.anto5710.mcp.customsuits.Utils.ManUtils;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
-
+import gmail.anto5710.mcp.customsuits.Utils.ThorUtils;
 
 import java.awt.List;
 import java.util.Iterator;
@@ -16,58 +17,57 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class RepeatMan extends BukkitRunnable{
 	private CustomSuitPlugin mainPlugin;
-	private static Thread thisThread;
+	
 	
 	
 	public RepeatMan(CustomSuitPlugin main) {
 		this.mainPlugin = main;
-		this.thisThread = new Thread(this,"T-MAN");
+		
 	}
 
-	public void startThread() {
-		this.thisThread.start();
-	}
 	
+	@Override
 		public void run() {
 			
 			java.util.List<Player>HidePlayer = ManUtils.HiddenPlayers;
+		
 			if(HidePlayer == null){
-				try {
-					thisThread.sleep(864000L);
-				} catch (InterruptedException e) {
-					
-					e.printStackTrace();
-				}
+				ThorUtils.cancel(getTaskId());
 				
 			}
 			Iterator<Player> iterator = HidePlayer.iterator();
+			if(HidePlayer.size()==1){
+				Player player = HidePlayer.get(0);
+				if(player.getFoodLevel()>=Values.ManInvisibleHunger*-1){
+					SchedulerHunger.hunger(player, Values.ManInvisibleHunger);
+				}else{	
+					ManUtils.setVisible(player);
+				}
+					
+				
+			}else{
 			while(iterator.hasNext()){
 				Player player = iterator.next();
-				player.sendMessage(player+"");
-				if(!SchedulerHunger.hunger(player, -1)){
+				if(player.getFoodLevel()>=Values.ManInvisibleHunger*-1){
+				SchedulerHunger.hunger(player, Values.ManInvisibleHunger);
+				}else{
 					
-					ManUtils.changeVisiblility(player , false ,false);
-					
-					
+				ManUtils.setVisible(player);
 				}
+			
+				
 				
 			}
-			try {
-				thisThread.sleep(1000L);
-			} catch (InterruptedException e) {
-				
-				e.printStackTrace();
 			}
-			thisThread.interrupt();
+			
+		
 		}
 		public static void addPlayer (Player player ){
 			if(!ManUtils.HiddenPlayers.contains(player)){
 				
 			
 			ManUtils.HiddenPlayers.add(player);
-			if(!thisThread.isInterrupted()){
-			thisThread.interrupt();
-			}
+				
 			}
 		}
 		public static void removePlayer (Player player ){

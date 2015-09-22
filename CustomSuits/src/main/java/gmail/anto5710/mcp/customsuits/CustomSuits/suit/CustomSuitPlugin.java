@@ -5,7 +5,9 @@ import gmail.anto5710.mcp.customsuits.Man.Man;
 import gmail.anto5710.mcp.customsuits.Setting.Enchant;
 import gmail.anto5710.mcp.customsuits.Setting.Recipe;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
+import gmail.anto5710.mcp.customsuits.Utils.ManUtils;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
+import gmail.anto5710.mcp.customsuits.Utils.ThorUtils;
 import gmail.anto5710.mcp.customsuits._Thor.Hammer;
 import gmail.anto5710.mcp.customsuits._Thor.HammerWeapons;
 
@@ -97,6 +99,7 @@ import org.bukkit.util.Vector;
 import org.junit.internal.matchers.IsCollectionContaining;
 import org.w3c.dom.ls.LSInput;
 
+import com.avaje.ebeaninternal.server.type.TypeManager;
 import com.google.common.primitives.Ints;
 
 /**
@@ -114,9 +117,9 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 	/**
 	 * entityType 이름과 대응하는 EntityClass 모음
 	 */
-	Map<String, Class<? extends Entity>> entityMap = new HashMap<>();
+	static Map<String, Class<? extends Entity>> entityMap = new HashMap<>();
 
-	Map<String, Color> colorMap = new HashMap<>();
+	static Map<String, Color> colorMap = new HashMap<>();
 
 	public static ItemStack suitremote = new ItemStack(Material.DIODE);
 
@@ -137,6 +140,10 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 	static Inventory leggingsinventory = Bukkit.createInventory(null, 9,
 			"[Leggings]");
 	static Inventory handinventory = Bukkit.createInventory(null, 9, "[Hand]");
+	static HashMap<Player, String>Type_Map = new HashMap<>();
+	static HashMap<Player, String>target = new HashMap<>();
+	static HashMap<Player, String>color = new HashMap<>();
+	static HashMap<Player, Integer>amount = new HashMap<>();
 
 	
 	
@@ -158,7 +165,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 			"[Command]");
 	public static ItemStack missileLauncher = new ItemStack(Material.GOLD_BARDING);
 	
-	public static ItemStack Hammer =new ItemStack(Material.IRON_AXE, 1, (short) Values.HammerDamage);
+	public static ItemStack hammer =new ItemStack(Material.IRON_AXE, 1, (short) Values.HammerDamage);
 	
 	public static ItemStack Helemt_Thor = new ItemStack(Material.IRON_HELMET);
 	
@@ -184,6 +191,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 
 	@Override
 	public void onEnable() {
+		
 		Recipe.addRecipe(getServer());
 		Enchant.enchantBooks();
 	
@@ -197,14 +205,13 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		ItemStack command = new ItemStack(Material.REDSTONE_COMPARATOR);
 		SetDisplayName(ChatColor.RED + "[Command]", command);
 		
-		ItemStack vehiclearmor = new ItemStack(Material.SADDLE);
-		SetDisplayName(ChatColor.DARK_AQUA+"[Vehicle Armor]",vehiclearmor);
+	
 
-		Enchant.enchantment(Hammer, Enchantment.DAMAGE_ALL, 30, true);
-		Enchant.enchantment(Hammer, Enchantment.DURABILITY, 10, true);
-		Enchant.enchantment(Hammer, Enchantment.FIRE_ASPECT, 8, true);
-		Enchant.enchantment(Hammer, Enchantment.LOOT_BONUS_MOBS, 12, true);
-		Enchant.enchantment(Hammer, Enchantment.KNOCKBACK, 15, true);
+		Enchant.enchantment(hammer, Enchantment.DAMAGE_ALL, 30, true);
+		Enchant.enchantment(hammer, Enchantment.DURABILITY, 10, true);
+		Enchant.enchantment(hammer, Enchantment.FIRE_ASPECT, 8, true);
+		Enchant.enchantment(hammer, Enchantment.LOOT_BONUS_MOBS, 12, true);
+		Enchant.enchantment(hammer, Enchantment.KNOCKBACK, 15, true);
 		
 		SetDisplayName(ChatColor.GOLD+"Thor_Helmet", Helemt_Thor);
 		SetDisplayName(ChatColor.GOLD+"Thor_ChestPlate", Chestplate_Thor);
@@ -351,7 +358,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		ItemStack firework = new ItemStack(Material.FIREWORK);
 		SetDisplayName(ChatColor.DARK_RED + "[Fireworks]", firework);
 		
-		SetDisplayName(ChatColor.GOLD+"Mjöllnir",Hammer );
+		SetDisplayName(ChatColor.GOLD+"Mjöllnir",hammer );
 
 		SetDisplayName(ChatColor.GRAY+"Leggings", Leggings_Man);
 		SetDisplayName(ChatColor.GRAY
@@ -460,6 +467,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 	@Override
 	public boolean onCommand(CommandSender sender, Command command,
 			String label, String[] args) {
+		
 		Server server = getServer();
 		Player spnSender = server.getPlayer(sender.getName());
 		if(command.getName().equals("clist")){
@@ -507,7 +515,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 						player.getInventory().addItem(missileLauncher);
 					}
 				 else if (option.endsWith("hammer")) {
-						player.getInventory().addItem(Hammer);
+						player.getInventory().addItem(hammer);
 					}else if(option.endsWith("man")){
 						player.getInventory().addItem(Chestplate_Man);
 						player.getInventory().addItem(Leggings_Man);
@@ -521,7 +529,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 			}
 		}
 		if (command.getName().equals("command")) {
-			Player p = getServer().getPlayer(sender.getName());
+			Player player = getServer().getPlayer(sender.getName());
 			
 			if (args.length == 0) {
 
@@ -529,13 +537,13 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 
 				if (args[0].equals("party")) {
 					
-					spawnall(p);
+					spawnall(player);
 				} else {
 					if (command.getName().equals("target")) {
-						targetPlayer(p, sender.getServer().getPlayer(args[1]));
+						targetPlayer(player, sender.getServer().getPlayer(args[1]));
 
 					} else if (args[0].equals("firework")) {
-						spawnfireworks(p);
+						spawnfireworks(player);
 					} else {
 
 						SuitUtils.Warn(spnSender, "Wrong Commands");
@@ -593,7 +601,11 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 				
 				
 				spawnentity(entityName, creatureCnt, spnSender,
-						targetPlayerName ,color);
+						targetPlayerName ,color , spnSender.getLocation());
+				Type_Map.put(spnSender, entityName);
+				target.put(spnSender, targetPlayerName);
+				CustomSuitPlugin.color.put(spnSender, color);
+				amount.put(spnSender, creatureCnt);
 				Inventory inventory = CustomSuitPlugin.inventory;
 				
 				spnSender.openInventory(inventory);
@@ -633,30 +645,49 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		}
 	}
 
-	public static void spawnall(Player p) {
+	public static void spawnall(Player player) {
 		isPlayed = false;
-		List<Entity> list = p.getWorld().getEntities();
-		for (Entity e : list) {
-			if (dao.isCreatedBy(e, p)) {
-				Entity vehicle = null ;
-				if(e.getVehicle()!=null){
-					vehicle =e.getVehicle();
-					vehicle.teleport(p.getLocation());
-				}
+		List<Entity> list = player.getWorld().getEntities();
+		for (Entity entity : list) {
+			if (dao.isCreatedBy(entity, player)) {
+							Entity passenger = entity.getPassenger();
+							Entity vehicle = entity.getVehicle();
+							if(entity!=null){
+							entity.eject();
+							}
+							if(passenger!=null){
+							passenger.eject();
+							}
+							if(vehicle!=null){
+							vehicle.eject();
+							}
+							if(vehicle!=null){
+								if(vehicle.getPassenger()!=null){
+									vehicle.teleport(player.getLocation());
+								}
+								if(entity.getPassenger()!=null){
+									passenger.teleport(player.getLocation());
+									
+								}
+							}
 				
-				e.teleport(p.getLocation());
-				if(e.getVehicle()!=null){
-				vehicle.setPassenger(e);
+				entity.teleport(player.getLocation());
+				if(vehicle!=null){
+						vehicle.setPassenger(entity);	
 				}
-				p.sendMessage(ChatColor.BLUE + "[Info]: "+ChatColor.AQUA + "Teleported Suit----");
+				if(passenger!=null){
+					entity.setPassenger(passenger);	
+				}	
+				player.sendMessage(ChatColor.BLUE + "[Info]: "+ChatColor.AQUA + "Teleported Suit----");
 				isPlayed = true;
+				
 				
 			}
 		}
 		if (!isPlayed) {
-			p.sendMessage(ChatColor.BLUE + "[Info]: " + ChatColor.AQUA
+			player.sendMessage(ChatColor.BLUE + "[Info]: " + ChatColor.AQUA
 					+ "No such entity");
-			p.playSound(p.getLocation(), Sound.NOTE_STICKS,
+			player.playSound(player.getLocation(), Sound.NOTE_STICKS,
 					6.0F, 6.0F);
 		}
 		
@@ -686,8 +717,8 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 
 
 
-	private void spawnentity(String entityName, int creatureCnt,
-			Player spnSender, String targetPlayerName , String Color) {
+	public static void spawnentity(String entityName, int creatureCnt,
+			Player spnSender, String targetPlayerName , String Color, Location location) {
 		
 		
 		String VehicleName = "";
@@ -760,18 +791,18 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 
 									Class<Entity> entityClass = loadEntityClass(entityName);
 									Class<Entity> vehicleClass = loadEntityClass(VehicleName);
-									Location loc = spnSender.getLocation();
+									
 
-									this.logger.info("entity class: "
+									logger.info("entity class: "
 											+ entityClass);
 
 									/* spawning 위치를 잡아줍니다. */
 									Entity spawnedEntity = spnSender.getWorld()
 											.spawn(new Location(
 													spnSender.getWorld(),
-													loc.getX() - (width / 2)
-															+ cnt, loc.getY(),
-													loc.getZ() - (height / 2)
+													location.getX() - (width / 2)
+															+ cnt, location.getY(),
+													location.getZ() - (height / 2)
 															+ ccnt),
 													entityClass);
 									int entityID = spawnedEntity.getEntityId();
@@ -790,7 +821,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 									spnSender.getInventory().removeItem(
 											material);
 									spnSender.updateInventory();
-									spnSender.playSound(loc, Sound.ANVIL_USE,
+									spnSender.playSound(location, Sound.ANVIL_USE,
 											1.5F, 1.5F);
 									if(spawnedEntity instanceof LivingEntity){
 									EntityAddData((LivingEntity)spawnedEntity, spnSender, targetPlayer, EntityName ,Color);
@@ -819,7 +850,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 
 	}
 
-	private void CreateVehicles(Player spnSender,Player targetPlayer, Entity spawnedEntity,
+	private static void CreateVehicles(Player spnSender,Player targetPlayer, Entity spawnedEntity,
 			Entity Vehicle, String EntityName, int vehicleCount ,String Color) {
 		
 		
@@ -836,7 +867,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		
 	}
 
-	private void setVehicleData(Entity spawnedEntity,Entity Vehicle, Player spnSender , Player targetPlayer , String EntityName ,String Color) {
+	private static void setVehicleData(Entity spawnedEntity,Entity Vehicle, Player spnSender , Player targetPlayer , String EntityName ,String Color) {
 		dao.saveEntity(Vehicle, spnSender);
 		if(Vehicle instanceof LivingEntity){
 			EntityAddData((LivingEntity)Vehicle, spnSender, targetPlayer, EntityName ,Color);
@@ -850,7 +881,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		
 	}
 
-	private void EntityAddData(LivingEntity livingentity , Player spnSender ,Player targetPlayer, String entityName , String color) {
+	private static void EntityAddData(LivingEntity livingentity , Player spnSender ,Player targetPlayer, String entityName , String color) {
 	
 		livingentity.setRemoveWhenFarAway(false);
 		if(livingentity instanceof Horse){
@@ -908,7 +939,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		
 	}
 
-	private void setHorseData(Horse horse, String entityName , Player spnSender, boolean isAdult ) {
+	private static void setHorseData(Horse horse, String entityName , Player spnSender, boolean isAdult ) {
 		
 		 if(isAdult){	
 		 horse.setAdult();
@@ -945,7 +976,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		
 	}
 
-	private void setMaterialForEnderMan(Enderman enderman, Material Material) {
+	private static void setMaterialForEnderMan(Enderman enderman, Material Material) {
 		
 		
 				MaterialData data = new MaterialData(
@@ -956,7 +987,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		
 	}
 
-	private void setEquipment( Inventory inventoryitem,
+	private static void setEquipment( Inventory inventoryitem,
 			Player player, LivingEntity spawnedEntity, String entityName , String color) {
 		boolean CustomColor = true;
 		if(color!=null){
@@ -973,7 +1004,10 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		livingEntity.setCustomName(player.getName() + "|" + Values.SuitName);
 		ItemStack itemForCreature = createItemForCreature(livingEntity);
 		livingEntity.getEquipment().setItemInHand(itemForCreature);
-		Color icolor = Color.RED;
+		Color icolor = colorMap.get(color);
+		if(icolor ==null){
+			icolor = Color.RED;
+		}
 		Color HelmetColor  = icolor;
 		Color ChestplateColor = icolor;
 		Color LeggingsColor = icolor;
@@ -1084,7 +1118,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		item.setItemMeta(meta);
 	}
 
-	public void addData(ItemStack item, HashMap<Player, Inventory> map,
+	public static void addData(ItemStack item, HashMap<Player, Inventory> map,
 			int level, Player player , boolean GetColorFromInventory , Color icolor) {
 		if (item != null) {
 			
@@ -1142,7 +1176,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		}
 	}
 
-	private ItemStack createItemForCreature(LivingEntity ett) {
+	private static ItemStack createItemForCreature(LivingEntity ett) {
 		ItemStack item = null;
 		if (ett.getType() == EntityType.ENDERMAN) {
 			item = new ItemStack(Material.TNT);
@@ -1155,13 +1189,16 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 	}
 
 	
-	private boolean isprime(int spcnt) {
+	private static boolean isprime(int spcnt) {
 		boolean returna = true;
-		if (spcnt == 1) {
+		if (spcnt == 1||spcnt ==2) {
 
 			returna = true;
 		}
-		for (int cnt = 2; cnt < spcnt; cnt++) {
+		if(spcnt%2 ==0){
+			return false;
+		}
+		for (int cnt = 3; cnt < spcnt; cnt+=2) {
 			if (spcnt % cnt == 0) {
 				returna = false;
 			}
@@ -1171,7 +1208,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		return returna;
 	}
 
-	private <T extends Entity> Class<T> loadEntityClass(String entityType) {
+	private static <T extends Entity> Class<T> loadEntityClass(String entityType) {
 		
 		Class<T> cls = (Class<T>) entityMap.get(entityType.toLowerCase());
 
@@ -1478,6 +1515,12 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 
 		
 
+	}
+	public static boolean hasAbillity(Player player){
+		if(ManUtils.Man(player)||CustomSuitPlugin.MarkEntity(player)||Hammer.Thor(player)){
+			return true;
+		}
+		return false;
 	}
 	
 	
