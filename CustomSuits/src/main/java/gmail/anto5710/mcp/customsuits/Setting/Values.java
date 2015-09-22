@@ -137,7 +137,6 @@ public class Values {
 	final public static Material LauncherAmmo = Material.FIREWORK_CHARGE;
 	final public static Sound LauncherSound= Sound.FIREWORK_LAUNCH; 
 	
-	
-	
+		
 	
 }
