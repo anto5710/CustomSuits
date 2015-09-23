@@ -246,6 +246,9 @@ public class PlayerEffect implements Listener {
 				|| event.getAction() == Action.LEFT_CLICK_BLOCK) {
 			if (CustomSuitPlugin.MarkEntity(player)) {
 				ItemStack item = player.getItemInHand();
+				if(item.getItemMeta().getDisplayName()==null){
+					return;
+				}
 				if (item.getItemMeta().getDisplayName().contains(regex)) {
 
 					String name = CustomSuitPlugin.getGun().getItemMeta()

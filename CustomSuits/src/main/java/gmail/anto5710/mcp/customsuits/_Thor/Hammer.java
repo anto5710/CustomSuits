@@ -72,10 +72,9 @@ public class Hammer implements Listener {
 	CustomSuitPlugin plugin;
 	
 	static double HammerDeafultDamage = Values.HammerDamage;
+
 	
-	static double RingDamage = Values.HammerExplosionRing;
-	
-	static float Power = Values.HammerExplosionPower;
+
 	
 	static Player thor = null;
 
@@ -92,6 +91,14 @@ public class Hammer implements Listener {
 				double addDamage_Random = ThorUtils.Random(100);
 				event.setDamage((1+addDamage_Random/100)*event.getDamage());
 			}
+		}
+	}
+	@EventHandler
+	public void ResetThor(PlayerMoveEvent event){
+		Player player = event.getPlayer();
+		
+		if(thor==player&&!Thor(player)){
+			thor =null;
 		}
 	}
 	@EventHandler

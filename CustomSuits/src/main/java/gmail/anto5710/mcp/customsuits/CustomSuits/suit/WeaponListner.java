@@ -237,7 +237,7 @@ public class WeaponListner implements Listener {
 		Effect effect = Values.SniperEffect;
 		int data = Material.ANVIL.getId();
 		if (isMissile) {
-
+			effect = Values.SuitProjectileEffect;
 			data =Values.SuitBim_MissileEffectData;
 		}
 
@@ -414,8 +414,7 @@ public class WeaponListner implements Listener {
 
 						if (!WeaponUtils.ischarging(player)) {
 
-							Location targetloc = player.getTargetBlock(
-									(HashSet<Byte>) null, 10000).getLocation();
+							Location targetloc = SuitUtils.getTargetBlock(player, Values.Suit_Gun_Shot_Radius).getLocation();
 							Location locationplayer = player.getEyeLocation();
 
 							if (!player.isSneaking()) {
@@ -455,8 +454,8 @@ public class WeaponListner implements Listener {
 														Snowball.class, vector);
 
 										SuitUtils.playEffect(locationplayer,
-												Effect.STEP_SOUND, 1,
-												Material.STONE.getId(), 1);
+												Values.Suit_Gun_Shot_Effect, 1,
+												Values.Suit_Gun_Shot_Effect_Data, 1);
 										SuitUtils.sleep(100);
 
 									}
@@ -480,10 +479,10 @@ public class WeaponListner implements Listener {
 												Sound.EXPLODE, 23.0F, 21.0F);
 										player.playSound(player.getLocation(),
 												Sound.IRONGOLEM_HIT, 4.0F, 4.0F);
-
+										
 										SuitUtils.playEffect(locationplayer,
-												Effect.STEP_SOUND, 1,
-												Material.STONE.getId(), 1);
+												Values.Suit_Gun_Shot_Effect, 1,
+												Values.Suit_Gun_Shot_Effect_Data, 1);
 
 										playEffect(targetloc, locationplayer,
 												player, false);

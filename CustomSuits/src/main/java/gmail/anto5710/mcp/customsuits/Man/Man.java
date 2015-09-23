@@ -96,7 +96,9 @@ public class Man implements Listener{
 	@EventHandler
 	public void ManMoveEffect(PlayerMoveEvent event) throws NullPointerException{
 		Player player = event.getPlayer();
-	
+		if(!ManUtils.Man(player)){
+			return;
+		}
 		
 		if(Boost(player)){
 			

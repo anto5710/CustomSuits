@@ -40,15 +40,14 @@ public class Values {
 	final public static double HammerDamage = 20;
 	final public static double LightningMissile = 25 ;
 	final public static int LightningMissileHunger = -1;
-	final public static double HammerExplosionRing = 60;
-	final public static float HammerExplosionPower = 10;
-	final public static int HammerExplosionRingHunger = -4;
-	final public static float HammerExplosionRingRadius = 20;
+	final public static Sound LightningMissileSound = Sound.AMBIENCE_THUNDER;
+
 	final public static Sound ThorChangeSound = Sound.ENDERMAN_STARE;
 	final public static Effect HammerDefaultEffect = Effect.LAVA_POP;
 	final public static Effect HammerTeleportEffect =Effect.PORTAL;
 	final public static Effect HammerBackEffect = Effect.HEART;
 	final public static Effect HammerHitGround = Effect.ENDER_SIGNAL;
+	final public static float HammerMissileExplosion_Power = 6F;
 	final public static Effect HammerPickUpCancel = Effect.STEP_SOUND;
 	final public static int HammerPickUpCancel_Data = Material.IRON_BLOCK.getId();
 	final public static Sound HammerTeleportSound = Sound.ENDERMAN_TELEPORT;
@@ -95,6 +94,10 @@ public class Values {
 	final public static Material SniperAmmo = Material.GHAST_TEAR;
 	final public static Effect SniperEffect = Effect.SMALL_SMOKE;
 	
+	final public static Effect Suit_Gun_Shot_Effect =Effect.STEP_SOUND;
+	final public static int Suit_Gun_Shot_Radius =200;
+	final public static int Suit_Gun_Shot_Effect_Data =Material.STONE.getId();
+	
 	final public static String regex = ChatColor.GOLD+" 【《 》】 "+ChatColor.YELLOW;
 	final public static String SuitInforegex = ChatColor.DARK_AQUA+":"+ChatColor.AQUA;
 	final public static String SuitName = "[Mark]";
@@ -136,6 +139,10 @@ public class Values {
 	final public static float LauncherPower = 5;
 	final public static Material LauncherAmmo = Material.FIREWORK_CHARGE;
 	final public static Sound LauncherSound= Sound.FIREWORK_LAUNCH; 
+	
+	final public static int Explode_Falling_Block_Count_Divider = 3;
+
+	final public static double HammerExplosionDamageRadius = 2;;
 	
 		
 	

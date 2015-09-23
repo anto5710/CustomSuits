@@ -3,6 +3,7 @@ package gmail.anto5710.mcp.customsuits.Utils;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.PlayerEffect;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.WeaponListner;
+import gmail.anto5710.mcp.customsuits.Setting.Values;
 import gmail.anto5710.mcp.customsuits._Thor.Repeat;
 
 import java.util.HashMap;
@@ -38,19 +39,8 @@ public class ThorUtils {
 	
 	return null;
 	}
-	public static void getRing(double radius, Player player , float power , double damage , boolean setFire , boolean BreakBlocks) {
-		int points = 12; // amount of points to be generated
-		for (int i = 0; i < 360; i += 360 / points) {
-			double angle = (i * Math.PI / 180);
-			double x = radius * Math.cos(angle);
-			double z = radius * Math.sin(angle);
-			Location loc = player.getLocation().add(x, 1, z);
-			SuitUtils.createExplosion(loc, power, setFire, BreakBlocks);
-			damage(WeaponListner.findEntity(loc, player, 6.5),
-					 damage, player);
-		}
-	}
-	
+
+
 	public static void removePotionEffectType(PotionEffectType PotionEffectType, Player player) {
 		if(player.hasPotionEffect(PotionEffectType)){
 			player.removePotionEffect(PotionEffectType);
@@ -58,6 +48,8 @@ public class ThorUtils {
 		
 		
 	}
+
+
 	public static void removePotionEffect(PotionEffect PotionEffect, Player player) {
 		if(PlayerEffect.ContainPotionEffect(player, PotionEffect.getType(), PotionEffect.getAmplifier())){
 			player.removePotionEffect(PotionEffect.getType());

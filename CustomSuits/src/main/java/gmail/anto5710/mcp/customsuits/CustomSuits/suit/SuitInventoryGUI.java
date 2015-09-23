@@ -36,7 +36,10 @@ public class SuitInventoryGUI implements Listener {
 
 	@EventHandler
 	public void clickExpOnInventory(InventoryClickEvent e) {
-		if (e.getInventory().getName().contains("[Settings]")) {
+		if(e.getClickedInventory().getName()==null){
+			return;
+		}
+		if (e.getClickedInventory().getName().contains("[Settings]")) {
 			Inventory i = e.getInventory();
 			if (e.getInventory().getItem(8).getType() == Material.EXP_BOTTLE) {
 				if (e.getSlot() == 8) {
@@ -57,6 +60,9 @@ public class SuitInventoryGUI implements Listener {
 
 	@EventHandler
 	public void ClickCommand(InventoryClickEvent e) {
+		if(e.getClickedInventory().getName()==null){
+			return;
+		}
 		if (e.getClickedInventory().getName().contains("[Command]")) {
 			if (e.getSlot() == 1) {
 				CustomSuitPlugin.runSpawn((Player) e.getWhoClicked());
@@ -79,11 +85,11 @@ public class SuitInventoryGUI implements Listener {
 	private void OpenList(InventoryClickEvent e, Player whoClicked) {
 		Inventory list = Bukkit.createInventory(null, 36, "[Online Players]");
 
-		for (Player p : whoClicked.getServer().getOnlinePlayers()) {
+		for (Player player : whoClicked.getServer().getOnlinePlayers()) {
 			ItemStack skull = new ItemStack(397, 1, (short) 0, (byte) 3);
 
 			ItemMeta meta = skull.getItemMeta();
-			meta.setDisplayName(p.getName());
+			meta.setDisplayName(player.getName());
 			skull.setItemMeta(meta);
 			list.addItem(skull);
 
@@ -94,6 +100,9 @@ public class SuitInventoryGUI implements Listener {
 
 	@EventHandler
 	public void clickPlayer(InventoryClickEvent e) {
+		if(e.getClickedInventory().getName()==null){
+			return;
+		}
 		Player WhoClicked = (Player) e.getWhoClicked();
 		if (e.getClick() == ClickType.LEFT) {
 			if (e.getClickedInventory().getName().contains("[Online Players]")) {
@@ -124,6 +133,9 @@ public class SuitInventoryGUI implements Listener {
 
 	@EventHandler
 	public void clickAir(InventoryClickEvent e) {
+		if(e.getClickedInventory().getName()==null){
+			return;
+		}
 		if (e.getClickedInventory().getName().contains("[Settings]")) {
 
 			int slot = e.getSlot();
@@ -133,9 +145,26 @@ public class SuitInventoryGUI implements Listener {
 			}
 		}
 	}
+	@EventHandler
+	public void clickAirArmor(InventoryClickEvent e) {
+		if(e.getClickedInventory().getName()==null){
+			return;
+		}
+		if (e.getClickedInventory().getName().contains("[Armor]")) {
+
+			int slot = e.getSlot();
+			if (slot == 1 ||  slot == 3 || slot == 5 || slot == 7
+					) {
+				e.setCancelled(true);
+			}
+		}
+	}
 
 	@EventHandler
 	public void clickHelmet(InventoryClickEvent e) {
+		if(e.getClickedInventory().getName()==null){
+			return;
+		}
 		if (e.getClickedInventory().getName().contains("[Armor]")) {
 			if (e.getClick() == ClickType.RIGHT) {
 				Player player = (Player) e.getWhoClicked();
@@ -153,6 +182,9 @@ public class SuitInventoryGUI implements Listener {
 
 	@EventHandler
 	public void clickChestplate(InventoryClickEvent e) {
+		if(e.getClickedInventory().getName()==null){
+			return;
+		}
 		if (e.getClickedInventory().getName().contains("[Armor]")) {
 			if (e.getClick() == ClickType.RIGHT) {
 
@@ -173,6 +205,9 @@ public class SuitInventoryGUI implements Listener {
 
 	@EventHandler
 	public void clickLeggings(InventoryClickEvent e) {
+		if(e.getClickedInventory().getName()==null){
+			return;
+		}
 		if (e.getClickedInventory().getName().contains("[Armor]")) {
 			if (e.getClick() == ClickType.RIGHT) {
 
@@ -193,6 +228,9 @@ public class SuitInventoryGUI implements Listener {
 
 	@EventHandler
 	public void clickBoots(InventoryClickEvent e) {
+		if(e.getClickedInventory().getName()==null){
+			return;
+		}
 		if (e.getClickedInventory().getName().contains("[Armor]")) {
 			if (e.getClick() == ClickType.RIGHT) {
 				Player player = (Player) e.getWhoClicked();
@@ -211,6 +249,9 @@ public class SuitInventoryGUI implements Listener {
 	}
 
 	public void clickHand(InventoryClickEvent e) {
+		if(e.getClickedInventory().getName()==null){
+			return;
+		}
 		if (e.getClickedInventory().getName().contains("[Armor]")) {
 			if (e.getClick() == ClickType.RIGHT) {
 				Player player = (Player) e.getWhoClicked();
@@ -249,6 +290,9 @@ public class SuitInventoryGUI implements Listener {
 
 	@EventHandler
 	public void clickMenu(InventoryClickEvent e) {
+		if(e.getClickedInventory().getName()==null){
+			return;
+		}
 		if (e.getClickedInventory().getName().contains("[Settings]")) {
 
 			Player player = (Player) e.getWhoClicked();

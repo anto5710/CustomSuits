@@ -23,7 +23,7 @@ public class Cooldown extends BukkitRunnable{
         	player.playSound(player.getLocation(), Sound.DIG_WOOD, 15.0F,3.5F);
         	player.playSound(player.getLocation(), Sound.DOOR_CLOSE, 4.0F, 2.5F);
         	player.playSound(player.getLocation(), Sound.DOOR_OPEN, 4.0F, 4.0F);	
-	    WeaponListner.cooldowns.put(player, false);
+        	WeaponListner.cooldowns.put(player, false);
 	    
 	       
 	        

@@ -50,16 +50,20 @@ public class SchedulerHunger extends BukkitRunnable {
 		this.thisThread.start();
 	}
 
-	public void run() {
+	public void run() throws IllegalStateException {
+		int taskID = 0;
+	try {
 		
-	
+		 taskID = this.getTaskId();
 		
+	} catch (IllegalStateException e) {
 		
+	}
 		
 			if (this.playerQueue.isEmpty()) {
 				this.mainPlugin.logger.info("EMPTY QUEUQ");
 				
-				ThorUtils.cancel(getTaskId());
+				ThorUtils.cancel(taskID);
 				
 			
 			}else{
@@ -168,11 +172,19 @@ public class SchedulerHunger extends BukkitRunnable {
 		return players;
 	}
 
-	public void addFlyingPlayer(Player flyingPlayer) {
+	public void addFlyingPlayer(Player flyingPlayer) throws IllegalStateException{
 
 		if (playerQueue.contains(flyingPlayer) == false) {
-
-			this.runTaskTimer(mainPlugin, 0, Values.SuitHungerDelay);
+			int taskID = 0;
+			try {
+				taskID = getTaskId();
+			} catch (IllegalStateException e) {
+				
+			}
+			if(!flyingPlayer.getServer().getScheduler().isCurrentlyRunning(taskID)){
+				
+				this.runTaskTimer(mainPlugin, 0, Values.SuitHungerDelay);
+			}
 			this.playerQueue.add(flyingPlayer);
 			
 			

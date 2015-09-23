@@ -1,5 +1,6 @@
 package gmail.anto5710.mcp.customsuits.CustomSuits.suit;
 
+import gmail.anto5710.mcp.customsuits.CustomSuits.Listner_Plugin;
 import gmail.anto5710.mcp.customsuits.CustomSuits.dao.SpawningDao;
 import gmail.anto5710.mcp.customsuits.Man.Man;
 import gmail.anto5710.mcp.customsuits.Setting.Enchant;
@@ -445,6 +446,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		manager.registerEvents(new Hammer(this), this);
 		manager.registerEvents(new HammerWeapons(this), this);
 		manager.registerEvents(new Man(this), this);
+		manager.registerEvents(new Listner_Plugin(this), this);
 		
 		
 	

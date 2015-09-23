@@ -1,7 +1,10 @@
 package gmail.anto5710.mcp.customsuits._Thor;
 
+import java.util.List;
+
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.SchedulerHunger;
+import gmail.anto5710.mcp.customsuits.CustomSuits.suit.WeaponListner;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 import gmail.anto5710.mcp.customsuits.Utils.ThorUtils;
@@ -10,9 +13,12 @@ import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Wolf;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -39,7 +45,7 @@ public class HammerWeapons implements Listener{
 				SuitUtils.LineParticle(targetblock, player.getEyeLocation(), player, Effect.LAVA_POP, 3, 0, 2, Values.LightningMissile, 2, true);
 				
 				ThorUtils.strikeLightning(targetblock, player, 1, 4.5, Values.LightningMissile);
-				SuitUtils.createExplosion(targetblock, Hammer.Power, false, true);
+				SuitUtils.createExplosion(targetblock, Values.HammerMissileExplosion_Power, false, true);
 				}
 			}
 		
@@ -100,25 +106,11 @@ public class HammerWeapons implements Listener{
 	}
 	
 	
-	@EventHandler
-	public void ExplosionRing(PlayerInteractEvent event) {
-		Player player = event.getPlayer();
-		if (event.getAction() == Action.LEFT_CLICK_AIR
-				|| event.getAction() == Action.LEFT_CLICK_BLOCK) {
-			if (Hammer.Thor(player)
-					&& SuitUtils.CheckItem(CustomSuitPlugin.hammer,
-							player.getItemInHand()) && player.isSneaking()&&SchedulerHunger.hunger(player, Values.HammerExplosionRingHunger)) {
-				Location playerLocation = player.getLocation();
-				for(int radius = 2 ; radius< Values.HammerExplosionRingRadius ; radius+=3){
-					player.setNoDamageTicks(20);
-					ThorUtils.getRing(radius, player, Values.HammerExplosionPower, Values.HammerExplosionRing, false, true);
-				}
-				player.teleport(playerLocation);
-			}
-		}
-	}
+
 	
 	
+
+
 	public void playEffect(Item dropped, Player player, boolean isTeleport) {
 		Repeat.listPlayer.put(dropped, player);
 		Repeat.listTeleport.put(dropped, isTeleport);
