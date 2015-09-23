@@ -786,7 +786,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 						resetInventory(spnSender);
 						for (int ccnt = 0; height > ccnt; ccnt++) {
 							for (int cnt = 0; width > cnt; cnt++) {
-								Material type = Material.IRON_BLOCK;
+								Material type = Values.Suit_Spawn_Material;
 								ItemStack material = new ItemStack(type, 1);
 
 								if (spnSender.getInventory().contains(type, 1)) {

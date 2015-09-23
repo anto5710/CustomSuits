@@ -52,6 +52,7 @@ public class Values {
 	final public static int HammerPickUpCancel_Data = Material.IRON_BLOCK.getId();
 	final public static Sound HammerTeleportSound = Sound.ENDERMAN_TELEPORT;
 	
+	final public static Material Suit_Spawn_Material = Material.IRON_INGOT;
 	final public static Material SuitLauncher = Material.NETHER_STAR;
 	
 	final public static Effect SuitDefaultFlyEffect = Effect.MOBSPAWNER_FLAMES;
