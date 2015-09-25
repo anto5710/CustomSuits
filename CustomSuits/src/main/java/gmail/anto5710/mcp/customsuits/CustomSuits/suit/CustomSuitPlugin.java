@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.crypto.AEADBadTagException;
@@ -725,7 +726,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		
 		String VehicleName = "";
 		String EntityName = "";
-		int vehicleCount = 1;
+		int vehicleCount = 0;
 		String[]Names = null;
 		if(entityName.contains(":")){
 			Names = entityName.split(":");
@@ -787,9 +788,14 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 						for (int ccnt = 0; height > ccnt; ccnt++) {
 							for (int cnt = 0; width > cnt; cnt++) {
 								Material type = Values.Suit_Spawn_Material;
-								ItemStack material = new ItemStack(type, 1);
+								int level = 1;
+								if(equipment.containsKey(spnSender)){
+								 level = equipment.get(spnSender).getItem(8).getAmount();
+								}
+								int amount = vehicleCount +level;
+								ItemStack material = new ItemStack(type, amount);
 
-								if (spnSender.getInventory().contains(type, 1)) {
+								if (spnSender.getInventory().contains(type, amount)) {
 
 									Class<Entity> entityClass = loadEntityClass(entityName);
 									Class<Entity> vehicleClass = loadEntityClass(VehicleName);
@@ -820,9 +826,12 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 									
 									
 									
-									spnSender.getInventory().removeItem(
-											material);
-									spnSender.updateInventory();
+										spnSender.getInventory().removeItem(material);
+									
+										spnSender.updateInventory();
+										
+									
+								
 									spnSender.playSound(location, Sound.ANVIL_USE,
 											1.5F, 1.5F);
 									if(spawnedEntity instanceof LivingEntity){

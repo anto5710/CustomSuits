@@ -7,7 +7,9 @@ authors: [anto5710 , 02hunnam , sanseong]
 commands:
     cspn:
         description: §bSpawn a suit.
-        usage: "§4[Usage]: §c/cspn [Type / [VehicleType + : + Amount]] [TargetPlayer] [Amount]" 
+        usage: "§4[Usage]: §c/cspn [Type] [TargetPlayer] [Color]\n
+        §c• You can use [Type]:[Vehicle] or [Type]:[VehicleType]:[VehicleAmount] instead Type\n
+        §c• Also You can Use [HelmetColor]:[ChestplateColor]:[LeggingsColor]:[BootsColor] in [Color] Argument" 
     csuit:
         description: §bSummon nearest suit.
         usage: "§4[Usage]: §c/csuit"

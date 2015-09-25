@@ -141,7 +141,7 @@ public class Values {
 	final public static Material LauncherAmmo = Material.FIREWORK_CHARGE;
 	final public static Sound LauncherSound= Sound.FIREWORK_LAUNCH; 
 	
-	final public static int Explode_Falling_Block_Count_Divider = 3;
+	final public static int Explode_Falling_Block_Count_Divider = 4;
 
 	final public static double HammerExplosionDamageRadius = 2;;
 	
