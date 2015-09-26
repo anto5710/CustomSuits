@@ -23,11 +23,13 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Horse.Variant;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockDamageEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
@@ -36,11 +38,14 @@ import org.bukkit.event.player.PlayerAnimationType;
 import org.bukkit.event.player.PlayerChannelEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Bed;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
 public class Man implements Listener{
@@ -84,6 +89,55 @@ public class Man implements Listener{
 			shot(player);
 		}
 	}
+	@EventHandler
+	public void removeBomb(PlayerPickupItemEvent event){
+		Item item = event.getItem();
+		Bomb.remove(item);
+	}
+	@EventHandler
+	public void throwBomb(PlayerInteractEvent event){
+		Player player = event.getPlayer();
+		if(
+				SuitUtils.CheckItem(CustomSuitPlugin.Smoke, player.getItemInHand())||
+				SuitUtils.CheckItem(CustomSuitPlugin.Bomb, player.getItemInHand())){
+			ItemStack item = player.getItemInHand().clone();
+			item.setAmount(1);
+			Item dropped = player.getWorld().dropItem(player.getLocation().add(0, 2, 0), item);
+			
+			dropped.setFallDistance(0);
+
+			Location TargetLocation = SuitUtils.getTargetBlock(player,
+					500).getLocation();
+			Location loc = dropped.getLocation();
+			
+
+			double gravity = 0.0165959600149011612D;
+			dropped.teleport(loc);
+			org.bukkit.util.Vector v = SuitUtils.calculateVelocity(
+					loc.toVector(), TargetLocation.toVector(), gravity,
+					6);
+
+			dropped.setVelocity(v);
+			
+			if(Bomb.Smoke.size() == 0 && Bomb.Bombs.size() == 0){
+				BukkitTask task = new Bomb(plugin).runTaskTimer(plugin, 0, 10);
+			}
+			if(SuitUtils.CheckItem(CustomSuitPlugin.Smoke, player.getItemInHand())){
+				Bomb.Smoke.put(dropped, player);
+			}else{
+				Bomb.Bombs.put(dropped, player);
+			}
+			
+			if(player.getItemInHand().getAmount()==1){
+				player.getInventory().remove(player.getItemInHand());
+			}else{
+			player.getItemInHand().setAmount(player.getItemInHand().getAmount()-1);
+			}
+			player.updateInventory();
+			
+		}
+	}
+
 	private void shot(Player player) {
 		
 	

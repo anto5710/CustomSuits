@@ -46,6 +46,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityCombustByBlockEvent;
+import org.bukkit.event.entity.EntityCombustEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
@@ -83,7 +84,6 @@ public class Hammer implements Listener {
 		new Thunder_Strike(plugin);
 	}
 	
-
 	@EventHandler
 	public void Teleportation(PlayerInteractEvent event){
 		if(event.getAction() ==Action.RIGHT_CLICK_AIR||event.getAction()==Action.RIGHT_CLICK_BLOCK){

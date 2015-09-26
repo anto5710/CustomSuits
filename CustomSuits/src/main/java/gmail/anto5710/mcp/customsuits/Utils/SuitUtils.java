@@ -3,6 +3,7 @@ package gmail.anto5710.mcp.customsuits.Utils;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.WeaponListner;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
@@ -169,12 +170,32 @@ public class SuitUtils {
 		if(check==null){
 			return false;
 		}
-		if(sample.getType()==check.getType()&&sample.getItemMeta().getLore() == check.getItemMeta().getLore()){
+		if(sample.getType()==check.getType()&&checkLore(sample , check)){
 			if(checkName(sample , check)){
 			return true;
 			}
 		}
 		return false;
+	}
+
+	public static boolean checkLore(ItemStack sample, ItemStack check) {
+	
+			if(!sample.getItemMeta().hasLore()&&sample.getItemMeta().hasLore()){
+				return true;
+			}else if(sample.getItemMeta().hasLore()&&check.getItemMeta().hasLore()){
+				List<String>Samplelist = sample.getItemMeta().getLore();
+				List<String>Checklist = check.getItemMeta().getLore();
+				
+				if(Samplelist.size()!=Checklist.size()){
+					return false;
+				}
+			for(int index = 0 ; index <=Checklist.size()-1 ; index++){
+				if(!Checklist.get(index).endsWith(Samplelist.get(index))){
+				return false;
+				}
+			}
+		}
+		return true;
 	}
 
 	public static boolean checkName(ItemStack sample, ItemStack check) {

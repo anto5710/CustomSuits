@@ -319,10 +319,11 @@ public class WeaponListner implements Listener {
 		SuitUtils.spawnFirework(org.bukkit.Color.RED,
 				org.bukkit.FireworkEffect.Type.STAR, 2, true, true,
 				org.bukkit.Color.WHITE, location);
-
+		if(player!=null){
 		player.playSound(player.getLocation(), Sound.EXPLODE, 14.0F, 14.0F);
 
 		player.playSound(player.getLocation(), Sound.WITHER_DEATH, 14.0F, 14.0F);
+		}
 
 	}
 

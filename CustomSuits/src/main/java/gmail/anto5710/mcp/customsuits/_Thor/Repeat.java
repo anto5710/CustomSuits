@@ -84,12 +84,7 @@ public class Repeat extends BukkitRunnable {
 	}
 	
 	private void Run(Item item, Location loc, int TaskID, Player player) {
-		if (ThorUtils.isFire(item)) {
-			player.getInventory().addItem(item.getItemStack());
-			item.remove();
-			ThorUtils.remove(item);
-
-		}
+		item.setFireTicks(0);
 
 		item.setPickupDelay(10);
 		java.util.List<Entity> list;

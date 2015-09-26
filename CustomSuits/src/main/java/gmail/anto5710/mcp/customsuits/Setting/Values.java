@@ -44,6 +44,12 @@ public class Values {
 	final public static Effect ManSwordShotEffect = Effect.WITCH_MAGIC;
 	final public static Sound ManSwordShotSound = Sound.ITEM_BREAK;
 	final public static float ManSwordShotExplosionPower = 4F;
+	
+	final public static Effect ManBombEffect = Effect.SMOKE;
+
+	final public static Effect ManSmokeEffect = Effect.CLOUD;
+	final public static long ManSmoke_Time = 20;
+
 
 	final public static double HammerDamage = 20;
 	final public static double LightningMissile = 25 ;

@@ -120,9 +120,13 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 	 * entityType 이름과 대응하는 EntityClass 모음
 	 */
 	static Map<String, Class<? extends Entity>> entityMap = new HashMap<>();
-
+	
 	static Map<String, Color> colorMap = new HashMap<>();
 
+	public static ItemStack Bomb = new ItemStack(Material.FIREWORK_CHARGE);
+	public static ItemStack Smoke = new ItemStack(Material.CLAY_BALL);
+	
+	
 	public static ItemStack suitremote = new ItemStack(Material.DIODE);
 
 	public static ItemStack gunitem = new ItemStack(Material.IRON_BARDING);
@@ -193,7 +197,14 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 
 	@Override
 	public void onEnable() {
+		SetDisplayName(ChatColor.YELLOW + "[Bomb]", Bomb);
 		
+		SetDisplayName(ChatColor.GRAY + "[Smoke]", Smoke);
+		ItemMeta meta = Smoke.getItemMeta();
+		ArrayList<String>lore=  new ArrayList<>();
+		lore.add(ChatColor.GOLD+"Smoke for "+Values.ManSmoke_Time+" Seconds");
+		meta.setLore(lore);
+		Smoke.setItemMeta(meta);
 		Recipe.addRecipe(getServer());
 		Enchant.enchantBooks();
 	
@@ -524,6 +535,10 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 						player.getInventory().addItem(Leggings_Man);
 						player.getInventory().addItem(Boots_Man);
 						player.getInventory().addItem(Sword_Man);
+					}else if(option.endsWith("smoke")){
+						player.getInventory().addItem(Smoke);
+					}else if(option.endsWith("bomb")){
+						player.getInventory().addItem(Bomb);
 					}
 					else {
 						SuitUtils.Warn(spnSender, "Wrong Commands");

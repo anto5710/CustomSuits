@@ -24,7 +24,21 @@ public class Recipe {
 		
 
 		server.addRecipe(suitrecipe);
-
+		ShapedRecipe Smoke_recipe = new ShapedRecipe(CustomSuitPlugin.Smoke);
+		Smoke_recipe.shape("^^^"  ,"^*^" , "^^^");
+		Smoke_recipe.setIngredient('^',Material.SULPHUR);
+		Smoke_recipe.setIngredient('*',Material.FIREWORK_CHARGE);
+		
+		server.addRecipe(Smoke_recipe);
+		
+		ShapedRecipe Bomb_recipe = new ShapedRecipe(CustomSuitPlugin.Bomb);
+		Bomb_recipe.shape("^*^"  ,"*&*" , "^*^");
+		Bomb_recipe.setIngredient('^',Material.SULPHUR);
+		Bomb_recipe.setIngredient('*',Material.SAND);
+		Bomb_recipe.setIngredient('&',Material.FIREWORK_CHARGE);
+		
+		server.addRecipe(Bomb_recipe);
+		
 		ShapedRecipe gunrecipe = new ShapedRecipe(CustomSuitPlugin.gunitem);
 
 		gunrecipe.shape("&&*", "^$!", "&&*");

@@ -315,18 +315,18 @@ public class PlayerEffect implements Listener {
 		}
 	}
 
-	public static void addpotion(PotionEffect effect, Player player) {
-		if (!ContainPotionEffect(player, effect.getType(),
+	public static void addpotion(PotionEffect effect, LivingEntity livingEntity) {
+		if (!ContainPotionEffect(livingEntity, effect.getType(),
 				effect.getAmplifier())) {
-			player.removePotionEffect(effect.getType());
+			livingEntity.removePotionEffect(effect.getType());
 		}
-		player.addPotionEffect(effect);
+		livingEntity.addPotionEffect(effect);
 	}
 
-	public static boolean ContainPotionEffect(Player player,
+	public static boolean ContainPotionEffect(LivingEntity livingEntity,
 			PotionEffectType type, int level) {
 
-		for (PotionEffect effect : player.getActivePotionEffects()) {
+		for (PotionEffect effect : livingEntity.getActivePotionEffects()) {
 
 			if (effect.getType().equals(type) && effect.getAmplifier() == level) {
 
