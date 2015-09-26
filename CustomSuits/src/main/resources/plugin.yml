@@ -1,7 +1,7 @@
 name: CustomSuits
 main: gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin
 description: The Special Suits.
-version: 0.2.5
+version: 0.3.0
 authors: [anto5710 , 02hunnam , sanseong] 
 
 commands:
@@ -18,7 +18,7 @@ commands:
         usage: "§4[Usage]: §ccommad [target + <Player> / party / firework]"
     get:
         description: §bGet the This Plugin's Items.
-        usage: "§4[Usage]: §cget [commander / hammer / laucner / man]"
+        usage: "§4[Usage]: §cget [commander / hammer / laucner / man / smoke / bomb]"
     head:
         description: §bMake that player's head
         usage: "§4[Usage]: §chead / head <Player>"

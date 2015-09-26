@@ -432,7 +432,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		colorMap.put("aqua", Color.AQUA);
 		colorMap.put("black", Color.BLACK);
 		colorMap.put("yellow", Color.YELLOW);
-		colorMap.put("greem", Color.GREEN);
+		colorMap.put("green", Color.GREEN);
 		colorMap.put("lime", Color.LIME);
 		colorMap.put("orange", Color.ORANGE);
 		colorMap.put("olive", Color.OLIVE);
