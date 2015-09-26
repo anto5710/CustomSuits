@@ -36,8 +36,7 @@ public class Repeat extends BukkitRunnable {
 	static int taskID = 0;
 
 	public static HashMap<Item, Player> listPlayer = new HashMap<>();
-	public static HashMap<Item, Boolean> listTeleport = new HashMap<>();
-
+	
 	public Repeat(JavaPlugin plugin) {
 		this.plugin = plugin;
 
@@ -58,17 +57,17 @@ public class Repeat extends BukkitRunnable {
 			loc = item.getLocation();
 			this.taskID = getTaskId();
 			Player player = listPlayer.get(item);
-			boolean isTP = listTeleport.get(item);
-			Run(item, loc, taskID, player, isTP);
+			
+			Run(item, loc, taskID, player);
 			
 		} else if(listPlayer.size()>1){
 			for (Item item : listPlayer.keySet()) {
 				loc = item.getLocation();
 				this.taskID = getTaskId();
 				Player player = listPlayer.get(item);
-				boolean isTP = listTeleport.get(item);
+				
 
-				Run(item, loc, taskID, player, isTP);
+				Run(item, loc, taskID, player);
 			}
 		}
 		
@@ -84,8 +83,7 @@ public class Repeat extends BukkitRunnable {
 		
 	}
 	
-	private void Run(Item item, Location loc, int TaskID, Player player,
-			boolean isTeleport) {
+	private void Run(Item item, Location loc, int TaskID, Player player) {
 		if (ThorUtils.isFire(item)) {
 			player.getInventory().addItem(item.getItemStack());
 			item.remove();
@@ -95,15 +93,13 @@ public class Repeat extends BukkitRunnable {
 
 		item.setPickupDelay(10);
 		java.util.List<Entity> list;
-		if (!isTeleport) {
+		
 			SuitUtils.playEffect(loc, Values.HammerDefaultEffect, 55, 0, 4);
 			list = WeaponListner.findEntity(loc, player, 4);
 			ThorUtils.damage(list, 40, player);
-		} else {
-			SuitUtils.playEffect(loc, Values.HammerTeleportEffect, 55, 0, 4);
-		}
+		
 		if (ThorUtils.isOnGround(item)) {
-			if (!isTeleport) {
+		
 				SuitUtils.playEffect(loc, Values.HammerHitGround, 30, 0, 5);
 				item.getWorld().strikeLightning(item.getLocation());
 				player.getInventory().addItem(item.getItemStack());
@@ -114,16 +110,7 @@ public class Repeat extends BukkitRunnable {
 				ThorUtils.damage(list, 80, player);
 				SuitUtils.createExplosion(loc, 6F, false, true);
 				ThorUtils.remove(item);
-			} else {
-				player.teleport(loc);
-				player.playSound(player.getLocation(), Values.HammerTeleportSound, 6.0F,6.0F);
-				item.getWorld().strikeLightning(item.getLocation());
-				player.getInventory().addItem(item.getItemStack());
-				item.remove();
-				ThorUtils.strikeLightning(loc, player, 20,1.5,Hammer
-						.HammerDeafultDamage);
-				ThorUtils.remove(item);
-			}
+			
 
 		}
 	}

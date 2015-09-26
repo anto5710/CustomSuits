@@ -146,7 +146,7 @@ public class WeaponListner implements Listener {
 	}
 
 	private void fireball(Player player) {
-		Location targetloc = SuitUtils.getTargetBlock(player, 10000).getLocation();
+		Location targetloc = SuitUtils.getTargetBlock(player, 1000).getLocation();
 		Location locationplayer = player.getLocation();
 		Vector vector = targetloc.toVector()
 				.subtract(locationplayer.toVector()).normalize().multiply(2);

@@ -1,17 +1,25 @@
 package gmail.anto5710.mcp.customsuits.Man;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.PlayerEffect;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.SchedulerHunger;
+import gmail.anto5710.mcp.customsuits.CustomSuits.suit.WeaponListner;
 import gmail.anto5710.mcp.customsuits.Setting.PotionEffects;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
 import gmail.anto5710.mcp.customsuits.Utils.ManUtils;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 import gmail.anto5710.mcp.customsuits.Utils.ThorUtils;
+import gmail.anto5710.mcp.customsuits.Utils.WeaponUtils;
 
+import org.bukkit.Effect;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Horse.Variant;
@@ -19,6 +27,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
@@ -29,11 +38,14 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
+import org.bukkit.material.Bed;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.util.Vector;
 
 public class Man implements Listener{
 	CustomSuitPlugin plugin;
+	HashMap<Player, Boolean>HittingGround = new HashMap<>();
 	public Man(CustomSuitPlugin plugin){
 		this.plugin = plugin;
 		ManUtils manutils = new ManUtils(plugin);
@@ -56,6 +68,98 @@ public class Man implements Listener{
 		}
 	}
 	@EventHandler
+	public void ShotSword(PlayerInteractEvent event){
+		Player player = event.getPlayer();
+		if(event.getAction()!=Action.RIGHT_CLICK_AIR&&event.getAction()!=Action.RIGHT_CLICK_BLOCK){
+			return;
+		}
+		if(ManUtils.Man(player)){
+			
+			if(!SuitUtils.CheckItem(CustomSuitPlugin.Sword_Man, player.getItemInHand())){
+				return;
+			}
+			if(!SchedulerHunger.hunger(player, Values.ManSwordShotHunger)){
+				return;
+			}
+			shot(player);
+		}
+	}
+	private void shot(Player player) {
+		
+	
+		player.playSound(player.getLocation(), Values.ManSwordShotSound, 6F,6F);
+		Location location = player.getEyeLocation();
+		Location target = SuitUtils.getTargetBlock(player, 200).getLocation();
+		
+		Vector vectorStart = location.toVector();
+		Vector vectorEnd = target.toVector();
+		
+		Vector difference = vectorStart.subtract(vectorEnd);
+		
+		
+		double distance = difference.length();
+		if (distance < 0) {
+			return;
+		}
+
+		Location currentLoc = target.clone();
+		double dx = (difference.getX() / distance) * 0.5;
+		double dy = (difference.getY() / distance) * 0.5;
+		double dz = (difference.getZ() / distance) * 0.5;
+		
+		for (double i = 0; i <= distance; i += 0.2) {
+			currentLoc.add(dx, dy, dz);
+		SuitUtils.playEffect(currentLoc, Values.ManSwordShotEffect, 10,0, 25);
+		ManUtils.damage(ManUtils.findEntity(currentLoc, player, 2), Values.ManSwordShotDamage, player);
+		}
+		SuitUtils.createExplosion(currentLoc, Values.ManSwordShotExplosionPower, false,true);
+	}
+	@EventHandler
+	public void ManHitGround(BlockDamageEvent event){
+		Player player = event.getPlayer();
+		
+		if(!ManUtils.Man(player)||!player.isSneaking()){
+			return;
+		}
+		if(!SuitUtils.CheckItem(CustomSuitPlugin.Sword_Man, event.getItemInHand())){
+			return;
+		}
+		boolean Hitting = false;
+		if(HittingGround.containsKey(player)){
+			if(HittingGround.get(player)){
+				Hitting = true;
+			}
+		}
+		
+			
+		if(Hitting){
+			return;
+		}
+		if(!SchedulerHunger.hunger(player, Values.ManHitGroundHunger)){
+			return;
+		}
+		HittingGround.put(player, true);
+		List<Location> listGround =ManUtils.circle(event.getBlock().getLocation(), 16, 3, false, false, -2);
+		List<Location> list =ManUtils.circle(event.getBlock().getLocation(), 16, 11, false, false, -10);
+		player.playSound(player.getLocation(), Values.ManHitGroundSound, 10F, 8F);
+		Fall(listGround);
+		for(Location loc : list){
+			if(loc.getBlock().getType()!=Material.BEDROCK){
+			loc.getBlock().setType(Material.AIR);
+			}
+		}
+		
+		ManUtils.damage(ManUtils.findEntity(event.getBlock().getLocation(), player, 16), Values.ManHitGroundDamage, player);
+		HittingGround.put(player,false);
+		
+	}
+	private void Fall(List<Location> listGround){
+		for(Location loc : listGround){
+			SuitUtils.playEffect(loc, Effect.MOBSPAWNER_FLAMES, 1,0,3);
+			loc.getWorld().spawnFallingBlock(loc, loc.getBlock().getType(), loc.getBlock().getData());
+		}
+	}
+	@EventHandler
 	public void ManCritical(EntityDamageByEntityEvent event){
 		Entity damager = event.getDamager();
 		Entity entity = event.getEntity();
@@ -67,7 +171,7 @@ public class Man implements Listener{
 			if(SuitUtils.CheckItem(CustomSuitPlugin.Sword_Man, player.getItemInHand())){
 				double addDamage_Random = ManUtils.Random(100);
 				
-				event.setDamage((1+addDamage_Random/100)*event.getDamage());
+				event.setDamage((100+addDamage_Random/100)*event.getDamage());
 				
 			}
 		}
@@ -165,6 +269,9 @@ public class Man implements Listener{
 	@EventHandler
 	public void SetInvisible(PlayerInteractEvent event){
 		if(event.getAction()!=Action.LEFT_CLICK_AIR&&event.getAction()!=Action.LEFT_CLICK_BLOCK){
+			return;
+		}
+		if(event.getMaterial() !=Material.AIR){
 			return;
 		}
 		

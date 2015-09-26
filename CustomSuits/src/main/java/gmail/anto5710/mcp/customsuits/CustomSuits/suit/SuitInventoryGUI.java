@@ -133,6 +133,9 @@ public class SuitInventoryGUI implements Listener {
 
 	@EventHandler
 	public void clickAir(InventoryClickEvent e) {
+		if(e.getClickedInventory()==null){
+			return;
+		}
 		if(e.getClickedInventory().getName()==null){
 			return;
 		}
@@ -147,6 +150,9 @@ public class SuitInventoryGUI implements Listener {
 	}
 	@EventHandler
 	public void clickAirArmor(InventoryClickEvent e) {
+		if(e.getClickedInventory()==null){
+			return;
+		}
 		if(e.getClickedInventory().getName()==null){
 			return;
 		}
@@ -162,6 +168,9 @@ public class SuitInventoryGUI implements Listener {
 
 	@EventHandler
 	public void clickHelmet(InventoryClickEvent e) {
+		if(e.getClickedInventory()==null){
+			return;
+		}
 		if(e.getClickedInventory().getName()==null){
 			return;
 		}
@@ -182,6 +191,9 @@ public class SuitInventoryGUI implements Listener {
 
 	@EventHandler
 	public void clickChestplate(InventoryClickEvent e) {
+		if(e.getClickedInventory()==null){
+			return;
+		}
 		if(e.getClickedInventory().getName()==null){
 			return;
 		}
@@ -205,6 +217,9 @@ public class SuitInventoryGUI implements Listener {
 
 	@EventHandler
 	public void clickLeggings(InventoryClickEvent e) {
+		if(e.getClickedInventory()==null){
+			return;
+		}
 		if(e.getClickedInventory().getName()==null){
 			return;
 		}
@@ -228,6 +243,9 @@ public class SuitInventoryGUI implements Listener {
 
 	@EventHandler
 	public void clickBoots(InventoryClickEvent e) {
+		if(e.getClickedInventory()==null){
+			return;
+		}
 		if(e.getClickedInventory().getName()==null){
 			return;
 		}
@@ -249,6 +267,9 @@ public class SuitInventoryGUI implements Listener {
 	}
 
 	public void clickHand(InventoryClickEvent e) {
+		if(e.getClickedInventory()==null){
+			return;
+		}
 		if(e.getClickedInventory().getName()==null){
 			return;
 		}
@@ -290,6 +311,9 @@ public class SuitInventoryGUI implements Listener {
 
 	@EventHandler
 	public void clickMenu(InventoryClickEvent e) {
+		if(e.getClickedInventory()==null){
+			return;
+		}
 		if(e.getClickedInventory().getName()==null){
 			return;
 		}

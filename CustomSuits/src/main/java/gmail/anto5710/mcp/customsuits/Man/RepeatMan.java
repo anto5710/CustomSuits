@@ -23,6 +23,7 @@ public class RepeatMan extends BukkitRunnable{
 	public RepeatMan(CustomSuitPlugin main) {
 		this.mainPlugin = main;
 		
+		
 	}
 
 	

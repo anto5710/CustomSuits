@@ -101,6 +101,7 @@ public class PlayerEffect implements Listener {
 			return;
 		}
 		Location location_entity =SuitUtils.getTargetBlock(player, Values.spawnSuit_max_target_distance).getLocation();
+		location_entity.add(0, 1.5, 0);
 		if(location_entity == null){
 			location_entity = player.getLocation();
 		}
@@ -246,15 +247,22 @@ public class PlayerEffect implements Listener {
 				|| event.getAction() == Action.LEFT_CLICK_BLOCK) {
 			if (CustomSuitPlugin.MarkEntity(player)) {
 				ItemStack item = player.getItemInHand();
-				if(item.getItemMeta().getDisplayName()==null){
+				if(item == null || item.getType() == Material.AIR){
 					return;
 				}
+				if(item.getItemMeta().getDisplayName()==null||item.getItemMeta().getDisplayName()==""){
+					return;
+				}
+				
 				if (item.getItemMeta().getDisplayName().contains(regex)) {
 
 					String name = CustomSuitPlugin.getGun().getItemMeta()
 							.getDisplayName();
 					String gunname = player.getItemInHand().getItemMeta()
 							.getDisplayName();
+					if(gunname == null||gunname == ""){
+						return;
+					}
 					if (gunname.contains(regex)) {
 						String[] values = name.split(regex);
 						String[] names = gunname.split(regex);

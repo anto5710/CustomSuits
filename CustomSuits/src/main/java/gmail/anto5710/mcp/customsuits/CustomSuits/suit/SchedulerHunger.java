@@ -175,13 +175,8 @@ public class SchedulerHunger extends BukkitRunnable {
 	public void addFlyingPlayer(Player flyingPlayer) throws IllegalStateException{
 
 		if (playerQueue.contains(flyingPlayer) == false) {
-			int taskID = 0;
-			try {
-				taskID = getTaskId();
-			} catch (IllegalStateException e) {
-				
-			}
-			if(!flyingPlayer.getServer().getScheduler().isCurrentlyRunning(taskID)){
+			
+			if(playerQueue.size()==0){
 				
 				this.runTaskTimer(mainPlugin, 0, Values.SuitHungerDelay);
 			}

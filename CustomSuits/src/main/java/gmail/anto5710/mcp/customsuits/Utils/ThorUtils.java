@@ -6,12 +6,14 @@ import gmail.anto5710.mcp.customsuits.CustomSuits.suit.WeaponListner;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
 import gmail.anto5710.mcp.customsuits._Thor.Repeat;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.text.Position;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -19,10 +21,13 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitScheduler;
+import org.bukkit.util.Vector;
 
 public class ThorUtils {
 
@@ -40,7 +45,36 @@ public class ThorUtils {
 	return null;
 	}
 
+	
+	public static ArrayList<Entity> findEntity(Location location , double radius){
+	
+		ArrayList<Entity>list =new ArrayList<>();
+		List<Entity>EntityInWorld = location.getWorld().getEntities();
+		for(Entity entity : EntityInWorld){
+			if(entity instanceof Damageable && distance(entity, location, radius)){
+				list.add(entity);
+			}
+		}
+			
+		
+		return list;
+		
+	}
+	public static boolean distance(Entity entity , Location Location , double radius){
+		Location entityLoc = entity.getLocation();
+		double EntityX = entityLoc.getX();
+		
+		double EntityZ = entityLoc.getZ();
+		double X = Location.getX();
+		
+		double Z = Location.getZ();
 
+		if (X - radius <= EntityX && EntityX <= X + radius
+			&& Z - radius <= EntityZ && EntityZ <= Z + radius) {
+				return true;
+		}
+		return false;
+	}
 	public static void removePotionEffectType(PotionEffectType PotionEffectType, Player player) {
 		if(player.hasPotionEffect(PotionEffectType)){
 			player.removePotionEffect(PotionEffectType);
@@ -86,9 +120,7 @@ public class ThorUtils {
 		if (Repeat.listPlayer.containsKey(item)) {
 			Repeat.listPlayer.remove(item);
 		}
-		if (Repeat.listTeleport.containsKey(item)) {
-			Repeat.listTeleport.remove(item);
-		}
+		
 
 	}
 
@@ -119,6 +151,16 @@ public class ThorUtils {
 		double random = (Math.random() * a) - b;
 		return random;
 	}
+	public static void spreadItems( Location loc,ItemStack itemstack){
+		for( int c = 0 ; c <= 20 ; c++){
+			Item item = loc.getWorld().dropItem(loc, itemstack);
+		 float x = (float) -1 + (float) (Math.random() * ((1 - -1) + 1));
+	        float y = 1;
+	        float z = (float) -0.3 + (float)(Math.random() * ((0.3 - -0.3) + 1));
+	        item.setVelocity(new Vector(x, y, z));
+	        item.setPickupDelay(20);
+		}
+	}
 	public static void strikeLightning(Location loc, Player player, int amount,
 			double damageRadius, double damage) {
 	
@@ -127,6 +169,23 @@ public class ThorUtils {
 			ThorUtils.damage(WeaponListner.findEntity(loc, player, damageRadius),
 					damage, player);
 		}
+	}
+
+
+	public static void tesla(Entity entity) {
+		((LivingEntity) entity)
+		.addPotionEffect(new PotionEffect(
+				PotionEffectType.BLINDNESS, 100, 100));
+		((LivingEntity) entity)
+		.addPotionEffect(new PotionEffect(
+				PotionEffectType.CONFUSION, 100, 100));
+		((LivingEntity) entity)
+		.addPotionEffect(new PotionEffect(
+				PotionEffectType.SLOW, 100, 100));
+		((LivingEntity) entity)
+		.addPotionEffect(new PotionEffect(
+				PotionEffectType.WEAKNESS, 100, 100));
+		
 	}
 
 }

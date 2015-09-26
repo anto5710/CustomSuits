@@ -72,7 +72,7 @@ public class Hammer implements Listener {
 	CustomSuitPlugin plugin;
 	
 	static double HammerDeafultDamage = Values.HammerDamage;
-
+	static boolean Teleleporting = false ;
 	
 
 	
@@ -80,19 +80,36 @@ public class Hammer implements Listener {
 
 	public Hammer(CustomSuitPlugin plugin) {
 		this.plugin = plugin;
+		new Thunder_Strike(plugin);
 	}
 	
+
 	@EventHandler
-	public void DefendOfThor(EntityDamageEvent event){
-		Entity  entity = event.getEntity();
-		if(entity instanceof Player){
-			Player  player= (Player )entity;
-			if(Thor(player)){
-				double addDamage_Random = ThorUtils.Random(100);
-				event.setDamage((1+addDamage_Random/100)*event.getDamage());
+	public void Teleportation(PlayerInteractEvent event){
+		if(event.getAction() ==Action.RIGHT_CLICK_AIR||event.getAction()==Action.RIGHT_CLICK_BLOCK){
+			Player player = event.getPlayer();
+			if(!player.isSneaking()){
+				return;
+			}
+			if(!Thor(player)||!SuitUtils.CheckItem(CustomSuitPlugin.hammer, player.getItemInHand())){
+				return;
+			}
+			if(!Teleleporting){
+				Teleleporting = true;
+				Teleport(player);
 			}
 		}
 	}
+	private void Teleport(Player player) {
+		Location To = SuitUtils.getTargetBlock(player,300).getLocation();
+	org.bukkit.util.Vector direction =	player.getLocation().getDirection();
+		TeleportEntityInLine(player, To,Values.HammerTeleportEffect, 3, 0, 3);
+		player.playSound(player.getLocation(), Values.HammerTeleportSound, 6.0f, 6.0f);
+		Location After = player.getLocation();
+		After.setDirection(direction);
+		Teleleporting = false;
+	}
+
 	@EventHandler
 	public void ResetThor(PlayerMoveEvent event){
 		Player player = event.getPlayer();
@@ -109,8 +126,11 @@ public class Hammer implements Listener {
 				thor = player;
 			}
 			Location location = player.getLocation();
-
+			if(Thunder_Strike.isStriking){
 			SuitUtils.playEffect(location, Effect.MAGIC_CRIT, 15, 0, 4);
+			}else{
+				SuitUtils.playEffect(location, Effect.LAVADRIP, 15, 0, 4);
+			}
 			PlayerEffect.addpotion(PotionEffects.Thor_FAST_DIGGING, player);
 			PlayerEffect.addpotion(PotionEffects.Thor_FIRE_RESISTANCE, player);
 			PlayerEffect.addpotion(PotionEffects.Thor_HEALTH_BOOST, player);
@@ -147,18 +167,7 @@ public class Hammer implements Listener {
 				if (entity instanceof Damageable) {
 					if (entity instanceof LivingEntity) {
 
-						((LivingEntity) entity)
-								.addPotionEffect(new PotionEffect(
-										PotionEffectType.BLINDNESS, 100, 100));
-						((LivingEntity) entity)
-								.addPotionEffect(new PotionEffect(
-										PotionEffectType.CONFUSION, 100, 100));
-						((LivingEntity) entity)
-								.addPotionEffect(new PotionEffect(
-										PotionEffectType.SLOW, 100, 100));
-						((LivingEntity) entity)
-								.addPotionEffect(new PotionEffect(
-										PotionEffectType.WEAKNESS, 100, 100));
+						ThorUtils.tesla(entity);
 					}
 					ThorUtils.strikeLightning(entity.getLocation(), player, 10, 1.5, Values.LightningMissile);
 				}
@@ -180,35 +189,7 @@ public class Hammer implements Listener {
 					if(hammer ==null){
 						return;
 					}
-					Location entitylocation = hammer.getLocation();
-					org.bukkit.util.Vector vectorStart = entitylocation.toVector();
-					
-					org.bukkit.util.Vector vectorEnd = playerlocation.toVector();
-					
-					org.bukkit.util.Vector difference = vectorStart.subtract(vectorEnd);
-					
-					
-					double distance = difference.length();
-					if (distance < 0) {
-						return;
-					}
-
-					Location currentLoc = playerlocation.clone();
-					double dx = (difference.getX() / distance) * 0.5;
-					double dy = (difference.getY() / distance) * 0.5;
-					double dz = (difference.getZ() / distance) * 0.5;
-					for (int i = 0; i <=distance; i++) {
-						currentLoc.add(dx , dy , dz);
-						
-						hammer.teleport(currentLoc);
-
-						SuitUtils.playEffect(currentLoc, Values.HammerBackEffect, 55, 0, 4);
-						
-
-					
-			
-					
-				}
+					TeleportEntityInLine(hammer  , playerlocation , Values.HammerBackEffect , 55 , 0 ,3 );
 					hammer.teleport(playerlocation);
 					player.playSound(playerlocation, Sound.ENDERMAN_TELEPORT, 6.0F,6.0F);
 			}
@@ -218,6 +199,39 @@ public class Hammer implements Listener {
 	
 	
 	
+	private void TeleportEntityInLine(Entity entity , Location To ,Effect effect ,int amount,int data, int radius) {
+		Location entitylocation = entity.getLocation();
+		org.bukkit.util.Vector vectorStart = entitylocation.toVector();
+		
+		org.bukkit.util.Vector vectorEnd = To.toVector();
+		
+		org.bukkit.util.Vector difference = vectorStart.subtract(vectorEnd);
+		
+		
+		double distance = difference.length();
+		if (distance < 0) {
+			return;
+		}
+
+		Location currentLoc = To.clone();
+		double dx = (difference.getX() / distance) * 0.5;
+		double dy = (difference.getY() / distance) * 0.5;
+		double dz = (difference.getZ() / distance) * 0.5;
+		for (int i = 0; i <=distance; i++) {
+			currentLoc.add(dx , dy , dz);
+			
+			entity.teleport(currentLoc);
+
+			SuitUtils.playEffect(currentLoc, effect, amount,data, radius);
+			
+
+		
+
+		
+	}
+		entity.teleport(To);
+	}
+
 	public static boolean Thor(Player player) {
 		int count = 0;
 		if (SuitUtils.CheckItem(CustomSuitPlugin.Helemt_Thor, player.getEquipment()

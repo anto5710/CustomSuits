@@ -35,7 +35,15 @@ public class Values {
 	final public static int ManBoostHunger = -10;
 	final public static double ManDeafultDamage = 8;
 	final public static long ManHungerDealy = 60;
-   
+	final public static Sound ManHitGroundSound = Sound.GHAST_FIREBALL;
+	final public static double ManHitGroundDamage = 35;
+	final public static int ManHitGroundHunger = -5;
+	
+	final public static int ManSwordShotHunger = -2;
+	final public static double ManSwordShotDamage = 10;
+	final public static Effect ManSwordShotEffect = Effect.WITCH_MAGIC;
+	final public static Sound ManSwordShotSound = Sound.ITEM_BREAK;
+	final public static float ManSwordShotExplosionPower = 4F;
 
 	final public static double HammerDamage = 20;
 	final public static double LightningMissile = 25 ;
@@ -48,9 +56,22 @@ public class Values {
 	final public static Effect HammerBackEffect = Effect.HEART;
 	final public static Effect HammerHitGround = Effect.ENDER_SIGNAL;
 	final public static float HammerMissileExplosion_Power = 6F;
+	final public static double HammerMissileDamage_Radius = 2;
 	final public static Effect HammerPickUpCancel = Effect.STEP_SOUND;
 	final public static int HammerPickUpCancel_Data = Material.IRON_BLOCK.getId();
 	final public static Sound HammerTeleportSound = Sound.ENDERMAN_TELEPORT;
+	final public static int Thunder_Strike_Hunger = -20;
+	final public static Effect Thunder_Strike_Effect =Effect.MOBSPAWNER_FLAMES;
+	final public static int Thunder_Strike_Radius = 50;
+	final public static int Thunder_Strike_Damage = 20;
+	final public static int Thunder_Strike_Time = 30;
+	final public static Effect Thunder_Strike_Spawn_Effect = Effect.SMOKE;
+	final public static Sound Thunder_Strike_Spawn_Sound = Sound.IRONGOLEM_DEATH;
+	final public static Sound Thunder_Strike_Start_Sound = Sound.ENDERMAN_STARE;
+	final public static Effect Thunder_Strike_Start_Effect =Effect.MOBSPAWNER_FLAMES;	
+	
+	
+	
 	
 	final public static Material Suit_Spawn_Material = Material.IRON_INGOT;
 	final public static Material SuitLauncher = Material.NETHER_STAR;
@@ -124,10 +145,10 @@ public class Values {
 	
 	
 	final public static Sound SuitShieldSound = Sound.FUSE;
-	final public static int SuitShieldHunger = -18;
+	final public static int SuitShieldHunger = -20;
 	
 	final public static double Missile =20 ;
-	final public static float MissileExplosionPower =50F ;
+	final public static float MissileExplosionPower =30F ;
 	final public static int MissileEffectRadius = 2;
 	final public static int MissileEffectAmount =10 ;
 	final public static double MissileRadius =2 ;
