@@ -27,7 +27,7 @@ public class SuitUtils {
 
 	public static void LineParticle(Location target,Location location,
 			Player player, Effect effect, int amount, int data,
-			int effectradius, double damage, double radius, boolean isMissile) {
+			int effectradius, double damage, double radius,boolean isMissile) {
 		
 	
 		Vector vectorStart = location.toVector();
@@ -54,7 +54,7 @@ public class SuitUtils {
 					playEffect(currentLoc, effect, amount, data, effectradius);
 
 		WeaponUtils
-					.damageandeffect(currentLoc, damage, player, isMissile);
+					.damageandeffect(currentLoc, damage, player, isMissile, radius);
 			
 
 		}
@@ -122,17 +122,7 @@ public class SuitUtils {
         return dx * dx + dz * dz;
     }
 	public static boolean distance(Location currentLoc, Entity e, double radius) {
-		Location entityLoc = e.getLocation();
-		double EntityX = entityLoc.getX();
-		double EntityY = entityLoc.getY();
-		double EntityZ = entityLoc.getZ();
-		double X = currentLoc.getX();
-		double Y = currentLoc.getY();
-		double Z = currentLoc.getZ();
-
-		if (X - radius <= EntityX && EntityX <= X + radius
-				&& Y - 1.5 <= EntityY && EntityY <= Y + 1.5
-				&& Z - radius <= EntityZ && EntityZ <= Z + radius) {
+		if(e.getLocation().distance(currentLoc)<=radius){
 			return true;
 		}
 		return false;

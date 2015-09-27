@@ -118,6 +118,7 @@ public class ManUtils  {
 		double b = a / 2;
 		double random = (Math.random() * a) - b;
 		return random;
+		
 	}
 	public static void setInvisible(Player player) throws NullPointerException{
 		
@@ -165,8 +166,8 @@ public class ManUtils  {
 		for(Entity entity : arrayList){
 			if(entity instanceof Damageable){
 				((Damageable) entity).damage(damage , player);
-				player.playSound(player.getLocation(), Sound.SKELETON_DEATH, 15F, 15f);
-				spreadItem(entity.getLocation(), Material.BONE, 45);
+				player.playSound(player.getEyeLocation(), Sound.SKELETON_DEATH, 15F, 15f);
+				SuitUtils.playEffect(entity.getLocation(), Effect.TILE_BREAK, 10, Material.REDSTONE_BLOCK.getId(), 10);
 			}
 		}
 	}
@@ -189,7 +190,7 @@ public class ManUtils  {
 		for (Entity entity : near) {
 			if (entity instanceof Damageable && entity != player
 					&& entity != player.getVehicle()
-					&& distance(currentLoc, entity, radius)) {
+					&& SuitUtils.distance(currentLoc, entity, radius)) {
 				list.add(entity);
 
 			}
@@ -198,34 +199,7 @@ public class ManUtils  {
 
 	}
 
-	public static boolean distance(Location currentLoc, Entity e, double radius) {
-		Location entityLoc = e.getLocation();
-		double EntityX = entityLoc.getX();
-		double EntityY = entityLoc.getY();
-		double EntityZ = entityLoc.getZ();
-		double X = currentLoc.getX();
-		double Y = currentLoc.getY();
-		double Z = currentLoc.getZ();
 
-		if (X - radius <= EntityX && EntityX <= X + radius
-				&& Y -radius <= EntityY && EntityY <= Y +radius
-				&& Z - radius <= EntityZ && EntityZ <= Z + radius) {
-			return true;
-		}
-		return false;
-	}
-	public static void spreadItem(Location loc, Material material, int amount) {
-		for(int count = 0; count <=amount ; count++){
-		Item item=loc.getWorld().dropItem(loc, new ItemStack(material));
-		item.setPickupDelay(1000);
-        float x = (float) -1 + (float) (Math.random() * ((1 - -1) + 1));
-        float y = 1;
-        float z = (float) -0.3 + (float)(Math.random() * ((0.3 - -0.3) + 1));
-        item.setVelocity(new Vector(x, y, z));
-		
-		}
-		
-	}
 	
 		 
 }

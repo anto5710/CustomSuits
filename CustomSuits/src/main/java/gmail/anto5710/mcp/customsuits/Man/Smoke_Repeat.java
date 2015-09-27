@@ -46,6 +46,7 @@ public class Smoke_Repeat extends BukkitRunnable{
 			smoke.setPickupDelay(20);
 			smoke.setFireTicks(0);
 			SuitUtils.playEffect(smoke.getLocation(), Effect.EXPLOSION_HUGE, 35, 0, 50);
+			smoke.getWorld().playSound(smoke.getLocation(), Values.ManSmokeSound, 5F,6F);
 		}else{
 		for(Item smoke : SmokeCount.keySet()){
 			if(SmokeCount.size() == 0){

@@ -62,7 +62,7 @@ public class HammerWeapons implements Listener{
 	public static void launch(Player player){
 		Location targetblock = SuitUtils.getTargetBlock(player, 100).getLocation();
 		WeaponListner.radius = Values.HammerMissileDamage_Radius;
-		SuitUtils.LineParticle(targetblock, player.getEyeLocation(), player, Effect.LAVA_POP, 3, 0, 2, Values.LightningMissile, 2, true);
+		SuitUtils.LineParticle(targetblock, player.getEyeLocation(), player, Effect.LAVA_POP, 3, 0, 2, Values.LightningMissile,2,  true);
 		
 		ThorUtils.strikeLightning(targetblock, player, 1, 4.5, Values.LightningMissile);
 		SuitUtils.createExplosion(targetblock, Values.HammerMissileExplosion_Power, false, true);

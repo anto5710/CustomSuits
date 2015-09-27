@@ -829,7 +829,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 															+ ccnt),
 													entityClass);
 									int entityID = spawnedEntity.getEntityId();
-									logger.info("ENTITY ID: " + entityID
+									logger.info("[Entity ID]: " + entityID
 											+ " by " + spnSender.getName()
 											+ "(" + spnSender.getEntityId()
 											+ ")");
@@ -908,7 +908,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 	}
 
 	private static void EntityAddData(LivingEntity livingentity , Player spnSender ,Player targetPlayer, String entityName , String color) {
-	
+	int level = equipment.get(spnSender).getItem(8).getAmount();
 		livingentity.setRemoveWhenFarAway(false);
 		if(livingentity instanceof Horse){
 			setHorseData((Horse)livingentity, entityName, spnSender , true );
@@ -918,25 +918,23 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 				new PotionEffect[] {
 						new PotionEffect(
 								PotionEffectType.FIRE_RESISTANCE,
-								999999990, 10),
-						new PotionEffect(
-								PotionEffectType.FIRE_RESISTANCE,
-								999999990, 10),
+								999999990, 2),
+						
 						new PotionEffect(
 								PotionEffectType.ABSORPTION,
-								999999990, 10),
+								999999990, 5),
 						new PotionEffect(
 								PotionEffectType.HEALTH_BOOST,
-								999999990, 10),
+								999999990, 5+((int)level/4)),
 						new PotionEffect(
 								PotionEffectType.INCREASE_DAMAGE,
-								999999990, 10),
+								999999990, 4+ ((int)level/4) ),
 						new PotionEffect(
 								PotionEffectType.SPEED,
-								999999990, 10),
+								999999990, 2+((int)level/5)),
 						new PotionEffect(
 								PotionEffectType.WATER_BREATHING,
-								999999990, 10) });
+								999999990, 5) });
 		if (livingentity.getType() == EntityType.SKELETON
 				|| livingentity.getType() == EntityType.ZOMBIE
 				|| livingentity.getType() == EntityType.PIG_ZOMBIE) {

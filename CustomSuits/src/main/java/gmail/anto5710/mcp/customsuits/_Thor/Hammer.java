@@ -162,6 +162,9 @@ public class Hammer implements Listener {
 		Entity entity = event.getEntity();
 		if (damager instanceof Player) {
 			Player player = (Player) damager;
+			if(!Thor(player)){
+				return;
+			}
 			if (SuitUtils.CheckItem(CustomSuitPlugin.hammer,
 					player.getItemInHand())) {
 				if (entity instanceof Damageable) {

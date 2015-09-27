@@ -113,6 +113,7 @@ public class Bomb extends BukkitRunnable{
 			}
 			Location location = item.getLocation();
 			SuitUtils.playEffect(location, Values.ManBombEffect, 10, 0, 5);
+			item.getWorld().playSound(location, Values.ManBombSound, 5F,6F);
 			item.setFireTicks(0);
 			if(ThorUtils.isOnGround(item)){
 				remove(item);
@@ -126,6 +127,7 @@ public class Bomb extends BukkitRunnable{
 				}
 				Location location = item.getLocation();
 				SuitUtils.playEffect(location, Values.ManBombEffect, 10, 0, 5);
+				item.getWorld().playSound(location, Values.ManBombSound, 5F,6F);
 				item.setFireTicks(0);
 				if(ThorUtils.isOnGround(item)){
 					remove(item);

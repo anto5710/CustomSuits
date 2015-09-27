@@ -24,6 +24,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Horse.Variant;
 import org.bukkit.entity.Item;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -57,6 +58,27 @@ public class Man implements Listener{
 		
 	}
 	@EventHandler
+	public void DamageByMan(EntityDamageByEntityEvent event){
+		Entity damager = event.getDamager();
+		Entity entity = event.getEntity();
+		
+		if(damager instanceof Player){
+			Player player =(Player) damager;
+		
+			
+			if(ManUtils.Man(player)){
+				double random = ManUtils.Random(200)+100;
+				double damage= event.getDamage()*(random/100);
+				event.setDamage(damage);
+				if(entity instanceof LivingEntity){
+					LivingEntity livingEntity =(LivingEntity) entity;
+					PlayerEffect.addpotion(new PotionEffect(PotionEffectType.BLINDNESS, 100, 5), livingEntity);
+					
+				}
+			}
+		}
+	}
+	@EventHandler
 	public void DamagedManPlayer(EntityDamageEvent event){
 		if(event.getCause() == DamageCause.LAVA || event.getCause()==DamageCause.FIRE||event.getCause()==DamageCause.FIRE_TICK||event.getCause() == DamageCause.FALL){
 			return;
@@ -78,7 +100,7 @@ public class Man implements Listener{
 		if(event.getAction()!=Action.RIGHT_CLICK_AIR&&event.getAction()!=Action.RIGHT_CLICK_BLOCK){
 			return;
 		}
-		if(ManUtils.Man(player)){
+		if(ManUtils.Man(player)&&!player.isSneaking()){
 			
 			if(!SuitUtils.CheckItem(CustomSuitPlugin.Sword_Man, player.getItemInHand())){
 				return;
@@ -116,7 +138,7 @@ public class Man implements Listener{
 			org.bukkit.util.Vector v = SuitUtils.calculateVelocity(
 					loc.toVector(), TargetLocation.toVector(), gravity,
 					6);
-
+			dropped.getWorld().playSound(loc, Sound.GHAST_FIREBALL, 186F,7F);
 			dropped.setVelocity(v);
 			
 			if(Bomb.Smoke.size() == 0 && Bomb.Bombs.size() == 0){
@@ -213,23 +235,7 @@ public class Man implements Listener{
 			loc.getWorld().spawnFallingBlock(loc, loc.getBlock().getType(), loc.getBlock().getData());
 		}
 	}
-	@EventHandler
-	public void ManCritical(EntityDamageByEntityEvent event){
-		Entity damager = event.getDamager();
-		Entity entity = event.getEntity();
-		if(damager.getType()!=EntityType.PLAYER){
-			return;
-		}
-		Player player = (Player)damager;
-		if(ManUtils.Man(player)){
-			if(SuitUtils.CheckItem(CustomSuitPlugin.Sword_Man, player.getItemInHand())){
-				double addDamage_Random = ManUtils.Random(100);
-				
-				event.setDamage((100+addDamage_Random/100)*event.getDamage());
-				
-			}
-		}
-	}
+
 	@EventHandler
 	public void ManBoost(PlayerToggleSneakEvent event){
 		

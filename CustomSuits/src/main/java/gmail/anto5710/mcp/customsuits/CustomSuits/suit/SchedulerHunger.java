@@ -177,8 +177,12 @@ public class SchedulerHunger extends BukkitRunnable {
 		if (playerQueue.contains(flyingPlayer) == false) {
 			
 			if(playerQueue.size()==0){
-				
-				this.runTaskTimer(mainPlugin, 0, Values.SuitHungerDelay);
+				try {
+					this.runTaskTimer(mainPlugin, 0, Values.SuitHungerDelay);
+					
+				} catch (IllegalStateException e) {
+					// TODO: handle exception
+				}
 			}
 			this.playerQueue.add(flyingPlayer);
 			

@@ -60,6 +60,9 @@ public class SuitInventoryGUI implements Listener {
 
 	@EventHandler
 	public void ClickCommand(InventoryClickEvent e) {
+		if(e.getClickedInventory()==null){
+			return;
+		}
 		if(e.getClickedInventory().getName()==null){
 			return;
 		}
@@ -100,6 +103,9 @@ public class SuitInventoryGUI implements Listener {
 
 	@EventHandler
 	public void clickPlayer(InventoryClickEvent e) {
+		if(e.getClickedInventory()==null){
+			return;
+		}
 		if(e.getClickedInventory().getName()==null){
 			return;
 		}

@@ -232,7 +232,7 @@ public class WeaponListner implements Listener {
 
 		setOption(isMissile, player);
 
-		damage = damage * (CustomSuitPlugin.getLevel(player)/64+1);
+		damage = damage * (CustomSuitPlugin.getLevel(player)/32+1);
 
 		Effect effect = Values.SniperEffect;
 		int data = Material.ANVIL.getId();
@@ -242,7 +242,7 @@ public class WeaponListner implements Listener {
 		}
 
 		SuitUtils.LineParticle(to, from, player, effect, amount,
-				data, effectradius, damage, 200, isMissile);
+				data, effectradius, damage,radius,  isMissile);
 		if (isMissile) {
 			SuitUtils.createExplosion(to, power, false, true);
 

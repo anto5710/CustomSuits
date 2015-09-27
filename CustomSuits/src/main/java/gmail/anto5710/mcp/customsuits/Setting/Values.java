@@ -40,14 +40,17 @@ public class Values {
 	final public static int ManHitGroundHunger = -5;
 	
 	final public static int ManSwordShotHunger = -2;
-	final public static double ManSwordShotDamage = 10;
+	final public static double ManSwordShotDamage = 20;
 	final public static Effect ManSwordShotEffect = Effect.WITCH_MAGIC;
 	final public static Sound ManSwordShotSound = Sound.ITEM_BREAK;
-	final public static float ManSwordShotExplosionPower = 4F;
+	final public static float ManSwordShotExplosionPower = 4.5F;
 	
 	final public static Effect ManBombEffect = Effect.SMOKE;
 
 	final public static Effect ManSmokeEffect = Effect.CLOUD;
+	final public static Sound ManBombSound = Sound.NOTE_STICKS;
+
+	final public static Sound ManSmokeSound = Sound.FIZZ;
 	final public static long ManSmoke_Time = 20;
 
 
@@ -114,7 +117,7 @@ public class Values {
 	final public static int spawnSuit_max_target_distance = 200;
 		   
 	
-	final public static double SniperDamage =20 ;
+	final public static double SniperDamage =25 ;
 	final public static double SniperRadius = 0.75;
 	final public static int SniperEffectRadius =2 ;
 	final public static int SniperEffectAmount =3 ;
@@ -131,16 +134,16 @@ public class Values {
 	final public static String SuitName = "[Mark]";
 	
 	
-	final public static double MachineGunDamage =12 ;
+	final public static double MachineGunDamage =15 ;
 	final public static double MachineGunDamageRadiues =1.5 ;
 	final public static int MachineGunAmmoAmount = 50;
 	final public static Material MachineGunAmmo = Material.FLINT;
 	
-	final public static double Bim = 12;
+	final public static double Bim = 16;
 	final public static float BimExplosionPower =4F ;
 	final public static int BimEffectRadius = 2;
 	final public static int BimEffectAmount =5 ;
-	final public static double BimRadius =2 ;
+	final public static double BimRadius =2.5 ;
 	final public static int BimHunger =-2 ;
 	final public static String BimMessage =  ChatColor.BLUE + "[Info]: " + ChatColor.AQUA
 			+ "Fired a Repulser Bim!";
@@ -157,7 +160,7 @@ public class Values {
 	final public static float MissileExplosionPower =30F ;
 	final public static int MissileEffectRadius = 2;
 	final public static int MissileEffectAmount =10 ;
-	final public static double MissileRadius =2 ;
+	final public static double MissileRadius =2.5 ;
 	final public static int MissileHunger =- 8;
 	final public static String MissileMessage =  ChatColor.BLUE + "[Info]: " + ChatColor.AQUA
 			+ "Fired a Repulser Missile!";
