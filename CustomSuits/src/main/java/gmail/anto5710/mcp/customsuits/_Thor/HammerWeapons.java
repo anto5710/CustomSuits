@@ -125,7 +125,7 @@ public class HammerWeapons implements Listener{
 			if(!Hammer.Thor(player)||!SuitUtils.CheckItem(CustomSuitPlugin.hammer, player.getItemInHand())){
 				return;
 			}
-			if(Thunder_Strike.isStriking||player.isSneaking()){
+			if(Thunder_Strike.isStriking||!player.isSneaking()){
 				return;
 			}
 			if(SchedulerHunger.hunger(player, Values.Thunder_Strike_Hunger)){
