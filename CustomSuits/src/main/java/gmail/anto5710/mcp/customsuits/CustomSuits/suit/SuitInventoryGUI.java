@@ -36,6 +36,9 @@ public class SuitInventoryGUI implements Listener {
 
 	@EventHandler
 	public void clickExpOnInventory(InventoryClickEvent e) {
+		if(e.getClickedInventory()==null){
+			return;
+		}
 		if(e.getClickedInventory().getName()==null){
 			return;
 		}

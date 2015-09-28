@@ -212,13 +212,16 @@ public class PlayerEffect implements Listener {
 		
 
 		SpawningDao dao = this.mainPlugin.getDao();
-		
-		if (!dao.isCreatedBy(entity, player)||entity instanceof Vehicle) {
+		if(!Values.Allowed_Suit_Summon_types.contains(entity.getType())){
 			return;
 		}
+		
+		
 
 		LivingEntity livingentity = (LivingEntity) entity;
-
+		if(!hasArmor(livingentity.getEquipment().getArmorContents())){
+			return;
+		}
 		// 4개를 다 가지고 있음!
 
 		ItemStack chestItem = livingentity.getEquipment().getChestplate();
@@ -239,6 +242,19 @@ public class PlayerEffect implements Listener {
 		dao.remove(livingentity);
 	}
 	
+	public static boolean hasArmor(ItemStack[] armorContents) {
+		int checkCount = 0;
+		for(int index = 0; index < armorContents.length ; index++){
+				if(armorContents[index].getType() == Material.AIR){
+					checkCount++;
+				}
+			}
+		if(checkCount == armorContents.length){
+		return false;
+		}
+		return true;
+	}
+
 	@EventHandler
 	public void zoom(PlayerInteractEvent event) {
 		Player player = event.getPlayer();

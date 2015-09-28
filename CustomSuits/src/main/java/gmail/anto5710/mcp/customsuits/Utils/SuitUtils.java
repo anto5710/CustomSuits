@@ -121,9 +121,14 @@ public class SuitUtils {
         double dz = to.getBlockZ() - from.getBlockZ();
         return dx * dx + dz * dz;
     }
-	public static boolean distance(Location currentLoc, Entity e, double radius) {
-		if(e.getLocation().distance(currentLoc)<=radius){
-			return true;
+	public static boolean distance(Location currentLoc, Entity entity, double radius) {
+		Location location = entity.getLocation();
+		location.add( 0 , -1.5 , 0);
+		for(double y = 0 ; y <=3 ; y+=1.5){
+			location.add( 0 , y , 0);
+			if(location.distance(currentLoc)<=radius){
+				return true;
+			}
 		}
 		return false;
 	}

@@ -34,6 +34,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.DyeColor;
 import org.bukkit.Effect;
+import org.bukkit.EntityEffect;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -833,9 +834,11 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 											+ " by " + spnSender.getName()
 											+ "(" + spnSender.getEntityId()
 											+ ")");
+									addElseData(spawnedEntity, EntityName, spnSender);
 									if(spawnedEntity instanceof Creature){
 										((Creature) spawnedEntity).setTarget(targetPlayer);
 										}
+						
 
 									dao.saveEntity(spawnedEntity, spnSender);
 									
@@ -885,19 +888,45 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 
 			spawnedEntity =Vehicle;
 			Location loc = spawnedEntity.getLocation();
-		
+			if(c+1<vehicleCount){
 			Vehicle = spawnedEntity.getWorld().spawn(loc,spawnedEntity.getClass() );
+			}
 		
 	
 		}
 		
 	}
-
+	public static void addElseData(Entity spawnedEntity , String entityName , Player spnSender){
+		if(spawnedEntity instanceof Horse){
+			setHorseData((Horse)spawnedEntity, entityName, spnSender , true );
+		}
+		
+		 if (spawnedEntity instanceof Enderman) {
+			 setMaterialForEnderMan((Enderman) spawnedEntity,Material.TNT);
+		}
+		 
+		if (spawnedEntity instanceof Wolf) {
+			
+			((Wolf)spawnedEntity).setAngry(true);
+		}
+		if (spawnedEntity instanceof IronGolem) {
+			
+			((IronGolem)spawnedEntity).setPlayerCreated(false);
+			((IronGolem)spawnedEntity).playEffect(EntityEffect.IRON_GOLEM_ROSE);
+		}
+		if (spawnedEntity instanceof Creeper) {
+			((Creeper) spawnedEntity).setPowered(true);;
+			
+		}
+	}
 	private static void setVehicleData(Entity spawnedEntity,Entity Vehicle, Player spnSender , Player targetPlayer , String EntityName ,String Color) {
 		dao.saveEntity(Vehicle, spnSender);
+		addElseData(spawnedEntity, EntityName, spnSender);
 		if(Vehicle instanceof LivingEntity){
 			EntityAddData((LivingEntity)Vehicle, spnSender, targetPlayer, EntityName ,Color);
+			
 		}
+		
 		
 		if(Vehicle instanceof Creature){
 		((Creature) spawnedEntity).setTarget(targetPlayer);
@@ -910,9 +939,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 	private static void EntityAddData(LivingEntity livingentity , Player spnSender ,Player targetPlayer, String entityName , String color) {
 	int level = equipment.get(spnSender).getItem(8).getAmount();
 		livingentity.setRemoveWhenFarAway(false);
-		if(livingentity instanceof Horse){
-			setHorseData((Horse)livingentity, entityName, spnSender , true );
-		}
+		
 		addPotionEffects(
 				livingentity,
 				new PotionEffect[] {
@@ -943,23 +970,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 					spnSender, livingentity,
 					entityName , color);
 		} 
-		
-		 if (livingentity instanceof Enderman) {
-			 setMaterialForEnderMan((Enderman) livingentity,Material.TNT);
-		}
-		 
-		if (livingentity instanceof Wolf) {
-			
-			((Wolf)livingentity).setAngry(true);
-		}
-		if (livingentity instanceof IronGolem) {
-			
-			((IronGolem)livingentity).setPlayerCreated(false);
-		}
-		if (livingentity instanceof Creeper) {
-			((Creeper) livingentity).setPowered(true);;
-			
-		}
+
 		
 	}
 
@@ -1017,7 +1028,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		if(color!=null){
 			CustomColor = false;
 		}
-
+		
 
 		LivingEntity livingEntity = (LivingEntity) spawnedEntity;
 	
@@ -1028,14 +1039,16 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		livingEntity.setCustomName(player.getName() + "|" + Values.SuitName);
 		ItemStack itemForCreature = createItemForCreature(livingEntity);
 		livingEntity.getEquipment().setItemInHand(itemForCreature);
+		Color HandColor  = getColor(handequipment , player);
+		Color HelmetColor  = getColor(helmetequipment , player);
+		Color ChestplateColor = getColor(chestequipment, player);
+		Color LeggingsColor = getColor(leggingsequipment, player);
+		Color BootsColor = getColor(bootsequipment, player);
+		if(!CustomColor){
 		Color icolor = colorMap.get(color);
 		if(icolor ==null){
 			icolor = Color.RED;
 		}
-		Color HelmetColor  = icolor;
-		Color ChestplateColor = icolor;
-		Color LeggingsColor = icolor;
-		Color BootsColor = icolor;
 		if(colorMap.containsKey(color)){
 		  icolor = colorMap.get(color);
 		}else{
@@ -1069,10 +1082,17 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 						}
 					}
 				}
+				if(Colors.length>=5){
+					if(Colors[4]!=null){
+						if(colorMap.containsKey(Colors[4])){
+							HandColor = colorMap.get(Colors[4]);
+						}
+					}
+				}
 			}
 		}
 		 
-		
+		}
 		
 			int level = equipment.get(player).getItem(8).getAmount();
 
@@ -1117,7 +1137,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		
 
 			ItemStack handitem = inventoryitem.getItem(8);
-			addData(handitem, handequipment, level, player, CustomColor, icolor);
+			addData(handitem, handequipment, level, player, CustomColor, HandColor);
 
 			livingEntity.getEquipment().setItemInHand(handitem);
 			livingEntity.getEquipment().setItemInHandDropChance(100.0F);
@@ -1125,6 +1145,20 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		
 
 		
+	}
+
+	private static Color getColor(HashMap<Player, Inventory> equipment , Player player) {
+		if(equipment.containsKey(player)){
+			if(equipment.get(player).getItem(8)!= null){
+			if(equipment.get(player).getItem(8).getType()== Material.WOOL){
+				ItemStack woolitem = equipment.get(player).getItem(8);
+				Wool wool = new Wool(woolitem.getType(), woolitem.getData().getData());
+				Color color = wool.getColor().getColor();
+				return color;
+			}
+		}
+		}
+		return Color.RED;
 	}
 
 	public static void leatherDyecolor(ItemStack item, DyeColor color) {
@@ -1155,7 +1189,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 						ItemStack wool = map.get(player).getItem(8);
 						Wool w = new Wool(wool.getType(), wool.getData()
 								.getData());
-
+						
 						DyeColor dyecolor = w.getColor();
 						leatherDyecolor(item, dyecolor);
 					}
@@ -1264,8 +1298,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		
 
 		if (entity.getType() != EntityType.PLAYER) {
-			if (entity.getType() == EntityType.SKELETON
-					|| entity.getType() == EntityType.PIG_ZOMBIE) {
+			if (PlayerEffect.hasArmor(livingentity.getEquipment().getArmorContents())&&Values.Allowed_Suit_Summon_types.contains(livingentity.getType())) {
 				if (MarkEntity(livingentity)
 						&& dao.isCreatedBy(livingentity, player)) {
 

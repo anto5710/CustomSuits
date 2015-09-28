@@ -1,6 +1,8 @@
 package gmail.anto5710.mcp.customsuits.Setting;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
@@ -11,6 +13,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Ghast;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -79,7 +83,7 @@ public class Values {
 	final public static Sound Thunder_Strike_Start_Sound = Sound.ENDERMAN_STARE;
 	final public static Effect Thunder_Strike_Start_Effect =Effect.MOBSPAWNER_FLAMES;	
 	
-	
+	final public static List<EntityType> Allowed_Suit_Summon_types =  Arrays.asList(EntityType.ZOMBIE , EntityType.SKELETON , EntityType.PIG_ZOMBIE);
 	
 	
 	final public static Material Suit_Spawn_Material = Material.IRON_INGOT;
