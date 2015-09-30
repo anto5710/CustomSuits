@@ -1,11 +1,13 @@
 package gmail.anto5710.mcp.customsuits._Thor;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.WeaponListner;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
+import gmail.anto5710.mcp.customsuits.Utils.ManUtils;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 import gmail.anto5710.mcp.customsuits.Utils.ThorUtils;
 import gmail.anto5710.mcp.customsuits.Utils.WeaponUtils;
@@ -57,11 +59,10 @@ public class Thunder_Strike extends BukkitRunnable{
 		Location entitylocation = entity.getLocation();
 		Location spawnLocation = entitylocation.clone();
 		spawnLocation.setY(spawnLocation.getY()+50);
-			FallingBlock block = entity.getWorld().spawnFallingBlock(spawnLocation, Material.SOUL_SAND, (byte) 0);
-			
-			fallingBlocks.add(block);
+		
+		spawnFallingblocks(spawnLocation);
 			SuitUtils.playEffect(entitylocation, effect, 2, 0, 5);
-			ThorUtils.spreadItems(entitylocation, new ItemStack(Material.BONE) );
+			
 		
 	
 		ThorUtils.strikeLightning(entitylocation, Hammer.thor, 1, 2, Values.Thunder_Strike_Damage);
@@ -70,6 +71,29 @@ public class Thunder_Strike extends BukkitRunnable{
 			ThorUtils.tesla(entity);
 		}
 		
+	}
+	private static void spawnFallingblocks(Location spawnLocation ) {
+		List<Location>list = ManUtils.circle(spawnLocation, 2, 2, false, true, 0);
+		for(Location location : list){
+			FallingBlock block = location.getWorld().spawnFallingBlock(location, Material.SOUL_SAND, (byte) 0);
+			fallingBlocks.add(block);
+		}
+//		FallingBlock block = spawnLocation.getWorld().spawnFallingBlock(spawnLocation, Material.SOUL_SAND, (byte) 0);
+//		spawnLocation.add(0, 1, 0);
+//		FallingBlock block2 = spawnLocation.getWorld().spawnFallingBlock(spawnLocation, Material.SOUL_SAND, (byte) 0);
+//		spawnLocation.add(0, -2, 0);
+//		FallingBlock block3 = spawnLocation.getWorld().spawnFallingBlock(spawnLocation, Material.SOUL_SAND, (byte) 0);
+//		spawnLocation.add(-1 , 1 ,0 );
+//		FallingBlock block4 = spawnLocation.getWorld().spawnFallingBlock(spawnLocation, Material.SOUL_SAND, (byte) 0);
+//		spawnLocation.add(2, 0, 0);
+//		FallingBlock block5 = spawnLocation.getWorld().spawnFallingBlock(spawnLocation, Material.SOUL_SAND, (byte) 0);
+//		spawnLocation.add(-1, 0, -1);
+//		FallingBlock block6 = spawnLocation.getWorld().spawnFallingBlock(spawnLocation, Material.SOUL_SAND, (byte) 0);
+//		spawnLocation.add(0, 0, 2);
+//		FallingBlock block7 = spawnLocation.getWorld().spawnFallingBlock(spawnLocation, Material.SOUL_SAND, (byte) 0);
+//		
+//		fallingBlocks.addAll(Arrays.asList(block , block2 , block3 , block4 , block5 , block6 , block7));
+//		
 	}
 	private void damage(List<Entity> list) {
 		for(Entity entity : list){

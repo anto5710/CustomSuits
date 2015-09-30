@@ -8,6 +8,7 @@ import gmail.anto5710.mcp.customsuits.Utils.WeaponUtils;
 import java.awt.Color;
 import java.net.Proxy.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -65,6 +66,7 @@ public class WeaponListner implements Listener {
 
 	static int maxformachine = Values.MachineGunAmmoAmount;
 	static int maxforsniper = Values.SnipeAmmoAmount;
+	static ArrayList<Fireball>listFireball = new ArrayList<>();
 
 	static double damage = 0;
 	public static double radius = 0;
@@ -94,13 +96,12 @@ public class WeaponListner implements Listener {
 					if (player.getItemInHand().getType() == Values.SuitLauncher) {
 						if (SchedulerHunger.hunger(player, Values.SuitShieldHunger)) {
 
-							player.setNoDamageTicks(200 * CustomSuitPlugin
-									.getLevel(player));
+							
 
-							double sec = (CustomSuitPlugin.getLevel(player)) / 20 + 3;
+							int sec = (CustomSuitPlugin.getLevel(player)) / 20 + 3;
 							SuitUtils.playEffect(player.getLocation(),
 									Effect.TILE_BREAK, 600, 0, 400);
-
+							player.setNoDamageTicks(sec*20);
 							player.sendMessage(ChatColor.BLUE + "[Info]: "
 									+ ChatColor.AQUA + "No Damage Time for: "
 									+ ChatColor.DARK_AQUA + sec + " Seconds! ");
@@ -154,6 +155,7 @@ public class WeaponListner implements Listener {
 		Fireball fireball = player.launchProjectile(Fireball.class, vector);
 
 		fireball.setIsIncendiary(true);
+		listFireball.add(fireball);
 
 	}
 
@@ -164,8 +166,7 @@ public class WeaponListner implements Listener {
 				if (event.getEntity().getShooter() instanceof Player) {
 
 					Player player = (Player) event.getEntity().getShooter();
-					if (SuitUtils.CheckItem(CustomSuitPlugin.missileLauncher,
-							player.getItemInHand())) {
+					if (listFireball.contains(event.getEntity())) {
 
 						event.getEntity()
 								.getWorld()
@@ -303,7 +304,7 @@ public class WeaponListner implements Listener {
 		for (Entity entity : near) {
 			if (entity instanceof Damageable && entity != player
 					&& entity != player.getVehicle()
-					&& SuitUtils.distance(currentLoc, entity, radius)) {
+					&& SuitUtils.distance(currentLoc, entity, radius , 2)) {
 				list.add(entity);
 
 			}
@@ -444,15 +445,10 @@ public class WeaponListner implements Listener {
 												values[0] + regex + (cnt - 1)
 														+ regex + snipe,
 												player.getItemInHand());
-										Vector vector = targetloc
-												.toVector()
-												.subtract(
-														locationplayer
-																.toVector())
-												.normalize().multiply(2);
+									
 										Snowball snowball = player
 												.launchProjectile(
-														Snowball.class, vector);
+														Snowball.class);
 
 										SuitUtils.playEffect(locationplayer,
 												Values.Suit_Gun_Shot_Effect, 1,

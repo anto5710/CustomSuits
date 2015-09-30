@@ -45,6 +45,7 @@ public class Values {
 	
 	final public static int ManSwordShotHunger = -2;
 	final public static double ManSwordShotDamage = 20;
+	final public static double ManSwordShotradius = 2.5;
 	final public static Effect ManSwordShotEffect = Effect.WITCH_MAGIC;
 	final public static Sound ManSwordShotSound = Sound.ITEM_BREAK;
 	final public static float ManSwordShotExplosionPower = 4.5F;

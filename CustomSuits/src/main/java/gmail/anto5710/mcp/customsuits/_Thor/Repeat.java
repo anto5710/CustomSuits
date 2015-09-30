@@ -90,8 +90,8 @@ public class Repeat extends BukkitRunnable {
 		java.util.List<Entity> list;
 		
 			SuitUtils.playEffect(loc, Values.HammerDefaultEffect, 55, 0, 4);
-			list = WeaponListner.findEntity(loc, player, 4);
-			ThorUtils.damage(list, 40, player);
+			list = WeaponListner.findEntity(loc, player, 3);
+			ThorUtils.damage(list, Hammer.HammerDeafultDamage*1.5, player);
 		
 		if (ThorUtils.isOnGround(item)) {
 		
@@ -100,9 +100,9 @@ public class Repeat extends BukkitRunnable {
 				player.getInventory().addItem(item.getItemStack());
 				item.remove();
 
-				list = WeaponListner.findEntity(loc, player, 4);
+				list = WeaponListner.findEntity(loc, player, 3);
 
-				ThorUtils.damage(list, 80, player);
+				ThorUtils.damage(list, Hammer.HammerDeafultDamage*2, player);
 				SuitUtils.createExplosion(loc, 6F, false, true);
 				ThorUtils.remove(item);
 			

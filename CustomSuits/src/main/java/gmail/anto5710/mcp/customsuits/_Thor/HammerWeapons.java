@@ -44,6 +44,7 @@ public class HammerWeapons implements Listener{
 			if(Thunder_Strike.fallingBlocks.contains((FallingBlock)entity)){
 				SuitUtils.createExplosion(entity.getLocation(), 6.0F,true, true);
 				Thunder_Strike.fallingBlocks.remove(entity);
+				
 			}
 		}
 	}

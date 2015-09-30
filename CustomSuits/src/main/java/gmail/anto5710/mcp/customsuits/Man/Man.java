@@ -67,9 +67,11 @@ public class Man implements Listener{
 		
 			
 			if(ManUtils.Man(player)){
-				double random = ManUtils.Random(200)+100;
-				double damage= event.getDamage()*(random/100);
-				event.setDamage(damage);
+				if(event.getCause()== DamageCause.ENTITY_ATTACK){
+					if(SuitUtils.CheckItem(CustomSuitPlugin.Sword_Man, player.getItemInHand())){
+						event.setDamage(event.getDamage()*(1.2));
+					}
+				}
 				if(entity instanceof LivingEntity){
 					LivingEntity livingEntity =(LivingEntity) entity;
 					PlayerEffect.addpotion(new PotionEffect(PotionEffectType.BLINDNESS, 100, 5), livingEntity);
@@ -87,10 +89,18 @@ public class Man implements Listener{
 		
 		if(Entity instanceof Player){
 			Player player = (Player) Entity;
-			if(ManUtils.Man(player)&&ManUtils.HiddenPlayers.contains(player)){
+			if(ManUtils.Man(player)){
+				if(event.getCause() == DamageCause.ENTITY_ATTACK){
+					double random =ManUtils.Random(100)+ 50;
+					if(random>=40){
+						event.setDamage(event.getDamage()*0.5); 
+					}
+				}
+					if(ManUtils.HiddenPlayers.contains(player)){
 				
 				ManUtils.changeVisiblility(player , true ,false);
-				
+					}
+					
 			}
 		}
 	}
@@ -186,7 +196,7 @@ public class Man implements Listener{
 		for (double i = 0; i <= distance; i += 0.2) {
 			currentLoc.add(dx, dy, dz);
 		SuitUtils.playEffect(currentLoc, Values.ManSwordShotEffect, 10,0, 25);
-		ManUtils.damage(ManUtils.findEntity(currentLoc, player, 2), Values.ManSwordShotDamage, player);
+		ManUtils.damage(ManUtils.findEntity(currentLoc, player, Values.ManSwordShotradius), Values.ManSwordShotDamage, player);
 		}
 		SuitUtils.createExplosion(currentLoc, Values.ManSwordShotExplosionPower, false,true);
 	}
@@ -237,10 +247,13 @@ public class Man implements Listener{
 	}
 
 	@EventHandler
-	public void ManBoost(PlayerToggleSneakEvent event){
+	public void ManBoost(PlayerInteractEvent event){
 		
 		Player player = event.getPlayer();
-		if(!ManUtils.Man(player)||!player.isBlocking()){
+		if(!ManUtils.Man(player)||!player.isSneaking()){
+			return;
+		}
+		if(event.getAction()!=Action.RIGHT_CLICK_AIR&& event.getAction() != Action.RIGHT_CLICK_BLOCK){
 			return;
 		}
 		if(SuitUtils.CheckItem(CustomSuitPlugin.Sword_Man, player.getItemInHand())&&SchedulerHunger.hunger(player, Values.ManBoostHunger)){

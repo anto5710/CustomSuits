@@ -414,7 +414,7 @@ public class PlayerEffect implements Listener {
 		player.removePotionEffect(PotionEffectType.SLOW);
 		
 
-		player.playSound(player.getLocation(), Sound.ANVIL_LAND, 3.0F, 2.0F);
+		
 	}
 
 }

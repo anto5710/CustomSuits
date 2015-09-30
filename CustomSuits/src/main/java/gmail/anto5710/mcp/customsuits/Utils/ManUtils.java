@@ -190,7 +190,7 @@ public class ManUtils  {
 		for (Entity entity : near) {
 			if (entity instanceof Damageable && entity != player
 					&& entity != player.getVehicle()
-					&& SuitUtils.distance(currentLoc, entity, radius)) {
+					&& SuitUtils.distance(currentLoc, entity, radius , 1)) {
 				list.add(entity);
 
 			}

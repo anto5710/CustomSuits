@@ -7,6 +7,7 @@ import gmail.anto5710.mcp.customsuits.Setting.Values;
 import gmail.anto5710.mcp.customsuits._Thor.Repeat;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -107,8 +108,10 @@ public class ThorUtils {
 		
 			Block block = new Location(location.getWorld(), location.getX(), Y, location.getZ()).getBlock();
 			Material matareial = block.getType();
-			if(matareial!=Material.AIR&&matareial !=Material.WATER){
+			List<Material>Ignore_materials = Arrays.asList(Material.WATER , Material.STATIONARY_WATER , Material.AIR);
+			if(!Ignore_materials.contains(matareial)){
 				return true;
+				
 			}
 		
 		

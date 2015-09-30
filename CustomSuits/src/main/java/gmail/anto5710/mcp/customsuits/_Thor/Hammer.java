@@ -110,14 +110,7 @@ public class Hammer implements Listener {
 		Teleleporting = false;
 	}
 
-	@EventHandler
-	public void ResetThor(PlayerMoveEvent event){
-		Player player = event.getPlayer();
-		
-		if(thor==player&&!Thor(player)){
-			thor =null;
-		}
-	}
+
 	@EventHandler
 	public void ThorMove(PlayerMoveEvent event) {
 		Player player = event.getPlayer();
