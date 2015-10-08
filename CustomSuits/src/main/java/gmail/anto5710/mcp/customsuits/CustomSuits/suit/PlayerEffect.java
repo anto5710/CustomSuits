@@ -1,5 +1,6 @@
 package gmail.anto5710.mcp.customsuits.CustomSuits.suit;
 
+import gmail.anto5710.mcp.customsuits.CustomSuits.PlayEffect;
 import gmail.anto5710.mcp.customsuits.CustomSuits.dao.SpawningDao;
 import gmail.anto5710.mcp.customsuits.Man.Man;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
@@ -59,6 +60,7 @@ import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 import org.junit.internal.matchers.IsCollectionContaining;
 
@@ -83,10 +85,10 @@ public class PlayerEffect implements Listener {
 	
 	@EventHandler
 	public void kill(PlayerDeathEvent e) {
-		Player p = (Player) e.getEntity();
-		if (this.hungerscheduler.getList().contains(p)
-				&& p.getGameMode() != GameMode.CREATIVE) {
-			removingeffects(p);
+		Player player = (Player) e.getEntity();
+		if (this.hungerscheduler.getList().contains(player)
+				&& player.getGameMode() != GameMode.CREATIVE) {
+			removingeffects(player);
 
 		}
 	
@@ -138,51 +140,30 @@ public class PlayerEffect implements Listener {
 		if (CustomSuitPlugin.MarkEntity(player)) {
 			int level = CustomSuitPlugin.getLevel(player);
 			addpotion(new PotionEffect(PotionEffectType.HEALTH_BOOST, 99999999,
-					((int) level / 16) + 5), player);
+					((int) level / 16) + 1), player);
 			addpotion(new PotionEffect(PotionEffectType.NIGHT_VISION, 99999999,
-					10 + level), player);
+					1 + level), player);
 			addpotion(new PotionEffect(PotionEffectType.FIRE_RESISTANCE,
-					99999999, 10 + level), player);
-			addpotion(new PotionEffect(PotionEffectType.ABSORPTION, 99999999,
-					5 + level), player);
-			addpotion(new PotionEffect(PotionEffectType.HEALTH_BOOST, 99999999,
-					5 + ((int) level / 16)), player);
+					99999999, 2 + level), player);
+			
 			addpotion(new PotionEffect(PotionEffectType.INCREASE_DAMAGE,
-					99999999, 5 + ((int) level / 16)), player);
+					99999999, 1 + ((int) level / 16)), player);
 			addpotion(new PotionEffect(PotionEffectType.SPEED, 99999999,
-					3 + ((int) level / 32)), player);
+					2 + ((int) level / 32)), player);
 			addpotion(new PotionEffect(PotionEffectType.WATER_BREATHING,
-					99999999, 5 + level), player);
+					99999999, 1), player);
 			addpotion(new PotionEffect(PotionEffectType.JUMP, 99999999, 2),
 					player);
 			addpotion(new PotionEffect(PotionEffectType.REGENERATION, 99999999,
-					6 + (int) level / 16), player);
+					1 + (int) level / 16), player);
 			
-
-			Location baseLocation = player.getLocation();
-			if (player.isFlying()) {
-				IsOnAir = true;
-			} else if (player.isFlying() == false && player.isOnGround()) {
-				Location playerLocation = player.getLocation();
-				Double playerY = player.getLocation().getY() - 1;
-				playerLocation.setY(playerY);
-				if (playerLocation.getBlock().getType() != Material.AIR) {
-					material = playerLocation.getBlock().getType();
-				} else {
-					IsOnAir = true;
+			if(!Player_Move.list.contains(player))
+			{
+				if(Player_Move.list.isEmpty()){
+					BukkitTask task = new Player_Move(mainPlugin).runTaskTimer(mainPlugin, 0, 1);
 				}
-			} else {
-				IsOnAir = true;
+				Player_Move.list.add(player);
 			}
-			if (IsOnAir) {
-
-				SuitUtils.playEffect(baseLocation, Values.SuitDefaultFlyEffect, 1,
-						0, 5);
-			} else {
-				SuitUtils.playEffect(baseLocation, Values.SuitOnGroundEffect, 1,
-						material.getId(), 5);
-			}
-
 		}
 	}
 
@@ -216,7 +197,9 @@ public class PlayerEffect implements Listener {
 			return;
 		}
 		
-		
+		if(!dao.isCreatedBy(entity, player)){
+			return;
+		}
 
 		LivingEntity livingentity = (LivingEntity) entity;
 		if(!hasArmor(livingentity.getEquipment().getArmorContents())){
@@ -235,8 +218,8 @@ public class PlayerEffect implements Listener {
 		player.getEquipment().setLeggings(leggings);
 		player.getEquipment().setBoots(boots);
 		livingentity.damage(10000000D);
-
-		SuitUtils.playEffect(player.getLocation(), Values.SuitGetEffect, 20, Values.SuitGetEffectData, 10);
+		player.updateInventory();
+		PlayEffect.play_Suit_Get(player.getLocation() , player );
 
 		player.playSound(player.getLocation(),Values.SuitSound, 9.0F, 9.0F);
 		dao.remove(livingentity);
@@ -313,21 +296,28 @@ public class PlayerEffect implements Listener {
 
 			else {
 
-				int level = CustomSuitPlugin.getLevel(player);
 
-				int hunger = player.getFoodLevel();
 
 				player.setAllowFlight(true);
 				player.setFlying(true);
 				player.setFlySpeed(1.0F);
 
-				player.setFoodLevel(hunger);
 
 				hungerscheduler.addFlyingPlayer(player);
 
 				player.playSound(player.getLocation(), Values.SuitSneakSound,
 						1.0F, 1.0F);
 			}
+		}
+	}
+	@EventHandler
+	public void move(PlayerMoveEvent event){
+		Player player = event.getPlayer();
+		if(!CustomSuitPlugin.MarkEntity(player)){
+			return;
+		}
+		if(!SchedulerHunger.containPlayer(player)){
+			hungerscheduler.addFlyingPlayer(player);
 		}
 	}
 
@@ -390,6 +380,7 @@ public class PlayerEffect implements Listener {
 
 			if (player.getGameMode() == GameMode.CREATIVE) {
 			player.setAllowFlight(true);
+			player.setFlySpeed(0.5F);
 			}
 		}
 	}

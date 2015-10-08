@@ -4,8 +4,10 @@ import java.awt.List;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import gmail.anto5710.mcp.customsuits.CustomSuits.PlayEffect;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.PlayerEffect;
+import gmail.anto5710.mcp.customsuits.Man.Bomb;
 import gmail.anto5710.mcp.customsuits.Man.RepeatMan;
 import gmail.anto5710.mcp.customsuits.Setting.PotionEffects;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
@@ -76,8 +78,8 @@ public class ManUtils  {
 	public static void spawnFallingBlock (Location loc , Block block){
 		  FallingBlock fallingblock = loc.getWorld()
 	                .spawnFallingBlock(loc, block.getType(), block.getData());
+	       block.breakNaturally();
 	       
-	        block.setType(Material.AIR);
 	       
 	        float x = (float) -1 + (float) (Math.random() * ((1 - -1) + 1));
 	        float y = 1;
@@ -141,7 +143,7 @@ public class ManUtils  {
 		
 	}
 	public static void setVisible(Player player){
-		SuitUtils.playEffect(player.getLocation(), Values.ManvisibleEffect, 10, 0, 10);
+		PlayEffect.play_Man_visible(player);
 		player.playSound(player.getLocation(), Values.ManvisibleSound, 16.0F, 16.0F);
 		ThorUtils.removePotionEffect(PotionEffects.Man_Invisiblility, player);
 		ThorUtils.removePotionEffect(PotionEffects.Man_Invisible_SPEED , player);
@@ -152,7 +154,7 @@ public class ManUtils  {
 			}
 
 		}
-		RepeatMan.removePlayer(player);
+		
 	}
 	public static boolean CanSee(Player player , boolean CanSee){
 		for(Player playerOnline : player.getServer().getOnlinePlayers()){
@@ -167,7 +169,7 @@ public class ManUtils  {
 			if(entity instanceof Damageable){
 				((Damageable) entity).damage(damage , player);
 				player.playSound(player.getEyeLocation(), Sound.SKELETON_DEATH, 15F, 15f);
-				SuitUtils.playEffect(entity.getLocation(), Effect.TILE_BREAK, 10, Material.REDSTONE_BLOCK.getId(), 10);
+				
 			}
 		}
 	}
@@ -175,13 +177,25 @@ public class ManUtils  {
 		int count = 0;
 		int divider = Values.Explode_Falling_Block_Count_Divider;
 		for(Block block : list){
-			if(count %divider==0&&block.getType()!=Material.FIRE){
+			if(count %divider==0&&block.getType()!=Material.FIRE&&block.getType()!=Material.TNT){
+				
 			spawnFallingBlock(block.getLocation(), block);
 			}
 			count++;
 		}
 		
 	}
+	public static void remove(Item item){
+		if(Bomb.Bombs.containsKey(item)){
+			Bomb.Bombs.remove(item);
+			
+		}
+		
+		if(Bomb.Smoke.containsKey(item)){
+			Bomb.Smoke.remove(item);
+		}
+	}
+	
 	public static ArrayList<Entity> findEntity(Location currentLoc,
 			Player player, double radius) {
 

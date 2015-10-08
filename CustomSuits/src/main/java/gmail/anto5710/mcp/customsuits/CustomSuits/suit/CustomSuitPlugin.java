@@ -1,6 +1,7 @@
 package gmail.anto5710.mcp.customsuits.CustomSuits.suit;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.Listner_Plugin;
+import gmail.anto5710.mcp.customsuits.CustomSuits.PlayEffect;
 import gmail.anto5710.mcp.customsuits.CustomSuits.dao.SpawningDao;
 import gmail.anto5710.mcp.customsuits.Man.Man;
 import gmail.anto5710.mcp.customsuits.Setting.Enchant;
@@ -57,6 +58,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Ghast;
 import org.bukkit.entity.Giant;
+import org.bukkit.entity.Guardian;
 import org.bukkit.entity.Horse;
 import org.bukkit.entity.Horse.Style;
 import org.bukkit.entity.Horse.Variant;
@@ -198,6 +200,9 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 
 	@Override
 	public void onEnable() {
+		
+		
+		
 		SetDisplayName(ChatColor.YELLOW + "[Bomb]", Bomb);
 		
 		SetDisplayName(ChatColor.GRAY + "[Smoke]", Smoke);
@@ -206,7 +211,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		lore.add(ChatColor.GOLD+"Smoke for "+Values.ManSmoke_Time+" Seconds");
 		meta.setLore(lore);
 		Smoke.setItemMeta(meta);
-		Recipe.addRecipe(getServer());
+		
 		Enchant.enchantBooks();
 	
 
@@ -221,7 +226,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		
 	
 
-		Enchant.enchantment(hammer, Enchantment.DAMAGE_ALL, 30, true);
+		Enchant.enchantment(hammer, Enchantment.DAMAGE_ALL, 6, true);
 		Enchant.enchantment(hammer, Enchantment.DURABILITY, 10, true);
 		Enchant.enchantment(hammer, Enchantment.FIRE_ASPECT, 8, true);
 		Enchant.enchantment(hammer, Enchantment.LOOT_BONUS_MOBS, 12, true);
@@ -252,12 +257,12 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		
 		Enchant.enchantment(Chestplate_Man, Enchantment.THORNS, 8, true);
 		Enchant.enchantment(Chestplate_Man, Enchantment.PROTECTION_ENVIRONMENTAL, 8, true);
-		Enchant.enchantment(Chestplate_Man, Enchantment.DURABILITY, 8, true);
+		Enchant.enchantment(Chestplate_Man, Enchantment.DURABILITY, 30, true);
 		Enchant.enchantment(Leggings_Man, Enchantment.THORNS, 8, true);
-		Enchant.enchantment(Leggings_Man, Enchantment.DURABILITY, 8, true);
+		Enchant.enchantment(Leggings_Man, Enchantment.DURABILITY, 30, true);
 		Enchant.enchantment(Leggings_Man, Enchantment.PROTECTION_ENVIRONMENTAL, 8, true);
 		Enchant.enchantment(Boots_Man, Enchantment.THORNS, 8, true);
-		Enchant.enchantment(Boots_Man, Enchantment.DURABILITY, 8, true);
+		Enchant.enchantment(Boots_Man, Enchantment.DURABILITY, 30, true);
 		Enchant.enchantment(Boots_Man, Enchantment.PROTECTION_FALL, 8, true);
 		
 		Enchant.enchantment(Sword_Man, Enchantment.DAMAGE_ALL, 10, true);
@@ -268,7 +273,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 
 		Enchant.enchantment(Sword_Man, Enchantment.KNOCKBACK, 10, true);
 
-		Enchant.enchantment(Sword_Man, Enchantment.DURABILITY, 10, true);
+		Enchant.enchantment(Sword_Man, Enchantment.DURABILITY, 20, true);
 		SetDisplayName(ChatColor.YELLOW+"Sword Of Killer",Sword_Man);
 		
 		Color Chestplate_Man_Color = Color.fromRGB(217, 206, 206);
@@ -427,6 +432,8 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		entityMap.put("skeleton_horse", Horse.class);
 		entityMap.put("donkey", Horse.class);
 		entityMap.put("mule", Horse.class);
+		entityMap.put("guardian_king", org.bukkit.entity.Guardian.class);
+		entityMap.put("guardian",  org.bukkit.entity.Guardian.class);
 
 		colorMap.put("red", Color.RED);
 		colorMap.put("blue", Color.BLUE);
@@ -462,10 +469,13 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		manager.registerEvents(new Listner_Plugin(this), this);
 		
 		
-	
+		Recipe.addRecipe(getServer());
 
 		dao = new SpawningDao(this);
 		dao.init();
+		
+		
+		PlayEffect playEffect = new PlayEffect(this);
 		// listener 를 달아줍니다.
 
 	}
@@ -546,6 +556,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 				}
 
 			}
+			player.updateInventory();
 		}
 		if (command.getName().equals("command")) {
 			Player player = getServer().getPlayer(sender.getName());
@@ -741,7 +752,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		
 		
 		String VehicleName = "";
-		String EntityName = "";
+		String EntityName = entityName;
 		int vehicleCount = 0;
 		String[]Names = null;
 		if(entityName.contains(":")){
@@ -878,7 +889,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 	
 
 	}
-
+	
 	private static void CreateVehicles(Player spnSender,Player targetPlayer, Entity spawnedEntity,
 			Entity Vehicle, String EntityName, int vehicleCount ,String Color) {
 		
@@ -918,6 +929,15 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 			((Creeper) spawnedEntity).setPowered(true);;
 			
 		}
+		if (spawnedEntity instanceof Guardian) {
+			addGuardian_Data((Guardian) spawnedEntity, entityName, spnSender);
+			
+		}
+	}
+	public static void addGuardian_Data(Guardian spawnedEntity , String entityName , Player spnSender){
+		if(entityName.endsWith("guardian_king")){
+		spawnedEntity.setElder(true);
+		}
 	}
 	private static void setVehicleData(Entity spawnedEntity,Entity Vehicle, Player spnSender , Player targetPlayer , String EntityName ,String Color) {
 		dao.saveEntity(Vehicle, spnSender);
@@ -945,23 +965,21 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 				new PotionEffect[] {
 						new PotionEffect(
 								PotionEffectType.FIRE_RESISTANCE,
-								999999990, 2),
+								999999990, 1),
+						
 						
 						new PotionEffect(
-								PotionEffectType.ABSORPTION,
-								999999990, 5),
-						new PotionEffect(
 								PotionEffectType.HEALTH_BOOST,
-								999999990, 5+((int)level/4)),
+								999999990, 1+((int)level/32)),
 						new PotionEffect(
 								PotionEffectType.INCREASE_DAMAGE,
-								999999990, 4+ ((int)level/4) ),
+								999999990, 1+ ((int)level/16) ),
 						new PotionEffect(
 								PotionEffectType.SPEED,
-								999999990, 2+((int)level/5)),
+								999999990, 1+((int)level/32)),
 						new PotionEffect(
 								PotionEffectType.WATER_BREATHING,
-								999999990, 5) });
+								999999990, 1) });
 		if (livingentity.getType() == EntityType.SKELETON
 				|| livingentity.getType() == EntityType.ZOMBIE
 				|| livingentity.getType() == EntityType.PIG_ZOMBIE) {
@@ -1239,7 +1257,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		if (ett.getType() == EntityType.ENDERMAN) {
 			item = new ItemStack(Material.TNT);
 		} else {
-			item = new ItemStack(Material.NETHER_STAR);
+			item = new ItemStack(Values.SuitLauncher);
 			
 
 		}
@@ -1286,7 +1304,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 			ett.addPotionEffect(eft);
 		}
 	}
-
+	
 	private static void playSpawningEffect(Entity entity, Player player) {
 		try {
 			
@@ -1330,8 +1348,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 						vehicle.teleport(currentLoc);
 						vehicle.setPassenger(entity);
 						}
-						entity.getWorld().playEffect(currentLoc, Effect.MOBSPAWNER_FLAMES, 0,
-								50);
+						PlayEffect.play_Suit_Spawning_Effect(currentLoc, 10, 0, player ,livingentity.getEquipment().getArmorContents());
 						
 						
 
@@ -1348,9 +1365,8 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 							player.getEquipment().setHelmet(helmet);
 							player.playSound(player.getLocation(),
 									Sound.ANVIL_LAND, 9.0F, 9.0F);
-							player.playSound(player.getLocation(),
-									Sound.VILLAGER_HIT, 9.0F, 9.0F);
-							SuitUtils.playEffect(location, Values.SuitGetEffect, 20, Values.SuitGetEffectData, 5);
+						
+							
 							sleep(500);
 						}
 						if (livingentity.getEquipment().getChestplate() != null) {
@@ -1358,9 +1374,8 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 							player.getEquipment().setChestplate(chestplate);
 							player.playSound(player.getLocation(),
 									Sound.ANVIL_LAND, 9.0F, 9.0F);
-							player.playSound(player.getLocation(),
-									Sound.VILLAGER_HIT, 9.0F, 9.0F);
-							SuitUtils.playEffect(location, Values.SuitGetEffect, 20, Values.SuitGetEffectData, 5);
+							
+							
 							sleep(200);
 						}
 						if (livingentity.getEquipment().getLeggings() != null) {
@@ -1370,9 +1385,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 							player.getEquipment().setLeggings(cl);
 							player.playSound(player.getLocation(),
 									Sound.ANVIL_LAND, 9.0F, 9.0F);
-							player.playSound(player.getLocation(),
-									Sound.VILLAGER_HIT, 9.0F, 9.0F);
-							SuitUtils.playEffect(location, Values.SuitGetEffect, 20, Values.SuitGetEffectData, 5);
+							
 							sleep(400);
 						}
 						if (livingentity.getEquipment().getBoots() != null) {
@@ -1381,9 +1394,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 							player.getEquipment().setBoots(b);
 							player.playSound(player.getLocation(),
 									Sound.ANVIL_LAND, 9.0F, 9.0F);
-							player.playSound(player.getLocation(),
-									Sound.VILLAGER_HIT, 9.0F, 9.0F);
-							SuitUtils.playEffect(location, Values.SuitGetEffect, 20, Values.SuitGetEffectData, 5);
+							
 						}
 
 						livingentity.damage(1000000.0D);
@@ -1391,6 +1402,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 								Sound.ENDERDRAGON_DEATH, 9.0F, 9.0F);
 						player.sendMessage(Values.SuitCallMessage);
 						player.updateInventory();
+						PlayEffect.play_Suit_Get(player.getLocation(), player);
 					}
 				}
 

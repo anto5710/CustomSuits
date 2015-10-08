@@ -1,9 +1,11 @@
 package gmail.anto5710.mcp.customsuits.Man;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import gmail.anto5710.mcp.customsuits.CustomSuits.PlayEffect;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.PlayerEffect;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.WeaponListner;
@@ -32,8 +34,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class Bomb extends BukkitRunnable{
 	CustomSuitPlugin plugin;
-	static HashMap<Item, Player>Bombs = new HashMap<>();
-	static HashMap<Item, Player>Smoke = new HashMap<>();
+	public static HashMap<Item, Player>Bombs = new HashMap<>();
+	public static HashMap<Item, Player>Smoke = new HashMap<>();
 	
 	public Bomb(CustomSuitPlugin plugin){
 		this.plugin = plugin;
@@ -52,17 +54,7 @@ public class Bomb extends BukkitRunnable{
 		run_Smoke();
 		
 	}
-	public static void remove(Item item){
-		if(Bombs.containsKey(item)){
-			Bombs.remove(item);
-			
-		}
-		
-		if(Smoke.containsKey(item)){
-			Smoke.remove(item);
-		}
-	}
-	
+
 	private void run_Smoke() {
 		if(Smoke.size()==1){
 			
@@ -71,70 +63,88 @@ public class Bomb extends BukkitRunnable{
 			item.setPickupDelay(20);
 			item.setFireTicks(0);
 			if(item.isDead()){
-				remove(item);
+				ManUtils.remove(item);
 			}
 			
 			Location location  = item.getLocation();
-			SuitUtils.playEffect(location, Values.ManSmokeEffect, 20, 0, 3);
+			PlayEffect.play_Man_Smoke_Effect(location);
 			item.setPickupDelay(20);
 			if(ThorUtils.isOnGround(item)){
 				if(Smoke_Repeat.SmokeCount.size() == 0){
 					new Smoke_Repeat(plugin).runTaskTimer(plugin, 0, 5);
 				}
 				Smoke_Repeat.SmokeCount.put(item, (long) 0);
-				remove(item);
+				ManUtils.remove(item);
 			}
 		}else{
-			for(Item item : Smoke.keySet()){
+			Iterator<Item> iterator = Smoke.keySet().iterator();
+			ArrayList<Item>removed = new ArrayList<>();
+			while(iterator.hasNext()){
+				Item item = iterator.next();
 				item.setFireTicks(0);
 				if(item.isDead()){
-					remove(item);
+					iterator.remove();
+					removed.add(item);
 				}
 				Location location  = item.getLocation();
-				SuitUtils.playEffect(location, Values.ManSmokeEffect, 20, 0, 3);
+				PlayEffect.play_Man_Smoke_Effect(location);
 				if(ThorUtils.isOnGround(item)){
 					if(Smoke_Repeat.SmokeCount.size() == 0){
 						new Smoke_Repeat(plugin).runTaskTimer(plugin, 0, 5);
 					}
 					Smoke_Repeat.SmokeCount.put(item, (long) 0);
-					remove(item);
+					iterator.remove();
+					removed.add(item);
 				}
 			}
+			
+				Smoke.remove(removed);
+				removed.clear();
+			
 		}
 		
 	}
 	
-	private void run_Bombs() {
+	private void run_Bombs()  {
 	if(Bombs.size()==1){
 			Iterator<Item> iterator = Bombs.keySet().iterator();
 			Item item =iterator.next();
 			if(item.isDead()){
-				remove(item);
+				ManUtils.	remove(item);
 			}
 			Location location = item.getLocation();
-			SuitUtils.playEffect(location, Values.ManBombEffect, 10, 0, 5);
+			PlayEffect.play_Man_Bomb_Effect(location);
 			item.getWorld().playSound(location, Values.ManBombSound, 5F,6F);
 			item.setFireTicks(0);
 			if(ThorUtils.isOnGround(item)){
-				remove(item);
+				ManUtils.remove(item);
 				item.remove();
 				SuitUtils.createExplosion(location, 6.0F, true, true);
 			}
 		}else{
-			for(Item item : Bombs.keySet()){
+			Iterator<Item> itrerator = Bombs.keySet().iterator();
+			ArrayList<Item>removed = new ArrayList<>();
+			while(itrerator.hasNext()){
+				Item item = itrerator.next();
 				if(item.isDead()){
-					remove(item);
+					itrerator.remove();
+					item.remove();
+					removed.add(item);					
+					SuitUtils.createExplosion(item.getLocation(), 6.0F, true, true);
 				}
 				Location location = item.getLocation();
-				SuitUtils.playEffect(location, Values.ManBombEffect, 10, 0, 5);
+				PlayEffect.play_Man_Bomb_Effect(location);
 				item.getWorld().playSound(location, Values.ManBombSound, 5F,6F);
 				item.setFireTicks(0);
 				if(ThorUtils.isOnGround(item)){
-					remove(item);
+					itrerator.remove();
 					item.remove();
+					removed.add(item);	
 					SuitUtils.createExplosion(location, 6.0F, true, true);
 				}
-			}
+				}
+			Bombs.remove(removed);
+			removed.clear();;
 		}
 		
 	}

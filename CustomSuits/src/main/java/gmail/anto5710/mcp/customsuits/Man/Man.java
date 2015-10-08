@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
+import gmail.anto5710.mcp.customsuits.CustomSuits.PlayEffect;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.PlayerEffect;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.SchedulerHunger;
@@ -34,6 +35,8 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.hanging.HangingBreakEvent;
+import org.bukkit.event.hanging.HangingBreakEvent.RemoveCause;
 import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.event.player.PlayerAnimationType;
 import org.bukkit.event.player.PlayerChannelEvent;
@@ -80,6 +83,7 @@ public class Man implements Listener{
 			}
 		}
 	}
+
 	@EventHandler
 	public void DamagedManPlayer(EntityDamageEvent event){
 		if(event.getCause() == DamageCause.LAVA || event.getCause()==DamageCause.FIRE||event.getCause()==DamageCause.FIRE_TICK||event.getCause() == DamageCause.FALL){
@@ -92,8 +96,9 @@ public class Man implements Listener{
 			if(ManUtils.Man(player)){
 				if(event.getCause() == DamageCause.ENTITY_ATTACK){
 					double random =ManUtils.Random(100)+ 50;
-					if(random>=40){
-						event.setDamage(event.getDamage()*0.5); 
+					if(random>=75){
+						player.playSound(player.getLocation(), Sound.HORSE_ARMOR, 10F,6F);
+						event.setCancelled(true);
 					}
 				}
 					if(ManUtils.HiddenPlayers.contains(player)){
@@ -124,7 +129,7 @@ public class Man implements Listener{
 	@EventHandler
 	public void removeBomb(PlayerPickupItemEvent event){
 		Item item = event.getItem();
-		Bomb.remove(item);
+		ManUtils.remove(item);
 	}
 	@EventHandler
 	public void throwBomb(PlayerInteractEvent event){
@@ -195,7 +200,7 @@ public class Man implements Listener{
 		
 		for (double i = 0; i <= distance; i += 0.2) {
 			currentLoc.add(dx, dy, dz);
-		SuitUtils.playEffect(currentLoc, Values.ManSwordShotEffect, 10,0, 25);
+		PlayEffect.play_Man_Sword_Shot_Effect(currentLoc , player);
 		ManUtils.damage(ManUtils.findEntity(currentLoc, player, Values.ManSwordShotradius), Values.ManSwordShotDamage, player);
 		}
 		SuitUtils.createExplosion(currentLoc, Values.ManSwordShotExplosionPower, false,true);
@@ -241,7 +246,7 @@ public class Man implements Listener{
 	}
 	private void Fall(List<Location> listGround){
 		for(Location loc : listGround){
-			SuitUtils.playEffect(loc, Effect.MOBSPAWNER_FLAMES, 1,0,3);
+			
 			loc.getWorld().spawnFallingBlock(loc, loc.getBlock().getType(), loc.getBlock().getData());
 		}
 	}
@@ -278,19 +283,24 @@ public class Man implements Listener{
 		}
 		
 		if(Boost(player)){
-			
-				SuitUtils.playEffect(player.getLocation(), Values.ManBoostEffect, 40,0, 5);
+				
+				player.getWorld().playEffect(player.getLocation(), Effect.COLOURED_DUST, 0);
 			}
 		
 		else{
 			if(ManUtils.HiddenPlayers.contains(player)){
-				SuitUtils.playEffect(player.getLocation(), Values.ManInvisibleMoveEffect, 2, 0, 4);
+				playEffect(player.getLocation(), Values.ManInvisibleMoveEffect, 2, 0);
 			}else {
-			SuitUtils.playEffect(player.getLocation(), Values.ManvisibleMoveEffect, 1, 0, 1);
+			PlayEffect.play_Man_Move(player);
 			}
 		}
 		
 			
+	}
+	private void playEffect(Location loc ,Effect effect , int count , int data ){
+			for(int c = 0 ;c <= count; c++){
+				loc.getWorld().playEffect(null, effect, data);
+			}
 	}
 	@EventHandler
 	public void ManMovePotionEffect(PlayerMoveEvent event){

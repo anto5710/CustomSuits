@@ -1,20 +1,32 @@
 package gmail.anto5710.mcp.customsuits.Utils;
 
+import gmail.anto5710.mcp.customsuits.CustomSuits.PlayEffect;
+import gmail.anto5710.mcp.customsuits.CustomSuits.suit.Player_Move;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.WeaponListner;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Effect;
 import org.bukkit.FireworkEffect;
 import org.bukkit.FireworkEffect.Type;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
+import org.bukkit.craftbukkit.v1_8_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_8_R2.entity.CraftPlayer;
+
+import net.minecraft.server.v1_8_R2.EnumParticle;
+import net.minecraft.server.v1_8_R2.Packet;
+import net.minecraft.server.v1_8_R2.PacketPlayOutWorldParticles;
+
 import org.bukkit.entity.Ambient;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Firework;
@@ -26,8 +38,8 @@ import org.bukkit.util.Vector;
 public class SuitUtils {
 
 	public static void LineParticle(Location target,Location location,
-			Player player, Effect effect, int amount, int data,
-			int effectradius, double damage, double radius,boolean isMissile) {
+			Player player, EnumParticle effect, int amount, int data,
+			int effectradius, double damage, double radius,boolean isMissile ) {
 		
 	
 		Vector vectorStart = location.toVector();
@@ -51,8 +63,7 @@ public class SuitUtils {
 			currentLoc.add(dx, dy, dz);
 
 		
-					playEffect(currentLoc, effect, amount, data, effectradius);
-
+		PlayEffect.play_Suit_Missile_Effect(currentLoc  ,  effect, amount , data ,player, isMissile);
 		WeaponUtils
 					.damageandeffect(currentLoc, damage, player, isMissile, radius);
 			
@@ -62,15 +73,21 @@ public class SuitUtils {
 
 	}
 
-	public static void playEffect(Location location , Effect effect ,int amount, int data , int radius ){
-	
-			for(int i = 0 ; i< amount ; i++){
-			location.getWorld().playEffect(location, effect,data, radius);
-			}
+	public static void playEffect( Location location , EnumParticle effect ,int amount, int data , int radius ){
+		CraftWorld world = (CraftWorld)location.getWorld();
+		float x = (float) location.getX();
+		float y = (float) location.getY();
+		float z = (float) location.getZ();
+		
+//		PacketPlayOutWorldParticles packet = new PacketPlayOutWorldParticles(
+//				   effect , true, x, y, z, 0,0, 0, amount, 0 , data , 0 , 0 );
+		world.getHandle().sendParticles(null, effect, true, x, y, z, 0, 0, 0, amount, 0, data);
+			
 	
 			
 		
 	}
+	
 	public static void spawnFirework(Color color, FireworkEffect.Type type ,int power,boolean Usetrail,boolean flicker,Color fadecolor, Location location){
 		
 		FireworkEffect effect = FireworkEffect.builder().withColor(color)
@@ -205,7 +222,10 @@ public class SuitUtils {
 		return false;
 	}
 	public static Block getTargetBlock(Player player , int MaxDistance){
-		Block targetblock = player.getTargetBlock((HashSet<Byte>)null, MaxDistance);
+		
+			HashSet<Byte>hashSet = new HashSet<>(Arrays.asList((byte)0, (byte)Material.WATER.getId(),(byte)Material.STATIONARY_WATER.getId()));
+			Block targetblock = player.getTargetBlock(hashSet, MaxDistance);
+		
 		return targetblock;
 		
 	}

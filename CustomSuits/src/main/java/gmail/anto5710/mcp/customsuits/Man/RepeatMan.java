@@ -8,6 +8,7 @@ import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 import gmail.anto5710.mcp.customsuits.Utils.ThorUtils;
 
 import java.awt.List;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -29,36 +30,38 @@ public class RepeatMan extends BukkitRunnable{
 	
 	@Override
 		public void run() {
+		
 			
 			java.util.List<Player>HidePlayer = ManUtils.HiddenPlayers;
-		
-			if(HidePlayer == null){
+			ArrayList<Player>removed = new ArrayList<>();
+			if(HidePlayer.isEmpty()){
 				ThorUtils.cancel(getTaskId());
 				
 			}
 			Iterator<Player> iterator = HidePlayer.iterator();
-			if(HidePlayer.size()==1){
-				Player player = HidePlayer.get(0);
-				if(player.getFoodLevel()>=Values.ManInvisibleHunger*-1){
-					SchedulerHunger.hunger(player, Values.ManInvisibleHunger);
-				}else{	
-					ManUtils.setVisible(player);
-				}
-					
-				
-			}else{
+			
 			while(iterator.hasNext()){
 				Player player = iterator.next();
+				if(!ManUtils.Man(player)){
+					removed.add(player);
+					iterator.remove();
+				}
 				if(player.getFoodLevel()>=Values.ManInvisibleHunger*-1){
 				SchedulerHunger.hunger(player, Values.ManInvisibleHunger);
 				}else{
 					
-				ManUtils.setVisible(player);
+				
+				removed.add(player);
+				iterator.remove();
 				}
 			
 				
 				
 			}
+			ManUtils.HiddenPlayers.remove(removed);	
+			for(Player removedPlayer: removed){
+				ManUtils.setVisible(removedPlayer);
+			
 			}
 			
 		
@@ -71,12 +74,7 @@ public class RepeatMan extends BukkitRunnable{
 				
 			}
 		}
-		public static void removePlayer (Player player ){
-			if(!ManUtils.HiddenPlayers.contains(player)){
-				return;
-			}
-			ManUtils.HiddenPlayers.remove(player);
-		}
+	
 		
 	
 }

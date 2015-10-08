@@ -1,5 +1,6 @@
 package gmail.anto5710.mcp.customsuits.Man;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -45,10 +46,20 @@ public class Smoke_Repeat extends BukkitRunnable{
 			}
 			smoke.setPickupDelay(20);
 			smoke.setFireTicks(0);
-			SuitUtils.playEffect(smoke.getLocation(), Effect.EXPLOSION_HUGE, 35, 0, 50);
+//			SuitUtils.playEffect(smoke.getLocation(), Effect.EXPLOSION_HUGE, 35, 0, 50);
 			smoke.getWorld().playSound(smoke.getLocation(), Values.ManSmokeSound, 5F,6F);
 		}else{
-		for(Item smoke : SmokeCount.keySet()){
+			Iterator<Item> iterator = Bomb.Smoke.keySet().iterator();
+			ArrayList<Item> removed = new ArrayList<>();
+		while(iterator.hasNext()){
+			Item smoke = iterator.next();
+			
+			smoke.setFireTicks(0);
+			smoke.setPickupDelay(20);
+			if(smoke.isDead()){
+				iterator.remove();
+				removed.add(smoke);
+			}
 			if(SmokeCount.size() == 0){
 				SmokeCount.put(smoke, (long) 0);
 			}else{
@@ -57,12 +68,18 @@ public class Smoke_Repeat extends BukkitRunnable{
 			}
 			if(SmokeCount.get(smoke)>=Values.ManSmoke_Time*20){
 				smoke.remove();
-				remove(smoke);
+				iterator.remove();
+				removed.add(smoke);
 			}
-			smoke.setPickupDelay(20);
-			smoke.setFireTicks(0);
-			SuitUtils.playEffect(smoke.getLocation(), Effect.EXPLOSION_HUGE, 35, 0, 50);
+			
+//			SuitUtils.playEffect(smoke.getLocation(), Effect.EXPLOSION_HUGE, 35, 0, 50);
 		}
+		
+		
+				SmokeCount.remove(removed);
+				removed.clear();
+		
+		
 	}
 	}
 }

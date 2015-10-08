@@ -20,7 +20,9 @@ import org.bukkit.Effect;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Server;
 import org.bukkit.Sound;
+import org.bukkit.entity.Flying;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
@@ -39,7 +41,8 @@ public class SchedulerHunger extends BukkitRunnable {
 	
 	private CustomSuitPlugin mainPlugin;
 	private Thread thisThread;
-	private BlockingQueue<Player> playerQueue = new ArrayBlockingQueue(10);
+	private static   BlockingQueue<Player> playerQueue = new ArrayBlockingQueue(Bukkit.getServer().getMaxPlayers());
+	float maxFly_Speed = 0.75F;
 	
 	public SchedulerHunger(CustomSuitPlugin main) {
 		this.mainPlugin = main;
@@ -96,8 +99,8 @@ public class SchedulerHunger extends BukkitRunnable {
 
 			if (CustomSuitPlugin.MarkEntity(player)&&player.getGameMode()!=GameMode.CREATIVE) {
 				
-
-				float speed = (float) (player.getFoodLevel() / 20.0D);
+			
+				float speed = (float) ((player.getFoodLevel() / 20.0D)-(1-maxFly_Speed));
 				if (!hunger(player, -Values.SuitFlyDisableWhen)) {
 					
 					player.setFlying(false);
@@ -128,7 +131,9 @@ public class SchedulerHunger extends BukkitRunnable {
 		
 	}
 	
-
+	public static boolean containPlayer(Player player){
+		return playerQueue.contains(player);
+	}
 	private void repairarmor(Player p) {
 		if (p.getEquipment().getHelmet() != null) {
 
@@ -181,7 +186,7 @@ public class SchedulerHunger extends BukkitRunnable {
 					this.runTaskTimer(mainPlugin, 0, Values.SuitHungerDelay);
 					
 				} catch (IllegalStateException e) {
-					// TODO: handle exception
+					
 				}
 			}
 			this.playerQueue.add(flyingPlayer);

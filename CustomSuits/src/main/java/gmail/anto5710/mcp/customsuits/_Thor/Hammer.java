@@ -11,6 +11,7 @@ import java.util.Vector;
 import javax.persistence.Version;
 import javax.swing.plaf.metal.MetalBorders.PaletteBorder;
 
+import gmail.anto5710.mcp.customsuits.CustomSuits.PlayEffect;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.Cooldown;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.PlayerEffect;
@@ -23,8 +24,15 @@ import gmail.anto5710.mcp.customsuits.Utils.ManUtils;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 import gmail.anto5710.mcp.customsuits.Utils.ThorUtils;
 import gmail.anto5710.mcp.customsuits.Utils.WeaponUtils;
+import net.minecraft.server.v1_8_R2.EnumAnimation;
+import net.minecraft.server.v1_8_R2.EnumParticle;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Color;
 import org.bukkit.Effect;
+import org.bukkit.EntityEffect;
+import org.bukkit.FireworkEffect;
+import org.bukkit.FireworkEffect.Type;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Server;
@@ -37,6 +45,7 @@ import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Firework;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.LightningStrike;
 import org.bukkit.entity.LivingEntity;
@@ -63,6 +72,7 @@ import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -70,14 +80,14 @@ import org.bukkit.scheduler.BukkitTask;
 
 
 public class Hammer implements Listener {
-	CustomSuitPlugin plugin;
+	static CustomSuitPlugin plugin;
 	
 	static double HammerDeafultDamage = Values.HammerDamage;
 	static boolean Teleleporting = false ;
 	
 
 	
-	static Player thor = null;
+	public static Player thor = null;
 
 	public Hammer(CustomSuitPlugin plugin) {
 		this.plugin = plugin;
@@ -103,7 +113,7 @@ public class Hammer implements Listener {
 	private void Teleport(Player player) {
 		Location To = SuitUtils.getTargetBlock(player,300).getLocation();
 	org.bukkit.util.Vector direction =	player.getLocation().getDirection();
-		TeleportEntityInLine(player, To,Values.HammerTeleportEffect, 3, 0, 3);
+		TeleportEntityInLine(player, To, 3, 0, 3);
 		player.playSound(player.getLocation(), Values.HammerTeleportSound, 6.0f, 6.0f);
 		Location After = player.getLocation();
 		After.setDirection(direction);
@@ -118,12 +128,10 @@ public class Hammer implements Listener {
 			if(thor ==null){
 				thor = player;
 			}
-			Location location = player.getLocation();
-			if(Thunder_Strike.isStriking){
-			SuitUtils.playEffect(location, Effect.MAGIC_CRIT, 15, 0, 4);
-			}else{
-				SuitUtils.playEffect(location, Effect.LAVADRIP, 15, 0, 4);
-			}
+			if(Thor_Move.list.isEmpty()){
+				BukkitTask task = new Thor_Move(plugin).runTaskTimer(plugin, 0,1);
+				Thor_Move.list.add(player);
+				}
 			PlayerEffect.addpotion(PotionEffects.Thor_FAST_DIGGING, player);
 			PlayerEffect.addpotion(PotionEffects.Thor_FIRE_RESISTANCE, player);
 			PlayerEffect.addpotion(PotionEffects.Thor_HEALTH_BOOST, player);
@@ -180,12 +188,12 @@ public class Hammer implements Listener {
 			
 			if(!player.isSneaking()&&player == thor){
 				
-					Location playerlocation = player.getLocation();
+					Location playerlocation = player.getLocation().add(0, 1, 0);
 					Item hammer =ThorUtils.getItem(player.getWorld() , player);
 					if(hammer ==null){
 						return;
 					}
-					TeleportEntityInLine(hammer  , playerlocation , Values.HammerBackEffect , 55 , 0 ,3 );
+					TeleportEntityInLine(hammer  , playerlocation, 55 , 0 ,3 );
 					hammer.teleport(playerlocation);
 					player.playSound(playerlocation, Sound.ENDERMAN_TELEPORT, 6.0F,6.0F);
 			}
@@ -195,9 +203,11 @@ public class Hammer implements Listener {
 	
 	
 	
-	private void TeleportEntityInLine(Entity entity , Location To ,Effect effect ,int amount,int data, int radius) {
-		Location entitylocation = entity.getLocation();
-		org.bukkit.util.Vector vectorStart = entitylocation.toVector();
+	private void TeleportEntityInLine(Entity entity , Location To, int amount,int data, int radius) {
+		
+		boolean isPlayer = (entity instanceof Player);
+		
+		org.bukkit.util.Vector vectorStart = entity.getLocation().toVector();
 		
 		org.bukkit.util.Vector vectorEnd = To.toVector();
 		
@@ -213,19 +223,38 @@ public class Hammer implements Listener {
 		double dx = (difference.getX() / distance) * 0.5;
 		double dy = (difference.getY() / distance) * 0.5;
 		double dz = (difference.getZ() / distance) * 0.5;
-		for (int i = 0; i <=distance; i++) {
-			currentLoc.add(dx , dy , dz);
-			
-			entity.teleport(currentLoc);
+		
+		for (double i = 0; i <= distance; i += 0.2) {
+			currentLoc.add(dx, dy, dz);
 
-			SuitUtils.playEffect(currentLoc, effect, amount,data, radius);
+
+			if(isPlayer){
+				SuitUtils.playEffect(currentLoc,  EnumParticle.SPELL_WITCH, 1 , 0 ,0);
+			}else{
+				SuitUtils.playEffect(currentLoc,  Values.HammerBackEffect, 1 , 0 ,0);
+				entity.teleport(currentLoc);
+			}
 			
 
 		
 
 		
 	}
-		entity.teleport(To);
+		if(isPlayer){
+			final Entity entityClone = entity;
+			final Location loc = To.clone();
+			Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
+				
+				@Override
+				public void run() {
+					entityClone.teleport(loc);
+					
+				}
+			},  40);
+			
+		}else{
+			entity.teleport(To);
+		}
 	}
 
 	public static boolean Thor(Player player) {
@@ -263,9 +292,8 @@ public class Hammer implements Listener {
 					ThorUtils.remove(item);
 		
 				}else{
-					SuitUtils.playEffect(player.getEyeLocation(),Values.HammerPickUpCancel, 2, Values.HammerPickUpCancel_Data, 1);
-					player.playSound(player.getLocation(), Sound.IRONGOLEM_DEATH, 10F, 8F);
-					
+				SuitUtils.playEffect(player.getEyeLocation(),Values.HammerPickUpCancel, 2, Values.HammerPickUpCancel_Data, 1);
+					SuitUtils.playEffect(item.getLocation(), EnumParticle.BARRIER, 1,0, 0);
 					event.setCancelled(true);
 					
 					
@@ -275,84 +303,48 @@ public class Hammer implements Listener {
 
 
 	
-	@EventHandler
-	public void MoveWorldThor(PlayerInteractEvent event){
-		Player player = event.getPlayer();
-		if(!Thor(player)||!player.isSneaking()||player.getItemInHand().getType() !=Material.AIR){
-			return;
-		}
-		
-			if(event.getAction() ==Action.LEFT_CLICK_AIR||event.getAction() ==Action.LEFT_CLICK_BLOCK){
-				Location location = player.getLocation();	
-				Environment world_type  = player.getWorld().getEnvironment();
-				
-				if(event.getAction() ==Action.LEFT_CLICK_AIR){
-					if(player.getWorld().getEnvironment() ==Environment.THE_END){
-					world_type = Environment.NORMAL;
-					}
-					else{
-						world_type =Environment.THE_END;
-					}
-				}
-				else if(event.getAction()==Action.LEFT_CLICK_BLOCK)	{
-					if(player.getWorld().getEnvironment() ==Environment.NETHER){
-						world_type = Environment.NORMAL;
-					}else{
-					world_type =Environment.NETHER;
-					}
-				}
-				
-				
+
+
+
+
+
+	public static void setThor(final Player player) {
+	
+
+		Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
 			
-				World world=	getWorldByType(world_type , player);
-				location.setWorld(world);
-				location.setY(location.getY()+1);
-				ThorUtils.strikeLightning(player.getLocation(), player, 30, 0, 0);
-				SuitUtils.playEffect(player.getLocation(), Values.HammerTeleportEffect, 200, 0, 10);
-				SuitUtils.playEffect(player.getLocation(), Values.HammerHitGround, 100, 0, 10);
-				location = world.getSpawnLocation();
-				player.teleport(location);
+			@Override
+			public void run() {
 				
-				SuitUtils.playEffect(player.getLocation(), Values.HammerTeleportEffect, 200, 0, 10);
-				SuitUtils.playEffect(player.getLocation(), Values.HammerHitGround, 100, 0, 10);
-				ThorUtils.strikeLightning(location, player, 30, 0, 0);
-				player.playSound(player.getLocation(), Values.HammerTeleportSound, 16.0F, 16.0F);
+				
+				
+				
+				
+				FireworkEffect effect = FireworkEffect.builder().with(Type.STAR).withColor(Color.RED , Color.MAROON ).withFade(Color.GRAY , Color.BLACK  ,Color.WHITE , Color.SILVER).withFlicker().withTrail().trail(true).build();
+				
+				Firework firework = (Firework) player.getWorld().spawnEntity(player.getLocation(), EntityType.FIREWORK);
+			   FireworkMeta  meta = firework.getFireworkMeta();
+				meta.addEffect(effect);
+				meta.setPower(0);
+				
+				firework.setFireworkMeta(meta);
+				
+				firework.playEffect(EntityEffect.FIREWORK_EXPLODE);
+				
+				player.getWorld().strikeLightningEffect(player.getLocation());
+				
+				player.getEquipment().setHelmet(CustomSuitPlugin.Helemt_Thor);
+				player.getEquipment().setChestplate(CustomSuitPlugin.Chestplate_Thor);
+				player.getEquipment().setLeggings(CustomSuitPlugin.Leggings_Thor);
+				player.getEquipment().setBoots(CustomSuitPlugin.Boots_Thor);
+				player.updateInventory();
+				
+				
+				player.playSound(player.getLocation(), Values.ThorChangeSound, 7.0F, 7.0F);
+				
 			}
-			
+		}, 10);
 		
-	}
-
-
-	private World getWorldByType(Environment world_type, Player player) {
-			for(World world : player.getServer().getWorlds()){
-				if(world.getEnvironment()==world_type){
-					return world;
-				}
-			}
-		return player.getWorld();
-	}
-
-
-	public static void setThor(Player player) {
-		if(thor==null){
-			thor=player;
-		}
-		if(player!=thor){
-			return;
-		}
-			
-			ThorUtils.strikeLightning(player.getLocation(), player, 20, 0, HammerDeafultDamage);
-
-		SuitUtils.sleep(500);
-		
-		
-		player.getEquipment().setHelmet(CustomSuitPlugin.Helemt_Thor);
-		player.getEquipment().setChestplate(CustomSuitPlugin.Chestplate_Thor);
-		player.getEquipment().setLeggings(CustomSuitPlugin.Leggings_Thor);
-		player.getEquipment().setBoots(CustomSuitPlugin.Boots_Thor);
-		player.updateInventory();
-
-		player.playSound(player.getLocation(), Values.ThorChangeSound, 7.0F, 7.0F);
 		
 		
 	}

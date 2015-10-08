@@ -4,6 +4,7 @@ import java.awt.List;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.WeaponListner;
@@ -36,6 +37,7 @@ public class Repeat extends BukkitRunnable {
 	static int taskID = 0;
 
 	public static HashMap<Item, Player> listPlayer = new HashMap<>();
+	public static ArrayList<Item>removed = new ArrayList<>();
 	
 	public Repeat(JavaPlugin plugin) {
 		this.plugin = plugin;
@@ -44,32 +46,57 @@ public class Repeat extends BukkitRunnable {
 	
 	@Override
 	
-	public void run() {
+	public void run() throws IllegalStateException{
 		Location loc;
 		
 		
 		
-		if (listPlayer.size() == 1) {
-			ArrayList<Item> list = new ArrayList<>();
-			list.addAll(listPlayer.keySet());
-			Item item = list.get(0);
-
-			loc = item.getLocation();
-			this.taskID = getTaskId();
-			Player player = listPlayer.get(item);
-			
-			Run(item, loc, taskID, player);
-			
-		} else if(listPlayer.size()>1){
-			for (Item item : listPlayer.keySet()) {
+		
+			Iterator<Item>iterator = listPlayer.keySet().iterator();
+			if(listPlayer.isEmpty()){
+				try{
+					
+					ThorUtils.cancel(getTaskId());
+				}catch(IllegalStateException e){
+					
+				}
+			}
+			while (iterator.hasNext()) {
+				Item item = iterator.next();
 				loc = item.getLocation();
 				this.taskID = getTaskId();
 				Player player = listPlayer.get(item);
-				
 
-				Run(item, loc, taskID, player);
+				item.setFireTicks(0);
+
+				item.setPickupDelay(10);
+				java.util.List<Entity> list;
+				
+//					SuitUtils.playEffect(loc, Values.HammerDefaultEffect, 55, 0, 4);
+					list = WeaponListner.findEntity(loc, player, 3);
+					ThorUtils.damage(list, Hammer.HammerDeafultDamage*1.5, player);
+				
+				if (ThorUtils.isOnGround(item)|| item.isDead()) {
+				
+//						SuitUtils.playEffect(loc, Values.HammerHitGround, 30, 0, 5);
+						item.getWorld().strikeLightning(item.getLocation());
+						player.getInventory().addItem(item.getItemStack());
+						item.remove();
+
+						list = WeaponListner.findEntity(loc, player, 3);
+
+						ThorUtils.damage(list, Hammer.HammerDeafultDamage*2, player);
+						SuitUtils.createExplosion(loc, 6F, false, true);
+					
+						iterator.remove();
+						
+
+				}
+			
+				
 			}
-		}
+				
+		
 		
 	}
 
@@ -83,32 +110,11 @@ public class Repeat extends BukkitRunnable {
 		
 	}
 	
-	private void Run(Item item, Location loc, int TaskID, Player player) {
-		item.setFireTicks(0);
-
-		item.setPickupDelay(10);
-		java.util.List<Entity> list;
+	
+	
 		
-			SuitUtils.playEffect(loc, Values.HammerDefaultEffect, 55, 0, 4);
-			list = WeaponListner.findEntity(loc, player, 3);
-			ThorUtils.damage(list, Hammer.HammerDeafultDamage*1.5, player);
 		
-		if (ThorUtils.isOnGround(item)) {
-		
-				SuitUtils.playEffect(loc, Values.HammerHitGround, 30, 0, 5);
-				item.getWorld().strikeLightning(item.getLocation());
-				player.getInventory().addItem(item.getItemStack());
-				item.remove();
-
-				list = WeaponListner.findEntity(loc, player, 3);
-
-				ThorUtils.damage(list, Hammer.HammerDeafultDamage*2, player);
-				SuitUtils.createExplosion(loc, 6F, false, true);
-				ThorUtils.remove(item);
-			
-
-		}
-	}
+	
 
 
 

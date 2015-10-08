@@ -1,5 +1,6 @@
 package gmail.anto5710.mcp.customsuits.CustomSuits.suit;
 
+import gmail.anto5710.mcp.customsuits.CustomSuits.PlayEffect;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 import gmail.anto5710.mcp.customsuits.Utils.ThorUtils;
@@ -19,7 +20,10 @@ import java.util.Scanner;
 import javax.naming.ldap.Rdn;
 import javax.print.DocFlavor.CHAR_ARRAY;
 
+import net.minecraft.server.v1_8_R2.EnumParticle;
+
 import org.apache.commons.lang.math.RandomUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
 import org.bukkit.EntityEffect;
@@ -67,7 +71,8 @@ public class WeaponListner implements Listener {
 	static int maxformachine = Values.MachineGunAmmoAmount;
 	static int maxforsniper = Values.SnipeAmmoAmount;
 	static ArrayList<Fireball>listFireball = new ArrayList<>();
-
+	
+	
 	static double damage = 0;
 	public static double radius = 0;
 	static int amount = 0;
@@ -99,13 +104,12 @@ public class WeaponListner implements Listener {
 							
 
 							int sec = (CustomSuitPlugin.getLevel(player)) / 20 + 3;
-							SuitUtils.playEffect(player.getLocation(),
-									Effect.TILE_BREAK, 600, 0, 400);
+							
 							player.setNoDamageTicks(sec*20);
 							player.sendMessage(ChatColor.BLUE + "[Info]: "
 									+ ChatColor.AQUA + "No Damage Time for: "
 									+ ChatColor.DARK_AQUA + sec + " Seconds! ");
-
+							PlayEffect.play_Suit_NoDamageTime(player);
 							player.playSound(player.getLocation(), Values.SuitShieldSound,
 									2.0F, 2.0F);
 						} else {
@@ -218,7 +222,7 @@ public class WeaponListner implements Listener {
 
 		Location loc = player.getEyeLocation();
 
-		Block targetblock = SuitUtils.getTargetBlock(player, 500);
+		Block targetblock = SuitUtils.getTargetBlock( player, 500);
 		Location targetloc = targetblock.getLocation();
 
 		playEffect(targetloc, loc, player, true);
@@ -235,7 +239,7 @@ public class WeaponListner implements Listener {
 
 		damage = damage * (CustomSuitPlugin.getLevel(player)/32+1);
 
-		Effect effect = Values.SniperEffect;
+		EnumParticle effect = Values.SniperEffect;
 		int data = Material.ANVIL.getId();
 		if (isMissile) {
 			effect = Values.SuitProjectileEffect;
@@ -245,7 +249,14 @@ public class WeaponListner implements Listener {
 		SuitUtils.LineParticle(to, from, player, effect, amount,
 				data, effectradius, damage,radius,  isMissile);
 		if (isMissile) {
-			SuitUtils.createExplosion(to, power, false, true);
+			int count = 2;
+			double r = 1.2;
+			if(player.isSneaking()){
+				count  = 10;
+				r = 25;
+			}
+			PlayEffect.Explode_Missile(player , to, count , r);
+			SuitUtils.createExplosion(to.add(0,-2, 0), power, false, true);
 
 		} else {
 			breakblock(to.getBlock());
@@ -262,14 +273,12 @@ public class WeaponListner implements Listener {
 				damage = Values.Bim;
 				power = Values.BimExplosionPower;
 				amount = Values.BimEffectAmount;
-				effectradius = Values.BimEffectRadius;
 
 			} else {
 				radius = Values.MissileRadius;
 				damage = Values.Missile;
 				power = Values.MissileExplosionPower;
 				amount = Values.MissileEffectAmount;
-				effectradius = Values.MissileEffectRadius;
 
 			}
 		} else {
@@ -277,7 +286,6 @@ public class WeaponListner implements Listener {
 			radius = Values.SniperRadius;
 			damage = Values.SniperDamage;
 			amount = Values.SniperEffectAmount;
-			effectradius = Values.SniperEffectRadius;
 		}
 	}
 
@@ -285,13 +293,10 @@ public class WeaponListner implements Listener {
 
 	public static void breakblock(Block block) {
 		Material material = block.getType();
-		if (material != Material.AIR && material != Material.BEDROCK
-				&& material != Material.OBSIDIAN && material != Material.WATER
-				&& material != Material.LAVA) {
+		if (!Values.IgnoreMaterials_Gun.contains(material)) {
 
+			SuitUtils.playEffect(block.getLocation(), EnumParticle.BLOCK_CRACK, 10, block.getType().getId(), 5);
 			block.breakNaturally();
-			SuitUtils.playEffect(block.getLocation(), Effect.TILE_BREAK, 50,
-					material.getId(), 10);
 		
 		}
 	}
@@ -352,7 +357,7 @@ public class WeaponListner implements Listener {
 						if (cnt == 0 && !player.isSneaking()) {
 
 							int ammoamount = WeaponUtils.charge(player, names[0],
-									Material.FLINT, maxformachine, cnt, snipe);
+									Material.FLINT, maxformachine, cnt, snipe , plugin);
 							CustomSuitPlugin.SetDisplayName((names[0] + regex
 									+ ammoamount + regex + snipe),
 									player.getItemInHand());
@@ -360,7 +365,7 @@ public class WeaponListner implements Listener {
 						if (snipe == 0 && player.isSneaking()) {
 							int ammoamount = WeaponUtils.charge(player, names[0],
 									Material.GHAST_TEAR, maxforsniper, cnt,
-									snipe);
+									snipe , plugin);
 
 							CustomSuitPlugin.SetDisplayName((names[0] + regex
 									+ cnt + regex + ammoamount),
@@ -374,18 +379,15 @@ public class WeaponListner implements Listener {
 	}
 
 	@EventHandler
-	public void damageByGun(ProjectileHitEvent event) {
-	Projectile projectile = event.getEntity();
-		if (projectile.getType() == EntityType.SNOWBALL) {
-			Snowball snowball = (Snowball) projectile;
+	public void damageByGun(EntityDamageByEntityEvent event) {
+		if (event.getDamager().getType() == EntityType.SNOWBALL) {
+	
+			Snowball snowball = (Snowball) event.getDamager();
 			Entity shooter = (Entity) snowball.getShooter();
 			if (shooter instanceof Player) {
-				if (WeaponUtils.checkgun(((Player) shooter),
-						((Player) shooter).getItemInHand(),
-						CustomSuitPlugin.gunitem)) {
-					List<Entity>list =findEntity(projectile.getLocation(),((Player)shooter) , Values.MachineGunDamageRadiues);
-						ThorUtils.damage(list, damage, (Player)shooter);
-					
+				if (Gun_Effect.snowballs.contains(snowball)) {
+						event.setDamage(Values.MachineGunDamage);
+						Gun_Effect.removed.add(snowball);
 					
 
 				}
@@ -393,9 +395,22 @@ public class WeaponListner implements Listener {
 		}
 
 	}
+	@EventHandler
+	public void hit(ProjectileHitEvent event){
+		if (event.getEntity().getType() == EntityType.SNOWBALL) {
+			
+			Snowball snowball = (Snowball) event.getEntity();
+			Entity shooter = (Entity) snowball.getShooter();
+			if (shooter instanceof Player) {
+				if (Gun_Effect.snowballs.contains(snowball)) {
+					Gun_Effect.removed.add(snowball);
+				}
+			}
+		}
+	}
 
 	@EventHandler
-	public void gun(PlayerInteractEvent clickevent) {
+	public void gun(PlayerInteractEvent clickevent) throws InterruptedException {
 		Player player = clickevent.getPlayer();
 		ItemStack item = CustomSuitPlugin.getGun();
 
@@ -424,38 +439,7 @@ public class WeaponListner implements Listener {
 								cnt = Integer.parseInt(names[1]);
 								if (cnt != 0 && WeaponUtils.isCooldown(player) == false
 										&& player.isSneaking() == false) {
-									for (int c = 0; c < 3; c++) {
-
-										player.playSound(player.getLocation(),
-												Sound.ZOMBIE_WOOD, 3.0F, 3.0F);
-										player.playSound(player.getLocation(),
-												Sound.ANVIL_LAND, 1.0F, 1.0F);
-										player.playSound(player.getLocation(),
-												Sound.EXPLODE, 1.0F, 1.0F);
-										player.playSound(player.getLocation(),
-												Sound.ZOMBIE_WOOD, 3.0F, 3.0F);
-										player.playSound(player.getLocation(),
-												Sound.ANVIL_LAND, 0.3F, 0.3F);
-										player.playSound(player.getLocation(),
-												Sound.EXPLODE, 23.0F, 21.0F);
-										player.playSound(player.getLocation(),
-												Sound.IRONGOLEM_HIT, 4.0F, 4.0F);
-
-										CustomSuitPlugin.SetDisplayName(
-												values[0] + regex + (cnt - 1)
-														+ regex + snipe,
-												player.getItemInHand());
-									
-										Snowball snowball = player
-												.launchProjectile(
-														Snowball.class);
-
-										SuitUtils.playEffect(locationplayer,
-												Values.Suit_Gun_Shot_Effect, 1,
-												Values.Suit_Gun_Shot_Effect_Data, 1);
-										SuitUtils.sleep(100);
-
-									}
+									shot_Machine_Gun(player, values[0], ""+(cnt-1), snipe);
 								}
 
 							} else {
@@ -477,9 +461,7 @@ public class WeaponListner implements Listener {
 										player.playSound(player.getLocation(),
 												Sound.IRONGOLEM_HIT, 4.0F, 4.0F);
 										
-										SuitUtils.playEffect(locationplayer,
-												Values.Suit_Gun_Shot_Effect, 1,
-												Values.Suit_Gun_Shot_Effect_Data, 1);
+										PlayEffect.play_Gun_Shot_Effect(player);
 
 										playEffect(targetloc, locationplayer,
 												player, false);
@@ -501,6 +483,120 @@ public class WeaponListner implements Listener {
 		}
 
 	}
+
+	private void shot_Machine_Gun(final Player player , final String name , final String cnt ,final int sniperAmmo)  {
+		
+					
+						
+						player.playSound(player.getLocation(),
+								Sound.ZOMBIE_WOOD, 3.0F, 3.0F);
+						player.playSound(player.getLocation(),
+								Sound.ANVIL_LAND, 1.0F, 1.0F);
+						player.playSound(player.getLocation(),
+								Sound.EXPLODE, 1.0F, 1.0F);
+						player.playSound(player.getLocation(),
+								Sound.ZOMBIE_WOOD, 3.0F, 3.0F);
+						player.playSound(player.getLocation(),
+								Sound.ANVIL_LAND, 0.3F, 0.3F);
+						player.playSound(player.getLocation(),
+								Sound.EXPLODE, 23.0F, 21.0F);
+						player.playSound(player.getLocation(),
+								Sound.IRONGOLEM_HIT, 4.0F, 4.0F);
+						
+						CustomSuitPlugin.SetDisplayName(
+								name+ regex + cnt
+								+ regex + sniperAmmo,
+								player.getItemInHand());
+						Snowball snowball = player
+								.launchProjectile(
+										Snowball.class);
+						
+						Location target = SuitUtils.getTargetBlock(player, 10).getLocation();
+						Vector v = target.toVector().subtract(snowball.getLocation().toVector());
+						snowball.setVelocity(v);
+						Gun_Effect.snowballs.add(snowball);
+						
+						PlayEffect.play_Gun_Shot_Effect(player);
+				
+		
+			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, 
+				new Runnable() {
+					
+					@Override
+					public void run() {
+					
+						
+						player.playSound(player.getLocation(),
+								Sound.ZOMBIE_WOOD, 3.0F, 3.0F);
+						player.playSound(player.getLocation(),
+								Sound.ANVIL_LAND, 1.0F, 1.0F);
+						player.playSound(player.getLocation(),
+								Sound.EXPLODE, 1.0F, 1.0F);
+						player.playSound(player.getLocation(),
+								Sound.ZOMBIE_WOOD, 3.0F, 3.0F);
+						player.playSound(player.getLocation(),
+								Sound.ANVIL_LAND, 0.3F, 0.3F);
+						player.playSound(player.getLocation(),
+								Sound.EXPLODE, 23.0F, 21.0F);
+						player.playSound(player.getLocation(),
+								Sound.IRONGOLEM_HIT, 4.0F, 4.0F);
+						
+						CustomSuitPlugin.SetDisplayName(
+								name+ regex + cnt
+								+ regex + sniperAmmo,
+								player.getItemInHand());
+						Snowball snowball = player
+								.launchProjectile(
+										Snowball.class);
+						Gun_Effect.snowballs.add(snowball);
+						
+						PlayEffect.play_Gun_Shot_Effect(player);
+					}
+				}, 3L);	
+			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, 
+					new Runnable() {
+						
+						@Override
+						public void run() {
+						
+							
+							player.playSound(player.getLocation(),
+									Sound.ZOMBIE_WOOD, 3.0F, 3.0F);
+							player.playSound(player.getLocation(),
+									Sound.ANVIL_LAND, 1.0F, 1.0F);
+							player.playSound(player.getLocation(),
+									Sound.EXPLODE, 1.0F, 1.0F);
+							player.playSound(player.getLocation(),
+									Sound.ZOMBIE_WOOD, 3.0F, 3.0F);
+							player.playSound(player.getLocation(),
+									Sound.ANVIL_LAND, 0.3F, 0.3F);
+							player.playSound(player.getLocation(),
+									Sound.EXPLODE, 23.0F, 21.0F);
+							player.playSound(player.getLocation(),
+									Sound.IRONGOLEM_HIT, 4.0F, 4.0F);
+							
+							CustomSuitPlugin.SetDisplayName(
+									name+ regex + cnt
+									+ regex + sniperAmmo,
+									player.getItemInHand());
+							Snowball snowball = player
+									.launchProjectile(
+											Snowball.class);
+							Gun_Effect.snowballs.add(snowball);
+							
+							PlayEffect.play_Gun_Shot_Effect(player);
+						}
+					} ,3L);	
+			
+			if(!Gun_Effect.isRunning){
+				BukkitTask task = new Gun_Effect(plugin).runTaskTimer(plugin, 0, 2);
+			}
+			
+	
+
+		}
+		
+	
 
 
 

@@ -36,7 +36,14 @@ public class Thunder_Strike extends BukkitRunnable{
 			this.plugin = plugin;
 	}
 	public void run() throws IllegalStateException{
-		
+		if(Hammer.thor == null){
+			isStriking = false;
+			BaseLocation.getWorld().setStorm(false);
+			BaseLocation.getWorld().setThundering(false);
+			count = 0;
+			ThorUtils.cancel(getTaskId());
+		}
+		isStriking = true;
 		
 		List<Entity>list =	ThorUtils.findEntity(BaseLocation, Values.Thunder_Strike_Radius);
 		if(list.contains(Hammer.thor)){
@@ -45,10 +52,12 @@ public class Thunder_Strike extends BukkitRunnable{
 		damage(list);
 		
 		count ++;
+	
 		if(count>=Values.Thunder_Strike_Time){
 			isStriking = false;
 			BaseLocation.getWorld().setStorm(false);
 			BaseLocation.getWorld().setThundering(false);
+			count = 0;
 			ThorUtils.cancel(getTaskId());
 		}
 		
@@ -61,8 +70,8 @@ public class Thunder_Strike extends BukkitRunnable{
 		spawnLocation.setY(spawnLocation.getY()+50);
 		
 		spawnFallingblocks(spawnLocation);
-			SuitUtils.playEffect(entitylocation, effect, 2, 0, 5);
-			
+//			SuitUtils.playEffect(entitylocation, effect, 2, 0, 5);
+//			
 		
 	
 		ThorUtils.strikeLightning(entitylocation, Hammer.thor, 1, 2, Values.Thunder_Strike_Damage);
@@ -100,37 +109,25 @@ public class Thunder_Strike extends BukkitRunnable{
 		
 			Location loc = BaseLocation.clone();
 			WeaponUtils.setRandomLoc(loc, Values.Thunder_Strike_Radius);
-			Lightning(entity, loc, Values.Thunder_Strike_Effect);
+//			Lightning(entity, loc, Values.Thunder_Strike_Effect);
 		}
 		
 	}
-	public static void Start(Player player) {
-		BaseLocation = player.getLocation();
-		int Y = BaseLocation.getBlockY()+200;
-		int count = 0;
-			for(int y = BaseLocation.getBlockY() ;Y>=y ; y+=1 ){
-				count ++;
-				BaseLocation.setY(y);
-						            SuitUtils.playEffect(BaseLocation, Values.Thunder_Strike_Spawn_Effect, 40, 0, 5);
-						            
-						          if(count%40==0){
-						        	  Hammer.thor.playSound(player.getLocation(), Values.Thunder_Strike_Spawn_Sound,10.0f, 5.0F);
-						          }
-						        }
-			
-						
-				           
-				       
-				           
-				        
-		
-		if(!isStriking){
-			isStriking = true;
-			BaseLocation.getWorld().setStorm(true);
-			BaseLocation.getWorld().setThundering(true);
-			BukkitTask task = new Thunder_Strike(plugin).runTaskTimer(plugin, 0,20);
-			
+	
+	public static  boolean playEffect_Spawn(Location baseLocation , Player player , int maxY) {
+		int Count = 0;
+		for(int y = BaseLocation.getBlockY() ;maxY>=y ; y+=1 ){
+			Count++;
+			BaseLocation.setY(y);
+//					            SuitUtils.playEffect(BaseLocation, Values.Thunder_Strike_Spawn_Effect, 40, 0, 5);
+					            
+					          if(Count%40==0){
+					        	  Hammer.thor.playSound(player.getLocation(), Values.Thunder_Strike_Spawn_Sound,10.0f, 5.0F);
+					          }
+	
 		}
-		
+		return true;
 	}
+	
+	
 }

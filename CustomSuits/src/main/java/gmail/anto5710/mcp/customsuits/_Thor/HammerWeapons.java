@@ -2,6 +2,7 @@ package gmail.anto5710.mcp.customsuits._Thor;
 
 import java.util.List;
 
+import gmail.anto5710.mcp.customsuits.CustomSuits.PlayEffect;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.SchedulerHunger;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.WeaponListner;
@@ -63,7 +64,7 @@ public class HammerWeapons implements Listener{
 	public static void launch(Player player){
 		Location targetblock = SuitUtils.getTargetBlock(player, 100).getLocation();
 		WeaponListner.radius = Values.HammerMissileDamage_Radius;
-		SuitUtils.LineParticle(targetblock, player.getEyeLocation(), player, Effect.LAVA_POP, 3, 0, 2, Values.LightningMissile,2,  true);
+//		SuitUtils.LineParticle(targetblock, player.getEyeLocation(), player, Effect.LAVA_POP, 3, 0, 2, Values.LightningMissile,2,  true);
 		
 		ThorUtils.strikeLightning(targetblock, player, 1, 4.5, Values.LightningMissile);
 		SuitUtils.createExplosion(targetblock, Values.HammerMissileExplosion_Power, false, true);
@@ -113,7 +114,11 @@ public class HammerWeapons implements Listener{
 					player.playSound(player.getLocation(), Sound.IRONGOLEM_HIT,
 							4.0F, 2.0F);
 				} else{
-					Hammer.setThor(player);
+					if(Hammer.thor!=player&&Hammer.thor == null){
+						
+					
+					PlayEffect.play_Thor_Change_Effect(player , 0);
+					}
 				}
 			}
 		}
@@ -132,10 +137,8 @@ public class HammerWeapons implements Listener{
 			if(SchedulerHunger.hunger(player, Values.Thunder_Strike_Hunger)){
 				player.playSound(player.getLocation(), Values.Thunder_Strike_Start_Sound,6F, 6F);
 				List<Location> list =ManUtils.circle(player.getLocation(), 10, 1, true, false, 0);
-				for(Location loc : list){
-					SuitUtils.playEffect(player.getLocation(), Values.Thunder_Strike_Start_Effect, 10, 0, 5);
+					PlayEffect.play_Thunder_Strike_Start_Effect(player.getLocation() , player);
 					
-				}
 				BukkitTask task = new Thunder_Strike_Wait(plugin).runTaskLater(plugin, 60);
 			}
 		}

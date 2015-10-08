@@ -1,9 +1,11 @@
 package gmail.anto5710.mcp.customsuits.Utils;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.Cooldown;
+import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.WeaponListner;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -11,6 +13,7 @@ import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitTask;
 
 public class WeaponUtils {
@@ -40,11 +43,9 @@ public class WeaponUtils {
 		loc.setZ(loc.getZ() + random);
 	}
 
-	public static int charge(Player player, String name, Material ammomat,
-			int amount, int cnt, int snipe) {
-
+	public static int charge(final Player player, String name, Material ammomat,
+			int amount, int cnt, int snipe , CustomSuitPlugin plugin) {
 		int ammoamount = 0;
-
 		ItemStack ammo = new ItemStack(ammomat, 1);
 		if (player.getInventory().contains(ammomat, 1)) {
 			WeaponListner.charging.put(player, true);
@@ -61,18 +62,31 @@ public class WeaponUtils {
 
 			player.playSound(player.getLocation(), Sound.LEVEL_UP, 4.0F, 1.0F);
 			cooldown(2.0, player);
-			SuitUtils.sleep(2000);
-
-			player.playSound(player.getLocation(), Sound.ANVIL_LAND, 4.0F, 4.0F);
-			player.playSound(player.getLocation(), Sound.EXPLODE, 4.0F, 4.0F);
-			player.playSound(player.getLocation(), Sound.VILLAGER_HIT, 4.0F,
-					4.0F);
-			player.playSound(player.getLocation(), Sound.CLICK, 4.0F, 4.0F);
-			player.playSound(player.getLocation(), Sound.CREEPER_HISS, 4.0F,
-					4.0F);
-
-			cooldown(0.5, player);
-			SuitUtils.sleep(500);
+			
+			
+			
+			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+				
+				@Override
+				public void run() {
+					
+					player.playSound(player.getLocation(), Sound.ANVIL_LAND, 4.0F, 4.0F);
+					player.playSound(player.getLocation(), Sound.EXPLODE, 4.0F, 4.0F);
+					player.playSound(player.getLocation(), Sound.VILLAGER_HIT, 4.0F,
+							4.0F);
+					player.playSound(player.getLocation(), Sound.CLICK, 4.0F, 4.0F);
+					player.playSound(player.getLocation(), Sound.CREEPER_HISS, 4.0F,
+							4.0F);
+					
+					cooldown(0.5, player);
+				}
+			}, 40);
+			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+				
+				@Override
+				public void run() {
+			
+			
 			player.playSound(player.getLocation(), Sound.IRONGOLEM_HIT, 4.0F,
 					4.0F);
 
@@ -80,6 +94,8 @@ public class WeaponUtils {
 			player.playSound(player.getLocation(), Sound.DOOR_CLOSE, 4.0F, 2.5F);
 			player.playSound(player.getLocation(), Sound.DOOR_OPEN, 4.0F, 4.0F);
 			WeaponListner.charging.put(player, false);
+				} 
+				}, 10);
 
 		} else {
 			SuitUtils.Wrong(player, "Ammo");

@@ -8,6 +8,7 @@ import java.util.List;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.PlayerEffect;
 import gmail.anto5710.mcp.customsuits.Utils.ThorUtils;
+import net.minecraft.server.v1_8_R2.EnumParticle;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
@@ -31,10 +32,10 @@ public class Values {
 	
 	final public static Sound ManInvisibleSound = Sound.SHOOT_ARROW;
 	final public static Sound ManvisibleSound = Sound.IRONGOLEM_DEATH;
-	final public static Effect ManInvisibleEffect = Effect.SMOKE;
+	final public static EnumParticle ManInvisibleEffect = EnumParticle.SMOKE_NORMAL;
 	final public static Effect ManInvisibleMoveEffect = Effect.SMALL_SMOKE;
-	final public static Effect ManvisibleEffect = Effect.MOBSPAWNER_FLAMES;
-	final public static Effect ManvisibleMoveEffect = Effect.FLAME;
+
+
 	final public static int ManInvisibleHunger = -1;
 	final public static int ManBoostHunger = -10;
 	final public static double ManDeafultDamage = 8;
@@ -46,54 +47,52 @@ public class Values {
 	final public static int ManSwordShotHunger = -2;
 	final public static double ManSwordShotDamage = 20;
 	final public static double ManSwordShotradius = 2.5;
-	final public static Effect ManSwordShotEffect = Effect.WITCH_MAGIC;
+	
 	final public static Sound ManSwordShotSound = Sound.ITEM_BREAK;
 	final public static float ManSwordShotExplosionPower = 4.5F;
 	
-	final public static Effect ManBombEffect = Effect.SMOKE;
 
-	final public static Effect ManSmokeEffect = Effect.CLOUD;
 	final public static Sound ManBombSound = Sound.NOTE_STICKS;
 
 	final public static Sound ManSmokeSound = Sound.FIZZ;
 	final public static long ManSmoke_Time = 20;
 
 
-	final public static double HammerDamage = 20;
+	final public static double HammerDamage = 6.5;
 	final public static double LightningMissile = 25 ;
 	final public static int LightningMissileHunger = -1;
 	final public static Sound LightningMissileSound = Sound.AMBIENCE_THUNDER;
 
-	final public static Sound ThorChangeSound = Sound.ENDERMAN_STARE;
-	final public static Effect HammerDefaultEffect = Effect.LAVA_POP;
-	final public static Effect HammerTeleportEffect =Effect.PORTAL;
-	final public static Effect HammerBackEffect = Effect.HEART;
-	final public static Effect HammerHitGround = Effect.ENDER_SIGNAL;
+	final public static Sound ThorChangeSound = Sound.AMBIENCE_THUNDER;
+//	final public static Effect HammerDefaultEffect = EnumParticle.LAVA_POP;
+//	final public static Effect HammerTeleportEffect =EnumParticle.PORTAL;
+//	final public static Effect HammerBackEffect = EnumParticle.HEART;
+//	final public static Effect HammerHitGround = EnumParticle.ENDER_SIGNAL;
 	final public static float HammerMissileExplosion_Power = 6F;
 	final public static double HammerMissileDamage_Radius = 2;
-	final public static Effect HammerPickUpCancel = Effect.STEP_SOUND;
+//	final public static Effect HammerPickUpCancel = EnumParticle.STEP_SOUND;
 	final public static int HammerPickUpCancel_Data = Material.IRON_BLOCK.getId();
 	final public static Sound HammerTeleportSound = Sound.ENDERMAN_TELEPORT;
 	final public static int Thunder_Strike_Hunger = -20;
-	final public static Effect Thunder_Strike_Effect =Effect.MOBSPAWNER_FLAMES;
+//	final public static Effect Thunder_Strike_Effect =EnumParticle.MOBSPAWNER_FLAMES;
 	final public static int Thunder_Strike_Radius = 50;
-	final public static int Thunder_Strike_Damage = 20;
-	final public static int Thunder_Strike_Time = 30;
-	final public static Effect Thunder_Strike_Spawn_Effect = Effect.SMOKE;
+	final public static double Thunder_Strike_Damage = 5.5;
+	final public static int Thunder_Strike_Time = 20;
+//	final public static Effect Thunder_Strike_Spawn_Effect = EnumParticle.SMOKE;
 	final public static Sound Thunder_Strike_Spawn_Sound = Sound.IRONGOLEM_DEATH;
 	final public static Sound Thunder_Strike_Start_Sound = Sound.ENDERMAN_STARE;
-	final public static Effect Thunder_Strike_Start_Effect =Effect.MOBSPAWNER_FLAMES;	
+//	final public static Effect Thunder_Strike_Start_Effect =EnumParticle.MOBSPAWNER_FLAMES;	
 	
 	final public static List<EntityType> Allowed_Suit_Summon_types =  Arrays.asList(EntityType.ZOMBIE , EntityType.SKELETON , EntityType.PIG_ZOMBIE);
 	
 	
 	final public static Material Suit_Spawn_Material = Material.IRON_INGOT;
-	final public static Material SuitLauncher = Material.NETHER_STAR;
+	final public static Material SuitLauncher = Material.AIR;
 	
-	final public static Effect SuitDefaultFlyEffect = Effect.MOBSPAWNER_FLAMES;
-	final public static Effect SuitOnGroundEffect = Effect.TILE_BREAK;
+
+
 	
-	final public static Effect SuitGetEffect = Effect.TILE_BREAK;
+
 	final public static int SuitGetEffectData = Material.COBBLESTONE.getId();
 	
 	final public static Sound SuitSound = Sound.ENDERDRAGON_DEATH;
@@ -128,9 +127,8 @@ public class Values {
 	final public static int SniperEffectAmount =3 ;
 	final public static int SnipeAmmoAmount =8 ;
 	final public static Material SniperAmmo = Material.GHAST_TEAR;
-	final public static Effect SniperEffect = Effect.SMALL_SMOKE;
+	final public static EnumParticle SniperEffect = EnumParticle.CRIT;
 	
-	final public static Effect Suit_Gun_Shot_Effect =Effect.STEP_SOUND;
 	final public static int Suit_Gun_Shot_Radius =200;
 	final public static int Suit_Gun_Shot_Effect_Data =Material.STONE.getId();
 	
@@ -139,21 +137,23 @@ public class Values {
 	final public static String SuitName = "[Mark]";
 	
 	
-	final public static double MachineGunDamage =15 ;
+	final public static List<Material> IgnoreMaterials_Gun = Arrays.asList(Material.AIR , Material.LAVA,  Material.STATIONARY_LAVA , Material.WATER , Material.STATIONARY_WATER , Material.OBSIDIAN , Material.BEDROCK , Material.BEACON);
+	
+	
+	final public static double MachineGunDamage =5 ;
 	final public static double MachineGunDamageRadiues =1.5 ;
 	final public static int MachineGunAmmoAmount = 50;
 	final public static Material MachineGunAmmo = Material.FLINT;
 	
-	final public static double Bim = 16;
+	final public static double Bim = 7.5;
 	final public static float BimExplosionPower =4F ;
-	final public static int BimEffectRadius = 2;
 	final public static int BimEffectAmount =5 ;
-	final public static double BimRadius =2.5 ;
+	final public static double BimRadius =2 ;
 	final public static int BimHunger =-2 ;
 	final public static String BimMessage =  ChatColor.BLUE + "[Info]: " + ChatColor.AQUA
 			+ "Fired a Repulser Bim!";
 	final public static Sound BimSound = Sound.BLAZE_BREATH;
-	final public static Effect SuitProjectileEffect = Effect.TILE_BREAK;
+	final public static EnumParticle SuitProjectileEffect = EnumParticle.FLAME;
 	final public static int SuitBim_MissileEffectData = Material.DIAMOND_BLOCK.getId();
 	
 	
@@ -161,11 +161,10 @@ public class Values {
 	final public static Sound SuitShieldSound = Sound.FUSE;
 	final public static int SuitShieldHunger = -20;
 	
-	final public static double Missile =20 ;
+	final public static double Missile =10 ;
 	final public static float MissileExplosionPower =30F ;
-	final public static int MissileEffectRadius = 2;
 	final public static int MissileEffectAmount =10 ;
-	final public static double MissileRadius =2.5 ;
+	final public static double MissileRadius =2 ;
 	final public static int MissileHunger =- 8;
 	final public static String MissileMessage =  ChatColor.BLUE + "[Info]: " + ChatColor.AQUA
 			+ "Fired a Repulser Missile!";
@@ -178,8 +177,12 @@ public class Values {
 	
 	final public static int Explode_Falling_Block_Count_Divider = 4;
 
-	final public static double HammerExplosionDamageRadius = 2;;
-	
+	final public static double HammerExplosionDamageRadius = 2;
+
+	final public static EnumParticle HammerBackEffect = EnumParticle.HEART;
+
+	final public static EnumParticle HammerPickUpCancel = EnumParticle.HEART;
+
 		
 	
 }

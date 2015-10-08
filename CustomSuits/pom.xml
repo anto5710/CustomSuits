@@ -4,7 +4,7 @@
 
 	<groupId>gmail.anto5710.mcp.customsuits</groupId>
 	<artifactId>CustomSuits</artifactId>
-	<version>0.3.0</version>
+	<version>0.3.1.</version>
 	<packaging>jar</packaging>
 
 	<name>CustomSuits</name>
@@ -50,7 +50,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.bukkit</groupId>
-			<artifactId>bukkit</artifactId>
+			<artifactId>craftbukkit</artifactId>
 			<version>1.8.3-R0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
