@@ -2,22 +2,34 @@ package gmail.anto5710.mcp.customsuits.CustomSuits;
 
 
 
+import java.lang.reflect.Method;
 import java.util.List;
+import java.util.UUID;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 import gmail.anto5710.mcp.customsuits._Thor.Hammer;
 import gmail.anto5710.mcp.customsuits._Thor.Thor_Changing;
 import gmail.anto5710.mcp.customsuits._Thor.Thor_Move;
+import net.minecraft.server.v1_8_R2.Entity;
 import net.minecraft.server.v1_8_R2.EnumParticle;
 import net.minecraft.server.v1_8_R2.Item;
 import net.minecraft.server.v1_8_R2.ItemStack;
+import net.minecraft.server.v1_8_R2.PacketPlayOutEntityStatus;
 import net.minecraft.server.v1_8_R2.PacketPlayOutWorldParticles;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
+import org.bukkit.FireworkEffect;
+import org.bukkit.FireworkEffect.Type;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.craftbukkit.v1_8_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_8_R2.entity.CraftFirework;
 import org.bukkit.craftbukkit.v1_8_R2.entity.CraftPlayer;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
@@ -50,29 +62,23 @@ public class PlayEffect {
 		}
 		
 	}
-	public static void play_Suit_Spawning_Effect(Location loc , int amount , int data , Player player , org.bukkit.inventory.ItemStack[] itemStacks){
-		
+	public static void play_Suit_Spawning_Effect(Location loc , int amount , int data , Player player){
 		float x = (float)loc.getX();
 		float y = (float) loc.getY();
 		float z = (float) loc.getZ();
-		if (itemStacks.length==0) {
-			for(double addy = 0; y<=2 ; y+=0.5)
-			loc.setY(y+addy);
-			
-			
-			SuitUtils.playEffect(loc, EnumParticle.SPELL_MOB,1,0,0);
-		}
-		for(org.bukkit.inventory.ItemStack item : itemStacks){
-			
-		loc.setY(y);
 		
+			
+		FireworkEffect effect =FireworkEffect.builder().trail(false).flicker(false).withColor(Color.AQUA , Color.BLUE ).withFade(Color.WHITE , Color.SILVER).with(Type.BALL).build();
+	try {
+		gmail.anto5710.mcp.customsuits.CustomSuits.FireworkPlay.spawn(loc, effect, player);
+	} catch (Exception e) {
+	}
 		
-		SuitUtils.playEffect(loc, EnumParticle.ITEM_CRACK,1,item.getTypeId(),0);
-		y+=0.5;
-		
-		}
 		
 	}
+		
+
+
 	public static void play_Suit_NoDamageTime(Player player){
 		drawsphere(0, player.getLocation(), EnumParticle.FLAME , 0.8);
 	}

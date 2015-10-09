@@ -1321,38 +1321,9 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 						&& dao.isCreatedBy(livingentity, player)) {
 
 					Location entitylocation = livingentity.getLocation();
-					Vector vectorStart = entitylocation.toVector();
 					
-					Vector vectorEnd = playerlocation.toVector();
-					
-					Vector difference = vectorStart.subtract(vectorEnd);
 					Entity vehicle = null ;
-					if(entity.getVehicle()!=null){
-						vehicle=entity.getVehicle();
-					}
-					
-					double distance = difference.length();
-					if (distance < 0) {
-						return;
-					}
-
-					Location currentLoc = playerlocation.clone();
-					double dx = (difference.getX() / distance) * 0.5;
-					double dy = (difference.getY() / distance) * 0.5;
-					double dz = (difference.getZ() / distance) * 0.5;
-					for (int i = 0; i <=distance; i++) {
-						currentLoc.add(dx , dy , dz);
-						
-						entity.teleport(currentLoc);
-						if(entity.getVehicle()!=null){
-						vehicle.teleport(currentLoc);
-						vehicle.setPassenger(entity);
-						}
-						PlayEffect.play_Suit_Spawning_Effect(currentLoc, 10, 0, player ,livingentity.getEquipment().getArmorContents());
-						
-						
-
-					}
+					runSpawn(entitylocation , vehicle , playerlocation , livingentity , player);
 
 					ItemStack helmet = livingentity.getEquipment().getHelmet();
 					ItemStack chestplate = livingentity.getEquipment().getChestplate();
@@ -1410,6 +1381,43 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		}
 		} catch (NullPointerException e) {
 		}
+	}
+
+	private static boolean runSpawn(Location entitylocation, Entity vehicle,
+			Location playerlocation, LivingEntity entity,Player player) {
+		if(entity.getVehicle()!=null){
+			vehicle=entity.getVehicle();
+		}
+		Vector vectorStart = entitylocation.toVector();
+		
+		Vector vectorEnd = playerlocation.toVector();
+		
+		Vector difference = vectorStart.subtract(vectorEnd);
+		
+		double distance = difference.length();
+		if (distance < 0) {
+			return true;
+		}
+
+		Location currentLoc = playerlocation.clone();
+		double dx = (difference.getX() / distance) * 0.5;
+		double dy = (difference.getY() / distance) * 0.5;
+		double dz = (difference.getZ() / distance) * 0.5;
+		for (int i = 0; i <=distance; i++) {
+			currentLoc.add(dx , dy , dz);
+			
+			entity.teleport(currentLoc);
+			if(entity.getVehicle()!=null){
+			vehicle.teleport(currentLoc);
+			vehicle.setPassenger(entity);
+			}
+			
+
+		}
+		PlayEffect.play_Suit_Spawning_Effect(playerlocation, 10, 0, player );
+		
+		return true;
+		
 	}
 
 	public static boolean MarkEntity(LivingEntity LivingEntity) {
