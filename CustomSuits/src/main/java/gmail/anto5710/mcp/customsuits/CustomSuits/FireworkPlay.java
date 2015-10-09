@@ -35,23 +35,16 @@ public class FireworkPlay
 //      static_field.set(world, static_boolean);
 //  }
   @Override
- public void t_(){
+	public void t_() {
 		if (gone) {
 			return;
 		}
 
-		if (!this.world.isClientSide) {
-			gone = true;
-
-			if (players != null)
-				if (players.length > 0)
-					for (Player player : players)
-						(((CraftPlayer) player).getHandle()).playerConnection.sendPacket(new PacketPlayOutEntityStatus(this, (byte) 17));
-				else
+	
 					world.broadcastEntityEffect(this, (byte) 17);
-			this.die();
-		}
-  }
+		
+		this.die();
+	}
       
     
   
@@ -63,6 +56,7 @@ public class FireworkPlay
       FireworkPlay firework = new FireworkPlay(((CraftWorld)location.getWorld()).getHandle(), players);
       FireworkMeta meta = ((Firework)firework.getBukkitEntity()).getFireworkMeta();
       meta.addEffect(effect);
+      meta.setPower(0);
       ((Firework)firework.getBukkitEntity()).setFireworkMeta(meta);
       
       firework.setPosition(location.getX(), location.getY(), location.getZ());
