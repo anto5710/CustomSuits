@@ -47,15 +47,19 @@ public class ThorUtils {
 	}
 
 	
-	public static ArrayList<Entity> findEntity(Location location , double radius){
+	public static ArrayList<Entity> findEntity(Location location , double radius , Player player){
 	
 		ArrayList<Entity>list =new ArrayList<>();
 		List<Entity>EntityInWorld = location.getWorld().getEntities();
 		for(Entity entity : EntityInWorld){
+			if(entity !=player){
+				
+			
 			if(entity instanceof Damageable && distance(entity, location, radius)){
 				list.add(entity);
 			}
 		}
+		}	
 			
 		
 		return list;
@@ -175,20 +179,5 @@ public class ThorUtils {
 	}
 
 
-	public static void tesla(Entity entity) {
-		((LivingEntity) entity)
-		.addPotionEffect(new PotionEffect(
-				PotionEffectType.BLINDNESS, 100, 100));
-		((LivingEntity) entity)
-		.addPotionEffect(new PotionEffect(
-				PotionEffectType.CONFUSION, 100, 100));
-		((LivingEntity) entity)
-		.addPotionEffect(new PotionEffect(
-				PotionEffectType.SLOW, 100, 100));
-		((LivingEntity) entity)
-		.addPotionEffect(new PotionEffect(
-				PotionEffectType.WEAKNESS, 100, 100));
-		
-	}
 
 }

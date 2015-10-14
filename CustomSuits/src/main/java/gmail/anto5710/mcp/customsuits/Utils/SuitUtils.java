@@ -15,6 +15,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Effect;
 import org.bukkit.FireworkEffect;
+import org.bukkit.GrassSpecies;
 import org.bukkit.FireworkEffect.Type;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -39,14 +40,13 @@ public class SuitUtils {
 
 	public static void LineParticle(Location target,Location location,
 			Player player, EnumParticle effect, int amount, int data,
-			int effectradius, double damage, double radius,boolean isMissile ) {
-		
+			int effectradius, double damage, double radius,boolean isProjectile  , boolean isMissile) {
 	
 		Vector vectorStart = location.toVector();
 		
 		Vector vectorEnd = target.toVector();
 		
-		Vector difference = vectorStart.subtract(vectorEnd);
+		Vector difference = vectorEnd.subtract(vectorStart);
 		
 		
 		double distance = difference.length();
@@ -54,7 +54,7 @@ public class SuitUtils {
 			return;
 		}
 
-		Location currentLoc = target.clone();
+		Location currentLoc = location.clone();
 		double dx = (difference.getX() / distance) * 0.5;
 		double dy = (difference.getY() / distance) * 0.5;
 		double dz = (difference.getZ() / distance) * 0.5;
@@ -63,9 +63,9 @@ public class SuitUtils {
 			currentLoc.add(dx, dy, dz);
 
 		
-		PlayEffect.play_Suit_Missile_Effect(currentLoc  ,  effect, amount , data ,player, isMissile);
+		PlayEffect.play_Suit_Missile_Effect(currentLoc  ,  effect, amount , data ,player, isMissile ,isProjectile);
 		WeaponUtils
-					.damageandeffect(currentLoc, damage, player, isMissile, radius);
+					.damageandeffect(currentLoc, damage, player, isProjectile , isMissile, radius);
 			
 
 		}
@@ -77,11 +77,9 @@ public class SuitUtils {
 		CraftWorld world = (CraftWorld)location.getWorld();
 		float x = (float) location.getX();
 		float y = (float) location.getY();
-		float z = (float) location.getZ();
 		
-//		PacketPlayOutWorldParticles packet = new PacketPlayOutWorldParticles(
-//				   effect , true, x, y, z, 0,0, 0, amount, 0 , data , 0 , 0 );
-		world.getHandle().sendParticles(null, effect, true, x, y, z, 0, 0, 0, amount, 0, data);
+		float z = (float) location.getZ();
+		world.getHandle().sendParticles(null, effect, true, x, y, z, 0, 0, 0, amount, 0, data , 0, 0, 0, 0);
 			
 	
 			
@@ -141,11 +139,12 @@ public class SuitUtils {
 	public static boolean distance(Location currentLoc, Entity entity, double radius , double addYRadius) {
 		Location location = entity.getLocation();
 		
-		for(double y = 0 ; y<=addYRadius ; y+=0.5){
-			location.add( 0 , y , 0);
+		for(double y= -0.25; y<=addYRadius ; y+=0.25){
+			location.add(0, y, 0);
 			if(location.distance(currentLoc)<=radius){
 				return true;
 			}
+			location.subtract(0, y, 0);
 		}
 		return false;
 	}
@@ -221,9 +220,63 @@ public class SuitUtils {
 		}
 		return false;
 	}
+	public static FireworkEffect getRandomEffect(){
+		int R= (int) (ManUtils.Random(255)+255/2);
+	    int G= (int) (ManUtils.Random(255)+255/2);
+	    int B=(int) (ManUtils.Random(255)+255/2);
+		org.bukkit.Color colori = org.bukkit.Color.fromBGR(B, G, R);
+		 R= (int) (ManUtils.Random(255)+255/2);
+	     G= (int) (ManUtils.Random(255)+255/2);
+	     B=(int) (ManUtils.Random(255)+255/2);
+		org.bukkit.Color colorii = org.bukkit.Color.fromBGR(B, G, R);
+		 R= (int) (ManUtils.Random(255)+255/2);
+	     G= (int) (ManUtils.Random(255)+255/2);
+	     B=(int) (ManUtils.Random(255)+255/2);
+		org.bukkit.Color coloriii = org.bukkit.Color.fromBGR(B, G, R);
+		 R= (int) (ManUtils.Random(255)+255/2);
+	     G= (int) (ManUtils.Random(255)+255/2);
+	     B=(int) (ManUtils.Random(255)+255/2);
+		org.bukkit.Color coloriv = org.bukkit.Color.fromBGR(B, G, R);
+		 R= (int) (ManUtils.Random(255)+255/2);
+	     G= (int) (ManUtils.Random(255)+255/2);
+	     B=(int) (ManUtils.Random(255)+255/2);
+		org.bukkit.Color colorv = org.bukkit.Color.fromBGR(B, G, R);
+		
+		int Type_IndexSize = org.bukkit.FireworkEffect.Type.values().length-1;
+		int Type_Index = (int)(ManUtils.Random(Type_IndexSize)+Type_IndexSize/2);
+		
+		org.bukkit.FireworkEffect.Type type = org.bukkit.FireworkEffect.Type.values()[Type_Index];
+		
+		 R= (int) (ManUtils.Random(255)+255/2);
+	     G= (int) (ManUtils.Random(255)+255/2);
+	     B=(int) (ManUtils.Random(255)+255/2);
+		org.bukkit.Color fadecolori = org.bukkit.Color.fromBGR(B, G, R);
+		 R= (int) (ManUtils.Random(255)+255/2);
+	     G= (int) (ManUtils.Random(255)+255/2);
+	     B=(int) (ManUtils.Random(255)+255/2);
+		org.bukkit.Color fadecolorii = org.bukkit.Color.fromBGR(B, G, R);
+		 R= (int) (ManUtils.Random(255)+255/2);
+	     G= (int) (ManUtils.Random(255)+255/2);
+	     B=(int) (ManUtils.Random(255)+255/2);
+		org.bukkit.Color fadecoloriii = org.bukkit.Color.fromBGR(B, G, R);
+		 R= (int) (ManUtils.Random(255)+255/2);
+	     G= (int) (ManUtils.Random(255)+255/2);
+	     B=(int) (ManUtils.Random(255)+255/2);
+		org.bukkit.Color fadecoloriv = org.bukkit.Color.fromBGR(B, G, R);
+		 R= (int) (ManUtils.Random(255)+255/2);
+	     G= (int) (ManUtils.Random(255)+255/2);
+	     B=(int) (ManUtils.Random(255)+255/2);
+		org.bukkit.Color fadecolorv = org.bukkit.Color.fromBGR(B, G, R);
+		
+		
+		
+		FireworkEffect effect = FireworkEffect.builder().trail(true).flicker(true).with(type).withColor(colori , colorii , coloriii , coloriv , colorv).withFade(fadecolori , fadecolorii  , fadecoloriii , fadecoloriv , fadecolorv).withFlicker().withTrail().build();
+		return effect;
+	}
 	public static Block getTargetBlock(Player player , int MaxDistance){
 		
-			HashSet<Byte>hashSet = new HashSet<>(Arrays.asList((byte)0, (byte)Material.WATER.getId(),(byte)Material.STATIONARY_WATER.getId()));
+			HashSet<Byte>hashSet = new HashSet<>(Arrays.asList((byte)0, (byte)Material.WATER.getId(),(byte)Material.STATIONARY_WATER.getId() , (byte)Material.LAVA.getId() , 
+					(byte) Material.STATIONARY_LAVA.getId() , (byte)6,(byte)30 , (byte)31 , (byte)31 ,(byte)106 ));
 			Block targetblock = player.getTargetBlock(hashSet, MaxDistance);
 		
 		return targetblock;

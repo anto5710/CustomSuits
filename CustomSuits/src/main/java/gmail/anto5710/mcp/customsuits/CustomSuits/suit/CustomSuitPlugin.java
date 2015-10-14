@@ -30,6 +30,8 @@ import java.util.logging.Logger;
 import javax.crypto.AEADBadTagException;
 import javax.print.attribute.standard.MediaSize.NA;
 
+import net.minecraft.server.v1_8_R2.EnumParticle;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -45,6 +47,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.craftbukkit.v1_8_R2.CraftWorld;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Blaze;
 import org.bukkit.entity.CaveSpider;
@@ -156,7 +159,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 
 	
 	
-	private static SpawningDao dao;
+	public static SpawningDao dao;
 	static HashMap<Player, Inventory> handequipment = new HashMap<>();
 	static HashMap<Player, Inventory> chestequipment = new HashMap<>();
 	static HashMap<Player, Inventory> helmetequipment = new HashMap<>();
@@ -738,8 +741,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 	public static void runSpawn(Player player) {
 		List<Entity> near = player.getWorld().getEntities();
 		if (returnEntity(near, player) != null) {
-			playSpawningEffect(returnEntity(near, player), player);
-			sleep(100);
+			PlayerEffect.playSpawningEffect(returnEntity(near, player), player);
 		}
 		
 		
@@ -752,7 +754,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		
 		
 		String VehicleName = "";
-		String EntityName = entityName;
+		String EntityName = entityName.toLowerCase();
 		int vehicleCount = 0;
 		String[]Names = null;
 		if(entityName.contains(":")){
@@ -1305,85 +1307,8 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		}
 	}
 	
-	private static void playSpawningEffect(Entity entity, Player player) {
-		try {
-			
-		
-		
-		Location playerlocation = player.getLocation();
-
-		LivingEntity livingentity = (LivingEntity) entity;
-		
-
-		if (entity.getType() != EntityType.PLAYER) {
-			if (PlayerEffect.hasArmor(livingentity.getEquipment().getArmorContents())&&Values.Allowed_Suit_Summon_types.contains(livingentity.getType())) {
-				if (MarkEntity(livingentity)
-						&& dao.isCreatedBy(livingentity, player)) {
-
-					Location entitylocation = livingentity.getLocation();
-					
-					Entity vehicle = null ;
-					runSpawn(entitylocation , vehicle , playerlocation , livingentity , player);
-
-					ItemStack helmet = livingentity.getEquipment().getHelmet();
-					ItemStack chestplate = livingentity.getEquipment().getChestplate();
-
-					if (MarkEntity(livingentity)
-							&& dao.isCreatedBy(livingentity, player)) {
-						Location location = player.getLocation();
-						if (livingentity.getEquipment().getHelmet() != null) {
-
-							player.getEquipment().setHelmet(helmet);
-							player.playSound(player.getLocation(),
-									Sound.ANVIL_LAND, 9.0F, 9.0F);
-						
-							
-							sleep(500);
-						}
-						if (livingentity.getEquipment().getChestplate() != null) {
-
-							player.getEquipment().setChestplate(chestplate);
-							player.playSound(player.getLocation(),
-									Sound.ANVIL_LAND, 9.0F, 9.0F);
-							
-							
-							sleep(200);
-						}
-						if (livingentity.getEquipment().getLeggings() != null) {
-
-							ItemStack cl = livingentity.getEquipment()
-									.getLeggings();
-							player.getEquipment().setLeggings(cl);
-							player.playSound(player.getLocation(),
-									Sound.ANVIL_LAND, 9.0F, 9.0F);
-							
-							sleep(400);
-						}
-						if (livingentity.getEquipment().getBoots() != null) {
-
-							ItemStack b = livingentity.getEquipment().getBoots();
-							player.getEquipment().setBoots(b);
-							player.playSound(player.getLocation(),
-									Sound.ANVIL_LAND, 9.0F, 9.0F);
-							
-						}
-
-						livingentity.damage(1000000.0D);
-						player.playSound(player.getLocation(),
-								Sound.ENDERDRAGON_DEATH, 9.0F, 9.0F);
-						player.sendMessage(Values.SuitCallMessage);
-						player.updateInventory();
-						PlayEffect.play_Suit_Get(player.getLocation(), player);
-					}
-				}
-
-			}
-		}
-		} catch (NullPointerException e) {
-		}
-	}
-
-	private static boolean runSpawn(Location entitylocation, Entity vehicle,
+	
+	public static boolean runSpawn(Location entitylocation, Entity vehicle,
 			Location playerlocation, LivingEntity entity,Player player) {
 		if(entity.getVehicle()!=null){
 			vehicle=entity.getVehicle();
@@ -1404,8 +1329,11 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		double dy = (difference.getY() / distance) * 0.5;
 		double dz = (difference.getZ() / distance) * 0.5;
 		for (int i = 0; i <=distance; i++) {
+			((CraftWorld)currentLoc.getWorld()).getHandle().sendParticles(null, EnumParticle.SPELL_MOB, true, currentLoc.getX(), currentLoc.getY(), currentLoc.getZ(), 0, 0, 3.2, 1, 3, 1 , 0, 0, 0, 0 ,0);
+			((CraftWorld)currentLoc.getWorld()).getHandle().sendParticles(null, EnumParticle.SPELL_MOB, true,currentLoc.getX(), currentLoc.getY(), currentLoc.getZ(), 0, 0, 2, 1, 3, 1 , 0, 0, 0, 0 ,0);
+			((CraftWorld)currentLoc.getWorld()).getHandle().sendParticles(null, EnumParticle.SPELL_MOB_AMBIENT, true, currentLoc.getX(), currentLoc.getY(), currentLoc.getZ(), 0, 0, 3.2, 1, 3, 1 , 0, 0, 0, 0 ,0);
+			((CraftWorld)currentLoc.getWorld()).getHandle().sendParticles(null, EnumParticle.SPELL_MOB_AMBIENT, true,currentLoc.getX(), currentLoc.getY(), currentLoc.getZ(), 0, 0, 2, 1, 3, 1 , 0, 0, 0, 0 ,0);
 			currentLoc.add(dx , dy , dz);
-			
 			entity.teleport(currentLoc);
 			if(entity.getVehicle()!=null){
 			vehicle.teleport(currentLoc);
@@ -1414,7 +1342,11 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 			
 
 		}
-		PlayEffect.play_Suit_Spawning_Effect(playerlocation, 10, 0, player );
+//		FireworkEffect effect = FireworkEffect.builder().flicker(false).trail(false).with(FireworkEffect.Type.BALL).withColor(Color.AQUA , Color.BLUE).withFade(Color.WHITE).build();
+//		try {
+//			gmail.anto5710.mcp.customsuits.CustomSuits.FireworkPlay.spawn(playerlocation, effect, player);
+//		} catch (Exception e) {
+//		}
 		
 		return true;
 		
@@ -1519,17 +1451,15 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 				Location location = entity.getLocation();
 				Firework firework = (Firework) location.getWorld().spawnEntity(
 						location, EntityType.FIREWORK);
-				Random random = new Random();
-				FireworkEffect effect = FireworkEffect.builder()
-						.flicker(random.nextBoolean())
-						.withColor(org.bukkit.Color.RED)
-						.withFade(org.bukkit.Color.RED)
-						.with(org.bukkit.FireworkEffect.Type.STAR)
-						.trail(random.nextBoolean()).build();
-
+				
 				FireworkMeta meta = firework.getFireworkMeta();
+				FireworkEffect effect = SuitUtils.getRandomEffect();
 				meta.addEffect(effect);
-				meta.setPower((int) 3);
+				int power = (int) ( ManUtils.Random(3)+1.5);
+				if(power<1){
+					power++;
+				}
+				meta.setPower(power);
 				firework.setFireworkMeta(meta);
 			}
 		}

@@ -1,7 +1,9 @@
 package gmail.anto5710.mcp.customsuits.CustomSuits.suit;
 
+import gmail.anto5710.mcp.customsuits.CustomSuits.FireworkPlay;
 import gmail.anto5710.mcp.customsuits.CustomSuits.PlayEffect;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
+import gmail.anto5710.mcp.customsuits.Utils.ManUtils;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 import gmail.anto5710.mcp.customsuits.Utils.ThorUtils;
 import gmail.anto5710.mcp.customsuits.Utils.WeaponUtils;
@@ -109,7 +111,7 @@ public class WeaponListner implements Listener {
 							player.sendMessage(ChatColor.BLUE + "[Info]: "
 									+ ChatColor.AQUA + "No Damage Time for: "
 									+ ChatColor.DARK_AQUA + sec + " Seconds! ");
-							PlayEffect.play_Suit_NoDamageTime(player);
+							PlayEffect.play_Suit_NoDamageTime(player ,null);
 							player.playSound(player.getLocation(), Values.SuitShieldSound,
 									2.0F, 2.0F);
 						} else {
@@ -169,7 +171,6 @@ public class WeaponListner implements Listener {
 			if (event.getEntity().getShooter() != null) {
 				if (event.getEntity().getShooter() instanceof Player) {
 
-					Player player = (Player) event.getEntity().getShooter();
 					if (listFireball.contains(event.getEntity())) {
 
 						event.getEntity()
@@ -247,7 +248,7 @@ public class WeaponListner implements Listener {
 		}
 
 		SuitUtils.LineParticle(to, from, player, effect, amount,
-				data, effectradius, damage,radius,  isMissile);
+				data, effectradius, damage,radius,  player.isSneaking(),isMissile );
 		if (isMissile) {
 			int count = 2;
 			double r = 1.2;
@@ -255,10 +256,10 @@ public class WeaponListner implements Listener {
 				count  = 10;
 				r = 25;
 			}
-			PlayEffect.Explode_Missile(player , to, count , r);
 			SuitUtils.createExplosion(to.add(0,-2, 0), power, false, true);
 
 		} else {
+			
 			breakblock(to.getBlock());
 
 		}
@@ -321,14 +322,12 @@ public class WeaponListner implements Listener {
 
 
 	public static void firework(Location location, Player player) {
-
-		SuitUtils.spawnFirework(org.bukkit.Color.RED,
-				org.bukkit.FireworkEffect.Type.STAR, 2, true, true,
-				org.bukkit.Color.WHITE, location);
+		FireworkEffect effect = SuitUtils.getRandomEffect();
+		FireworkPlay.spawn(location, effect, player);
 		if(player!=null){
-		player.playSound(player.getLocation(), Sound.EXPLODE, 14.0F, 14.0F);
+		location.getWorld().playSound(player.getLocation(), Sound.EXPLODE, 14.0F, 14.0F);
 
-		player.playSound(player.getLocation(), Sound.WITHER_DEATH, 14.0F, 14.0F);
+		location.getWorld().playSound(player.getLocation(), Sound.WITHER_DEATH, 14.0F, 14.0F);
 		}
 
 	}

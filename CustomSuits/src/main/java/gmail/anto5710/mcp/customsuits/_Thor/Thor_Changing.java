@@ -5,8 +5,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Sound;
+import org.bukkit.craftbukkit.v1_8_R2.util.UnsafeList.Itr;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -31,22 +33,38 @@ public class Thor_Changing extends BukkitRunnable{
 	@Override
 	public void run() {
 		Iterator<Player>iterator = players.keySet().iterator();
+		
 		if(players.isEmpty()){
 			try {
+				for(Player player: removed){
+					players.remove(player);
+					Phi.remove(player);
+					
+				}
 				ThorUtils.cancel(getTaskId());
 				
 			} catch (IllegalStateException e) {
 			}
 		}
 		
+		
 		while(iterator.hasNext()){
+			
 			Player player = iterator.next();
 			if(player.isDead()){
+				if(!removed.contains(player)){
 				 removed.add(player);
+					iterator.remove();
+				}
 			}
-			if(!player.isOnline()){
-				 removed.add(player);
+			if(!Bukkit.getServer().getOnlinePlayers().contains(player)){
+				if(!removed.contains(player)){
+				
+					 removed.add(player);
+						iterator.remove();
+					}
 			}
+			
 			if(!Phi.containsKey(player)){
 				Phi.put(player, 0D);
 			}
@@ -59,6 +77,7 @@ public class Thor_Changing extends BukkitRunnable{
              
               if(phi > 10*Math.PI){                                          
                     removed.add(player);
+                	iterator.remove();
                     Hammer.setThor(player);
               }else{
               Phi.put(player, phi+=Math.PI/8);

@@ -59,7 +59,7 @@ public class Values {
 
 
 	final public static double HammerDamage = 6.5;
-	final public static double LightningMissile = 25 ;
+	final public static double LightningMissile = 8 ;
 	final public static int LightningMissileHunger = -1;
 	final public static Sound LightningMissileSound = Sound.AMBIENCE_THUNDER;
 
@@ -68,7 +68,7 @@ public class Values {
 //	final public static Effect HammerTeleportEffect =EnumParticle.PORTAL;
 //	final public static Effect HammerBackEffect = EnumParticle.HEART;
 //	final public static Effect HammerHitGround = EnumParticle.ENDER_SIGNAL;
-	final public static float HammerMissileExplosion_Power = 6F;
+	final public static float HammerMissileExplosion_Power = 4F;
 	final public static double HammerMissileDamage_Radius = 2;
 //	final public static Effect HammerPickUpCancel = EnumParticle.STEP_SOUND;
 	final public static int HammerPickUpCancel_Data = Material.IRON_BLOCK.getId();
@@ -153,7 +153,7 @@ public class Values {
 	final public static String BimMessage =  ChatColor.BLUE + "[Info]: " + ChatColor.AQUA
 			+ "Fired a Repulser Bim!";
 	final public static Sound BimSound = Sound.BLAZE_BREATH;
-	final public static EnumParticle SuitProjectileEffect = EnumParticle.FLAME;
+	final public static EnumParticle SuitProjectileEffect = EnumParticle.SPELL_MOB;
 	final public static int SuitBim_MissileEffectData = Material.DIAMOND_BLOCK.getId();
 	
 	
@@ -182,6 +182,8 @@ public class Values {
 	final public static EnumParticle HammerBackEffect = EnumParticle.HEART;
 
 	final public static EnumParticle HammerPickUpCancel = EnumParticle.HEART;
+
+	final public static EnumParticle HammerDefaultEffect = EnumParticle.CRIT;
 
 		
 	

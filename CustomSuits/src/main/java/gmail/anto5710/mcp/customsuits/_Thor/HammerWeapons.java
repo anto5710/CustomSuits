@@ -10,6 +10,7 @@ import gmail.anto5710.mcp.customsuits.Setting.Values;
 import gmail.anto5710.mcp.customsuits.Utils.ManUtils;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 import gmail.anto5710.mcp.customsuits.Utils.ThorUtils;
+import net.minecraft.server.v1_8_R2.EnumParticle;
 
 import org.bukkit.Effect;
 import org.bukkit.Location;
@@ -20,6 +21,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Item;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Wolf;
 import org.bukkit.event.EventHandler;
@@ -29,6 +31,8 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
@@ -37,17 +41,6 @@ public class HammerWeapons implements Listener{
 	CustomSuitPlugin plugin;
 	public HammerWeapons(CustomSuitPlugin plugin){
 		this.plugin = plugin;
-	}
-	@EventHandler
-	public void FallingBlockPlace(EntityChangeBlockEvent event){
-		Entity entity = event.getEntity();
-		if(entity  instanceof FallingBlock){
-			if(Thunder_Strike.fallingBlocks.contains((FallingBlock)entity)){
-				SuitUtils.createExplosion(entity.getLocation(), 6.0F,true, true);
-				Thunder_Strike.fallingBlocks.remove(entity);
-				
-			}
-		}
 	}
 	@EventHandler
 	public void Lightning(PlayerInteractEvent event) {
@@ -64,9 +57,9 @@ public class HammerWeapons implements Listener{
 	public static void launch(Player player){
 		Location targetblock = SuitUtils.getTargetBlock(player, 100).getLocation();
 		WeaponListner.radius = Values.HammerMissileDamage_Radius;
-//		SuitUtils.LineParticle(targetblock, player.getEyeLocation(), player, Effect.LAVA_POP, 3, 0, 2, Values.LightningMissile,2,  true);
+		SuitUtils.LineParticle(targetblock, player.getEyeLocation(), player, EnumParticle.VILLAGER_ANGRY, 3, 0, 2, Values.LightningMissile,2,false, false);
 		
-		ThorUtils.strikeLightning(targetblock, player, 1, 4.5, Values.LightningMissile);
+//		ThorUtils.strikeLightning(targetblock, player, 1, 4.5, Values.LightningMissile);
 		SuitUtils.createExplosion(targetblock, Values.HammerMissileExplosion_Power, false, true);
 	}
 	
@@ -75,9 +68,11 @@ public class HammerWeapons implements Listener{
 		Player player = event.getPlayer();
 		if (event.getAction() == Action.RIGHT_CLICK_AIR
 				|| event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+			if (!player.isSneaking()) {
 			if (SuitUtils.CheckItem(CustomSuitPlugin.hammer,
 					player.getItemInHand())) {
-				if (Hammer.Thor(player)&&!player.isSneaking()) {
+				if(Hammer.Thor(player)){
+				
 					Item dropped = player.getWorld().dropItem(
 							player.getLocation(), player.getItemInHand());
 					if (player.getItemInHand().getAmount() == 1) {
@@ -112,18 +107,33 @@ public class HammerWeapons implements Listener{
 					player.playSound(player.getLocation(), Sound.ANVIL_LAND,
 							6.0F, 6.0F);
 					player.playSound(player.getLocation(), Sound.IRONGOLEM_HIT,
-							4.0F, 2.0F);
-				} else{
-					if(Hammer.thor!=player&&Hammer.thor == null){
+						4.0F, 2.0F);
+				}
+			else{
+				if(Hammer.thor!=player){
+					if(Hammer.thor != null){
+						return;
+					}
+				}
 						
 					
 					PlayEffect.play_Thor_Change_Effect(player , 0);
-					}
+						
+			}
 				}
 			}
 		}
 
 	}
+	@EventHandler
+	public void Stop_Wither_Launch(ProjectileLaunchEvent event){
+		Entity shooter = (Entity) event.getEntity().getShooter();
+		if(shooter == Thunder_Strike.wither){
+			event.setCancelled(true);
+			return;
+		}
+	}
+	
 	@EventHandler
 	public void ThunderStrike(PlayerInteractEvent event){
 		if(event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK){
@@ -135,11 +145,9 @@ public class HammerWeapons implements Listener{
 				return;
 			}
 			if(SchedulerHunger.hunger(player, Values.Thunder_Strike_Hunger)){
-				player.playSound(player.getLocation(), Values.Thunder_Strike_Start_Sound,6F, 6F);
-				List<Location> list =ManUtils.circle(player.getLocation(), 10, 1, true, false, 0);
+			
 					PlayEffect.play_Thunder_Strike_Start_Effect(player.getLocation() , player);
-					
-				BukkitTask task = new Thunder_Strike_Wait(plugin).runTaskLater(plugin, 60);
+				
 			}
 		}
 		
@@ -155,7 +163,7 @@ public class HammerWeapons implements Listener{
 		
 		if(!Repeat.isRunning(Repeat.taskID)){
 			BukkitTask task = new Repeat(plugin)
-			.runTaskTimer(plugin, 0, 10);
+			.runTaskTimer(plugin, 0, 1);
 		}
 			
 

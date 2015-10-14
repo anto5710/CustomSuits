@@ -31,8 +31,8 @@ public class WeaponUtils {
 		return false;
 	}
 
-	public static void setRandomLoc(Location loc, double a) {
-
+	public static Location setRandomLoc(Location location, double a) {
+		Location loc = location.clone();
 		double b = a / 2;
 		double random = (Math.random() * a) - b;
 
@@ -41,6 +41,7 @@ public class WeaponUtils {
 		loc.setY(loc.getY() + random);
 		random = (Math.random() * a) - b;
 		loc.setZ(loc.getZ() + random);
+		return loc;
 	}
 
 	public static int charge(final Player player, String name, Material ammomat,
@@ -105,14 +106,14 @@ public class WeaponUtils {
 		return ammoamount;
 	}
 	public static void damageandeffect(Location currentLoc, double damage,
-			Player player, boolean isMissile ,double  radius) {
+			Player player, boolean isMissile, boolean isProjectile ,double  radius) {
 		
 		for (Entity entity : WeaponListner.findEntity(currentLoc, player,radius)) {
 
 			if (player != entity && entity instanceof Damageable) {
 				Damageable damageable = (Damageable) entity;
 
-				if (!isMissile) {
+				if (!isMissile&&isProjectile) {
 					if (currentLoc.distance(entity.getLocation()) <= 0.5) {
 						damage = damage * 2;
 						WeaponListner.firework(currentLoc, player);

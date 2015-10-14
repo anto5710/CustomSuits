@@ -72,7 +72,7 @@ import org.junit.internal.matchers.IsCollectionContaining;
  */
 
 public class PlayerEffect implements Listener {
-	private CustomSuitPlugin mainPlugin;
+	private static CustomSuitPlugin mainPlugin;
 	private Logger logger;
 	SchedulerHunger hungerscheduler;
 	String regex = Values.regex;
@@ -93,6 +93,113 @@ public class PlayerEffect implements Listener {
 		}
 	
 	}
+	public static void playSpawningEffect(Entity entity, final Player player) {
+		try {
+			
+		
+		
+		Location playerlocation = player.getLocation();
+
+		 LivingEntity livingentity = (LivingEntity) entity;
+		
+
+		if (entity.getType() != EntityType.PLAYER) {
+			if (PlayerEffect.hasArmor(livingentity.getEquipment().getArmorContents())&&Values.Allowed_Suit_Summon_types.contains(livingentity.getType())) {
+				if (CustomSuitPlugin.MarkEntity(livingentity)
+						&& CustomSuitPlugin.dao.isCreatedBy(livingentity, player)) {
+
+					Location entitylocation = livingentity.getLocation();
+					
+					Entity vehicle = null ;
+					CustomSuitPlugin.runSpawn(entitylocation , vehicle , playerlocation , livingentity , player);
+
+					final ItemStack helmet = livingentity.getEquipment().getHelmet();
+					final ItemStack chestplate = livingentity.getEquipment().getChestplate();
+					
+					final LivingEntity Entity = livingentity;
+					
+					if (CustomSuitPlugin.MarkEntity(livingentity)
+							&& CustomSuitPlugin.dao.isCreatedBy(livingentity, player)) {
+						boolean wait =PlayEffect.play_Suit_Get(player.getLocation(), player);
+						Bukkit.getScheduler().runTaskLater(mainPlugin, new Runnable() {
+							
+							@Override
+							public void run() {
+								if (Entity.getEquipment().getHelmet() != null) {
+
+									player.getEquipment().setHelmet(helmet);
+									player.playSound(player.getLocation(),
+											Sound.ANVIL_LAND, 9.0F, 9.0F);
+									
+									
+								}
+								
+							}
+						}, 2);
+						Bukkit.getScheduler().runTaskLater(mainPlugin, new Runnable() {
+							
+							@Override
+							public void run() {
+								if (Entity.getEquipment().getChestplate() != null) {
+
+									player.getEquipment().setChestplate(chestplate);
+									player.playSound(player.getLocation(),
+											Sound.ANVIL_LAND, 9.0F, 9.0F);
+									
+									
+								}
+								
+							}
+						}, 12);
+						Bukkit.getScheduler().runTaskLater(mainPlugin, new Runnable() {
+							
+							@Override
+							public void run() {
+								if (Entity.getEquipment().getLeggings() != null) {
+									ItemStack leggings = Entity.getEquipment()
+											.getLeggings();
+									player.getEquipment().setLeggings(leggings);
+									player.playSound(player.getLocation(),
+											Sound.ANVIL_LAND, 9.0F, 9.0F);
+									
+									
+								}
+								
+							}
+						}, 16);	
+						Bukkit.getScheduler().runTaskLater(mainPlugin, new Runnable() {
+							
+							@Override
+							public void run() {
+								if (Entity.getEquipment().getBoots() != null) {
+									ItemStack boots = Entity.getEquipment()
+											.getBoots();
+									player.getEquipment().setBoots(boots);
+									player.playSound(player.getLocation(),
+											Sound.ANVIL_LAND, 9.0F, 9.0F);
+									
+									
+								}
+								
+							}
+						}, 24);
+						
+
+						livingentity.damage(1000000.0D);
+						player.playSound(player.getLocation(),
+								Sound.ENDERDRAGON_DEATH, 9.0F, 9.0F);
+						player.sendMessage(Values.SuitCallMessage);
+						player.updateInventory();
+						
+					}
+				}
+
+			}
+		}
+		} catch (NullPointerException e) {
+		}
+	}
+
 	@EventHandler
 	public void ClickspawnSuit(PlayerInteractEvent event){
 		Player player = event.getPlayer();
