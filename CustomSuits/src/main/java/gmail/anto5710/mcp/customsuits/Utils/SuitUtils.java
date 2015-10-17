@@ -39,8 +39,9 @@ import org.bukkit.util.Vector;
 public class SuitUtils {
 
 	public static void LineParticle(Location target,Location location,
-			Player player, EnumParticle effect, int amount, int data,
-			int effectradius, double damage, double radius,boolean isProjectile  , boolean isMissile) {
+			Entity shooter, EnumParticle effect, int amount, int data,
+			 double damage, double radius,boolean isProjectile  , boolean isMissile , boolean isSneaking
+			) {
 	
 		Vector vectorStart = location.toVector();
 		
@@ -59,18 +60,23 @@ public class SuitUtils {
 		double dy = (difference.getY() / distance) * 0.5;
 		double dz = (difference.getZ() / distance) * 0.5;
 		
+		runLine(distance , currentLoc , dx ,dy ,dz , effect , amount , damage , isProjectile , isMissile , radius , isSneaking ,shooter , data);
+		
+
+	}
+
+	private static void runLine(double distance, Location currentLoc,
+			double dx, double dy, double dz, EnumParticle effect, int amount, double damage, boolean isProjectile, boolean isMissile, double radius, boolean isSneaking, Entity shooter, int data) {
 		for (double i = 0; i <= distance; i += 0.2) {
 			currentLoc.add(dx, dy, dz);
 
 		
-		PlayEffect.play_Suit_Missile_Effect(currentLoc  ,  effect, amount , data ,player, isMissile ,isProjectile);
+		PlayEffect.play_Suit_Missile_Effect(currentLoc  ,  effect, amount , data, isSneaking ,isProjectile);
 		WeaponUtils
-					.damageandeffect(currentLoc, damage, player, isProjectile , isMissile, radius);
-			
+					.damageandeffect(currentLoc, damage, shooter, isMissile, isProjectile, radius);
 
 		}
 		
-
 	}
 
 	public static void playEffect( Location location , EnumParticle effect ,int amount, int data , int radius ){

@@ -2,6 +2,7 @@ package gmail.anto5710.mcp.customsuits.CustomSuits.suit;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.FireworkPlay;
 import gmail.anto5710.mcp.customsuits.CustomSuits.PlayEffect;
+import gmail.anto5710.mcp.customsuits.Man.Man;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
 import gmail.anto5710.mcp.customsuits.Utils.ManUtils;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
@@ -75,11 +76,6 @@ public class WeaponListner implements Listener {
 	static ArrayList<Fireball>listFireball = new ArrayList<>();
 	
 	
-	static double damage = 0;
-	public static double radius = 0;
-	static int amount = 0;
-	float power = 0;
-	static int effectradius = 0;
 
 	String regex = Values.regex;
 
@@ -236,46 +232,15 @@ public class WeaponListner implements Listener {
 	private void playEffect(Location to, Location from,
 			Player player, boolean isMissile) {
 
-		setOption(isMissile, player);
-
-		damage = damage * (CustomSuitPlugin.getLevel(player)/32+1);
-
-		EnumParticle effect = Values.SniperEffect;
-		int data = Material.ANVIL.getId();
+		double radius = Values.BimRadius;
+		double damage = Values.Bim;
+		float power = Values.BimExplosionPower;
+		int amount = Values.BimEffectAmount;
 		if (isMissile) {
-			effect = Values.SuitProjectileEffect;
-			data =Values.SuitBim_MissileEffectData;
-		}
-
-		SuitUtils.LineParticle(to, from, player, effect, amount,
-				data, effectradius, damage,radius,  player.isSneaking(),isMissile );
-		if (isMissile) {
-			int count = 2;
-			double r = 1.2;
-			if(player.isSneaking()){
-				count  = 10;
-				r = 25;
-			}
-			SuitUtils.createExplosion(to.add(0,-2, 0), power, false, true);
-
-		} else {
 			
-			breakblock(to.getBlock());
 
-		}
-
-	}
-
-	private void setOption(boolean isMissile, Player player) {
-
-		if (isMissile) {
-			if (!player.isSneaking()) {
-				radius = Values.BimRadius;
-				damage = Values.Bim;
-				power = Values.BimExplosionPower;
-				amount = Values.BimEffectAmount;
-
-			} else {
+				if (player.isSneaking()) {
+			
 				radius = Values.MissileRadius;
 				damage = Values.Missile;
 				power = Values.MissileExplosionPower;
@@ -288,7 +253,32 @@ public class WeaponListner implements Listener {
 			damage = Values.SniperDamage;
 			amount = Values.SniperEffectAmount;
 		}
+
+		damage = damage * (CustomSuitPlugin.getLevel(player)/32+1);
+
+		EnumParticle effect = Values.SniperEffect;
+		int data = Material.ANVIL.getId();
+		if (isMissile) {
+			effect = Values.SuitProjectileEffect;
+			data =Values.SuitBim_MissileEffectData;
+		}
+
+		SuitUtils.LineParticle(to, from, player, effect, amount,
+				data, damage,radius, true,isMissile ,player.isSneaking());
+		if (isMissile) {
+			
+			SuitUtils.createExplosion(to.add(0,-1, 0), power, false, true);
+
+		} else {
+			
+			breakblock(to.getBlock());
+
+		}
+
 	}
+
+
+		
 
 	
 
@@ -303,14 +293,21 @@ public class WeaponListner implements Listener {
 	}
 
 	public static ArrayList<Entity> findEntity(Location currentLoc,
-			Player player, double radius) {
-
+			Entity shooter, double radius) {
+	
 		Collection<Entity> near = currentLoc.getWorld().getEntities();
 		ArrayList<Entity> list = new ArrayList<>();
 		for (Entity entity : near) {
-			if (entity instanceof Damageable && entity != player
-					&& entity != player.getVehicle()
+			boolean vehicle = false;
+			if(shooter!=null){
+				if(shooter.getVehicle() == entity){
+					vehicle = true;
+				}
+			}
+			if (entity instanceof Damageable && entity != shooter
+					&&!vehicle
 					&& SuitUtils.distance(currentLoc, entity, radius , 2)) {
+				
 				list.add(entity);
 
 			}
@@ -321,13 +318,17 @@ public class WeaponListner implements Listener {
 
 
 
-	public static void firework(Location location, Player player) {
+	public static void firework(Location location, Entity shooter) {
 		FireworkEffect effect = SuitUtils.getRandomEffect();
-		FireworkPlay.spawn(location, effect, player);
-		if(player!=null){
-		location.getWorld().playSound(player.getLocation(), Sound.EXPLODE, 14.0F, 14.0F);
+		Firework firework =(Firework) location.getWorld().spawnEntity(location, EntityType.FIREWORK);
+		FireworkMeta meta  =firework.getFireworkMeta();
+		meta.addEffect(effect);
+		meta.setPower((int) (ManUtils.Random(5)+2.5));
+		firework.setFireworkMeta(meta);
+		if(shooter!=null){
+		location.getWorld().playSound(shooter.getLocation(), Sound.EXPLODE, 14.0F, 14.0F);
 
-		location.getWorld().playSound(player.getLocation(), Sound.WITHER_DEATH, 14.0F, 14.0F);
+		location.getWorld().playSound(shooter.getLocation(), Sound.WITHER_DEATH, 14.0F, 14.0F);
 		}
 
 	}

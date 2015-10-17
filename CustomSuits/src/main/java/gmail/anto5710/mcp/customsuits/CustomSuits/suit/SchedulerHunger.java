@@ -107,6 +107,7 @@ public class SchedulerHunger extends BukkitRunnable {
 					player.setAllowFlight(false);
 				} else {
 					player.setFlySpeed(speed);
+					
 				}
 				if (player.getFoodLevel() < Values.SuitEnoughFly) {
 					

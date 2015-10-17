@@ -9,12 +9,14 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
+import gmail.anto5710.mcp.customsuits.CustomSuits.suit.Control;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
 
 /**
@@ -69,9 +71,14 @@ public class SpawningDao {
 	}
 
 	public void saveEntity(Entity spawnedEntity, Player spawner) {
-
-		spawnMap.put("" + spawnedEntity.getUniqueId(), "" + spawner.getName());
-
+		boolean run = false;
+		if(spawnMap.isEmpty()){
+			run = true;
+		}
+		spawnMap.put( spawnedEntity.getUniqueId().toString(),   spawner.getName());
+		if(run){
+			new Control(plugin, this).runTaskTimer(plugin, 0, 1);
+		}
 		String line = String.format("%s:%s", spawnedEntity.getUniqueId(),
 				spawner.getName());
 
@@ -86,19 +93,20 @@ public class SpawningDao {
 		} finally {
 			out.close();
 		}
+		
 	}
 
 	/**
 	 * 
 	 * @param RemovedEntity - Removed or Dead Suit Entity
 	 */
-	public void remove(Entity RemovedEntity) {
+	public void remove(Entity RemovedEntity ) {
 		
-		String entityID = String.valueOf(RemovedEntity.getEntityId());
-
+		String entityID = String.valueOf(RemovedEntity.getUniqueId());
+		
 		
 		spawnMap.remove(entityID);
-		System.out.println("removed. current size: " + spawnMap.size());
+//		System.out.println("removed. current size: " + spawnMap.size());
 		try {
 			writeToFile(spawnMap);
 		} catch (FileNotFoundException e) {
@@ -108,7 +116,22 @@ public class SpawningDao {
 	
 		
 	}
-
+public void remove(String entityID ) {
+		
+		
+		
+		spawnMap.remove(entityID);
+//		System.out.println("removed. current size: " + spawnMap.size());
+		try {
+			writeToFile(spawnMap);
+		} catch (FileNotFoundException e) {
+			
+			e.printStackTrace();
+		}
+	
+		
+	}
+	
 	public void writeToFile(Map<String, String> map)
 			throws FileNotFoundException {
 

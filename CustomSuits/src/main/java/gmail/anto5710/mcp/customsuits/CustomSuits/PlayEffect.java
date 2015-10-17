@@ -2,6 +2,8 @@ package gmail.anto5710.mcp.customsuits.CustomSuits;
 
 
 
+import io.netty.buffer.ByteBuf;
+
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,9 +26,12 @@ import net.minecraft.server.v1_8_R2.Item;
 import net.minecraft.server.v1_8_R2.ItemStack;
 import net.minecraft.server.v1_8_R2.Packet;
 import net.minecraft.server.v1_8_R2.PacketDataSerializer;
+import net.minecraft.server.v1_8_R2.PacketPlayInFlying.PacketPlayInPosition;
+import net.minecraft.server.v1_8_R2.PacketPlayInFlying.PacketPlayInPositionLook;
 import net.minecraft.server.v1_8_R2.PacketPlayOutEntityStatus;
 import net.minecraft.server.v1_8_R2.PacketPlayOutWorldParticles;
 import net.minecraft.server.v1_8_R2.PlayerConnection;
+import net.minecraft.server.v1_8_R2.Position;
 import net.minecraft.server.v1_8_R2.WorldServer;
 
 import org.bukkit.Bukkit;
@@ -44,12 +49,14 @@ import org.bukkit.craftbukkit.v1_8_R2.entity.CraftPlayer;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Firework;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Wither;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.util.EulerAngle;
 
 
 public class PlayEffect {
@@ -73,10 +80,7 @@ public class PlayEffect {
 			loc.setY(Y+y);
 			loc.setZ(loc.getZ()+z);
 			
-			((CraftWorld)loc.getWorld()).getHandle().sendParticles(null, EnumParticle.SPELL_MOB, true, loc.getX(), loc.getY(), loc.getZ(), 0, 0, 3.2, 1, 3, 1 , 0, 0, 0, 0 ,0);
-			((CraftWorld)loc.getWorld()).getHandle().sendParticles(null, EnumParticle.SPELL_MOB, true,loc.getX(), loc.getY(), loc.getZ(), 0, 0, 2, 1, 3, 1 , 0, 0, 0, 0 ,0);
-			((CraftWorld)loc.getWorld()).getHandle().sendParticles(null, EnumParticle.SPELL_MOB_AMBIENT, true, loc.getX(), loc.getY(), loc.getZ(), 0, 0, 3.2, 1, 3, 1 , 0, 0, 0, 0 ,0);
-			((CraftWorld)loc.getWorld()).getHandle().sendParticles(null, EnumParticle.SPELL_MOB_AMBIENT, true,loc.getX(), loc.getY(), loc.getZ(), 0, 0, 2, 1, 3, 1 , 0, 0, 0, 0 ,0);
+			play_Arc_Reactor(loc);
 			loc.subtract(x, 0, z);
 		}
 		return true;
@@ -171,28 +175,25 @@ SuitUtils.playEffect(loc, EnumParticle.FLAME, 1, 0, 0);
 		drawsphere(0, player.getLocation(), 0.8 , Effect);
 	}
 	public static void play_Suit_Missile_Effect(Location currentLoc,
-			EnumParticle effect,int amount, int data , Player player ,boolean roof , boolean isMissile) {
+			EnumParticle effect,int amount, int data ,boolean isRoof , boolean isMissile) {
 	
 			
 			float x = (float) currentLoc.getX();
 			float y = (float) currentLoc.getY();
 			float z = (float) currentLoc.getZ();
 			if(isMissile){
-			if(roof)	{
-				((CraftWorld)player.getWorld()).getHandle().sendParticles(null, EnumParticle.SPELL_MOB, true, x, y, z, 0, 0, 2.5, 1, 3, 1 , 0, 0, 0, 0 ,0);
-				((CraftWorld)player.getWorld()).getHandle().sendParticles(null, EnumParticle.SPELL_MOB, true, x, y, z, 0, 0, 0.1, 1, 3, 1 , 0, 0, 0, 0 ,0);
-				((CraftWorld)player.getWorld()).getHandle().sendParticles(null, EnumParticle.SPELL_MOB_AMBIENT, true, x, y, z, 0, 0, 2.5, 1, 3, 1 , 0, 0, 0, 0 ,0);
-				((CraftWorld)player.getWorld()).getHandle().sendParticles(null, EnumParticle.SPELL_MOB_AMBIENT, true, x, y, z, 0, 0, 0.1, 1, 3, 1 , 0, 0, 0, 0 ,0);
+			if(isRoof)	{
+				((CraftWorld)currentLoc.getWorld()).getHandle().sendParticles(null, EnumParticle.SPELL_MOB, true, x, y, z, 0, 0, 2.5, 1, 3, 1 , 0, 0, 0, 0 ,0);
+				((CraftWorld)currentLoc.getWorld()).getHandle().sendParticles(null, EnumParticle.SPELL_MOB, true, x, y, z, 0, 0, 0.1, 1, 3, 1 , 0, 0, 0, 0 ,0);
+				((CraftWorld)currentLoc.getWorld()).getHandle().sendParticles(null, EnumParticle.SPELL_MOB_AMBIENT, true, x, y, z, 0, 0, 2.5, 1, 3, 1 , 0, 0, 0, 0 ,0);
+				((CraftWorld)currentLoc.getWorld()).getHandle().sendParticles(null, EnumParticle.SPELL_MOB_AMBIENT, true, x, y, z, 0, 0, 0.1, 1, 3, 1 , 0, 0, 0, 0 ,0);
 				
 			}else{
-			((CraftWorld)player.getWorld()).getHandle().sendParticles(null, EnumParticle.SPELL_MOB, true, x, y, z, 0, 0, 3.2, 1, 3, 1 , 0, 0, 0, 0 ,0);
-			((CraftWorld)player.getWorld()).getHandle().sendParticles(null, EnumParticle.SPELL_MOB, true, x, y, z, 0, 0, 2, 1, 3, 1 , 0, 0, 0, 0 ,0);
-			((CraftWorld)player.getWorld()).getHandle().sendParticles(null, EnumParticle.SPELL_MOB_AMBIENT, true, x, y, z, 0, 0, 3.2, 1, 3, 1 , 0, 0, 0, 0 ,0);
-			((CraftWorld)player.getWorld()).getHandle().sendParticles(null, EnumParticle.SPELL_MOB_AMBIENT, true, x, y, z, 0, 0, 2, 1, 3, 1 , 0, 0, 0, 0 ,0);
+				play_Arc_Reactor(currentLoc);
 			
 			}
 			}else{
-				((CraftWorld)player.getWorld()).getHandle().sendParticles(null, effect, true, x, y, z, 0, 0, 0, 1, 0, 0 , 0, 0, 0, 0 ,0);
+				((CraftWorld)currentLoc.getWorld()).getHandle().sendParticles(null, effect, true, x, y, z, 0, 0, 0, 1, 0, 0 , 0, 0, 0, 0 ,0);
 			}
 			
 			
@@ -226,10 +227,7 @@ SuitUtils.playEffect(loc, EnumParticle.FLAME, 1, 0, 0);
 			double z = r*Math.sin(theta)*Math.sin(phi);
 			loc.add(x, y, z);
 			if(particle==null){
-			((CraftWorld)loc.getWorld()).getHandle().sendParticles(null, EnumParticle.SPELL_MOB, true, loc.getX(), loc.getY(), loc.getZ(), 0, 0, 3.2, 1, 3, 1 , 0, 0, 0, 0 ,0);
-			((CraftWorld)loc.getWorld()).getHandle().sendParticles(null, EnumParticle.SPELL_MOB, true,loc.getX(), loc.getY(), loc.getZ(), 0, 0, 2, 1, 3, 1 , 0, 0, 0, 0 ,0);
-			((CraftWorld)loc.getWorld()).getHandle().sendParticles(null, EnumParticle.SPELL_MOB_AMBIENT, true, loc.getX(), loc.getY(), loc.getZ(), 0, 0, 3.2, 1, 3, 1 , 0, 0, 0, 0 ,0);
-			((CraftWorld)loc.getWorld()).getHandle().sendParticles(null, EnumParticle.SPELL_MOB_AMBIENT, true,loc.getX(), loc.getY(), loc.getZ(), 0, 0, 2, 1, 3, 1 , 0, 0, 0, 0 ,0);
+				play_Arc_Reactor(loc);
 			}else{
 				((CraftWorld)loc.getWorld()).getHandle().sendParticles(null,particle, true, loc.getX(), loc.getY(), loc.getZ(), 1, 0, 0, 0,0,0,0);
 			}
@@ -331,10 +329,7 @@ location.add(0, -0.2, 0);
         location.add(v)
         
         
-;				((CraftWorld)location.getWorld()).getHandle().sendParticles(null, EnumParticle.SPELL_MOB, true, location.getX(), location.getY(), location.getZ(), 0, 0, 3.2, 1, 3, 1 , 0, 0, 0, 0 ,0);
-				((CraftWorld)location.getWorld()).getHandle().sendParticles(null, EnumParticle.SPELL_MOB, true,location.getX(), location.getY(), location.getZ(), 0, 0, 2, 1, 3, 1 , 0, 0, 0, 0 ,0);
-				 ((CraftWorld)location.getWorld()).getHandle().sendParticles(null, EnumParticle.SPELL_MOB_AMBIENT, true, location.getX(), location.getY(), location.getZ(), 0, 0, 3.2, 1, 3, 1 , 0, 0, 0, 0 ,0);
-					((CraftWorld)location.getWorld()).getHandle().sendParticles(null, EnumParticle.SPELL_MOB_AMBIENT, true,location.getX(), location.getY(), location.getZ(), 0, 0, 2, 1, 3, 1 , 0, 0, 0, 0 ,0);
+;				play_Arc_Reactor(location);
 					
 				location.subtract(v);
 					 yaw = location.getYaw()+90+180;
@@ -346,11 +341,7 @@ location.add(0, -0.2, 0);
 					v = newloc.getDirection();
 					v.setY(0);
 					location.add(v);
-					((CraftWorld)location.getWorld()).getHandle().sendParticles(null, EnumParticle.SPELL_MOB, true, location.getX(), location.getY(), location.getZ(), 0, 0, 3.2, 1, 3, 1 , 0, 0, 0, 0 ,0);
-					((CraftWorld)location.getWorld()).getHandle().sendParticles(null, EnumParticle.SPELL_MOB, true,location.getX(), location.getY(), location.getZ(), 0, 0, 2, 1, 3, 1 , 0, 0, 0, 0 ,0);
-					 ((CraftWorld)location.getWorld()).getHandle().sendParticles(null, EnumParticle.SPELL_MOB_AMBIENT, true, location.getX(), location.getY(), location.getZ(), 0, 0, 3.2, 1, 3, 1 , 0, 0, 0, 0 ,0);
-						((CraftWorld)location.getWorld()).getHandle().sendParticles(null, EnumParticle.SPELL_MOB_AMBIENT, true,location.getX(), location.getY(), location.getZ(), 0, 0, 2, 1, 3, 1 , 0, 0, 0, 0 ,0);
-						
+					play_Arc_Reactor(location);
 						
 	}
 
@@ -388,7 +379,7 @@ location.add(0, -0.2, 0);
 
 
 	public static void playSuit_Move_Effect(Location location,
-			Player player) {
+			org.bukkit.entity.Entity entity) {
 		location.add(0, -0.2, 0);
 		
 		Location newloc =location.clone();
@@ -403,10 +394,7 @@ location.add(0, -0.2, 0);
         location.add(v)
         
         
-;				((CraftWorld)location.getWorld()).getHandle().sendParticles(null, EnumParticle.SPELL_MOB, true, location.getX(), location.getY(), location.getZ(), 0, 0, 3.2, 1, 3, 1 , 0, 0, 0, 0 ,0);
-				((CraftWorld)location.getWorld()).getHandle().sendParticles(null, EnumParticle.SPELL_MOB, true,location.getX(), location.getY(), location.getZ(), 0, 0, 2, 1, 3, 1 , 0, 0, 0, 0 ,0);
-				 ((CraftWorld)location.getWorld()).getHandle().sendParticles(null, EnumParticle.SPELL_MOB_AMBIENT, true, location.getX(), location.getY(), location.getZ(), 0, 0, 3.2, 1, 3, 1 , 0, 0, 0, 0 ,0);
-					((CraftWorld)location.getWorld()).getHandle().sendParticles(null, EnumParticle.SPELL_MOB_AMBIENT, true,location.getX(), location.getY(), location.getZ(), 0, 0, 2, 1, 3, 1 , 0, 0, 0, 0 ,0);
+;				play_Arc_Reactor(location);
 					
 				location.subtract(v);
 					 yaw = location.getYaw()+90+180;
@@ -418,11 +406,15 @@ location.add(0, -0.2, 0);
 					v = newloc.getDirection();
 					v.setY(0);
 					location.add(v);
-					((CraftWorld)location.getWorld()).getHandle().sendParticles(null, EnumParticle.SPELL_MOB, true, location.getX(), location.getY(), location.getZ(), 0, 0, 3.2, 1, 3, 1 , 0, 0, 0, 0 ,0);
-					((CraftWorld)location.getWorld()).getHandle().sendParticles(null, EnumParticle.SPELL_MOB, true,location.getX(), location.getY(), location.getZ(), 0, 0, 2, 1, 3, 1 , 0, 0, 0, 0 ,0);
-					 ((CraftWorld)location.getWorld()).getHandle().sendParticles(null, EnumParticle.SPELL_MOB_AMBIENT, true, location.getX(), location.getY(), location.getZ(), 0, 0, 3.2, 1, 3, 1 , 0, 0, 0, 0 ,0);
-						((CraftWorld)location.getWorld()).getHandle().sendParticles(null, EnumParticle.SPELL_MOB_AMBIENT, true,location.getX(), location.getY(), location.getZ(), 0, 0, 2, 1, 3, 1 , 0, 0, 0, 0 ,0);
-						
+					play_Arc_Reactor(location);
+					
+	}
+	public static void play_Arc_Reactor(Location location){
+		((CraftWorld)location.getWorld()).getHandle().sendParticles(null, EnumParticle.SPELL_MOB, true, location.getX(), location.getY(), location.getZ(), 0, 0, 3.2, 1, 3, 1 , 0, 0, 0, 0 ,0);
+		((CraftWorld)location.getWorld()).getHandle().sendParticles(null, EnumParticle.SPELL_MOB, true,location.getX(), location.getY(), location.getZ(), 0, 0, 2, 1, 3, 1 , 0, 0, 0, 0 ,0);
+		 ((CraftWorld)location.getWorld()).getHandle().sendParticles(null, EnumParticle.SPELL_MOB_AMBIENT, true, location.getX(), location.getY(), location.getZ(), 0, 0, 3.2, 1, 3, 1 , 0, 0, 0, 0 ,0);
+			((CraftWorld)location.getWorld()).getHandle().sendParticles(null, EnumParticle.SPELL_MOB_AMBIENT, true,location.getX(), location.getY(), location.getZ(), 0, 0, 2, 1, 3, 1 , 0, 0, 0, 0 ,0);
+			
 	}
 	public static void play_Thor_Change_Effect(Player player , double phi) {
 		if(player!=Hammer.thor){

@@ -96,7 +96,7 @@ public class Thunder_Strike extends BukkitRunnable{
 
 	public static void Lightning(Entity entity, Location from, EnumParticle effect) {
 		Location entitylocation = entity.getLocation();
-SuitUtils.LineParticle(entitylocation, BaseLocation, Hammer.thor, EnumParticle.VILLAGER_ANGRY, 3, 0, 2, Values.LightningMissile,2,false, false);
+SuitUtils.LineParticle(entitylocation, BaseLocation, Hammer.thor, EnumParticle.VILLAGER_ANGRY, 3, 2, Values.LightningMissile,2,false, false, false);
 		
 		SuitUtils.createExplosion(entitylocation, Values.HammerMissileExplosion_Power, false, true);
 //			SuitUtils.playEffect(entitylocation, effect, 2, 0, 5);

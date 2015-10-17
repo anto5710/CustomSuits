@@ -33,7 +33,7 @@ import org.bukkit.util.Vector;
 public class ThorUtils {
 
 	public static Item getItem(World world, Player player) {
-		for(Entity entity : world.getEntitiesByClass(Item.class)){
+		for(Entity entity : world.getEntitiesByClass(Item.class )){
 			if(entity instanceof Item){
 				Item item = (Item) entity;
 				if(SuitUtils.CheckItem(CustomSuitPlugin.hammer, item.getItemStack())){

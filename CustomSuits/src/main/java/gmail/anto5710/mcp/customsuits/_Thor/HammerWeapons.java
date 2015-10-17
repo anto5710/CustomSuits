@@ -56,8 +56,7 @@ public class HammerWeapons implements Listener{
 	}
 	public static void launch(Player player){
 		Location targetblock = SuitUtils.getTargetBlock(player, 100).getLocation();
-		WeaponListner.radius = Values.HammerMissileDamage_Radius;
-		SuitUtils.LineParticle(targetblock, player.getEyeLocation(), player, EnumParticle.VILLAGER_ANGRY, 3, 0, 2, Values.LightningMissile,2,false, false);
+		SuitUtils.LineParticle(targetblock, player.getEyeLocation(), player, EnumParticle.VILLAGER_ANGRY, 3,  2, Values.LightningMissile,2,false , false, false);
 		
 //		ThorUtils.strikeLightning(targetblock, player, 1, 4.5, Values.LightningMissile);
 		SuitUtils.createExplosion(targetblock, Values.HammerMissileExplosion_Power, false, true);
@@ -129,7 +128,7 @@ public class HammerWeapons implements Listener{
 	public void Stop_Wither_Launch(ProjectileLaunchEvent event){
 		Entity shooter = (Entity) event.getEntity().getShooter();
 		if(shooter == Thunder_Strike.wither){
-			event.setCancelled(true);
+			event.getEntity().remove();
 			return;
 		}
 	}

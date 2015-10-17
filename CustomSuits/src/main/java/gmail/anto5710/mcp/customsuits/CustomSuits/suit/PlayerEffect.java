@@ -60,6 +60,7 @@ import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 import org.junit.internal.matchers.IsCollectionContaining;
@@ -94,7 +95,7 @@ public class PlayerEffect implements Listener {
 	
 	}
 	public static void playSpawningEffect(Entity entity, final Player player) {
-		try {
+		
 			
 		
 		
@@ -112,92 +113,105 @@ public class PlayerEffect implements Listener {
 					
 					Entity vehicle = null ;
 					CustomSuitPlugin.runSpawn(entitylocation , vehicle , playerlocation , livingentity , player);
-
-					final ItemStack helmet = livingentity.getEquipment().getHelmet();
-					final ItemStack chestplate = livingentity.getEquipment().getChestplate();
-					
-					final LivingEntity Entity = livingentity;
-					
-					if (CustomSuitPlugin.MarkEntity(livingentity)
-							&& CustomSuitPlugin.dao.isCreatedBy(livingentity, player)) {
-						boolean wait =PlayEffect.play_Suit_Get(player.getLocation(), player);
-						Bukkit.getScheduler().runTaskLater(mainPlugin, new Runnable() {
-							
-							@Override
-							public void run() {
-								if (Entity.getEquipment().getHelmet() != null) {
-
-									player.getEquipment().setHelmet(helmet);
-									player.playSound(player.getLocation(),
-											Sound.ANVIL_LAND, 9.0F, 9.0F);
-									
-									
-								}
-								
-							}
-						}, 2);
-						Bukkit.getScheduler().runTaskLater(mainPlugin, new Runnable() {
-							
-							@Override
-							public void run() {
-								if (Entity.getEquipment().getChestplate() != null) {
-
-									player.getEquipment().setChestplate(chestplate);
-									player.playSound(player.getLocation(),
-											Sound.ANVIL_LAND, 9.0F, 9.0F);
-									
-									
-								}
-								
-							}
-						}, 12);
-						Bukkit.getScheduler().runTaskLater(mainPlugin, new Runnable() {
-							
-							@Override
-							public void run() {
-								if (Entity.getEquipment().getLeggings() != null) {
-									ItemStack leggings = Entity.getEquipment()
-											.getLeggings();
-									player.getEquipment().setLeggings(leggings);
-									player.playSound(player.getLocation(),
-											Sound.ANVIL_LAND, 9.0F, 9.0F);
-									
-									
-								}
-								
-							}
-						}, 16);	
-						Bukkit.getScheduler().runTaskLater(mainPlugin, new Runnable() {
-							
-							@Override
-							public void run() {
-								if (Entity.getEquipment().getBoots() != null) {
-									ItemStack boots = Entity.getEquipment()
-											.getBoots();
-									player.getEquipment().setBoots(boots);
-									player.playSound(player.getLocation(),
-											Sound.ANVIL_LAND, 9.0F, 9.0F);
-									
-									
-								}
-								
-							}
-						}, 24);
+					final LivingEntity livingEntity = livingentity;
+					new BukkitRunnable() {
 						
-
-						livingentity.damage(1000000.0D);
-						player.playSound(player.getLocation(),
-								Sound.ENDERDRAGON_DEATH, 9.0F, 9.0F);
-						player.sendMessage(Values.SuitCallMessage);
-						player.updateInventory();
+						 ItemStack helmet = livingEntity.getEquipment().getHelmet();
+						 ItemStack chestplate = livingEntity.getEquipment().getChestplate();
 						
-					}
-				}
+						 LivingEntity Entity = livingEntity;
+						
+						@Override
+						public void run() {
+							// TODO Auto-generated method stub
+							if (CustomSuitPlugin.MarkEntity(livingEntity)
+									&& CustomSuitPlugin.dao.isCreatedBy(livingEntity, player)) {
+								player.setNoDamageTicks(20);
+								boolean waitFor =PlayEffect.play_Suit_Get(player.getLocation(), player);
+								Bukkit.getScheduler().runTaskLater(mainPlugin, new Runnable() {
+									
+									@Override
+									public void run() {
+										if (Entity.getEquipment().getHelmet() != null) {
 
+											player.getEquipment().setHelmet(helmet);
+											player.playSound(player.getLocation(),
+													Sound.ANVIL_LAND, 9.0F, 9.0F);
+											
+											
+										}
+										
+									}
+								}, 2);
+								Bukkit.getScheduler().runTaskLater(mainPlugin, new Runnable() {
+									
+									@Override
+									public void run() {
+										if (Entity.getEquipment().getChestplate() != null) {
+
+											player.getEquipment().setChestplate(chestplate);
+											player.playSound(player.getLocation(),
+													Sound.ANVIL_LAND, 9.0F, 9.0F);
+											
+											
+										}
+										
+									}
+								}, 12);
+								Bukkit.getScheduler().runTaskLater(mainPlugin, new Runnable() {
+									
+									@Override
+									public void run() {
+										if (Entity.getEquipment().getLeggings() != null) {
+											ItemStack leggings = Entity.getEquipment()
+													.getLeggings();
+											player.getEquipment().setLeggings(leggings);
+											player.playSound(player.getLocation(),
+													Sound.ANVIL_LAND, 9.0F, 9.0F);
+											
+											
+										}
+										
+									}
+								}, 16);	
+								Bukkit.getScheduler().runTaskLater(mainPlugin, new Runnable() {
+									
+									@Override
+									public void run() {
+										if (Entity.getEquipment().getBoots() != null) {
+											ItemStack boots = Entity.getEquipment()
+													.getBoots();
+											player.getEquipment().setBoots(boots);
+											player.playSound(player.getLocation(),
+													Sound.ANVIL_LAND, 9.0F, 9.0F);
+											
+											
+										}
+										
+									}
+								}, 24);
+								
+
+								livingEntity.damage(1000000.0D);
+								player.playSound(player.getLocation(),
+										Sound.ENDERDRAGON_DEATH, 9.0F, 9.0F);
+								player.sendMessage(Values.SuitCallMessage);
+								player.updateInventory();
+								
+							}
+						}
+
+					
+							
+					}.runTaskLater(mainPlugin, 10);
+		
+		
+				
 			}
 		}
-		} catch (NullPointerException e) {
+	
 		}
+	
 	}
 
 	@EventHandler

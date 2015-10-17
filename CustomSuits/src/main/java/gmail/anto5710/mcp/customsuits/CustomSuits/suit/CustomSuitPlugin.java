@@ -480,11 +480,15 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		
 		PlayEffect playEffect = new PlayEffect(this);
 		// listener 를 달아줍니다.
-
+        new Control(getPlugin(), getDao()).runTaskTimer(getPlugin(), 0, 1);
+		
 	}
 
 	public SchedulerHunger getHungerScheduler() {
 		return this.hscheduler;
+	}
+	public CustomSuitPlugin getPlugin(){
+		return this;
 	}
 
 	@Override
@@ -1308,7 +1312,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 	}
 	
 	
-	public static boolean runSpawn(Location entitylocation, Entity vehicle,
+	public static void runSpawn(Location entitylocation, Entity vehicle,
 			Location playerlocation, LivingEntity entity,Player player) {
 		if(entity.getVehicle()!=null){
 			vehicle=entity.getVehicle();
@@ -1321,7 +1325,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		
 		double distance = difference.length();
 		if (distance < 0) {
-			return true;
+			return ;
 		}
 
 		Location currentLoc = playerlocation.clone();
@@ -1329,10 +1333,6 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		double dy = (difference.getY() / distance) * 0.5;
 		double dz = (difference.getZ() / distance) * 0.5;
 		for (int i = 0; i <=distance; i++) {
-			((CraftWorld)currentLoc.getWorld()).getHandle().sendParticles(null, EnumParticle.SPELL_MOB, true, currentLoc.getX(), currentLoc.getY(), currentLoc.getZ(), 0, 0, 3.2, 1, 3, 1 , 0, 0, 0, 0 ,0);
-			((CraftWorld)currentLoc.getWorld()).getHandle().sendParticles(null, EnumParticle.SPELL_MOB, true,currentLoc.getX(), currentLoc.getY(), currentLoc.getZ(), 0, 0, 2, 1, 3, 1 , 0, 0, 0, 0 ,0);
-			((CraftWorld)currentLoc.getWorld()).getHandle().sendParticles(null, EnumParticle.SPELL_MOB_AMBIENT, true, currentLoc.getX(), currentLoc.getY(), currentLoc.getZ(), 0, 0, 3.2, 1, 3, 1 , 0, 0, 0, 0 ,0);
-			((CraftWorld)currentLoc.getWorld()).getHandle().sendParticles(null, EnumParticle.SPELL_MOB_AMBIENT, true,currentLoc.getX(), currentLoc.getY(), currentLoc.getZ(), 0, 0, 2, 1, 3, 1 , 0, 0, 0, 0 ,0);
 			currentLoc.add(dx , dy , dz);
 			entity.teleport(currentLoc);
 			if(entity.getVehicle()!=null){
@@ -1348,7 +1348,11 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 //		} catch (Exception e) {
 //		}
 		
-		return true;
+		entity.teleport(playerlocation);
+		if(entity.getVehicle()!=null){
+		vehicle.teleport(playerlocation);
+		vehicle.setPassenger(entity);
+		}
 		
 	}
 

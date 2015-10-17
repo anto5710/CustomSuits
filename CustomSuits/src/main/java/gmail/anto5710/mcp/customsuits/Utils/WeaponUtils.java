@@ -106,20 +106,20 @@ public class WeaponUtils {
 		return ammoamount;
 	}
 	public static void damageandeffect(Location currentLoc, double damage,
-			Player player, boolean isMissile, boolean isProjectile ,double  radius) {
+			Entity shooter, boolean isMissile, boolean isProjectile ,double  radius) {
 		
-		for (Entity entity : WeaponListner.findEntity(currentLoc, player,radius)) {
+		for (Entity entity : WeaponListner.findEntity(currentLoc, shooter,radius)) {
 
-			if (player != entity && entity instanceof Damageable) {
+			if (shooter != entity && entity instanceof Damageable) {
 				Damageable damageable = (Damageable) entity;
 
 				if (!isMissile&&isProjectile) {
 					if (currentLoc.distance(entity.getLocation()) <= 0.5) {
 						damage = damage * 2;
-						WeaponListner.firework(currentLoc, player);
+						WeaponListner.firework(currentLoc, shooter);
 					}
 				}
-				damageable.damage(damage,player);
+				damageable.damage(damage,shooter);
 			}
 		}
 		
