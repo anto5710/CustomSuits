@@ -1,147 +1,111 @@
 package gmail.anto5710.mcp.customsuits._Thor;
 
-import gmail.anto5710.mcp.customsuits.CustomSuits.PlayEffect;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
+import gmail.anto5710.mcp.customsuits.CustomSuits.suit.PlayerEffect;
+import gmail.anto5710.mcp.customsuits.Setting.PotionEffects;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 import gmail.anto5710.mcp.customsuits.Utils.ThorUtils;
-
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-
 import net.minecraft.server.v1_8_R2.EnumParticle;
-import net.minecraft.server.v1_8_R2.World;
 
-import org.bukkit.Bukkit;
-import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_8_R2.CraftWorld;
-import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 
 public class Thor_Move extends BukkitRunnable{
 	
 	   
 		CustomSuitPlugin plugin;
-		static List<Player>list = new ArrayList<>();
-		static List<Player>removed = new ArrayList<>();
-		static HashMap<Player,Location>locations = new HashMap<>();
-		static HashMap<Player,Double>Add_Y_Offset = new HashMap<>();
-		static HashMap<Player, Boolean>is_Landing = new HashMap<>();
-		
-		static HashMap<Player, Double>count = new HashMap<>();
+		static Location location;
+		static double Add_Y_Offset = 0D;
+		static boolean isUp = false;
+		static Player player;
+		static double add_Horizonal = 0;
 		static double radius = 1;
-		public Thor_Move(CustomSuitPlugin plugin){
+		public static boolean isRunning = false;
+		public Thor_Move(CustomSuitPlugin plugin ,Player player){
+			Thor_Move.player = player;
 			this.plugin = plugin;
+		
+			 Add_Y_Offset = 0D;
+			 isUp = false;
+			 add_Horizonal = 0;
+			 radius = 1;
+			 isRunning = false;
+			 AddThorPotion_Effects();
 		}
 		@Override
 		public void run() throws IllegalStateException{
-			Iterator<Player>iterator = list.iterator();
-			if(list.isEmpty()){
+			location = player.getLocation();
+			isRunning = true;
+			if(!Hammer.Thor(player)){
 				try {
-					ThorUtils.cancel(getTaskId());
+					RemoveThorPotion_Effects();
+					isRunning = false;
+					this.cancel();
 					
 				} catch (IllegalStateException e) {
 				}
 			}
-			while(iterator.hasNext()){
-				Player player = iterator.next();
-				if(removed.contains(player)){
-					iterator.remove();
-				}
-				if(!Hammer.Thor(player)){
-					removed.add(player);
-					iterator.remove();
-				}
-				if(player.isDead()){
-					removed.add(player);
-					iterator.remove();
-				}
-				if(!count.containsKey(player)){
-					count.put(player, (double) 0);
-				}
-				count.put(player, count.get(player)+1.50);
-					locations.put(player, player.getLocation());
+			if(!player.isOnline()){
+				RemoveThorPotion_Effects();
+				isRunning = false;
+				this.cancel();
 				
-					if(!Add_Y_Offset.containsKey(player)){
-						Add_Y_Offset.put(player, (double) 0);
-					}
-					if(!is_Landing.containsKey(player)){
-						is_Landing.put(player, true);
-					}
-					Location loc = locations.get(player).clone();
-					
-					
-					double y = loc.getY()+Add_Y_Offset.get(player);
-					double add = count.get(player);
-					double x = Math.sin(add*radius);
-					double z = Math.cos(add*radius);
-					Location locClone = loc.clone();
-					
-					loc.setX(loc.getX()+x);
-					loc.setZ(loc.getZ()+z);	
-					loc.setY(y);
-							
-							
-						PlayEffect(loc);
-					
-
-					locClone.setX(locClone.getX()-x);
-					locClone.setZ(locClone.getZ()-z);	
-					locClone.setY(y);
-					
-					
-					PlayEffect(locClone);
-					
-					if(!is_Landing.get(player)){
-							Add_Y_Offset.put(player, Add_Y_Offset.get(player)+0.02);
-					}else{
-						Add_Y_Offset.put(player, Add_Y_Offset.get(player)-0.02);
-					}
-					if(Add_Y_Offset.get(player)>=2){
-						is_Landing.put(player, true);
-					}
-					if(Add_Y_Offset.get(player)<=0){
-						is_Landing.put(player, false);
-					}
-					
 			}
-			
-			list.removeAll(removed);
-			remove(removed);
-			removed.clear();
-		}
-		private void PlayEffect(Location loc) {
-				SuitUtils.playEffect(loc, EnumParticle.FIREWORKS_SPARK,5, 0, 0);
-				
+				if(!Thunder_Strike.isStriking){
+					Location loc = location.clone();
 					
-					
+						add_Horizonal+=0.2;
+						
+						double y = loc.getY()+Add_Y_Offset;
+						double x = Math.sin(add_Horizonal*radius);
+						double z = Math.cos(add_Horizonal*radius);
+						loc.add(x, 0, z);
+						loc.setY(y);
+							
+						SuitUtils.playEffect(loc, EnumParticle.FLAME,5, 0, 0);
+						Location locii = location.clone();
+						locii.add(-1*x, 0, -1*z);
+						locii.setY(y);
+						SuitUtils.playEffect(locii, EnumParticle.FLAME,5, 0, 0);
+						if(isUp){
+							Add_Y_Offset+=0.1;
+						}else{
+							Add_Y_Offset-=0.1;
+						}
+						if(Add_Y_Offset>=2){
+							isUp = false;
+						}
+						if(Add_Y_Offset<=0){
+							isUp = true;
+						}
+						loc = location	;
 		}
-
-		   
-		    /**
-		     * Internal method, used as shorthand to grab our method in a nice friendly manner
-		     * @param cl
-		     * @param method
-		     * @return Method (or null)
-		     */
-		    
-		 
-		
-		 
-		   
-		
-		private void remove(List<Player> removed) {
-		for(Player player: removed){
-			locations.remove(player);
-			Add_Y_Offset.remove(player);
+	}
+		private void AddThorPotion_Effects() {
+			PlayerEffect.addpotion(PotionEffects.Thor_FAST_DIGGING, player);
+			PlayerEffect.addpotion(PotionEffects.Thor_FIRE_RESISTANCE, player);
+			PlayerEffect.addpotion(PotionEffects.Thor_HEALTH_BOOST, player);
+			PlayerEffect.addpotion(PotionEffects.Thor_INCREASE_DAMAGE, player);
+			PlayerEffect.addpotion(PotionEffects.Thor_JUMP, player);
+			PlayerEffect.addpotion(PotionEffects.Thor_REGENERATION, player);
+			PlayerEffect.addpotion(PotionEffects.Thor_SPEED, player);
+			PlayerEffect.addpotion(PotionEffects.Thor_WATER_BREATHING, player);			
 		}
 			
+		
+		private void RemoveThorPotion_Effects() {
+			ThorUtils.removePotionEffect(PotionEffects.Thor_FAST_DIGGING, player);
+			ThorUtils.removePotionEffect(PotionEffects.Thor_FIRE_RESISTANCE, player);
+			ThorUtils.removePotionEffect(PotionEffects.Thor_HEALTH_BOOST, player);
+			ThorUtils.removePotionEffect(PotionEffects.Thor_INCREASE_DAMAGE, player);
+			ThorUtils.removePotionEffect(PotionEffects.Thor_JUMP, player);
+			ThorUtils.removePotionEffect(PotionEffects.Thor_REGENERATION, player);
+			ThorUtils.removePotionEffect(PotionEffects.Thor_SPEED, player);
+			ThorUtils.removePotionEffect(PotionEffects.Thor_WATER_BREATHING, player);
 		}
+			
 		
 	
 

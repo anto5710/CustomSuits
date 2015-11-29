@@ -1,48 +1,30 @@
 package gmail.anto5710.mcp.customsuits.CustomSuits.suit;
 
+import gmail.anto5710.mcp.customsuits.CustomSuits.dao.SpawningDao;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 import gmail.anto5710.mcp.customsuits.Utils.ThorUtils;
-import gmail.anto5710.mcp.customsuits._Thor.Repeat;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-import java.util.logging.Logger;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Effect;
 import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Server;
-import org.bukkit.Sound;
-import org.bukkit.entity.Flying;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.EntityEquipment;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
-import org.bukkit.scoreboard.DisplaySlot;
-import org.bukkit.scoreboard.Objective;
-import org.bukkit.scoreboard.Score;
-import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.ScoreboardManager;
 
 public class SchedulerHunger extends BukkitRunnable {
 	
 	
 	
 	private CustomSuitPlugin mainPlugin;
+	boolean isRunning = false;
+	SpawningDao dao;
 	private Thread thisThread;
-	private static   BlockingQueue<Player> playerQueue = new ArrayBlockingQueue(Bukkit.getServer().getMaxPlayers());
+	public static  List<Player> playerQueue = new ArrayList<>();
+	public static ArrayList<Player>removedPlayer = new ArrayList<>();
 	float maxFly_Speed = 0.75F;
+	long count = 0;
 	
 	public SchedulerHunger(CustomSuitPlugin main) {
 		this.mainPlugin = main;
@@ -63,7 +45,7 @@ public class SchedulerHunger extends BukkitRunnable {
 		
 	}
 		
-			if (this.playerQueue.isEmpty()) {
+			if (SchedulerHunger.playerQueue.isEmpty()) {
 				this.mainPlugin.logger.info("EMPTY QUEUQ");
 				
 				ThorUtils.cancel(taskID);
@@ -73,65 +55,52 @@ public class SchedulerHunger extends BukkitRunnable {
 			Iterator<Player> itrerator = getPlayer().iterator();
 			
 			
-			while (itrerator.hasNext()) {
-				
-
-				if (playerQueue.size() == 1) {
+				while (itrerator.hasNext()) {
 					Player player = itrerator.next();
-					EffectRun(player);
-				} else if (playerQueue.size() > 1) {
-					for (Player player : playerQueue) {
-						EffectRun(player);
+					if(getRemovePlayer(player)){
+						
+						removedPlayer.add(player);
+						itrerator.remove();
+					}else{
+						if(player.isFlying()){
+							if(!has_hunger(player, Values.leastFlyHunger)){
+								player.setFlySpeed((float) 0.5);
+								player.setFlying(false);
+							}else{
+								if(count%60==0){
+									hunger(player, Values.SuitFlyHunger);
+								}
+								if(count%100==0){
+									if(!has_hunger(player, Values.SuitEnoughFly)){
+										SuitUtils.Warn(player, Values.FlyEnergyWarn);
+									}
+								}
+								
+							}
+							
+						}else{
+							hunger(player, Values.SuitHungerRelod);
+						}
 					}
-					
 				}
+				playerQueue.removeAll(removedPlayer);
+				removedPlayer.clear();
 			}
-			}
-		
 	}
 	
-
-	public void EffectRun(Player player) {
-		
-	
-
-		if (player.isFlying()) {
-
-			if (CustomSuitPlugin.MarkEntity(player)&&player.getGameMode()!=GameMode.CREATIVE) {
-				
-			
-				float speed = (float) ((player.getFoodLevel() / 20.0D)-(1-maxFly_Speed));
-				if (!hunger(player, -Values.SuitFlyDisableWhen)) {
-					
-					player.setFlying(false);
-					player.setAllowFlight(false);
-				} else {
-					player.setFlySpeed(speed);
-					
-				}
-				if (player.getFoodLevel() < Values.SuitEnoughFly) {
-					
-					
-					SuitUtils.Warn(player, Values.FlyEnergyWarn);
-				}
-				if (player.getFoodLevel() <= Values.SuitFlyDisableWhen) {
-					SuitUtils.Wrong(player, "Fly Energy");
-					
-					player.setFlying(false);
-					player.setAllowFlight(false);
-				}
-			}
+	private boolean getRemovePlayer(Player player) {
+		if(!player.isOnline()){
+			return true;
 		}
-		if (CustomSuitPlugin.MarkEntity(player)) {
-			repairarmor(player);
-		
-			hunger(player, Values.SuitHungerRelod);
-			
+		if(player.isDead()){
+			return true;
 		}
-		
-		
+		if(!CustomSuitPlugin.MarkEntity(player)){
+			return true;
+		}
+		return false;
 	}
-	
+
 	public static boolean containPlayer(Player player){
 		return playerQueue.contains(player);
 	}
@@ -173,38 +142,36 @@ public class SchedulerHunger extends BukkitRunnable {
 	
 
 	private List<Player> getPlayer() {
-		ArrayList<Player> players = new ArrayList();
-		players.addAll(this.playerQueue);
-		return players;
+		return playerQueue;
 	}
 
 	public void addFlyingPlayer(Player flyingPlayer) throws IllegalStateException{
+		flyingPlayer.sendMessage(playerQueue+"");
 
-		if (playerQueue.contains(flyingPlayer) == false) {
-			
-			if(playerQueue.size()==0){
-				try {
-					this.runTaskTimer(mainPlugin, 0, Values.SuitHungerDelay);
-					
-				} catch (IllegalStateException e) {
-					
-				}
+		if (playerQueue.contains(flyingPlayer)) {
+			return;
+		}
+		if(flyingPlayer.isDead()){
+			return;
+		}
+		if(!flyingPlayer.isOnline()){
+			return;
+		}
+			if(!isRunning){
+					thisThread.interrupt();
+					this.runTaskTimer(mainPlugin, 0,1);
+					if(!Target.isRunning){
+					new Target(mainPlugin).runTaskTimer(mainPlugin, 0, 1);
+					}
 			}
-			this.playerQueue.add(flyingPlayer);
+			SchedulerHunger.playerQueue.add(flyingPlayer);
 			
 			
 
-		}
-	}
-
-	public void removeflyingplayer(Player player) {
 		
-		if(playerQueue.contains(player)){
-		this.playerQueue.remove(player);
-		}
-
 	}
-	public BlockingQueue<Player> getList(){
+
+	public List<Player> getList(){
 		return playerQueue;
 	}
 	public static boolean hunger(Player player , int hunger){
@@ -216,5 +183,13 @@ public class SchedulerHunger extends BukkitRunnable {
 		}
 		return false;
 	}
-  
+	
+	private boolean has_hunger(Player player,int hunger) {
+		
+		return player.getFoodLevel()>=hunger;
+	}
+	
+	
+	
+
 }

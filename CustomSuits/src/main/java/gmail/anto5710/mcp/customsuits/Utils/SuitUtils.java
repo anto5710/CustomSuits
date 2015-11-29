@@ -1,15 +1,20 @@
 package gmail.anto5710.mcp.customsuits.Utils;
 
+import gmail.anto5710.mcp.customsuits.CustomSuits.FireworkPlay;
 import gmail.anto5710.mcp.customsuits.CustomSuits.PlayEffect;
+import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.Player_Move;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.WeaponListner;
+import gmail.anto5710.mcp.customsuits.Setting.Values;
 
+import java.awt.SystemColor;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
+import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -21,7 +26,10 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
+import org.bukkit.command.Command;
+import org.bukkit.craftbukkit.v1_8_R2.CraftEffect;
 import org.bukkit.craftbukkit.v1_8_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_8_R2.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_8_R2.entity.CraftPlayer;
 
 import net.minecraft.server.v1_8_R2.EnumParticle;
@@ -29,20 +37,26 @@ import net.minecraft.server.v1_8_R2.Packet;
 import net.minecraft.server.v1_8_R2.PacketPlayOutWorldParticles;
 
 import org.bukkit.entity.Ambient;
+import org.bukkit.entity.ComplexEntityPart;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkEffectMeta;
 import org.bukkit.inventory.meta.FireworkMeta;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
-public class SuitUtils {
 
-	public static void LineParticle(Location target,Location location,
-			Entity shooter, EnumParticle effect, int amount, int data,
-			 double damage, double radius,boolean isProjectile  , boolean isMissile , boolean isSneaking
-			) {
-	
+import com.avaje.ebeaninternal.server.persist.BindValues.Value;
+public class SuitUtils {
+	static CustomSuitPlugin plugin;
+	public SuitUtils(CustomSuitPlugin plugin){
+		SuitUtils.plugin = plugin;
+	}
+	public static void LineParticle(final Location target,final Location location,
+			final Entity shooter, final EnumParticle effect, final int amount, final int data,
+			 final double damage, final double radius,final boolean isSuitProjectile  , final boolean isMissile ,final boolean isSneaking, final int Effect_Count_Second) {
 		Vector vectorStart = location.toVector();
 		
 		Vector vectorEnd = target.toVector();
@@ -50,34 +64,48 @@ public class SuitUtils {
 		Vector difference = vectorEnd.subtract(vectorStart);
 		
 		
-		double distance = difference.length();
+		final double distance = difference.length();
+		final Vector v = location.getDirection().normalize().multiply(0.5);
 		if (distance < 0) {
 			return;
 		}
-
-		Location currentLoc = location.clone();
-		double dx = (difference.getX() / distance) * 0.5;
-		double dy = (difference.getY() / distance) * 0.5;
-		double dz = (difference.getZ() / distance) * 0.5;
 		
-		runLine(distance , currentLoc , dx ,dy ,dz , effect , amount , damage , isProjectile , isMissile , radius , isSneaking ,shooter , data);
+		new BukkitRunnable() {
+			Location currentLoc = location.clone();
+			double count  = 0;
+			@Override
+			public void run() {
+				for(int c = 0;c<Effect_Count_Second;c++){
+					if(count>=distance){
+						if (isMissile) {
+							float power = Values.BimExplosionPower;
+							if(isSneaking){
+								power = Values.MissileExplosionPower;
+							}
+							SuitUtils.createExplosion(currentLoc, power, false, true);
+
+						} else {
+							WeaponListner.breakblock(target.getBlock());
+
+						}
+						this.cancel();
+						break;
+						}
+				currentLoc.add(v);
+
+				
+				PlayEffect.play_Suit_Missile_Effect(currentLoc  ,  effect, amount , data, isSneaking ,(isMissile&&isSuitProjectile));
+				WeaponUtils
+							.damageandeffect(currentLoc, damage, shooter, isMissile, isSuitProjectile, radius);
+				count+=0.5;
+				}
+			
+				}
+		}.runTaskTimer(plugin, 0, 1);
 		
 
 	}
 
-	private static void runLine(double distance, Location currentLoc,
-			double dx, double dy, double dz, EnumParticle effect, int amount, double damage, boolean isProjectile, boolean isMissile, double radius, boolean isSneaking, Entity shooter, int data) {
-		for (double i = 0; i <= distance; i += 0.2) {
-			currentLoc.add(dx, dy, dz);
-
-		
-		PlayEffect.play_Suit_Missile_Effect(currentLoc  ,  effect, amount , data, isSneaking ,isProjectile);
-		WeaponUtils
-					.damageandeffect(currentLoc, damage, shooter, isMissile, isProjectile, radius);
-
-		}
-		
-	}
 
 	public static void playEffect( Location location , EnumParticle effect ,int amount, int data , int radius ){
 		CraftWorld world = (CraftWorld)location.getWorld();
@@ -142,10 +170,13 @@ public class SuitUtils {
         double dz = to.getBlockZ() - from.getBlockZ();
         return dx * dx + dz * dz;
     }
-	public static boolean distance(Location currentLoc, Entity entity, double radius , double addYRadius) {
+	public static boolean distance(Location currentLoc, Entity entity , double radius ) {
 		Location location = entity.getLocation();
-		
-		for(double y= -0.25; y<=addYRadius ; y+=0.25){
+		if(location.distance(currentLoc)<=radius){
+			return true;
+		}
+		double height = ((CraftEntity)entity).getHandle().getHeadHeight();
+		for(double y= -0.25; y<=height; y+=0.25){
 			location.add(0, y, 0);
 			if(location.distance(currentLoc)<=radius){
 				return true;
@@ -173,13 +204,13 @@ public class SuitUtils {
 	
 	public static void Wrong(Player player,String warn){
 		player.sendMessage(ChatColor.DARK_RED
-				+ "[Warn]:"+ChatColor.RED+" You don't have enough "+ ChatColor.GOLD+warn+ChatColor.RED+" !");
+				+ "[Warn]: "+ChatColor.RED+" You don't have enough "+ ChatColor.GOLD+warn+ChatColor.RED+" !");
 		
 		player.playSound(player.getLocation(), Sound.NOTE_STICKS, 6.0F, 6.0F);
 	}
 	public static void Warn(Player player,String warn){
 		player.sendMessage(ChatColor.DARK_RED
-				+ "[Warn]:"+ChatColor.RED+warn+" !");
+				+ "[Warn]: "+ChatColor.RED+warn+" !");
 		
 		player.playSound(player.getLocation(), Sound.NOTE_STICKS, 6.0F, 6.0F);
 	}
@@ -227,57 +258,56 @@ public class SuitUtils {
 		return false;
 	}
 	public static FireworkEffect getRandomEffect(){
-		int R= (int) (ManUtils.Random(255)+255/2);
-	    int G= (int) (ManUtils.Random(255)+255/2);
-	    int B=(int) (ManUtils.Random(255)+255/2);
-		org.bukkit.Color colori = org.bukkit.Color.fromBGR(B, G, R);
-		 R= (int) (ManUtils.Random(255)+255/2);
-	     G= (int) (ManUtils.Random(255)+255/2);
-	     B=(int) (ManUtils.Random(255)+255/2);
-		org.bukkit.Color colorii = org.bukkit.Color.fromBGR(B, G, R);
-		 R= (int) (ManUtils.Random(255)+255/2);
-	     G= (int) (ManUtils.Random(255)+255/2);
-	     B=(int) (ManUtils.Random(255)+255/2);
-		org.bukkit.Color coloriii = org.bukkit.Color.fromBGR(B, G, R);
-		 R= (int) (ManUtils.Random(255)+255/2);
-	     G= (int) (ManUtils.Random(255)+255/2);
-	     B=(int) (ManUtils.Random(255)+255/2);
-		org.bukkit.Color coloriv = org.bukkit.Color.fromBGR(B, G, R);
-		 R= (int) (ManUtils.Random(255)+255/2);
-	     G= (int) (ManUtils.Random(255)+255/2);
-	     B=(int) (ManUtils.Random(255)+255/2);
-		org.bukkit.Color colorv = org.bukkit.Color.fromBGR(B, G, R);
+		float H=(float) (ManUtils.Random(1)+0.5);
+	    float S=(float) (ManUtils.Random(1)+0.5);
+	    float B=(float) (ManUtils.Random(0.5)+0.25);
+	    
+		float FH=H;
+	    float FS=S;
+	    float FB=B;
+	    int type_index = (int) (ManUtils.Random(Type.values().length)+Type.values().length/2);
+	    Type type = Type.values()[type_index];
+	    float add = -0.025F;
+		float fadeadd = -0.025F;
+			
+		Color[] colors= new Color[60];
+		Color[] fadecolors  = new Color[60];
 		
-		int Type_IndexSize = org.bukkit.FireworkEffect.Type.values().length-1;
-		int Type_Index = (int)(ManUtils.Random(Type_IndexSize)+Type_IndexSize/2);
-		
-		org.bukkit.FireworkEffect.Type type = org.bukkit.FireworkEffect.Type.values()[Type_Index];
-		
-		 R= (int) (ManUtils.Random(255)+255/2);
-	     G= (int) (ManUtils.Random(255)+255/2);
-	     B=(int) (ManUtils.Random(255)+255/2);
-		org.bukkit.Color fadecolori = org.bukkit.Color.fromBGR(B, G, R);
-		 R= (int) (ManUtils.Random(255)+255/2);
-	     G= (int) (ManUtils.Random(255)+255/2);
-	     B=(int) (ManUtils.Random(255)+255/2);
-		org.bukkit.Color fadecolorii = org.bukkit.Color.fromBGR(B, G, R);
-		 R= (int) (ManUtils.Random(255)+255/2);
-	     G= (int) (ManUtils.Random(255)+255/2);
-	     B=(int) (ManUtils.Random(255)+255/2);
-		org.bukkit.Color fadecoloriii = org.bukkit.Color.fromBGR(B, G, R);
-		 R= (int) (ManUtils.Random(255)+255/2);
-	     G= (int) (ManUtils.Random(255)+255/2);
-	     B=(int) (ManUtils.Random(255)+255/2);
-		org.bukkit.Color fadecoloriv = org.bukkit.Color.fromBGR(B, G, R);
-		 R= (int) (ManUtils.Random(255)+255/2);
-	     G= (int) (ManUtils.Random(255)+255/2);
-	     B=(int) (ManUtils.Random(255)+255/2);
-		org.bukkit.Color fadecolorv = org.bukkit.Color.fromBGR(B, G, R);
+		for(int n = 0; n<60 ; n++){
+			if(isOutOfHSB(add, H, S ,B)){
+				add*=-1;
+				
+			}
+			colors[n]=HSBtoRGB(H, S, B);
+			if(isOutOfHSB(fadeadd, FH ,FS ,FB)){
+				fadeadd*=-1;
+			}
+			FB+=fadeadd;
+			fadecolors[n]=HSBtoRGB(FH, FS, FB);
+		}
 		
 		
-		
-		FireworkEffect effect = FireworkEffect.builder().trail(true).flicker(true).with(type).withColor(colori , colorii , coloriii , coloriv , colorv).withFade(fadecolori , fadecolorii  , fadecoloriii , fadecoloriv , fadecolorv).withFlicker().withTrail().build();
+		FireworkEffect effect = FireworkEffect.builder().trail(true).flicker(true).with(type).withColor(colors).withFade(fadecolors).withFlicker().withTrail().build();
 		return effect;
+	}
+	
+	public static Color HSBtoRGB(float H , float S ,float B){
+        
+		  int rgb = java.awt.Color.HSBtoRGB(H ,S ,B);
+		    int red = (rgb >> 16) & 0xFF;
+		    int green = (rgb >> 8) & 0xFF;
+		    int blue = rgb & 0xFF;
+		return Color.fromRGB(red, green, blue);
+	}
+	private static boolean isOutOfHSB(float general_FadeColor_Add,float fH, float fS, float fB) {
+		float H = fH+general_FadeColor_Add;
+		float S = fS+general_FadeColor_Add;
+		float B = fB+general_FadeColor_Add;
+		if(B>1||B<0){
+			return true;
+		}
+		
+		return false;
 	}
 	public static Block getTargetBlock(Player player , int MaxDistance){
 		
@@ -286,6 +316,58 @@ public class SuitUtils {
 			Block targetblock = player.getTargetBlock(hashSet, MaxDistance);
 		
 		return targetblock;
+		
+	}
+	public static void WrongCommand(Player player, Command command) {
+		String message =ChatColor.DARK_RED+ "[Info]: "+ChatColor.RED+"Wrong Command!"+"\n"+
+						ChatColor.DARK_RED+"[Usage]: "+ChatColor.RED+command.getUsage();
+		player.sendMessage(message);
+		
+	}
+	public static float[] RGBtoHSB(int R , int G , int B){
+		float[] HSB = new float[3];
+		java.awt.Color.RGBtoHSB(R, G, B, HSB);
+		return HSB;
+	}
+	public static FireworkEffect getEffect(Color color , Type type) {
+		int r = color.getRed();
+		int g = color.getGreen();
+		int b = color.getBlue();
+		float[]HSB =RGBtoHSB(r, g, b);
+		
+		float H=HSB[0];
+	    float S=HSB[1];
+	    float B=HSB[2];
+	    
+		float FH=H;
+	    float FS=S;
+	    float FB=B;
+	    float add = -0.025F;
+		float fadeadd = -0.025F;
+			
+		Color[] colors= new Color[60];
+		Color[] fadecolors  = new Color[60];
+		
+		for(int n = 0; n<60 ; n++){
+			if(isOutOfHSB(add, H, S ,B)){
+				add*=-1;
+				
+			}
+			colors[n]=HSBtoRGB(H, S, B);
+			if(isOutOfHSB(fadeadd, FH ,FS ,FB)){
+				fadeadd*=-1;
+			}
+			FB+=fadeadd;
+			fadecolors[n]=HSBtoRGB(FH, FS, FB);
+		}
+		
+		
+		FireworkEffect effect = FireworkEffect.builder().trail(true).flicker(true).with(type).withColor(colors).withFade(fadecolors).withFlicker().withTrail().build();
+		return effect;
+	}
+	public static void playEffect( EnumParticle spellMob,
+			 double x, double y, double z, int i, int j, double d,
+			int k, int l, int m, int n, int o, int p, int q, int r) {
 		
 	}
 }

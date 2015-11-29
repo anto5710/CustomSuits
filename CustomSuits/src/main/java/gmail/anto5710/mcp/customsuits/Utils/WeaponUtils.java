@@ -1,6 +1,9 @@
 package gmail.anto5710.mcp.customsuits.Utils;
 
-import gmail.anto5710.mcp.customsuits.CustomSuits.suit.Cooldown;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
+
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.WeaponListner;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
@@ -11,10 +14,13 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.util.Vector;
 
 public class WeaponUtils {
 	static String regex = Values.regex;
@@ -44,10 +50,10 @@ public class WeaponUtils {
 		return loc;
 	}
 
-	public static int charge(final Player player, String name, Material ammomat,
-			int amount, int cnt, int snipe , CustomSuitPlugin plugin) {
+	public static int charge(final Player player, Material ammomat,
+			int amount, final CustomSuitPlugin plugin) {
 		int ammoamount = 0;
-		ItemStack ammo = new ItemStack(ammomat, 1);
+		final ItemStack ammo = new ItemStack(ammomat, 1);
 		if (player.getInventory().contains(ammomat, 1)) {
 			WeaponListner.charging.put(player, true);
 			for (int i = 0; i < amount; i++) {
@@ -62,7 +68,6 @@ public class WeaponUtils {
 			player.updateInventory();
 
 			player.playSound(player.getLocation(), Sound.LEVEL_UP, 4.0F, 1.0F);
-			cooldown(2.0, player);
 			
 			
 			
@@ -79,7 +84,6 @@ public class WeaponUtils {
 					player.playSound(player.getLocation(), Sound.CREEPER_HISS, 4.0F,
 							4.0F);
 					
-					cooldown(0.5, player);
 				}
 			}, 40);
 			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
@@ -96,7 +100,7 @@ public class WeaponUtils {
 			player.playSound(player.getLocation(), Sound.DOOR_OPEN, 4.0F, 4.0F);
 			WeaponListner.charging.put(player, false);
 				} 
-				}, 10);
+				}, 65);
 
 		} else {
 			SuitUtils.Wrong(player, "Ammo");
@@ -105,22 +109,37 @@ public class WeaponUtils {
 		}
 		return ammoamount;
 	}
+	 public static Vector determinePosition(Player player, boolean dualWield, boolean leftClick)
+	  {
+	    int leftOrRight = 90;
+	    if ((dualWield) && (leftClick)) {
+	      leftOrRight = -90;
+	    }
+	    double playerYaw = (player.getLocation().getYaw() + 90.0F + leftOrRight) * 3.141592653589793D / 180.0D;
+	    double x = Math.cos(playerYaw);
+	    double y = Math.sin(playerYaw);
+	    Vector vector = new Vector(x, 0.0D, y);
+	    
+	    return vector;
+	  }
 	public static void damageandeffect(Location currentLoc, double damage,
-			Entity shooter, boolean isMissile, boolean isProjectile ,double  radius) {
+			Entity shooter, boolean isMissile, boolean isProjectile ,double  radius ) {
 		
 		for (Entity entity : WeaponListner.findEntity(currentLoc, shooter,radius)) {
 
-			if (shooter != entity && entity instanceof Damageable) {
+		
 				Damageable damageable = (Damageable) entity;
 
 				if (!isMissile&&isProjectile) {
-					if (currentLoc.distance(entity.getLocation()) <= 0.5) {
+					if (entity instanceof LivingEntity) {
+						if(((LivingEntity)entity).getEyeLocation().distance(currentLoc)<=0.35){
 						damage = damage * 2;
 						WeaponListner.firework(currentLoc, shooter);
+						}
 					}
-				}
-				damageable.damage(damage,shooter);
+				
 			}
+				damageable.damage(damage,shooter);
 		}
 		
 	}
@@ -150,15 +169,29 @@ public class WeaponUtils {
 		}
 	}
 
-	public static void cooldown(double msec, Player player) {
+	public static void cooldown(double msec, CustomSuitPlugin plugin,final Player player) {
 
 		// 1 tick = 0.05 sec
 		// 1 sec = 20 tick
 		long tick = (long) msec * 20;
 
 		WeaponListner.cooldowns.put(player, true);
-
-		BukkitTask task = new Cooldown(WeaponListner.plugin, player).runTaskLater(WeaponListner.plugin,
-				tick);
+		new BukkitRunnable() {
+			
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				
+				player.playSound(player.getLocation(), Sound.IRONGOLEM_HIT, 4.0F, 4.0F);	
+				
+				
+				
+				player.playSound(player.getLocation(), Sound.DIG_WOOD, 15.0F,3.5F);
+				player.playSound(player.getLocation(), Sound.DOOR_CLOSE, 4.0F, 2.5F);
+				player.playSound(player.getLocation(), Sound.DOOR_OPEN, 4.0F, 4.0F);	
+				WeaponListner.cooldowns.put(player, false);
+			}
+		}.runTaskLater(plugin, tick);
+    
 	}
 }

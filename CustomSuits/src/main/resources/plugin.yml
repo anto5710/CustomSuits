@@ -1,29 +1,34 @@
 name: CustomSuits
 main: gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin
 description: The Special Suits.
-version: 0.3.0
+version: 0.4.0
 authors: [anto5710 , 02hunnam , sanseong] 
 
 commands:
     cspn:
         description: §bSpawn a suit.
-        usage: "§4[Usage]: §c/cspn [Type] [TargetPlayer] [Color]\n
-        §c• You can use [Type]:[Vehicle] or [Type]:[VehicleType]:[VehicleAmount] instead Type\n
-        §c• Also You can Use [HelmetColor]:[ChestplateColor]:[LeggingsColor]:[BootsColor] in [Color] Argument" 
+        usage: "/cspn [Type] [Amount]" 
     csuit:
         description: §bSummon nearest suit.
-        usage: "§4[Usage]: §c/csuit"
+        usage: "/csuit"
     command:
         description: §bCommand for your suits.
-        usage: "§4[Usage]: §ccommad [target + <Player> / party / firework]"
+        usage: "/commad [target + <Player> / party / firework]"
     get:
-        description: §bGet the This Plugin's Items.
-        usage: "§4[Usage]: §cget [commander / hammer / laucner / man / smoke / bomb]"
+        description: §bGet This Plugin's Items.
+        usage: "/get [commander / hammer / laucner]"
     head:
         description: §bMake that player's head
-        usage: "§4[Usage]: §chead / head <Player>"
+        usage: "/head / head <Player>"
     clist:
         description: §bGet the list about that topic.
-        usage: "§4[Usage]: §cclist [Color / Entity]"
+        usage: "/clist [Color / Entity]"
+    setcolor:
+        description: §bSet color of that ArmorType.
+        usage: "/setcolor [helmet / chestplate / leggings / boots] [Color]"
+    setvehicle:
+        description: §bSet EntityType of Vehicle.
+        usage: "/setvehicle [Entity]"
+    
     
      

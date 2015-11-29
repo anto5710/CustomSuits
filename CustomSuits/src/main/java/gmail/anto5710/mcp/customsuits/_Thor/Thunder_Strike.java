@@ -42,105 +42,74 @@ public class Thunder_Strike extends BukkitRunnable{
 	static ArrayList<FallingBlock> fallingBlocks  = new ArrayList<>();
 	static int count = 0;
 	static Wither wither;
-	public Thunder_Strike (CustomSuitPlugin plugin , Wither wither){
-			this.plugin = plugin;
-			this.wither = wither;
+	static Player thor ;
+	public Thunder_Strike (CustomSuitPlugin plugin , Wither wither , Player player){
+			Thunder_Strike.plugin = plugin;
+			Thunder_Strike.wither = wither;
+			Thunder_Strike.thor = player;
 	}
 	@Override
 	public void run(){
-		if(Hammer.thor == null || wither.isDead() ){
+		BaseLocation = wither.getLocation();
+		if(!thor.isOnline()||thor.isDead() || wither.isDead() ){
 			isStriking = false;
 			BaseLocation.getWorld().setStorm(false);
 			BaseLocation.getWorld().setThundering(false);
-			wither.damage(100000000D);
+			wither.damage(100000000000000000D);
 			PlayEffect.play_Thunder_Strike_End(wither);
 			count = 0;
 			ThorUtils.cancel(getTaskId());
 		}
 		wither.setTarget(null);
 		wither.setNoDamageTicks(1);
-		BaseLocation = wither.getLocation();
+		
 		isStriking = true;
 		if(wither.isEmpty()){
-			if(Hammer.thor.isEmpty()){
-				Hammer.thor.teleport(wither.getLocation());
-				wither.setPassenger(Hammer.thor);
+			if(thor.isEmpty()){
+				thor.teleport(wither.getLocation());
+				wither.setPassenger(thor);
 			}
 		}
 		if(count%20==0||count==0){
-		List<Entity>list =	ThorUtils.findEntity(BaseLocation,  Values.Thunder_Strike_Radius , Hammer.thor);
-		list.remove(wither);
-		damage(list);
+		run(wither);
 		}
-		
 		count ++;
-		FireworkEffect effect = FireworkEffect.builder().with(Type.BURST).withColor(Color.RED , Color.MAROON ).withFade(Color.GRAY , Color.BLACK  ,Color.WHITE , Color.SILVER).withFlicker().withTrail().trail(true).build();
-		
-		FireworkPlay.spawn(BaseLocation, effect , Hammer.thor);
+		FireworkEffect effect = SuitUtils.getEffect(Color.MAROON, Type.STAR);
+		FireworkPlay.spawn(BaseLocation, effect , thor);
 	
-		if(count>=400){
+		if(count>=600){
 			isStriking = false;
 			BaseLocation.getWorld().setStorm(false);
 			BaseLocation.getWorld().setThundering(false);
+			wither.damage(100000000000000000D);
 			count = 0;
-			wither.damage(100000000D);
 			PlayEffect.play_Thunder_Strike_End(wither);
-//			FireworkEffect effect = SuitUtils.getRandomEffect();
-			
-//			FireworkPlay.spawn(BaseLocation, effect , Hammer.thor);
 			ThorUtils.cancel(getTaskId());
 		}
-		
-	
+
 	}
 
-	public static void Lightning(Entity entity, Location from, EnumParticle effect) {
-		Location entitylocation = entity.getLocation();
-SuitUtils.LineParticle(entitylocation, BaseLocation, Hammer.thor, EnumParticle.VILLAGER_ANGRY, 3, 2, Values.LightningMissile,2,false, false, false);
-		
-		SuitUtils.createExplosion(entitylocation, Values.HammerMissileExplosion_Power, false, true);
-//			SuitUtils.playEffect(entitylocation, effect, 2, 0, 5);
-//			
-		
-	
-	entity.getWorld().strikeLightning(entitylocation);
-		
+	private void run(Wither wither) {
+		List<Entity>list =	ThorUtils.findEntity(BaseLocation,  Values.Thunder_Strike_Radius , thor);
+		list.remove(wither);
+		damage(list);
 		
 	}
-//	private static void spawnFallingblocks(Location spawnLocation ) {
-//		List<Location>list = ManUtils.circle(spawnLocation, 2, 2, false, true, 0);
-//		for(Location location : list){
-//			FallingBlock block = location.getWorld().spawnFallingBlock(location, Material.SOUL_SAND, (byte) 0);
-//			if(fallingBlocks.isEmpty()){
-//				new Meteo(plugin).runTaskTimer(plugin, 0, 1);
-//			}
-//			fallingBlocks.add(block);
-//		}
-//		FallingBlock block = spawnLocation.getWorld().spawnFallingBlock(spawnLocation, Material.SOUL_SAND, (byte) 0);
-//		spawnLocation.add(0, 1, 0);
-//		FallingBlock block2 = spawnLocation.getWorld().spawnFallingBlock(spawnLocation, Material.SOUL_SAND, (byte) 0);
-//		spawnLocation.add(0, -2, 0);
-//		FallingBlock block3 = spawnLocation.getWorld().spawnFallingBlock(spawnLocation, Material.SOUL_SAND, (byte) 0);
-//		spawnLocation.add(-1 , 1 ,0 );
-//		FallingBlock block4 = spawnLocation.getWorld().spawnFallingBlock(spawnLocation, Material.SOUL_SAND, (byte) 0);
-//		spawnLocation.add(2, 0, 0);
-//		FallingBlock block5 = spawnLocation.getWorld().spawnFallingBlock(spawnLocation, Material.SOUL_SAND, (byte) 0);
-//		spawnLocation.add(-1, 0, -1);
-//		FallingBlock block6 = spawnLocation.getWorld().spawnFallingBlock(spawnLocation, Material.SOUL_SAND, (byte) 0);
-//		spawnLocation.add(0, 0, 2);
-//		FallingBlock block7 = spawnLocation.getWorld().spawnFallingBlock(spawnLocation, Material.SOUL_SAND, (byte) 0);
-//		
-//		fallingBlocks.addAll(Arrays.asList(block , block2 , block3 , block4 , block5 , block6 , block7));
-//		
+	public static void launchLightningMissile(Entity entity, Location from) {
+		Location entitylocation = entity.getLocation();
+		from.setDirection(entitylocation.toVector().subtract(from.toVector()));
+		SuitUtils.LineParticle(entitylocation, from, thor, EnumParticle.FLAME , 3, 2, Values.LightningMissile,2,false, true, false , 5);
+		
+		entity.getWorld().strikeLightning(entitylocation);
+		
+	}
 	
 	private void damage(List<Entity> list) {
 		for(Entity entity : list){
-			Lightning(entity, BaseLocation, EnumParticle.VILLAGER_ANGRY);
+			launchLightningMissile(entity, BaseLocation);
 			
 		}
-		}
-//		
 	}
-	
+}
 	
 

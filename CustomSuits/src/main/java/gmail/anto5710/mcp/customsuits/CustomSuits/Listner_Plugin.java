@@ -33,60 +33,8 @@ public class Listner_Plugin implements Listener{
 		this.plugin = plugin;
 	}
 	@EventHandler
-	public void BeaconBreak(BlockDamageEvent event){
-		Block block = event.getBlock();
-		if(block.getType()==Material.BEACON){
-		Bukkit.getServer().broadcastMessage(ChatColor.DARK_PURPLE+  "===========================\n"+
-													    	"    Beacon is Breaking!!   \n"
-														 +  "===========================");
-		}
-	}
-	@EventHandler
-	public void GameEnd(BlockBreakEvent event){
-		Block block = event.getBlock();
-		if(block.getType()==Material.BEACON){
-		Bukkit.getServer().broadcastMessage(ChatColor.AQUA+  "===========================\n"+
-													    	 "         Game End!!        \n"
-														 +   "===========================");
-			for(Player player: Bukkit.getServer().getOnlinePlayers()){
-				player.setGameMode(GameMode.CREATIVE);
-				
-				Location baseloc = player.getLocation();
-				for(int i = 0; i<= 100 ; i++){
-					double LocX_Random = ManUtils.Random(5);
-					double LocY_Random = ManUtils.Random(5);
-					double LocZ_Random = ManUtils.Random(5);
-					int power = (int) (ManUtils.Random(5)+ 2.5);
-					Location loc = baseloc.clone().add(LocX_Random, LocY_Random, LocZ_Random);
-					
-					int R_random = ((int)(ManUtils.Random(255)+127.5));
-					int G_random = ((int)(ManUtils.Random(255)+127.5));
-					int B_random = ((int)(ManUtils.Random(255)+127.5));
-					
-					int fade_R_random = ((int)(ManUtils.Random(255)+127.5));
-					int  fade_G_random =((int)(ManUtils.Random(255)+127.5));
-					int fade_B_random = ((int)(ManUtils.Random(255)+127.5));
-					int Type_random = (int) (ManUtils.Random(4)+2);
-					
-					
-				SuitUtils.spawnFirework(Color.fromBGR(B_random, G_random, R_random), Type.values()[Type_random], power, true, true ,Color.fromBGR(fade_B_random, fade_G_random, fade_R_random),loc);
-				}
-				player.playSound(player.getLocation(), Sound.WITHER_DEATH,10F, 10F);
-				player.playSound(player.getLocation(), Sound.WITHER_SPAWN,10F, 10F);
-			}
-		}
-	}
-	@EventHandler
 	public void ExplodeEffect(EntityExplodeEvent event){
 		List<Block> list	 = event.blockList();
-		Iterator<Block> iterator= list.iterator();
-		while(iterator.hasNext() ){
-			Block block = iterator.next();
-			if(block.getType() == Material.BEACON){
-				event.setCancelled(true);
-				return;
-			}
-		}
 		ManUtils.spawnFallingBlocks(list);
 		return;
 		}

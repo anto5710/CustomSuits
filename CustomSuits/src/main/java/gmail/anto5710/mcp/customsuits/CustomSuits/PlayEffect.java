@@ -2,61 +2,29 @@ package gmail.anto5710.mcp.customsuits.CustomSuits;
 
 
 
-import io.netty.buffer.ByteBuf;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
-import java.util.Vector;
-
-import javax.xml.stream.events.StartDocument;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
-import gmail.anto5710.mcp.customsuits.Utils.ManUtils;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 import gmail.anto5710.mcp.customsuits._Thor.Hammer;
 import gmail.anto5710.mcp.customsuits._Thor.Thor_Changing;
-import gmail.anto5710.mcp.customsuits._Thor.Thor_Move;
-import net.minecraft.server.v1_8_R2.Entity;
-import net.minecraft.server.v1_8_R2.EntityPlayer;
 import net.minecraft.server.v1_8_R2.EnumParticle;
-import net.minecraft.server.v1_8_R2.Item;
-import net.minecraft.server.v1_8_R2.ItemStack;
-import net.minecraft.server.v1_8_R2.Packet;
-import net.minecraft.server.v1_8_R2.PacketDataSerializer;
-import net.minecraft.server.v1_8_R2.PacketPlayInFlying.PacketPlayInPosition;
-import net.minecraft.server.v1_8_R2.PacketPlayInFlying.PacketPlayInPositionLook;
-import net.minecraft.server.v1_8_R2.PacketPlayOutEntityStatus;
 import net.minecraft.server.v1_8_R2.PacketPlayOutWorldParticles;
-import net.minecraft.server.v1_8_R2.PlayerConnection;
-import net.minecraft.server.v1_8_R2.Position;
-import net.minecraft.server.v1_8_R2.WorldServer;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.FireworkEffect.Type;
-import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_8_R2.CraftWorld;
-import org.bukkit.craftbukkit.v1_8_R2.entity.CraftFirework;
 import org.bukkit.craftbukkit.v1_8_R2.entity.CraftPlayer;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.ExperienceOrb;
-import org.bukkit.entity.Firework;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Wither;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
-import org.bukkit.util.EulerAngle;
+import org.bukkit.util.Vector;
 
 
 public class PlayEffect {
@@ -68,22 +36,32 @@ public class PlayEffect {
 	}
 
 	
-	public static boolean play_Suit_Get(Location Location, Player player ) {
-		double radius =2;
-		double Y = Location.getY();
-		for(double y = 0; y<10 ; y+=0.01){
-		
-			double x = Math.sin(y*radius);
-			double z = Math.cos(y*radius);
-			Location loc = Location.clone();
-			loc.setX(loc.getX()+x);
-			loc.setY(Y+y);
-			loc.setZ(loc.getZ()+z);
-			
-			play_Arc_Reactor(loc);
-			loc.subtract(x, 0, z);
-		}
-		return true;
+	public static void play_Suit_Get(final Location Location, Player player ) {
+		new BukkitRunnable() {
+			double radius =2;
+			double Y = Location.getY();
+			double y= 0;
+			@Override
+			public void run() {
+				for(int c = 0 ; c<10 ; c++){
+				if(y>10){
+					this.cancel();
+				}
+				double x = Math.sin(y*radius);
+				double z = Math.cos(y*radius);
+				Location loc = Location.clone();
+				loc.setX(loc.getX()+x);
+				loc.setY(Y+y);
+				loc.setZ(loc.getZ()+z);
+				
+				play_Arc_Reactor(loc);
+				org.bukkit.util.Vector vector =new org.bukkit.util.Vector(x, 0, z).multiply(-1);
+				loc.subtract(x, 0, z);
+				play_Arc_Reactor(loc.clone().add(vector));
+				y+=0.05;
+				}
+			}
+		}.runTaskTimer(plugin, 0, 1);
 		
 	}
 	public static void play_Rotation_Effect(double t,Location loc , Player player){
@@ -171,8 +149,12 @@ SuitUtils.playEffect(loc, EnumParticle.FLAME, 1, 0, 0);
 
 
 
-	public static void play_Suit_NoDamageTime(Player player ,EnumParticle Effect){
-		drawsphere(0, player.getLocation(), 0.8 , Effect);
+	public static void play_Suit_NoDamageTime(final Player player ,final EnumParticle Effect){
+		
+			
+		FireworkPlay.spawn(player.getLocation(), SuitUtils.getEffect(Color.AQUA , Type.STAR), null);
+				
+			
 	}
 	public static void play_Suit_Missile_Effect(Location currentLoc,
 			EnumParticle effect,int amount, int data ,boolean isRoof , boolean isMissile) {
@@ -182,16 +164,9 @@ SuitUtils.playEffect(loc, EnumParticle.FLAME, 1, 0, 0);
 			float y = (float) currentLoc.getY();
 			float z = (float) currentLoc.getZ();
 			if(isMissile){
-			if(isRoof)	{
-				((CraftWorld)currentLoc.getWorld()).getHandle().sendParticles(null, EnumParticle.SPELL_MOB, true, x, y, z, 0, 0, 2.5, 1, 3, 1 , 0, 0, 0, 0 ,0);
-				((CraftWorld)currentLoc.getWorld()).getHandle().sendParticles(null, EnumParticle.SPELL_MOB, true, x, y, z, 0, 0, 0.1, 1, 3, 1 , 0, 0, 0, 0 ,0);
-				((CraftWorld)currentLoc.getWorld()).getHandle().sendParticles(null, EnumParticle.SPELL_MOB_AMBIENT, true, x, y, z, 0, 0, 2.5, 1, 3, 1 , 0, 0, 0, 0 ,0);
-				((CraftWorld)currentLoc.getWorld()).getHandle().sendParticles(null, EnumParticle.SPELL_MOB_AMBIENT, true, x, y, z, 0, 0, 0.1, 1, 3, 1 , 0, 0, 0, 0 ,0);
-				
-			}else{
+			
 				play_Arc_Reactor(currentLoc);
 			
-			}
 			}else{
 				((CraftWorld)currentLoc.getWorld()).getHandle().sendParticles(null, effect, true, x, y, z, 0, 0, 0, 1, 0, 0 , 0, 0, 0, 0 ,0);
 			}
@@ -201,26 +176,25 @@ SuitUtils.playEffect(loc, EnumParticle.FLAME, 1, 0, 0);
 	}
 	
 
-
-//	public static void Explode_Missile(Player player , Location loc , int count, double r ){
-//	
-//		loc.add(0, -1, 0);
-//		 double t = Math.PI/4;
-//         drawring(t, loc, count, player);
-////         	double phi = 0;
-////         	drawsphere(phi , loc.clone() , player);
-//                 }
-//                
-         
                                 
-	public static void drawsphere(double phi, Location loc,double r , EnumParticle effect) {
-		for( ; phi<=8*Math.PI ;phi+=Math.PI/10){
-			run(r, loc, phi ,effect);
-		}
+	public static void drawsphere(final double phi, final Location loc,final double r , final EnumParticle effect) {
+			new BukkitRunnable() {
+				double PI = phi;
+				@Override
+				public void run() {
+					if(PI>8*Math.PI){
+						this.cancel();
+					}
+					playEffect.run(r, loc, PI, effect);
+					
+					
+					PI+=Math.PI/10;
+				}
+		}.runTaskTimer(plugin, 0, 1);
 		
 	}
 
-	private static void run(double r , Location loc , double phi , EnumParticle particle ) {
+	public static void run(double r , Location loc , double phi , EnumParticle particle ) {
 		for(double theta = 0 ;theta <= 2*Math.PI ; theta +=Math.PI/40){
 			double x = r*Math.cos(theta)*Math.sin(phi);
 			double y = r*Math.cos(phi) + 1.5;
@@ -237,7 +211,7 @@ SuitUtils.playEffect(loc, EnumParticle.FLAME, 1, 0, 0);
 
 	private static void drawring(double t , Location loc , int count ,EnumParticle effect) {
 		for(int c = 0 ;c <=count ; c++){
-            t = t + 0.1*Math.PI;
+            t+=0.1*Math.PI;
             for (double theta = 0; theta <= 2*Math.PI; theta+= Math.PI/32){
            	 double x = t*Math.cos(theta);
 				double y = 2*Math.exp(-0.1*t) * Math.sin(t) + 1.5;
@@ -410,11 +384,16 @@ location.add(0, -0.2, 0);
 					
 	}
 	public static void play_Arc_Reactor(Location location){
-		((CraftWorld)location.getWorld()).getHandle().sendParticles(null, EnumParticle.SPELL_MOB, true, location.getX(), location.getY(), location.getZ(), 0, 0, 3.2, 1, 3, 1 , 0, 0, 0, 0 ,0);
-		((CraftWorld)location.getWorld()).getHandle().sendParticles(null, EnumParticle.SPELL_MOB, true,location.getX(), location.getY(), location.getZ(), 0, 0, 2, 1, 3, 1 , 0, 0, 0, 0 ,0);
-		 ((CraftWorld)location.getWorld()).getHandle().sendParticles(null, EnumParticle.SPELL_MOB_AMBIENT, true, location.getX(), location.getY(), location.getZ(), 0, 0, 3.2, 1, 3, 1 , 0, 0, 0, 0 ,0);
-			((CraftWorld)location.getWorld()).getHandle().sendParticles(null, EnumParticle.SPELL_MOB_AMBIENT, true,location.getX(), location.getY(), location.getZ(), 0, 0, 2, 1, 3, 1 , 0, 0, 0, 0 ,0);
-			
+	 SuitUtils.playEffect( EnumParticle.SPELL_MOB,  location.getX(), location.getY(), location.getZ(), 0, 0, 2.25, 1, 3, 1 , 0, 0, 0, 0 ,0);
+	 SuitUtils.playEffect( EnumParticle.SPELL_MOB, location.getX(), location.getY(), location.getZ(), 0, 0, 2, 1, 3, 1 , 0, 0, 0, 0 ,0);
+	 SuitUtils.playEffect( EnumParticle.SPELL_MOB_AMBIENT, location.getX(), location.getY(), location.getZ(), 0, 0, 2.25, 1, 3, 1 , 0, 0, 0, 0 ,0);
+	 SuitUtils.playEffect( EnumParticle.SPELL_MOB_AMBIENT,location.getX(), location.getY(), location.getZ(), 0, 0, 2, 1, 3, 1 , 0, 0, 0, 0 ,0);
+	 SuitUtils.playEffect( EnumParticle.SPELL_MOB, location.getX(), location.getY(), location.getZ(), 0, 0, 2.25, 1, 3, 1 , 0, 0, 0, 0 ,0);
+	 SuitUtils.playEffect( EnumParticle.SPELL_MOB, location.getX(), location.getY(), location.getZ(), 0, 0, 2, 1, 3, 1 , 0, 0, 0, 0 ,0);
+	 SuitUtils.playEffect( EnumParticle.SPELL_MOB_AMBIENT, location.getX(), location.getY(), location.getZ(), 0, 0, 2.25, 1, 3, 1 , 0, 0, 0, 0 ,0);
+	 SuitUtils.playEffect( EnumParticle.SPELL_MOB_AMBIENT, location.getX(), location.getY(), location.getZ(), 0, 0, 2, 1, 3, 1 , 0, 0, 0, 0 ,0);
+				
+				
 	}
 	public static void play_Thor_Change_Effect(Player player , double phi) {
 		if(player!=Hammer.thor){
@@ -425,11 +404,11 @@ location.add(0, -0.2, 0);
 		}
 			
           Location location = player.getLocation();
-          if(!Thor_Changing.players.containsKey(player)){
-        	  if(Thor_Changing.players.isEmpty()){
+          if(!Thor_Changing.Changing_players.containsKey(player)){
+        	  if(Thor_Changing.Changing_players.isEmpty()){
         		 BukkitTask task = new Thor_Changing(plugin).runTaskTimer(plugin, 0, 3);
         	  }
-        	  Thor_Changing.players.put(player, location);
+        	  Thor_Changing.Changing_players.put(player, location);
           }
          
         
@@ -471,24 +450,96 @@ location.add(0, -0.2, 0);
 	}
 
 
-	public static void play_Hammer_Hit_Ground(org.bukkit.entity.Item item) {
-		Location location = item.getLocation();
-		double Y = location.getY();
-		Y--;
-		double radius = 0.5;
-		for(;radius<=2;radius+=0.5){
-			drawring_flat(radius, location, 1 , EnumParticle.FIREWORKS_SPARK);
-			location.setY(Y);
-			
-			Y+=0.8;
+	public static void play_Hammer_Hit_Ground(final org.bukkit.entity.Item item) {
+//		int n = 1;
+//		Location location = item.getLocation();
+//		Vector directionI = new Vector(-n,  0 ,0);
+//		Vector directionII = new Vector(n,  0 ,0);
+//		Vector directionIII = new Vector(-n,  0 ,n);
+//		Vector directionIV = new Vector(-n,  0 ,-n);
+//		Vector directionV = new Vector(n,  0 ,n);
+//		Vector directionVI = new Vector(n,  0 ,-n);
+//		Vector directionVII = new Vector(0,  0 ,n);
+//		Vector directionVIII = new Vector(0,  0 ,-n);
+//		
+//		
+//		Particletrail( location,directionI ,2);
+//		Particletrail( location,directionII ,2);
+//		Particletrail( location,directionIII ,2);
+//		Particletrail( location,directionIV ,2);
+//		Particletrail( location,directionV ,2);
+//		Particletrail( location,directionVI ,2);
+//		Particletrail( location,directionVII ,2);
+//		Particletrail( location,directionVIII ,2);
+		new BukkitRunnable() {
+			Location loc = item.getLocation();
+			double t = 0;
+			int count = 0;
+			double a = 0.2;
+			@Override
+			public void run() {
+				if(count>=500){
+					this.cancel();
+				}
+			for(int c =1 ; c<15 ;c++){	
+				t+=0.01*Math.PI;
+				for (double theta = 0; theta <= 2*Math.PI; theta+= Math.PI/4){
+		           	 double x = t*Math.cos(theta)*a;
+						double y = 0.65*Math.exp(-0.1*t) * Math.sin(t) + 1.5;
+						double z = t*Math.sin(theta)*a;
+					loc.add(x,y,z);
+					SuitUtils.playEffect(loc,EnumParticle.FLAME	, 2, 0,0);
+					loc.subtract(x,y,z);
+				}
+				count++;
+			}
 		}
+			
+            }.runTaskTimer(plugin, 0, 1);
 	}
 
 
+//	private static void Particletrail( final Location location,Vector direction, int r) {
+//		final double max_y_offset = 0.25;
+//		direction.normalize();
+//		direction.multiply(0.1);
+//		final Vector v = direction;
+//		new BukkitRunnable() {
+//			double add_y_offset = 0.02;
+//			double current_y_offset = 0;
+//			int count = 0;
+//			Location loc = location.clone();
+//			@Override
+//			public void run() {
+//				if(count>=40){
+//					this.cancel();
+//				}
+//				loc.add(v);
+//				loc.add(0, add_y_offset, 0);
+//				current_y_offset+=add_y_offset;
+//				SuitUtils.playEffect(loc, EnumParticle.FLAME, 1, 0, 0);
+//				if(current_y_offset>=max_y_offset){
+//					add_y_offset*=-1;
+//				}
+//				else if(current_y_offset<=0){
+//					add_y_offset*=-1;
+//				}
+//				
+//				count ++;
+//			}
+//		}.runTaskTimer(plugin, 0, 1);
+//	}
+
+
 	public static void play_Thunder_Strike_End(Wither wither) {
-		FireworkEffect effect = FireworkEffect.builder().with(Type.BALL_LARGE).withColor(Color.RED , Color.MAROON ).withFade(Color.GRAY , Color.BLACK  ,Color.WHITE , Color.SILVER).withFlicker().withTrail().trail(true).build();
+		FireworkEffect effect = SuitUtils.getEffect(Color.MAROON, Type.BALL_LARGE);
 		FireworkPlay.spawn(wither.getLocation(), effect, Hammer.thor);
 		}
+
+		
+			
+			
+		
 
 
 	

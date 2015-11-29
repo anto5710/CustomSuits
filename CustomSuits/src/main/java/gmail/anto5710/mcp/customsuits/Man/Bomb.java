@@ -14,7 +14,7 @@ import gmail.anto5710.mcp.customsuits.Utils.ManUtils;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 import gmail.anto5710.mcp.customsuits.Utils.ThorUtils;
 import gmail.anto5710.mcp.customsuits.Utils.WeaponUtils;
-import gmail.anto5710.mcp.customsuits._Thor.Repeat;
+import gmail.anto5710.mcp.customsuits._Thor.Hammer_Throw_Effect;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Damageable;

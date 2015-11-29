@@ -199,12 +199,12 @@ public class ManUtils  {
 	public static ArrayList<Entity> findEntity(Location currentLoc,
 			Player player, double radius) {
 
-		Collection<Entity> near = currentLoc.getWorld().getEntities();
+		Collection<Entity> near = currentLoc.getWorld().getEntitiesByClasses(Damageable.class);
 		ArrayList<Entity> list = new ArrayList<>();
 		for (Entity entity : near) {
-			if (entity instanceof Damageable && entity != player
+			if ( entity != player
 					&& entity != player.getVehicle()
-					&& SuitUtils.distance(currentLoc, entity, radius , 1)) {
+					&& SuitUtils.distance(currentLoc, entity, 1)) {
 				list.add(entity);
 
 			}

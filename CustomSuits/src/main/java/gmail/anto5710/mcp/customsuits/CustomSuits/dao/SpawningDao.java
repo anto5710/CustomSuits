@@ -16,7 +16,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
-import gmail.anto5710.mcp.customsuits.CustomSuits.suit.Control;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
 
 /**
@@ -72,13 +71,9 @@ public class SpawningDao {
 
 	public void saveEntity(Entity spawnedEntity, Player spawner) {
 		boolean run = false;
-		if(spawnMap.isEmpty()){
-			run = true;
-		}
+		
 		spawnMap.put( spawnedEntity.getUniqueId().toString(),   spawner.getName());
-		if(run){
-			new Control(plugin, this).runTaskTimer(plugin, 0, 1);
-		}
+		
 		String line = String.format("%s:%s", spawnedEntity.getUniqueId(),
 				spawner.getName());
 
@@ -147,6 +142,7 @@ public void remove(String entityID ) {
 	}
 
 	private PrintStream openFileStream() throws FileNotFoundException {
+		
 		PrintStream out = openFileStream();
 
 		FileOutputStream fos = new FileOutputStream(entityFile);
@@ -174,5 +170,6 @@ public void remove(String entityID ) {
 		}
 		return false;
 	}
+
 
 }

@@ -1,20 +1,16 @@
 package gmail.anto5710.mcp.customsuits.Utils;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
+
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.PlayerEffect;
-import gmail.anto5710.mcp.customsuits.CustomSuits.suit.WeaponListner;
-import gmail.anto5710.mcp.customsuits.Setting.Values;
-import gmail.anto5710.mcp.customsuits._Thor.Repeat;
+import gmail.anto5710.mcp.customsuits._Thor.Hammer_Throw_Effect;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.Collection;
 import java.util.List;
 
-import javax.swing.text.Position;
-
 import org.bukkit.Bukkit;
-import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -22,56 +18,69 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitScheduler;
-import org.bukkit.util.Vector;
 
 public class ThorUtils {
-
+	/**
+	 * Find Thor's Hammer from World
+	 * @param world World to Find
+	 * @param player Player
+	 * @return
+	 */
 	public static Item getItem(World world, Player player) {
 		for(Entity entity : world.getEntitiesByClass(Item.class )){
-			if(entity instanceof Item){
 				Item item = (Item) entity;
 				if(SuitUtils.CheckItem(CustomSuitPlugin.hammer, item.getItemStack())){
 					return item;
 				}
-			}
 		}
-	
-	
 	return null;
 	}
-
-	
-	public static ArrayList<Entity> findEntity(Location location , double radius , Player player){
+	/**
+	 * If Player is holding Thor's Hammer , return true;
+	 * @param player Player to Check
+	 * @return is player holding Hammer
+	 */
+	public static boolean isHammerinHand(Player player){
+		return SuitUtils.CheckItem(CustomSuitPlugin.hammer, player.getItemInHand());
+	}
+	/**
+	 * 
+	 * @param location Center location
+	 * @param radius Radius
+	 * @param player Player 
+	 * @return Entities in radius
+	 */
+	public static List<Entity> findEntity(Location location , double radius , Player player){
 	
 		ArrayList<Entity>list =new ArrayList<>();
-		List<Entity>EntityInWorld = location.getWorld().getEntities();
+		Collection<Entity>EntityInWorld = location.getWorld().getEntitiesByClasses(Damageable.class);
+		EntityInWorld.remove(player);
+		
 		for(Entity entity : EntityInWorld){
-			if(entity !=player){
-				
-			
-			if(entity instanceof Damageable && distance(entity, location, radius)){
-				list.add(entity);
+				if(entity instanceof Damageable && distance2D(entity, location, radius)){
+					list.add(entity);
 			}
-		}
 		}	
-			
-		
 		return list;
-		
 	}
-	public static boolean distance(Entity entity , Location Location , double radius){
+	/**
+	 * 
+	 * Check Distance of Location and Entity with 2D
+	 * @param entity Entity to Check
+	 * @param Location Target Location
+	 * @param radius Radius
+	 * @return is entity's distance from location smaller than radius
+	 */
+	public static boolean distance2D(Entity entity , Location Location , double radius){
 		Location entityLoc = entity.getLocation();
 		double EntityX = entityLoc.getX();
-		
 		double EntityZ = entityLoc.getZ();
-		double X = Location.getX();
 		
+		double X = Location.getX();
 		double Z = Location.getZ();
 
 		if (X - radius <= EntityX && EntityX <= X + radius
@@ -80,72 +89,80 @@ public class ThorUtils {
 		}
 		return false;
 	}
+	/**
+	 * Remove PotionEffect
+	 * @param PotionEffectType PotionEffectType
+	 * @param player Player to remove PotionEfffect
+	 */
 	public static void removePotionEffectType(PotionEffectType PotionEffectType, Player player) {
 		if(player.hasPotionEffect(PotionEffectType)){
 			player.removePotionEffect(PotionEffectType);
 		}
-		
-		
 	}
-
-
+	/**
+	 * Remove PotionEffect
+	 * @param PotionEffect PotionEffect
+	 * @param player Player to remove PotionEfffect
+	 */
 	public static void removePotionEffect(PotionEffect PotionEffect, Player player) {
 		if(PlayerEffect.ContainPotionEffect(player, PotionEffect.getType(), PotionEffect.getAmplifier())){
 			player.removePotionEffect(PotionEffect.getType());
 		}
-		
-		
 	}
-	public static boolean isFire(Item item) {
-	if	((item.getFireTicks() == -1 || item.getFireTicks() == 0) == false){
+	/**
+	 * Check is entity burning
+	 * @param entity Entity to Check
+	 * @return is entity burning
+	 */
+	public static boolean isBurning(Entity entity) {
+	if	((entity.getFireTicks() == -1 || entity.getFireTicks() == 0) == false){
 		return false;
 	}
 		return false;
 	}
-
+	/**
+	 * Check is item onGround
+	 * @param item Item to check
+	 * @return is item onGround
+	 */
 	public static boolean isOnGround(Item item) {
 		if(item.isOnGround()){
 			return true;
 		}
-		Location location = item.getLocation();
-		double Y = location.getY()-1;
+		Location location = item.getLocation().add(0, -1, 0);
+		Block block = location.getBlock();
 		
-			Block block = new Location(location.getWorld(), location.getX(), Y, location.getZ()).getBlock();
 			Material matareial = block.getType();
 			List<Material>Ignore_materials = Arrays.asList(Material.WATER , Material.STATIONARY_WATER , Material.AIR);
 			if(!Ignore_materials.contains(matareial)){
 				return true;
-				
 			}
-		
-		
 		return false;
 	}
-
+	/**
+	 * Remove item from Thorwn Hammers
+	 * @param item Item to remove from Thorwn Hammer list 
+	 */
 	public static void remove(Item item) {
-		
-		if (Repeat.listPlayer.containsKey(item)) {
-			Repeat.listPlayer.remove(item);
-		}
-		
-
+			Hammer_Throw_Effect.listPlayer.remove(item);
 	}
-
+	/**
+	 * Cancel That BukkitTask
+	 * @param taskId TaskID
+	 * @throws IllegalStateException
+	 */
 	public static void cancel(int taskId) throws IllegalStateException{
-
-		BukkitScheduler scheduler = Bukkit.getScheduler();
-	
-			
-			scheduler.cancelTask(taskId);
-		
-
+		 Bukkit.getScheduler().cancelTask(taskId);
 	}
-
+	/**
+	 * Damage entities in list
+	 * @param list Entities to Damage
+	 * @param damage Damage
+	 * @param player player
+	 */
 	public static void damage(java.util.List<Entity> list, double damage,
 			Player player) {
-		if (list.contains(player)) {
 			list.remove(player);
-		}
 		for (Entity e : list) {
 			if (e instanceof Damageable) {
 				((Damageable) e).damage(damage);
@@ -153,28 +170,26 @@ public class ThorUtils {
 			}
 		}
 	}
+	/**
+	 * Return new random number
+	 * @param a radius of Random number 
+	 * @return new random number
+	 */
 	public static double Random(double a ){
 		double b = a / 2;
 		double random = (Math.random() * a) - b;
 		return random;
 	}
-	public static void spreadItems( Location loc,ItemStack itemstack){
-		for( int c = 0 ; c <= 20 ; c++){
-			Item item = loc.getWorld().dropItem(loc, itemstack);
-		 float x = (float) -1 + (float) (Math.random() * ((1 - -1) + 1));
-	        float y = 1;
-	        float z = (float) -0.3 + (float)(Math.random() * ((0.3 - -0.3) + 1));
-	        item.setVelocity(new Vector(x, y, z));
-	        item.setPickupDelay(20);
-		}
-	}
-	public static void strikeLightning(Location loc, Player player, int amount,
-			double damageRadius, double damage) {
+	/**
+	 * Strike Lightning
+	 * @param loc Target Location
+	 * @param player player
+	 * @param amount Amount of Striking
+	 */
+	public static void strikeLightnings(Location loc, Player player , int amount) {
 	
 		for (int c = 0; c < amount; c++) {
 			loc.getWorld().strikeLightning(loc);
-			ThorUtils.damage(WeaponListner.findEntity(loc, player, damageRadius),
-					damage, player);
 		}
 	}
 
