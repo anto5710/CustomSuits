@@ -1,11 +1,11 @@
 package gmail.anto5710.mcp.customsuits.Setting;
 
 import org.bukkit.Material;
+
 import org.bukkit.Server;
 import org.bukkit.inventory.ShapedRecipe;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
-import gmail.anto5710.mcp.customsuits.Man.Man;
 
 public class Recipe {
 	CustomSuitPlugin plugin;

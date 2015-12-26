@@ -53,7 +53,6 @@ public class Thor_Move extends BukkitRunnable{
 				this.cancel();
 				
 			}
-				if(!Thunder_Strike.isStriking){
 					Location loc = location.clone();
 					
 						add_Horizonal+=0.2;
@@ -81,7 +80,6 @@ public class Thor_Move extends BukkitRunnable{
 							isUp = true;
 						}
 						loc = location	;
-		}
 	}
 		private void AddThorPotion_Effects() {
 			PlayerEffect.addpotion(PotionEffects.Thor_FAST_DIGGING, player);
@@ -91,7 +89,8 @@ public class Thor_Move extends BukkitRunnable{
 			PlayerEffect.addpotion(PotionEffects.Thor_JUMP, player);
 			PlayerEffect.addpotion(PotionEffects.Thor_REGENERATION, player);
 			PlayerEffect.addpotion(PotionEffects.Thor_SPEED, player);
-			PlayerEffect.addpotion(PotionEffects.Thor_WATER_BREATHING, player);			
+			PlayerEffect.addpotion(PotionEffects.Thor_WATER_BREATHING, player);		
+			
 		}
 			
 		

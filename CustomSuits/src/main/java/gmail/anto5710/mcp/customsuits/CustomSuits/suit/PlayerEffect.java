@@ -2,9 +2,8 @@ package gmail.anto5710.mcp.customsuits.CustomSuits.suit;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.PlayEffect;
 import gmail.anto5710.mcp.customsuits.CustomSuits.dao.SpawningDao;
-import gmail.anto5710.mcp.customsuits.Man.Man;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
-import gmail.anto5710.mcp.customsuits.Utils.ManUtils;
+import gmail.anto5710.mcp.customsuits.Utils.MathUtils;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 import gmail.anto5710.mcp.customsuits.Utils.ThorUtils;
 import gmail.anto5710.mcp.customsuits.Utils.WeaponUtils;
@@ -112,7 +111,7 @@ public class PlayerEffect implements Listener {
 						FireworkMeta meta = firework.getFireworkMeta();
 						FireworkEffect effect = SuitUtils.getRandomEffect();
 						meta.addEffect(effect);
-						int power = (int) ( ManUtils.Random(3)+1.5);
+						int power = (int) ( MathUtils.Random(3)+1.5);
 						if(power<1){
 							power++;
 						}
@@ -296,18 +295,21 @@ public class PlayerEffect implements Listener {
 		if (!CustomSuitPlugin.MarkEntity(player)) {
 			return;
 		}
-
+		if(Player_Move.list.contains(player)){
+			return;
+		}
 		if (CustomSuitPlugin.MarkEntity(player)) {
-			
-			
-			if(!Player_Move.list.contains(player))
-			{
-		
 				if(Player_Move.list.isEmpty()){
 				 new Player_Move(mainPlugin).runTaskTimer(mainPlugin, 0, 1);
 				}
+				
 				Player_Move.list.add(player);
-			}
+				if(SchedulerHunger.containPlayer(player)){
+					return;
+				}
+				if(player.getFoodLevel()>=Values.SuitFlyHunger){
+					hungerscheduler.addFlyingPlayer(player);
+				}
 		}
 	}
 
@@ -445,14 +447,6 @@ public class PlayerEffect implements Listener {
 				hungerscheduler.addFlyingPlayer(player);
 		}
 				
-	}
-	@EventHandler
-	public void move(PlayerMoveEvent event){
-		Player player = event.getPlayer();
-		if(!CustomSuitPlugin.MarkEntity(player)){
-			return;
-		}
-			hungerscheduler.addFlyingPlayer(player);
 	}
 
 	public static void addpotion(PotionEffect effect, LivingEntity livingEntity) {

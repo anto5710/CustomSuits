@@ -248,27 +248,6 @@ SuitUtils.playEffect(loc, EnumParticle.FLAME, 1, 0, 0);
 		
 	}
 
-	public static void play_Man_Bomb_Effect(Location location) {
-		
-		
-	}
-
-	public static void play_Man_Smoke_Effect(Location location) {
-		
-		
-	}
-
-	public static void play_Man_Sword_Shot_Effect(Location currentLoc, Player player) {
-	
-		
-	}
-
-	public static void play_Man_Move(Player player) {
-		
-	}
-
-	public static void play_Man_visible(Player player) {
-	}
 
 
 	/**
@@ -384,16 +363,14 @@ location.add(0, -0.2, 0);
 					
 	}
 	public static void play_Arc_Reactor(Location location){
-	 SuitUtils.playEffect( EnumParticle.SPELL_MOB,  location.getX(), location.getY(), location.getZ(), 0, 0, 2.25, 1, 3, 1 , 0, 0, 0, 0 ,0);
-	 SuitUtils.playEffect( EnumParticle.SPELL_MOB, location.getX(), location.getY(), location.getZ(), 0, 0, 2, 1, 3, 1 , 0, 0, 0, 0 ,0);
-	 SuitUtils.playEffect( EnumParticle.SPELL_MOB_AMBIENT, location.getX(), location.getY(), location.getZ(), 0, 0, 2.25, 1, 3, 1 , 0, 0, 0, 0 ,0);
-	 SuitUtils.playEffect( EnumParticle.SPELL_MOB_AMBIENT,location.getX(), location.getY(), location.getZ(), 0, 0, 2, 1, 3, 1 , 0, 0, 0, 0 ,0);
-	 SuitUtils.playEffect( EnumParticle.SPELL_MOB, location.getX(), location.getY(), location.getZ(), 0, 0, 2.25, 1, 3, 1 , 0, 0, 0, 0 ,0);
-	 SuitUtils.playEffect( EnumParticle.SPELL_MOB, location.getX(), location.getY(), location.getZ(), 0, 0, 2, 1, 3, 1 , 0, 0, 0, 0 ,0);
-	 SuitUtils.playEffect( EnumParticle.SPELL_MOB_AMBIENT, location.getX(), location.getY(), location.getZ(), 0, 0, 2.25, 1, 3, 1 , 0, 0, 0, 0 ,0);
-	 SuitUtils.playEffect( EnumParticle.SPELL_MOB_AMBIENT, location.getX(), location.getY(), location.getZ(), 0, 0, 2, 1, 3, 1 , 0, 0, 0, 0 ,0);
-				
-				
+	 SuitUtils.playEffect( EnumParticle.SPELL_MOB,location,  0F, 2.25F, 1F, 3, 0 , 0 ,0);
+	 SuitUtils.playEffect( EnumParticle.SPELL_MOB, location, 0F, 2F, 1F, 3, 0 , 0, 0);
+	 SuitUtils.playEffect( EnumParticle.SPELL_MOB_AMBIENT,location,  0F, 2.25F, 1F, 3, 0 , 0 ,0);
+	 SuitUtils.playEffect( EnumParticle.SPELL_MOB_AMBIENT, location, 0F, 2F, 1F, 3, 0 , 0, 0);
+	 SuitUtils.playEffect( EnumParticle.SPELL_MOB,location,  0F, 2.25F, 1F, 3, 0 , 0 ,0);
+	 SuitUtils.playEffect( EnumParticle.SPELL_MOB, location, 0F, 2F, 1F, 3, 0 , 0, 0);
+	 SuitUtils.playEffect( EnumParticle.SPELL_MOB_AMBIENT,location,  0F, 2.25F, 1F, 3, 0 , 0 ,0);
+	 SuitUtils.playEffect( EnumParticle.SPELL_MOB_AMBIENT, location, 0F, 2F, 1F, 3, 0 , 0, 0);
 	}
 	public static void play_Thor_Change_Effect(Player player , double phi) {
 		if(player!=Hammer.thor){
@@ -415,40 +392,6 @@ location.add(0, -0.2, 0);
 	}
 
 
-	public static void play_Thunder_Strike_Start_Effect(final Location location,
-			final Player player) {
-	
-					
-					double y= 0 ;
-					double radius = 5;
-					Location Location = location.clone();
-						
-					for(;y<=200;y+=0.1){	
-							
-							double x = Math.sin(y*radius);
-							double z = Math.cos(y*radius);
-							Location loc = Location.clone();
-							loc.add(x, y, z);
-							int Int_Y= (int) y;
-							if(Int_Y%50==0){
-								loc.getWorld().playSound(loc, Sound.IRONGOLEM_DEATH, 6F,6F);
-							}
-							SuitUtils.playEffect(loc, EnumParticle.FLAME, 1, 0, 0);
-							SuitUtils.playEffect(loc, EnumParticle.SMOKE_LARGE, 1, 0, 0);
-							loc.subtract(x ,  y ,z);
-					}
-					
-					new BukkitRunnable() {
-						
-						@Override
-						public void run() {
-							
-							Hammer.Start_Thunder_strike(player);
-						}
-					}.runTaskLater(plugin, 20);
-				
-	}
-
 
 	public static void play_Hammer_Hit_Ground(final org.bukkit.entity.Item item) {
 //		int n = 1;
@@ -456,21 +399,6 @@ location.add(0, -0.2, 0);
 //		Vector directionI = new Vector(-n,  0 ,0);
 //		Vector directionII = new Vector(n,  0 ,0);
 //		Vector directionIII = new Vector(-n,  0 ,n);
-//		Vector directionIV = new Vector(-n,  0 ,-n);
-//		Vector directionV = new Vector(n,  0 ,n);
-//		Vector directionVI = new Vector(n,  0 ,-n);
-//		Vector directionVII = new Vector(0,  0 ,n);
-//		Vector directionVIII = new Vector(0,  0 ,-n);
-//		
-//		
-//		Particletrail( location,directionI ,2);
-//		Particletrail( location,directionII ,2);
-//		Particletrail( location,directionIII ,2);
-//		Particletrail( location,directionIV ,2);
-//		Particletrail( location,directionV ,2);
-//		Particletrail( location,directionVI ,2);
-//		Particletrail( location,directionVII ,2);
-//		Particletrail( location,directionVIII ,2);
 		new BukkitRunnable() {
 			Location loc = item.getLocation();
 			double t = 0;
@@ -483,7 +411,7 @@ location.add(0, -0.2, 0);
 				}
 			for(int c =1 ; c<15 ;c++){	
 				t+=0.01*Math.PI;
-				for (double theta = 0; theta <= 2*Math.PI; theta+= Math.PI/4){
+				for (double theta = 0; theta <= 2*Math.PI; theta+= Math.PI/3){
 		           	 double x = t*Math.cos(theta)*a;
 						double y = 0.65*Math.exp(-0.1*t) * Math.sin(t) + 1.5;
 						double z = t*Math.sin(theta)*a;

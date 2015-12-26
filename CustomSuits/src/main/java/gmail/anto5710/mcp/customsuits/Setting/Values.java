@@ -66,14 +66,10 @@ public class Values {
 	final public static Sound ThorChangeSound = Sound.AMBIENCE_THUNDER;
 
 	final public static Sound HammerTeleportSound = Sound.ENDERMAN_TELEPORT;
-	final public static int Thunder_Strike_Hunger = -20;
+	final public static int Thunder_Creeper_Hunger = -15;
 
-	final public static int Thunder_Strike_Radius = 50;
-	final public static double Thunder_Strike_Damage = 5.5;
-	final public static int Thunder_Strike_Time = 20;
 
-	final public static Sound Thunder_Strike_Spawn_Sound = Sound.IRONGOLEM_DEATH;
-	final public static Sound Thunder_Strike_Start_Sound = Sound.ENDERMAN_STARE;
+	final public static Sound Thunder_Creeper_Start_Sound = Sound.ENDERMAN_STARE;
 
 	
 	final public static List<EntityType> Allowed_Suit_Summon_types =  Arrays.asList(EntityType.ZOMBIE , EntityType.SKELETON , EntityType.PIG_ZOMBIE);
@@ -117,8 +113,8 @@ public class Values {
 	final public static int Suit_Gun_Shot_Effect_Data =Material.STONE.getId();
 	
 	final public static String regex = ChatColor.YELLOW+"» ∞ «";
-	final public static String SuitInforegex = ChatColor.DARK_AQUA+":"+ChatColor.AQUA;
-	final public static String SuitName = "[Mark]";
+	final public static String SuitInforegex = ChatColor.DARK_AQUA+":";
+	final public static String SuitName = "Mark";
 	
 	
 	final public static List<Material> IgnoreMaterials_Gun = Arrays.asList(Material.AIR , Material.LAVA,  Material.STATIONARY_LAVA , Material.WATER , Material.STATIONARY_WATER , Material.OBSIDIAN , Material.BEDROCK , Material.BEACON);
@@ -145,14 +141,6 @@ public class Values {
 	final public static Sound SuitShieldSound = Sound.FUSE;
 	final public static int SuitShieldHunger = -20;
 	
-	final public static double Missile =25 ;
-	final public static float MissileExplosionPower =30F ;
-	final public static int MissileEffectAmount =10 ;
-	final public static double MissileRadius =2 ;
-	final public static int MissileHunger =- 6;
-	final public static String MissileMessage =  ChatColor.BLUE + "[Info]: " + ChatColor.AQUA
-			+ "Fired a Repulser Missile!";
-	final public static Sound MissileSound = Sound.WITHER_DEATH;
 	
 	
 	final public static float LauncherPower = 5;

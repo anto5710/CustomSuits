@@ -1,16 +1,13 @@
 package gmail.anto5710.mcp.customsuits.CustomSuits.suit;
 
-import gmail.anto5710.mcp.customsuits.CustomSuits.Listner_Plugin;
 import gmail.anto5710.mcp.customsuits.CustomSuits.PlayEffect;
 import gmail.anto5710.mcp.customsuits.CustomSuits.InvetoryGUI.CancelAirClick;
 import gmail.anto5710.mcp.customsuits.CustomSuits.InvetoryGUI.SuitInventoryGUI;
 import gmail.anto5710.mcp.customsuits.CustomSuits.dao.SpawningDao;
-import gmail.anto5710.mcp.customsuits.Man.Man;
 import gmail.anto5710.mcp.customsuits.Setting.Enchant;
 import gmail.anto5710.mcp.customsuits.Setting.Recipe;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
 import gmail.anto5710.mcp.customsuits.Utils.Glow;
-import gmail.anto5710.mcp.customsuits.Utils.ManUtils;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 import gmail.anto5710.mcp.customsuits._Thor.Hammer;
 import gmail.anto5710.mcp.customsuits._Thor.HammerWeapons;
@@ -410,12 +407,12 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		List<String>GunLore = new ArrayList<>();
 		GunLore.add(ChatColor.WHITE+"Machine Gun Ammo: "+ChatColor.YELLOW+WeaponListner.maxformachine);
 		GunLore.add(ChatColor.WHITE+"Sniper Ammo: "+ChatColor.YELLOW+WeaponListner.maxforsniper);
-		GunLore.add(ChatColor.WHITE+"Machine Gun Bullet Spread: "+ChatColor.YELLOW+0.3 +ChatColor.WHITE+" | "+ChatColor.YELLOW+0.05+ChatColor.WHITE+"(Zoom)");
-		GunLore.add(ChatColor.WHITE+"Sniper Bullet Spread: "+ChatColor.YELLOW+5.0 +ChatColor.WHITE+" | "+ChatColor.YELLOW+0+ChatColor.WHITE+"(Zoom)");
+		GunLore.add(ChatColor.WHITE+"Machine Gun Bullet Spread: "+ChatColor.YELLOW+0.3 +ChatColor.WHITE+" | "+ChatColor.YELLOW+0.05+"(Zoom)");
+		GunLore.add(ChatColor.WHITE+"Sniper Bullet Spread: "+ChatColor.YELLOW+5.0 +ChatColor.WHITE+" | "+ChatColor.YELLOW+0+"(Zoom)");
 		GunLore.add(ChatColor.WHITE+"Machine Gun Damage: "+ChatColor.YELLOW+Values.MachineGunDamage);
 		GunLore.add(ChatColor.WHITE+"Sniper Damage: "+ChatColor.YELLOW+Values.SniperDamage);
-		GunLore.add(ChatColor.WHITE+"Machine Gun Bullet Velocity: "+ChatColor.YELLOW+50.0+ChatColor.WHITE+" Block/Second");
-		GunLore.add(ChatColor.WHITE+"Sniper Bullet Velocity: "+ChatColor.YELLOW+119+ChatColor.WHITE+" Block/Second");
+		GunLore.add(ChatColor.WHITE+"Machine Gun Bullet Velocity: "+ChatColor.YELLOW+50.0+" Block/Second");
+		GunLore.add(ChatColor.WHITE+"Sniper Bullet Velocity: "+ChatColor.YELLOW+119+" Block/Second");
 		ItemMeta gunMeta =gunitem.getItemMeta();
 		gunMeta.setLore(GunLore);
 		gunitem.setItemMeta(gunMeta);
@@ -483,15 +480,12 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		this.targetting = new Target(this);
 		this.targetting.start();
 		this.hscheduler = new SchedulerHunger(this);
-		this.hscheduler.startThread();
 		this.logger.info("starting Hunger Thread");
 
 		manager.registerEvents(new PlayerEffect(this), this);
 		manager.registerEvents(new WeaponListner(this), this);
 		manager.registerEvents(new SuitInventoryGUI(this), this);
 		manager.registerEvents(new HammerWeapons(this), this);
-		manager.registerEvents(new Man(this), this);
-		manager.registerEvents(new Listner_Plugin(this), this);
 		manager.registerEvents(new CancelAirClick(this), this);
 		
 		Recipe.addRecipe(getServer());
@@ -1646,12 +1640,6 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 			index ++;
 		}
 		return items;
-	}
-	public static boolean hasAbillity(Player player){
-		if(ManUtils.Man(player)||CustomSuitPlugin.MarkEntity(player)||Hammer.Thor(player)){
-			return true;
-		}
-		return false;
 	}
 	public static void resetColorIcon(ItemStack item , Player player
 			) {

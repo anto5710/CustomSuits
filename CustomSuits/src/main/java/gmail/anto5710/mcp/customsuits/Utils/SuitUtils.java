@@ -75,13 +75,11 @@ public class SuitUtils {
 			double count  = 0;
 			@Override
 			public void run() {
+				
 				for(int c = 0;c<Effect_Count_Second;c++){
 					if(count>=distance){
 						if (isMissile) {
 							float power = Values.BimExplosionPower;
-							if(isSneaking){
-								power = Values.MissileExplosionPower;
-							}
 							SuitUtils.createExplosion(currentLoc, power, false, true);
 
 						} else {
@@ -99,22 +97,33 @@ public class SuitUtils {
 							.damageandeffect(currentLoc, damage, shooter, isMissile, isSuitProjectile, radius);
 				count+=0.5;
 				}
-			
-				}
+				
+			}
 		}.runTaskTimer(plugin, 0, 1);
 		
 
 	}
 
-
 	public static void playEffect( Location location , EnumParticle effect ,int amount, int data , int radius ){
 		CraftWorld world = (CraftWorld)location.getWorld();
 		float x = (float) location.getX();
 		float y = (float) location.getY();
-		
 		float z = (float) location.getZ();
 		world.getHandle().sendParticles(null, effect, true, x, y, z, 0, 0, 0, amount, 0, data , 0, 0, 0, 0);
 			
+	
+			
+		
+	}
+	public static void playEffect( EnumParticle effect , Location location ,float x_spread , float y_spread , float z_spread ,float speed ,int amount , int distance , int data){
+		float x = (float) location.getX();
+		float y = (float) location.getY();
+		float z = (float) location.getZ();
+		PacketPlayOutWorldParticles packet = new 
+				PacketPlayOutWorldParticles(effect, true, x, y, z, x_spread, y_spread, z_spread, speed, amount, distance , data);
+		for(Player player : Bukkit.getOnlinePlayers()){
+			((CraftPlayer)player).getHandle().playerConnection.sendPacket(packet);
+		}
 	
 			
 		
@@ -204,7 +213,7 @@ public class SuitUtils {
 	
 	public static void Wrong(Player player,String warn){
 		player.sendMessage(ChatColor.DARK_RED
-				+ "[Warn]: "+ChatColor.RED+" You don't have enough "+ ChatColor.GOLD+warn+ChatColor.RED+" !");
+				+ "[Warn]: "+ChatColor.RED+"You don't have enough "+ ChatColor.GOLD+warn+ChatColor.RED+" !");
 		
 		player.playSound(player.getLocation(), Sound.NOTE_STICKS, 6.0F, 6.0F);
 	}
@@ -257,34 +266,35 @@ public class SuitUtils {
 		}
 		return false;
 	}
-	public static FireworkEffect getRandomEffect(){
-		float H=(float) (ManUtils.Random(1)+0.5);
-	    float S=(float) (ManUtils.Random(1)+0.5);
-	    float B=(float) (ManUtils.Random(0.5)+0.25);
-	    
-		float FH=H;
-	    float FS=S;
-	    float FB=B;
-	    int type_index = (int) (ManUtils.Random(Type.values().length)+Type.values().length/2);
-	    Type type = Type.values()[type_index];
-	    float add = -0.025F;
-		float fadeadd = -0.025F;
-			
-		Color[] colors= new Color[60];
-		Color[] fadecolors  = new Color[60];
+	private  static Color[] getColors(Color color){
+		float [] HSB =RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue());
+		float H = HSB[0];
+		float S = HSB[1];
+		float B = HSB[2];
+		int N = 200;
+		float add = -0.125F;
 		
-		for(int n = 0; n<60 ; n++){
+		Color[] colors= new Color[N];
+		for(int n = 0; n<N ; n++){
 			if(isOutOfHSB(add, H, S ,B)){
 				add*=-1;
 				
 			}
 			colors[n]=HSBtoRGB(H, S, B);
-			if(isOutOfHSB(fadeadd, FH ,FS ,FB)){
-				fadeadd*=-1;
-			}
-			FB+=fadeadd;
-			fadecolors[n]=HSBtoRGB(FH, FS, FB);
 		}
+		return colors;
+		
+	}
+	public static FireworkEffect getRandomEffect(){
+	    int type_index = (int) (MathUtils.Random(Type.values().length)+Type.values().length/2);
+	    Type type = Type.values()[type_index];
+	    int R=(int) (MathUtils.Random(255)+127.5);
+	    int G=(int) (MathUtils.Random(255)+127.5);
+	    int B=(int) (MathUtils.Random(255)+127.5);
+	    
+	    
+		Color[] colors= getColors(Color.fromRGB(R, G, B));
+		Color[] fadecolors  = getColors(Color.WHITE);
 		
 		
 		FireworkEffect effect = FireworkEffect.builder().trail(true).flicker(true).with(type).withColor(colors).withFade(fadecolors).withFlicker().withTrail().build();
@@ -333,41 +343,13 @@ public class SuitUtils {
 		int r = color.getRed();
 		int g = color.getGreen();
 		int b = color.getBlue();
-		float[]HSB =RGBtoHSB(r, g, b);
-		
-		float H=HSB[0];
-	    float S=HSB[1];
-	    float B=HSB[2];
 	    
-		float FH=H;
-	    float FS=S;
-	    float FB=B;
-	    float add = -0.025F;
-		float fadeadd = -0.025F;
-			
-		Color[] colors= new Color[60];
-		Color[] fadecolors  = new Color[60];
-		
-		for(int n = 0; n<60 ; n++){
-			if(isOutOfHSB(add, H, S ,B)){
-				add*=-1;
-				
-			}
-			colors[n]=HSBtoRGB(H, S, B);
-			if(isOutOfHSB(fadeadd, FH ,FS ,FB)){
-				fadeadd*=-1;
-			}
-			FB+=fadeadd;
-			fadecolors[n]=HSBtoRGB(FH, FS, FB);
-		}
+	    
+		Color[] colors= getColors(Color.fromRGB(r, g, b));
+		Color[] fadecolors  = getColors(Color.WHITE);
 		
 		
 		FireworkEffect effect = FireworkEffect.builder().trail(true).flicker(true).with(type).withColor(colors).withFade(fadecolors).withFlicker().withTrail().build();
 		return effect;
-	}
-	public static void playEffect( EnumParticle spellMob,
-			 double x, double y, double z, int i, int j, double d,
-			int k, int l, int m, int n, int o, int p, int q, int r) {
-		
 	}
 }

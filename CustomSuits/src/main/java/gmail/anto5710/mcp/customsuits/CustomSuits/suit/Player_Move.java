@@ -54,12 +54,12 @@ public class Player_Move extends BukkitRunnable{
 				player.setAllowFlight(true);
 			}
 			add_potion_effect(player);
-			Display.reloadData(player);
+			
 			if(player.isFlying()){
 				if(isUnder_Water(player)){
 					PlayEffect.playSuit_Move_Under_Water_Effect(player.getLocation(), player);
 				}else{
-			
+					
 					PlayEffect.playSuit_Move_Fly_Effect(player.getLocation(), player);
 			
 				}
@@ -75,7 +75,6 @@ public class Player_Move extends BukkitRunnable{
 			}
 		}
 		for(Player player:removed){
-			Display.clear_Scoreboard(player);
 			PlayerEffect.removingeffects(player);
 		}
 		list.removeAll(removed);

@@ -16,6 +16,7 @@ import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.FireworkEffect.Type;
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -30,6 +31,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.event.player.PlayerToggleFlightEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 
@@ -37,8 +40,7 @@ public class Hammer implements Listener {
 	static CustomSuitPlugin plugin;
 	
 	static double HammerDeafultDamage = Values.HammerDamage*2;
-	static HashSet<Player>TeleportingPlayers =new HashSet<>(); 
-	
+	static Set<Player>Double_Jump_Cooldowns = new HashSet<>();
 	public static Player thor = null;
 
 	public Hammer(CustomSuitPlugin plugin) {
@@ -50,45 +52,11 @@ public class Hammer implements Listener {
 	 * 
 	 * @param event PlayerInteractEvent
 	 */
-	@EventHandler
-	public void Teleportation(PlayerInteractEvent event){
-		if(event.getAction() ==Action.RIGHT_CLICK_AIR||event.getAction()==Action.RIGHT_CLICK_BLOCK){
-			
-			Player player = event.getPlayer();
-			if(!player.isSneaking()){
-				return;
-			}
-			if(!Thor(player)||!SuitUtils.CheckItem(CustomSuitPlugin.hammer, player.getItemInHand())){
-				return;
-			}
-			if(TeleportingPlayers.isEmpty()){
-				TeleportingPlayers.add(player);
-				Location To = SuitUtils.getTargetBlock(player,300).getLocation();
-				TeleportPlayer(player , To);
-			}
-			else if(!TeleportingPlayers.contains(player)){
-				TeleportingPlayers.add(player);
-				Location To = SuitUtils.getTargetBlock(player,300).getLocation();
-				TeleportPlayer(player , To);
-			}
-		}
-	}
 	/**
 	 * Teleport Player to Targeted Location
 	 * @param player Player to Teleport
 	 * @param To Target Location
 	 */
-	private void TeleportPlayer(Player player , Location To) {
-		
-		org.bukkit.util.Vector direction =	player.getLocation().getDirection();
-	
-		TeleportEntityInLine(player, To, EnumParticle.PORTAL);
-		player.playSound(player.getLocation(), Values.HammerTeleportSound, 6.0f, 6.0f);
-		
-		Location After = player.getLocation();
-		After.setDirection(direction);
-		
-	}
 	/**
 	 * Reset Thor When Thor Joins
 	 * @param event PlayerJoinEvent 
@@ -113,7 +81,11 @@ public class Hammer implements Listener {
 		if (Thor(player)) {
 			if(!Thor_Move.isRunning){
 				new Thor_Move(plugin, player).runTaskTimer(plugin, 0,1);
+				if(thor==null){
+					thor =  player;
+				}
 			}
+			
 		}
 	}
 	/**
@@ -173,34 +145,6 @@ public class Hammer implements Listener {
 	 * @param To Target Location
 	 * @param effect EnumParticle type
 	 */
-	private void TeleportEntityInLine(final Entity entity , Location To,  final EnumParticle effect) {
-		Vector vectorStart = entity.getLocation().toVector();
-		
-		Vector vectorEnd = To.toVector();
-		
-		Vector difference = vectorEnd.subtract(vectorStart);
-		
-		final double distance = difference.length();
-		final Vector v =difference.normalize().multiply(0.5);
-		if (distance < 0) {
-			return;
-		}
-		Location currentLoc  = entity.getLocation().clone();
-		for(double i = 0; i<=distance ; i+=0.5){
-				currentLoc.add(v);
-				SuitUtils.playEffect(currentLoc, effect, 30 , 1 ,0);
-		}
-		
-		final Location finalLoc = currentLoc.clone();
-		
-		Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
-			@Override
-			public void run() {
-				entity.teleport(finalLoc);
-				TeleportingPlayers.remove(entity);
-			}
-		},  40);
-	}
 	
 	/**
 	 * Check is that Player Thor 
@@ -239,13 +183,12 @@ public class Hammer implements Listener {
 		Item item = event.getItem();
 		Player player =event.getPlayer();
 		if(SuitUtils.CheckItem(CustomSuitPlugin.hammer, item.getItemStack())){
-				if(player==thor||thor==null){
+				if(player==thor){
 					ThorUtils.remove(item);
-				}else{
-					SuitUtils.playEffect(item.getLocation().add(0 , 0.5 ,0), Values.HammerPickUpCancel, 1,0, 0);
-					event.setCancelled(true);
+					return;
 				}
-			}
+					event.setCancelled(true);
+		}
 	}
 	/**
 	 * Change that Player to Thor
@@ -275,31 +218,42 @@ public class Hammer implements Listener {
 		}, 10);
 	}
 	/**
-	 * Start Thunder Striking
-	 * @param player Thor
+	 * Spell the Leap Skill when Thor use space bar twice
+	 * @param event PlayerToggleFlightEvent
 	 */
-	public static void Start_Thunder_strike(Player player) {
-			Thunder_Strike.BaseLocation = player.getLocation();
-			Thunder_Strike.BaseLocation.add(0, 50, 0);
+	@EventHandler
+	public static void Jump(PlayerInteractEvent event){
+		 Player player = event.getPlayer();
+		 if(event.getAction()==Action.RIGHT_CLICK_AIR||event.getAction()==Action.RIGHT_CLICK_BLOCK){
+		boolean canspell = (player==thor&&player.isSneaking()&&!player.isDead()&&ThorUtils.isHammerinHand(player));
+		boolean isCooldown = false;
+		if(Double_Jump_Cooldowns!=null){
+			if(Double_Jump_Cooldowns.contains(player)){
+				isCooldown = true;
+			}
+		}
+		 
+		if(canspell){
+			if(!isCooldown){
+				int strength = 10;
+	       
+				Vector vector = player.getLocation().getDirection().normalize().multiply(strength);
+				
+				SuitUtils.playEffect(player.getLocation(), EnumParticle.EXPLOSION_HUGE, 1, 0, 0);
+				player.setVelocity(vector);
+         
+				player.playSound(player.getLocation(), Sound.GHAST_FIREBALL, 5F, 1F);
+				Double_Jump_Cooldowns.add(player);
+				final Player player_ = player;
+				new BukkitRunnable() {
 			
-				if(!Thunder_Strike.isStriking){
-					
-					Wither wither= (Wither) Thunder_Strike.BaseLocation.getWorld().spawnEntity(Thunder_Strike.BaseLocation.clone().add(0, -50, 0), EntityType.WITHER);
-					wither.setCustomName(ChatColor.GOLD+"Thunder Strike");
-					wither.setRemoveWhenFarAway(false);
-					wither.setCustomNameVisible(true);
-					player.teleport(wither.getLocation());
-					wither.setPassenger(player);
-					wither.setVelocity(new Vector(0, 50, 0));
-					
-					new Thunder_Strike(plugin , wither , player).runTaskTimer(plugin,0, 1);
-				
-				Thunder_Strike.BaseLocation.getWorld().setStorm(true);
-				Thunder_Strike.BaseLocation.getWorld().setThundering(true);
-				Thunder_Strike.BaseLocation.getWorld().setWeatherDuration(1000);
-				
-					player.playSound(player.getLocation(), Values.Thunder_Strike_Start_Sound,6F, 6F);
-				
+					@Override
+					public void run() {
+						Double_Jump_Cooldowns.remove(player_);
+					}
+				}.runTaskLater(plugin, 40);
+				}
+			}
 		}
 	}
 

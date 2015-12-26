@@ -107,7 +107,7 @@ public class Thor_Changing extends BukkitRunnable{
              y = 0.5*t;
              z = 0.4*(2*Math.PI-t)*0.5*Math.sin(t + phi + i*Math.PI);
              location.add(x, y, z);
-             SuitUtils.playEffect(location, EnumParticle.WATER_DROP, 1,0, 0);
+             SuitUtils.playEffect(location, EnumParticle.REDSTONE, 1,0, 0);
              location.subtract(x,y,z);
 		}
 

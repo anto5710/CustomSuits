@@ -2,85 +2,51 @@ package gmail.anto5710.mcp.customsuits.CustomSuits.suit;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.FireworkPlay;
 import gmail.anto5710.mcp.customsuits.CustomSuits.PlayEffect;
-import gmail.anto5710.mcp.customsuits.CustomSuits.dao.SpawningDao;
-import gmail.anto5710.mcp.customsuits.Man.Man;
+import gmail.anto5710.mcp.customsuits.Setting.Enchant;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
-import gmail.anto5710.mcp.customsuits.Utils.ManUtils;
+import gmail.anto5710.mcp.customsuits.Utils.Glow;
+import gmail.anto5710.mcp.customsuits.Utils.MathUtils;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
-import gmail.anto5710.mcp.customsuits.Utils.ThorUtils;
 import gmail.anto5710.mcp.customsuits.Utils.WeaponUtils;
 
-import java.awt.Color;
-import java.awt.Event;
-import java.net.Proxy.Type;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Random;
-import java.util.Scanner;
-
-import javax.naming.ldap.Rdn;
-import javax.print.DocFlavor.CHAR_ARRAY;
 
 import net.minecraft.server.v1_8_R2.EnumParticle;
 
-import org.apache.commons.lang.math.RandomUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Effect;
-import org.bukkit.EntityEffect;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_8_R2.util.UnsafeList.Itr;
-import org.bukkit.entity.ComplexEntityPart;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Damageable;
-import org.bukkit.entity.EnderDragon;
-import org.bukkit.entity.EnderDragonPart;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Firework;
-import org.bukkit.entity.HumanEntity;
-import org.bukkit.entity.IronGolem;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Snowball;
-import org.bukkit.entity.Snowman;
-import org.bukkit.entity.Horse.Variant;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityTargetEvent;
-import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
-import org.hamcrest.core.IsSame;
-
-import oshi.PlatformEnum;
-
-import com.google.common.primitives.Ints;
 
 public class WeaponListner implements Listener {
 
@@ -94,7 +60,8 @@ public class WeaponListner implements Listener {
 
 	public static HashMap<Player, Boolean> charging = new HashMap<>();
 	public static HashMap<Player, Boolean> cooldowns = new HashMap<>();
-
+	
+	public static HashSet<Player> TNT_cooldowns = new HashSet<>();
 	public WeaponListner(CustomSuitPlugin plugin) {
 		this.plugin = plugin;
 	}
@@ -166,7 +133,7 @@ public class WeaponListner implements Listener {
 
 	@EventHandler
 	public void interectshield(PlayerInteractEvent event) {
-		Player player = event.getPlayer();
+		final Player player = event.getPlayer();
 		if (event.getAction() == Action.RIGHT_CLICK_AIR
 				|| event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 			if (CustomSuitPlugin.MarkEntity(player)) {
@@ -176,13 +143,23 @@ public class WeaponListner implements Listener {
 						if (SchedulerHunger.hunger(player,
 								Values.SuitShieldHunger)) {
 
-							int sec = (CustomSuitPlugin.getLevel(player)) / 20 + 3;
+							final int sec = (CustomSuitPlugin.getLevel(player)) / 20 + 3;
 
 							player.setNoDamageTicks(sec * 20);
 							player.sendMessage(ChatColor.BLUE + "[Info]: "
-									+ ChatColor.AQUA + "No Damage Time for: "
+									+ ChatColor.AQUA + "Created Shield: "
 									+ ChatColor.DARK_AQUA + sec + " Seconds! ");
-							PlayEffect.play_Suit_NoDamageTime(player, null);
+							new BukkitRunnable() {
+								int tick;
+								@Override
+								public void run() {
+									if(tick>=sec*20){
+										this.cancel();
+									}
+									PlayEffect.play_Suit_NoDamageTime(player, null);
+									tick+=5;
+								}
+							}.runTaskTimer(plugin, 0, 5);
 							player.playSound(player.getLocation(),
 									Values.SuitShieldSound, 2.0F, 2.0F);
 						} else {
@@ -256,6 +233,131 @@ public class WeaponListner implements Listener {
 		}
 
 	}
+	@EventHandler
+	public void ThrowTNT(PlayerInteractEvent clickevent) {
+		Material launcher = Values.SuitLauncher;
+		if ((clickevent.getAction() == Action.LEFT_CLICK_AIR)
+				|| (clickevent.getAction() == Action.LEFT_CLICK_BLOCK)) {
+
+			Player player = clickevent.getPlayer();
+			
+			Material ammo = Material.TNT;
+			if(TNT_cooldowns!=null){
+				if(TNT_cooldowns.contains(player)){
+					return;
+				}
+			}
+			if(!player.isSneaking()){
+				return;
+			}
+			if (CustomSuitPlugin.MarkEntity(player)) {
+				if (player.getItemInHand().getType() == launcher) {
+					if(player.getInventory().contains(ammo)){
+						removeItem(player ,new ItemStack(ammo), 1);
+						TNT_cooldowns.add(player);
+						throwTNT(player , 10);
+					}else{
+						SuitUtils.Wrong(player, ammo.name());
+					}
+				}
+			}
+		}
+	}
+	
+	private void throwTNT(final Player player, int amount) {
+		final float strength = 3;
+		new BukkitRunnable() {
+			int count = 0;
+			@Override
+			public void run() {
+				if(count==5){
+					TNT_cooldowns.remove(player);
+					player.playSound(player.getLocation(), Sound.PISTON_RETRACT, 10F, 0F);
+					this.cancel();
+				}
+				Location location = player.getEyeLocation();
+				Vector velocity = player.getLocation().getDirection().multiply(strength).add(getRandomVector(0.5));
+				ItemStack itemStack = new ItemStack(Material.TNT);
+				CustomSuitPlugin.SetDisplayName(ChatColor.AQUA+"[Bomb]", itemStack);
+				Enchant.enchantment(itemStack, new Glow(), 1, true);
+				Item tnt = player.getWorld().dropItem(location, itemStack);
+				
+				tnt.setFallDistance(0);
+				tnt.setVelocity(velocity);
+				tnt.setPickupDelay(20);
+				playTNTeffect(tnt);
+				count ++;
+			}
+		}.runTaskTimer(plugin, 0, 4);
+	}
+
+
+
+	@EventHandler
+	public static void PickUpTNT(PlayerPickupItemEvent event){
+		Item item = event.getItem();
+		ItemStack itemStack = item.getItemStack();
+		if(itemStack.getItemMeta().getDisplayName()==null){
+			return;
+		}
+		if(itemStack.getType() != Material.TNT){
+			return;
+		}
+		if(itemStack.getItemMeta().getDisplayName().equals(ChatColor.AQUA+"[Bomb]")){
+			Location location =  item.getLocation();
+			SuitUtils.createExplosion(location, 6F, true ,true);
+		}
+		
+	}
+	private void playTNTeffect(final Item tnt) {
+		new BukkitRunnable() {
+			int count = 0;
+			@Override
+			public void run() {
+				
+				Location location = tnt.getLocation();
+				SuitUtils.playEffect(location, EnumParticle.EXPLOSION_NORMAL, 1, 0, 0);
+				if(count%5==0){
+					location.getWorld().playSound(location, Sound.NOTE_STICKS, 1F, 1F);
+				}
+				if(tnt.isDead()){
+					SuitUtils.createExplosion(location, 4F, true, true);
+					this.cancel();
+				}
+				if(tnt.isOnGround()){
+					SuitUtils.createExplosion(location, 4F, true, true);
+					this.cancel();
+				}
+				count++;
+				
+			}
+		}.runTaskTimer(plugin, 0, 1);
+	}
+
+
+
+
+	private Vector getRandomVector(double r) {
+		double x = MathUtils.Random(r);
+		double y = MathUtils.Random(r);
+		double z = MathUtils.Random(r);
+		
+		return new Vector(x , y ,z);
+	}
+
+
+
+
+	private void removeItem(Player player,ItemStack itemStack, int amount) {
+			Inventory inventory = player.getInventory();
+			if(inventory.containsAtLeast(itemStack, amount)){
+				inventory.removeItem(itemStack);
+			}
+			player.updateInventory();
+	}
+
+
+
 
 	@EventHandler
 	public void onPlayerLeftClick(PlayerInteractEvent clickevent) {
@@ -268,12 +370,8 @@ public class WeaponListner implements Listener {
 
 			int energy = Values.BimHunger;
 
-			if (CustomSuitPlugin.MarkEntity(player)) {
+			if (CustomSuitPlugin.MarkEntity(player)&&!player.isSneaking()) {
 				if (player.getItemInHand().getType() == launcher) {
-					if (player.isSneaking()) {
-						energy = Values.MissileHunger;
-						message = Values.MissileMessage;
-					}
 					if (SchedulerHunger.hunger(player, energy)) {
 						launch(player,  message, energy);
 					} else {
@@ -307,13 +405,6 @@ public class WeaponListner implements Listener {
 		int amount = Values.BimEffectAmount;
 		if (isMissile) {
 
-			if (player.isSneaking()) {
-
-				radius = Values.MissileRadius;
-				damage = Values.Missile;
-				amount = Values.MissileEffectAmount;
-
-			}
 			damage = damage * (CustomSuitPlugin.getLevel(player) / 32 + 1);
 		} else {
 
@@ -324,7 +415,7 @@ public class WeaponListner implements Listener {
 
 		EnumParticle effect = Values.SniperEffect;
 		int data = Material.ANVIL.getId();
-		int effect_count = 10;
+		int effect_count = 100;
 		if (isMissile) {
 			effect_count = 3;
 			effect = Values.SuitProjectileEffect;
@@ -339,16 +430,17 @@ public class WeaponListner implements Listener {
 		final int Data = data;
 		final double Damage =damage;
 		final int effect_Count = effect_count;
+				
 			
+				
 				player.playSound(player.getLocation(), Sound.WITHER_SHOOT, 1F, 5F);
 				player.playSound(player.getLocation(), Sound.EXPLODE, 1F, 0F);
 				player.playSound(player.getLocation(), Sound.BLAZE_BREATH, 1F, -1F);
-					player.playSound(player.getLocation(), Sound.WITHER_SPAWN, 1F, 1F);
 				SuitUtils.LineParticle(To, player.getEyeLocation(), player, Effect, Amount, Data, Damage,
 						Radius, true ,IsMissile, player.isSneaking(), effect_Count);
-	
 
 	}
+	
 
 	public static void breakblock(Block block) {
 		Material material = block.getType();
@@ -391,7 +483,7 @@ public class WeaponListner implements Listener {
 				location, EntityType.FIREWORK);
 		FireworkMeta meta = firework.getFireworkMeta();
 		meta.addEffect(effect);
-		meta.setPower((int) (ManUtils.Random(5) + 2.5));
+		meta.setPower((int) (MathUtils.Random(3) + 1.5));
 		firework.setFireworkMeta(meta);
 		if (shooter != null) {
 			location.getWorld().playSound(shooter.getLocation(), Sound.EXPLODE,
@@ -577,10 +669,10 @@ public class WeaponListner implements Listener {
 	
 	Vector v = player.getLocation().getDirection();
 	v.multiply(3.0);
-	double x = ManUtils.Random(spread_);
-	double y = ManUtils.Random(spread_);
+	double x = MathUtils.Random(spread_);
+	double y = MathUtils.Random(spread_);
 	
-	double z = ManUtils.Random(spread_);
+	double z = MathUtils.Random(spread_);
 	Vector spread = new Vector(x, y, z);
 	v.add(spread);
 		snowball.setVelocity(v);
@@ -593,7 +685,7 @@ public class WeaponListner implements Listener {
 		PlayEffect.play_Gun_Shot_Effect(player);
 		if(PlayerEffect.Zoom.containsKey(player)){
 			if(PlayerEffect.Zoom.get(player)){
-				spread_=ManUtils.Random(0.05);
+				spread_=MathUtils.Random(0.05);
 			}
 		}
 		final double Spread = spread_;
@@ -621,10 +713,10 @@ public class WeaponListner implements Listener {
 
 				Vector v = player.getLocation().getDirection();
 				v.multiply(3.0);
-				double x = ManUtils.Random(Spread);
-				double y = ManUtils.Random(Spread);
+				double x = MathUtils.Random(Spread);
+				double y = MathUtils.Random(Spread);
 				
-				double z = ManUtils.Random(Spread);
+				double z = MathUtils.Random(Spread);
 				Vector spread = new Vector(x, y, z);
 				v.add(spread);
 					snowball.setVelocity(v);
@@ -656,10 +748,10 @@ public class WeaponListner implements Listener {
 				Snowball snowball = player.launchProjectile(Snowball.class);
 				Vector v = player.getLocation().getDirection();
 				v.multiply(3.0);
-				double x = ManUtils.Random(Spread);
-				double y = ManUtils.Random(Spread);
+				double x = MathUtils.Random(Spread);
+				double y = MathUtils.Random(Spread);
 				
-				double z = ManUtils.Random(Spread);
+				double z = MathUtils.Random(Spread);
 				Vector spread = new Vector(x, y, z);
 				v.add(spread);
 					snowball.setVelocity(v);				

@@ -9,8 +9,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import net.minecraft.server.v1_8_R2.Items;
+
 import org.bukkit.GameMode;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class SchedulerHunger extends BukkitRunnable {
@@ -20,7 +24,6 @@ public class SchedulerHunger extends BukkitRunnable {
 	private CustomSuitPlugin mainPlugin;
 	boolean isRunning = false;
 	SpawningDao dao;
-	private Thread thisThread;
 	public static  List<Player> playerQueue = new ArrayList<>();
 	public static ArrayList<Player>removedPlayer = new ArrayList<>();
 	float maxFly_Speed = 0.75F;
@@ -28,18 +31,12 @@ public class SchedulerHunger extends BukkitRunnable {
 	
 	public SchedulerHunger(CustomSuitPlugin main) {
 		this.mainPlugin = main;
-		this.thisThread = new Thread(this, "T-HUNGER");
 	}
 
-	public void startThread() {
-		this.thisThread.start();
-	}
-
-	public void run() throws IllegalStateException {
-		int taskID = 0;
+	@Override
+	public void run()  {
 	try {
 		
-		 taskID = this.getTaskId();
 		
 	} catch (IllegalStateException e) {
 		
@@ -47,11 +44,15 @@ public class SchedulerHunger extends BukkitRunnable {
 		
 			if (SchedulerHunger.playerQueue.isEmpty()) {
 				this.mainPlugin.logger.info("EMPTY QUEUQ");
-				
-				ThorUtils.cancel(taskID);
-				
+				try {
+					
+					isRunning = false;
+					cancel();
+				} catch (IllegalStateException e) {
+				}
 			
-			}else{
+			}
+				isRunning = true;
 			Iterator<Player> itrerator = getPlayer().iterator();
 			
 			
@@ -79,13 +80,16 @@ public class SchedulerHunger extends BukkitRunnable {
 							}
 							
 						}else{
+							if(count%25==0){
 							hunger(player, Values.SuitHungerRelod);
+							repairarmor(player);
+							}
 						}
 					}
 				}
+				count ++;
 				playerQueue.removeAll(removedPlayer);
 				removedPlayer.clear();
-			}
 	}
 	
 	private boolean getRemovePlayer(Player player) {
@@ -104,41 +108,35 @@ public class SchedulerHunger extends BukkitRunnable {
 	public static boolean containPlayer(Player player){
 		return playerQueue.contains(player);
 	}
-	private void repairarmor(Player p) {
-		if (p.getEquipment().getHelmet() != null) {
-
-			short HelemtDurability = p.getEquipment().getHelmet().getDurability();
-			if(HelemtDurability!=0){
-			p.getEquipment().getHelmet().setDurability((short) (HelemtDurability - 1));
-			}
-			
-		}
-		if (p.getEquipment().getChestplate() != null) {
-			short ChestplateDurability = p.getEquipment().getChestplate().getDurability();
-			if(ChestplateDurability!=0){
-			p.getEquipment().getChestplate().setDurability((short) (ChestplateDurability - 1));
-			}
-
-		}
-		if (p.getEquipment().getLeggings() != null) {
-
-			short leggingsDurability = p.getEquipment().getLeggings().getDurability();
-			if(leggingsDurability!=0){
-			p.getEquipment().getLeggings().setDurability((short) (leggingsDurability - 1));
-			}
-		}
-		if (p.getEquipment().getBoots() != null) {
-			short BootsDurability = p.getEquipment().getBoots().getDurability();
-			if(BootsDurability!=0){
-			p.getEquipment().getBoots().setDurability((short) (BootsDurability - 1));
-			}
-
-		}
+	private void repairarmor(Player player) {
+		ItemStack[]armor = player.getEquipment().getArmorContents();
+		addDurability(armor[0], (short)1);
+		addDurability(armor[1], (short)1);
+		addDurability(armor[2], (short)1);
+		addDurability(armor[3], (short)1);
 		
 		
 
 	}
-
+	public static void addDurability(ItemStack itemStack , short addDurability){
+		if(itemStack.getType() == Material.AIR){
+			return;
+		}
+		short durability = itemStack.getDurability();
+		short max_durability = itemStack.getType().getMaxDurability();
+		short final_durability =0;
+		
+		if((durability-addDurability)>max_durability){
+			final_durability = max_durability;
+		}else{
+			final_durability = (short) (durability-addDurability);
+		}
+		if(final_durability<0){
+			final_durability = 0;
+		}
+		itemStack.setDurability(final_durability);
+		
+	}
 	
 
 	private List<Player> getPlayer() {
@@ -146,7 +144,6 @@ public class SchedulerHunger extends BukkitRunnable {
 	}
 
 	public void addFlyingPlayer(Player flyingPlayer) throws IllegalStateException{
-		flyingPlayer.sendMessage(playerQueue+"");
 
 		if (playerQueue.contains(flyingPlayer)) {
 			return;
@@ -158,8 +155,7 @@ public class SchedulerHunger extends BukkitRunnable {
 			return;
 		}
 			if(!isRunning){
-					thisThread.interrupt();
-					this.runTaskTimer(mainPlugin, 0,1);
+					new SchedulerHunger(mainPlugin).runTaskTimer(mainPlugin, 0,1);
 					if(!Target.isRunning){
 					new Target(mainPlugin).runTaskTimer(mainPlugin, 0, 1);
 					}
