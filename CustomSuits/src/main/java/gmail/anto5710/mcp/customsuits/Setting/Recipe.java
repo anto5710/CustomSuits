@@ -27,24 +27,24 @@ public class Recipe {
 		suitrecipe.shape("*%*", "_!_", "*%*");
 		suitrecipe.setIngredient('*', Material.GOLD_INGOT);
 		
-		suitrecipe.setIngredient('%', Material.REDSTONE_COMPARATOR);
-		suitrecipe.setIngredient('_', Material.DIODE);
+		suitrecipe.setIngredient('%', Material.COMPARATOR);
+		suitrecipe.setIngredient('_', Material.REPEATER);
 		suitrecipe.setIngredient('!', Material.COMPASS);
 		
 
 		server.addRecipe(suitrecipe);
 		ShapedRecipe Smoke_recipe = new ShapedRecipe(CustomSuitPlugin.Smoke);
 		Smoke_recipe.shape("^^^"  ,"^*^" , "^^^");
-		Smoke_recipe.setIngredient('^',Material.SULPHUR);
-		Smoke_recipe.setIngredient('*',Material.FIREWORK_CHARGE);
+		Smoke_recipe.setIngredient('^',Material.GUNPOWDER);
+		Smoke_recipe.setIngredient('*',Material.FIREWORK_STAR);
 		
 		server.addRecipe(Smoke_recipe);
 		
 		ShapedRecipe Bomb_recipe = new ShapedRecipe(CustomSuitPlugin.Bomb);
 		Bomb_recipe.shape("^*^"  ,"*&*" , "^*^");
-		Bomb_recipe.setIngredient('^',Material.SULPHUR);
+		Bomb_recipe.setIngredient('^',Material.GUNPOWDER);
 		Bomb_recipe.setIngredient('*',Material.SAND);
-		Bomb_recipe.setIngredient('&',Material.FIREWORK_CHARGE);
+		Bomb_recipe.setIngredient('&',Material.FIREWORK_STAR);
 		
 		server.addRecipe(Bomb_recipe);
 		
@@ -52,8 +52,8 @@ public class Recipe {
 
 		gunrecipe.shape("&&*", "^$!", "&&*");
 		gunrecipe.setIngredient('&', Material.IRON_INGOT);
-		gunrecipe.setIngredient('*', Material.SULPHUR);
-		gunrecipe.setIngredient('!', Material.IRON_BARDING);
+		gunrecipe.setIngredient('*', Material.GUNPOWDER);
+		gunrecipe.setIngredient('!', Material.IRON_HORSE_ARMOR);
 		gunrecipe.setIngredient('$', Material.REDSTONE);
 		gunrecipe.setIngredient('^', Material.TNT);
 
@@ -64,10 +64,10 @@ public class Recipe {
 		launcherrecipe.shape("^@@", "$!%", "^@@");
 		
 		launcherrecipe.setIngredient('@', Material.IRON_INGOT);
-		launcherrecipe.setIngredient('$', Material.GOLD_BARDING);
+		launcherrecipe.setIngredient('$', Material.GOLDEN_HORSE_ARMOR);
 		launcherrecipe.setIngredient('%', Material.TNT);
-		launcherrecipe.setIngredient('!', Material.PISTON_BASE);
-		launcherrecipe.setIngredient('^', Material.SULPHUR);
+		launcherrecipe.setIngredient('!', Material.PISTON);
+		launcherrecipe.setIngredient('^', Material.GUNPOWDER);
 		
 
 		server.addRecipe(launcherrecipe);
@@ -111,7 +111,7 @@ public class Recipe {
 		Man_Sword_recipe.setIngredient('*', Material.GOLD_INGOT);
 		Man_Sword_recipe.setIngredient('|', Material.STICK);
 		
-		Man_Sword_recipe.setIngredient('C', Material.GOLD_SWORD);
+		Man_Sword_recipe.setIngredient('C', Material.GOLDEN_SWORD);
 		
 		server.addRecipe(Man_Sword_recipe);
 	}

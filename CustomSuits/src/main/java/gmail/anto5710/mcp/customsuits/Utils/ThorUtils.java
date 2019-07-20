@@ -1,7 +1,6 @@
 package gmail.anto5710.mcp.customsuits.Utils;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
-
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.PlayerEffect;
 import gmail.anto5710.mcp.customsuits._Thor.Hammer_Throw_Effect;
 
@@ -19,25 +18,33 @@ import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.scheduler.BukkitScheduler;
 
 public class ThorUtils {
+	public static void removeItemInHand(Player player){
+		ItemStack ItemInHand = SuitUtils.getHoldingItem(player);
+		ItemInHand.setAmount(ItemInHand.getAmount()-1);
+		player.getInventory().setItemInMainHand(ItemInHand);
+		player.updateInventory();
+	}
+	
+	
 	/**
 	 * Find Thor's Hammer from World
 	 * @param world World to Find
 	 * @param player Player
 	 * @return
 	 */
-	public static Item getItem(World world, Player player) {
-		for(Entity entity : world.getEntitiesByClass(Item.class )){
-				Item item = (Item) entity;
-				if(SuitUtils.CheckItem(CustomSuitPlugin.hammer, item.getItemStack())){
-					return item;
-				}
+	public static Item getDroppedHammer(World world, Player player) {
+		for (Entity entity : world.getEntitiesByClass(Item.class)) {
+			Item item = (Item) entity;
+			if (SuitUtils.checkItem(CustomSuitPlugin.hammer, item.getItemStack())) {
+				return item;
+			}
 		}
-	return null;
+		return null;
 	}
 	/**
 	 * If Player is holding Thor's Hammer , return true;
@@ -45,7 +52,7 @@ public class ThorUtils {
 	 * @return is player holding Hammer
 	 */
 	public static boolean isHammerinHand(Player player){
-		return SuitUtils.CheckItem(CustomSuitPlugin.hammer, player.getItemInHand());
+		return SuitUtils.checkItem(CustomSuitPlugin.hammer, SuitUtils.getHoldingItem(player));
 	}
 	/**
 	 * 
@@ -55,14 +62,13 @@ public class ThorUtils {
 	 * @return Entities in radius
 	 */
 	public static List<Entity> findEntity(Location location , double radius , Player player){
-	
-		ArrayList<Entity>list =new ArrayList<>();
+		ArrayList<Entity>list = new ArrayList<>();
 		Collection<Entity>EntityInWorld = location.getWorld().getEntitiesByClasses(Damageable.class);
 		EntityInWorld.remove(player);
 		
 		for(Entity entity : EntityInWorld){
-				if(entity instanceof Damageable && distance2D(entity, location, radius)){
-					list.add(entity);
+			if(entity instanceof Damageable && distance2D(entity, location, radius)){
+				list.add(entity);
 			}
 		}	
 		return list;
@@ -105,7 +111,7 @@ public class ThorUtils {
 	 * @param player Player to remove PotionEfffect
 	 */
 	public static void removePotionEffect(PotionEffect PotionEffect, Player player) {
-		if(PlayerEffect.ContainPotionEffect(player, PotionEffect.getType(), PotionEffect.getAmplifier())){
+		if(PlayerEffect.containPotionEffect(player, PotionEffect.getType(), PotionEffect.getAmplifier())){
 			player.removePotionEffect(PotionEffect.getType());
 		}
 	}
@@ -115,10 +121,7 @@ public class ThorUtils {
 	 * @return is entity burning
 	 */
 	public static boolean isBurning(Entity entity) {
-	if	((entity.getFireTicks() == -1 || entity.getFireTicks() == 0) == false){
-		return false;
-	}
-		return false;
+		return entity.getFireTicks() > 0;
 	}
 	/**
 	 * Check is item onGround
@@ -126,18 +129,16 @@ public class ThorUtils {
 	 * @return is item onGround
 	 */
 	public static boolean isOnGround(Item item) {
-		if(item.isOnGround()){
+		if (item.isOnGround()) {
 			return true;
 		}
 		Location location = item.getLocation().add(0, -1, 0);
 		Block block = location.getBlock();
+
+		Material matareial = block.getType();
+		List<Material> Ignore_materials = Arrays.asList(Material.WATER, Material.LEGACY_STATIONARY_WATER, Material.AIR);
 		
-			Material matareial = block.getType();
-			List<Material>Ignore_materials = Arrays.asList(Material.WATER , Material.STATIONARY_WATER , Material.AIR);
-			if(!Ignore_materials.contains(matareial)){
-				return true;
-			}
-		return false;
+		return !Ignore_materials.contains(matareial);
 	}
 	/**
 	 * Remove item from Thorwn Hammers
@@ -160,26 +161,15 @@ public class ThorUtils {
 	 * @param damage Damage
 	 * @param player player
 	 */
-	public static void damage(java.util.List<Entity> list, double damage,
-			Player player) {
+	public static void damage(java.util.List<Entity> list, double damage, Player player) {
 			list.remove(player);
 		for (Entity e : list) {
 			if (e instanceof Damageable) {
 				((Damageable) e).damage(damage);
-
 			}
 		}
 	}
-	/**
-	 * Return new random number
-	 * @param a radius of Random number 
-	 * @return new random number
-	 */
-	public static double Random(double a ){
-		double b = a / 2;
-		double random = (Math.random() * a) - b;
-		return random;
-	}
+
 	/**
 	 * Strike Lightning
 	 * @param loc Target Location
@@ -187,12 +177,9 @@ public class ThorUtils {
 	 * @param amount Amount of Striking
 	 */
 	public static void strikeLightnings(Location loc, Player player , int amount) {
-	
 		for (int c = 0; c < amount; c++) {
 			loc.getWorld().strikeLightning(loc);
 		}
 	}
-
-
 
 }

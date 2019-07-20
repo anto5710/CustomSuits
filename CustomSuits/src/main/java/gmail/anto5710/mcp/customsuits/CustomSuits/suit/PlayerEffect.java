@@ -1,5 +1,6 @@
 package gmail.anto5710.mcp.customsuits.CustomSuits.suit;
 
+import gmail.anto5710.mcp.customsuits.CustomSuits.FireworkProccesor;
 import gmail.anto5710.mcp.customsuits.CustomSuits.PlayEffect;
 import gmail.anto5710.mcp.customsuits.CustomSuits.dao.SpawningDao;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
@@ -70,7 +71,7 @@ import org.bukkit.potion.PotionType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
-import org.junit.internal.matchers.IsCollectionContaining;
+
 
 /**
 
@@ -82,25 +83,24 @@ import org.junit.internal.matchers.IsCollectionContaining;
 public class PlayerEffect implements Listener {
 	private static CustomSuitPlugin mainPlugin;
 	private Logger logger;
-	static SchedulerHunger hungerscheduler;
+	static HungerScheduler hungerscheduler;
 	String regex = Values.regex;
 	static HashMap<Player, Boolean>Zoom = new HashMap<>();
 
 	public PlayerEffect(CustomSuitPlugin main) {
-		this.mainPlugin = main;
+		PlayerEffect.mainPlugin = main;
 		logger = mainPlugin.getLogger();
 		hungerscheduler = main.hscheduler;
 	}
 	
 	public static void spawnfireworks(final Player whoClicked) {
-		boolean isPlayed = false;
 		final List<Entity> list = whoClicked.getWorld().getEntities();
 		new BukkitRunnable() {
 			boolean isPlayed=false;
 			@Override
 			public void run() {
 				for (Entity entity : list) {
-					if (CustomSuitPlugin.isCreatedBy(entity, whoClicked)&&entity instanceof Damageable) {
+					if (CustomSuitPlugin.isCreatedBy(entity, whoClicked) && entity instanceof Damageable) {
 						entity.getWorld().createExplosion(entity.getLocation(), 8.0F);
 						Damageable damgaeable = (Damageable) entity;
 						damgaeable.damage(1000000.0D, whoClicked);
@@ -109,9 +109,9 @@ public class PlayerEffect implements Listener {
 								location, EntityType.FIREWORK);
 						
 						FireworkMeta meta = firework.getFireworkMeta();
-						FireworkEffect effect = SuitUtils.getRandomEffect();
+						FireworkEffect effect = FireworkProccesor.getRandomEffect();
 						meta.addEffect(effect);
-						int power = (int) ( MathUtils.Random(3)+1.5);
+						int power = (int) ( MathUtils.randomRadius(3)+1.5);
 						if(power<1){
 							power++;
 						}
@@ -129,145 +129,105 @@ public class PlayerEffect implements Listener {
 			}
 			
 		}.runTaskLater(mainPlugin, 20);
-		
-		
-
-		
-
 	}
+
 	public static void playSpawningEffect(Entity entity, final Player player) {
-		
-			
-		
-		
 		Location playerlocation = player.getLocation();
+		LivingEntity lentity = (LivingEntity) entity;
 
-		 LivingEntity livingentity = (LivingEntity) entity;
-		
+		if (entity.getType() != EntityType.PLAYER
+				&& PlayerEffect.hasArmor(lentity.getEquipment().getArmorContents())
+				&& SuitUtils.canWearArmor(lentity)
+				&& CustomSuitPlugin.isMarkEntity(lentity)
+				&& CustomSuitPlugin.dao.isCreatedBy(lentity, player) 
+				&& entity.getVehicle() == null) {
 
-		if (entity.getType() != EntityType.PLAYER) {
-			if (PlayerEffect.hasArmor(livingentity.getEquipment().getArmorContents())&&Values.Allowed_Suit_Summon_types.contains(livingentity.getType())) {
-				if (CustomSuitPlugin.MarkEntity(livingentity)
-						&& CustomSuitPlugin.dao.isCreatedBy(livingentity, player)) {
+			Location entitylocation = lentity.getLocation();
+			CustomSuitPlugin.runSpawn(entitylocation, playerlocation, lentity, player);
+			
+			new BukkitRunnable() {
 
-					Location entitylocation = livingentity.getLocation();
-					
-					Entity vehicle = null ;
-					CustomSuitPlugin.runSpawn(entitylocation , vehicle , playerlocation , livingentity , player);
-					final LivingEntity livingEntity = livingentity;
-					new BukkitRunnable() {
-						
-						 ItemStack helmet = livingEntity.getEquipment().getHelmet();
-						 ItemStack chestplate = livingEntity.getEquipment().getChestplate();
-						
-						 LivingEntity Entity = livingEntity;
-						
-						@Override
-						public void run() {
-							if (CustomSuitPlugin.MarkEntity(livingEntity)
-									&& CustomSuitPlugin.dao.isCreatedBy(livingEntity, player)) {
-								player.setNoDamageTicks(20);
-								PlayEffect.play_Suit_Get(player.getLocation(), player);
-								Bukkit.getScheduler().runTaskLater(mainPlugin, new Runnable() {
-									
-									@Override
-									public void run() {
-										if (Entity.getEquipment().getHelmet() != null) {
+				ItemStack helmet = lentity.getEquipment().getHelmet();
+				ItemStack chestplate = lentity.getEquipment().getChestplate();
 
-											player.getEquipment().setHelmet(helmet);
-											player.playSound(player.getLocation(),
-													Sound.ANVIL_LAND, 9.0F, 9.0F);
-											
-											
-										}
-										
-									}
-								}, 2);
-								Bukkit.getScheduler().runTaskLater(mainPlugin, new Runnable() {
-									
-									@Override
-									public void run() {
-										if (Entity.getEquipment().getChestplate() != null) {
+				LivingEntity Entity = lentity;
 
-											player.getEquipment().setChestplate(chestplate);
-											player.playSound(player.getLocation(),
-													Sound.ANVIL_LAND, 9.0F, 9.0F);
-											
-											
-										}
-										
-									}
-								}, 12);
-								Bukkit.getScheduler().runTaskLater(mainPlugin, new Runnable() {
-									
-									@Override
-									public void run() {
-										if (Entity.getEquipment().getLeggings() != null) {
-											ItemStack leggings = Entity.getEquipment()
-													.getLeggings();
-											player.getEquipment().setLeggings(leggings);
-											player.playSound(player.getLocation(),
-													Sound.ANVIL_LAND, 9.0F, 9.0F);
-											
-											
-										}
-										
-									}
-								}, 16);	
-								Bukkit.getScheduler().runTaskLater(mainPlugin, new Runnable() {
-									
-									@Override
-									public void run() {
-										if (Entity.getEquipment().getBoots() != null) {
-											ItemStack boots = Entity.getEquipment()
-													.getBoots();
-											player.getEquipment().setBoots(boots);
-											player.playSound(player.getLocation(),
-													Sound.ANVIL_LAND, 9.0F, 9.0F);
-											
-											
-										}
-										
-									}
-								}, 24);
-								
+				@Override
+				public void run() {
+					if (SuitUtils.canWearArmor(lentity) && CustomSuitPlugin.isMarkEntity(lentity)
+							&& CustomSuitPlugin.dao.isCreatedBy(lentity, player)) {
+						player.setNoDamageTicks(20);
+						PlayEffect.play_Suit_Get(player.getLocation(), player);
+						Bukkit.getScheduler().runTaskLater(mainPlugin, new Runnable() {
 
-								livingEntity.damage(1000000.0D);
-								player.playSound(player.getLocation(),
-										Sound.ENDERDRAGON_DEATH, 9.0F, 9.0F);
-								player.sendMessage(Values.SuitCallMessage);
-								player.updateInventory();
-								
+							@Override
+							public void run() {
+								if (Entity.getEquipment().getHelmet() != null) {
+
+									player.getEquipment().setHelmet(helmet);
+									player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_USE, 9.0F, 9.0F);
+								}
 							}
-						}
+						}, 2);
+						Bukkit.getScheduler().runTaskLater(mainPlugin, new Runnable() {
 
-					
-							
-					}.runTaskLater(mainPlugin, 10);
-		
-		
-				
-			}
+							@Override
+							public void run() {
+								if (Entity.getEquipment().getChestplate() != null) {
+
+									player.getEquipment().setChestplate(chestplate);
+									player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_LAND, 9.0F, 9.0F);
+								}
+							}
+						}, 12);
+						Bukkit.getScheduler().runTaskLater(mainPlugin, new Runnable() {
+
+							@Override
+							public void run() {
+								if (Entity.getEquipment().getLeggings() != null) {
+									ItemStack leggings = Entity.getEquipment().getLeggings();
+									player.getEquipment().setLeggings(leggings);
+									player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_LAND, 9.0F, 9.0F);
+
+								}
+							}
+						}, 16);
+						Bukkit.getScheduler().runTaskLater(mainPlugin, new Runnable() {
+
+							@Override
+							public void run() {
+								if (Entity.getEquipment().getBoots() != null) {
+									ItemStack boots = Entity.getEquipment().getBoots();
+									player.getEquipment().setBoots(boots);
+									player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_LAND, 9.0F, 9.0F);
+
+								}
+							}
+						}, 24);
+
+						lentity.damage(1000000.0D);
+						player.playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_DEATH, 9.0F, 9.0F);
+						player.sendMessage(Values.SuitCallMessage);
+						player.updateInventory();
+					}
+				}
+
+			}.runTaskLater(mainPlugin, 10);
 		}
-	
-		}
-	
 	}
 
 	@EventHandler
-	public void ClickspawnSuit(PlayerInteractEvent event){
+	public void clickToSpawnSuit(PlayerInteractEvent event){
 		Player player = event.getPlayer();
-		if(!SuitUtils.CheckItem(CustomSuitPlugin.suitremote, player.getItemInHand())){
+		if(!SuitUtils.checkItem(CustomSuitPlugin.suitremote, SuitUtils.getHoldingItem(player))){
 			return;
 		}
-		if(event.getAction()!=Action.LEFT_CLICK_AIR&&event.getAction()!=Action.LEFT_CLICK_BLOCK){
+		if(!SuitUtils.isLeftClick(event)){
 			return;
 		}
 		Location location_entity =SuitUtils.getTargetBlock(player, Values.spawnSuit_max_target_distance).getLocation();
 		location_entity.add(0, 1.5, 0);
-//		if(!CustomSuitPlugin.target.containsKey(player)){
-//			CustomSuitPlugin.target.put(player, );
-//		}
+
 		String vehicle = null;
 		if(CustomSuitPlugin.vehicle_map.containsKey(player)){
 			vehicle = CustomSuitPlugin.vehicle_map.get(player);
@@ -284,47 +244,40 @@ public class PlayerEffect implements Listener {
 		}
 		String entityname = CustomSuitPlugin.Type_Map.get(player);
 		int amount = CustomSuitPlugin.amount.get(player);
-		
-		
-		CustomSuitPlugin.spawnentity(entityname,vehicle, amount, target,player, location_entity);
+				
+		CustomSuitPlugin.spawnEntity(entityname,vehicle, amount, target,player, location_entity);
 	}
+
 	@EventHandler
 	public void onPlayermove(PlayerMoveEvent moveevent) {
 		Player player = moveevent.getPlayer();
 
-		if (!CustomSuitPlugin.MarkEntity(player)) {
-			return;
-		}
-		if(Player_Move.list.contains(player)){
-			return;
-		}
-		if (CustomSuitPlugin.MarkEntity(player)) {
-				if(Player_Move.list.isEmpty()){
-				 new Player_Move(mainPlugin).runTaskTimer(mainPlugin, 0, 1);
-				}
-				
-				Player_Move.list.add(player);
-				if(SchedulerHunger.containPlayer(player)){
-					return;
-				}
-				if(player.getFoodLevel()>=Values.SuitFlyHunger){
-					hungerscheduler.addFlyingPlayer(player);
-				}
+		if (!CustomSuitPlugin.isMarkEntity(player) || Player_Move.list.contains(player)) return;
+		
+		if (CustomSuitPlugin.isMarkEntity(player)) {
+			if (Player_Move.list.isEmpty()) {
+				new Player_Move(mainPlugin).runTaskTimer(mainPlugin, 0, 1);
+			}
+
+			Player_Move.list.add(player);
+			if (HungerScheduler.containPlayer(player)) {
+				return;
+			}
+			if (player.getFoodLevel() >= Values.SuitFlyHunger) {
+				hungerscheduler.addFlyingPlayer(player);
+			}
 		}
 	}
 
 	@EventHandler
 	public void onEntityDeath(EntityDeathEvent event) {
 		Entity DeadEntity = event.getEntity();
-		if(SpawningDao.spawnMap.containsKey(DeadEntity.getEntityId())){
-		
-		if (DeadEntity instanceof Player==false) {
-
-			SpawningDao dao = this.mainPlugin.getDao();
-			dao.remove(DeadEntity);
+		if (SpawningDao.spawnMap.containsKey(DeadEntity.getEntityId())) {
+			if (!(DeadEntity instanceof Player)) {
+				SpawningDao dao = PlayerEffect.mainPlugin.getDao();
+				dao.remove(DeadEntity);
 			}
 		}
-
 	}
 
 	/**
@@ -337,153 +290,116 @@ public class PlayerEffect implements Listener {
 		Player player = event.getPlayer();
 		Entity entity = event.getRightClicked();
 		
+		SpawningDao dao = PlayerEffect.mainPlugin.getDao();
+		if(!(entity instanceof LivingEntity) || !dao.isCreatedBy(entity, player)) return;
 
-		SpawningDao dao = this.mainPlugin.getDao();
-		if(!Values.Allowed_Suit_Summon_types.contains(entity.getType())){
+		LivingEntity lentity = (LivingEntity) entity;
+		if(!hasArmor(lentity.getEquipment().getArmorContents())){
 			return;
 		}
 		
-		if(!dao.isCreatedBy(entity, player)){
-			return;
-		}
-
-		LivingEntity livingentity = (LivingEntity) entity;
-		if(!hasArmor(livingentity.getEquipment().getArmorContents())){
-			return;
-		}
 		// 4개를 다 가지고 있음!
-
-		ItemStack chestItem = livingentity.getEquipment().getChestplate();
-
-		ItemStack leggings = livingentity.getEquipment().getLeggings();
-		ItemStack boots = livingentity.getEquipment().getBoots();
-		ItemStack helmet = livingentity.getEquipment().getHelmet();
+		ItemStack chestItem = lentity.getEquipment().getChestplate();
+		ItemStack leggings = lentity.getEquipment().getLeggings();
+		ItemStack boots = lentity.getEquipment().getBoots();
+		ItemStack helmet = lentity.getEquipment().getHelmet();
 
 		player.getEquipment().setHelmet(helmet);
 		player.getEquipment().setChestplate(chestItem);
 		player.getEquipment().setLeggings(leggings);
 		player.getEquipment().setBoots(boots);
-		livingentity.damage(10000000D);
+		lentity.damage(10000000D);
 		player.updateInventory();
 		PlayEffect.play_Suit_Get(player.getLocation() , player );
 
 		player.playSound(player.getLocation(),Values.SuitSound, 9.0F, 9.0F);
-		dao.remove(livingentity);
+		dao.remove(lentity);
 	}
-	
+
 	public static boolean hasArmor(ItemStack[] armorContents) {
 		int checkCount = 0;
-		for(int index = 0; index < armorContents.length ; index++){
-				if(armorContents[index].getType() == Material.AIR){
-					checkCount++;
-				}
-			}
-		if(checkCount == armorContents.length){
-		return false;
+		for (int index = 0; index < armorContents.length; index++) {
+			ItemStack arm = armorContents[index]; 
+			if (SuitUtils.isNull(arm)) checkCount++; 
 		}
-		return true;
+		return checkCount < armorContents.length;
 	}
-	
+
 	@EventHandler
 	public void zoom(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
-		
-		if (event.getAction() == Action.LEFT_CLICK_AIR
-				|| event.getAction() == Action.LEFT_CLICK_BLOCK) {
-			if (CustomSuitPlugin.MarkEntity(player)) {
-				ItemStack item = player.getItemInHand();
-				if(item == null || item.getType() == Material.AIR){
-					return;
-				}
-				if(item.getItemMeta().getDisplayName()==null||item.getItemMeta().getDisplayName()==""){
-					return;
+
+		if (SuitUtils.isLeftClick(event) && CustomSuitPlugin.isMarkEntity(player)
+         && WeaponUtils.checkgun(player, CustomSuitPlugin.getGun())) {
+
+			if (Zoom == null)
+				return;
+
+			if (Zoom.containsKey(player)) {
+				boolean isZoomed = Zoom.get(player);
+				if (isZoomed) {
+					player.removePotionEffect(PotionEffectType.SLOW); //de-zoom
+				} else {
+					zoom(player);
 				}
 				
-				if (WeaponUtils.checkgun(player, item, CustomSuitPlugin.getGun())) {
-
-							if(Zoom==null){
-								
-							}else{
-								if(Zoom.containsKey(player)){
-									boolean isZoomed = Zoom.get(player);
-									if(isZoomed){
-										player.removePotionEffect(PotionEffectType.SLOW);
-										Zoom.put(player, false);
-									}else{
-										Zoom.put(player, true);
-										addpotion(new PotionEffect(PotionEffectType.SLOW, 999999999, 10),player);
-									}
-								}else{
-									Zoom.put(player, true);
-									addpotion(new PotionEffect(PotionEffectType.SLOW, 999999999, 10),player);
-								}
-							}
-
-						}
-					}
-				}
+				Zoom.put(player, !isZoomed);
+			} else {
+				Zoom.put(player, true);
+				zoom(player);
 			}
-
+		}
+	}
+	
+	private void zoom(Player p){
+		addpotion(new PotionEffect(PotionEffectType.SLOW, 999999999, 10), p);
+	}
+	
 	@EventHandler
 	public void onPlayerSneak(PlayerToggleSneakEvent p) {
 		final Player player = p.getPlayer();
 
-		if (CustomSuitPlugin.MarkEntity(player)) {
+		if (CustomSuitPlugin.isMarkEntity(player)) {
 			if (player.getFoodLevel() < Values.leastFlyHunger) {
-				SuitUtils.Wrong(player, "Energy");
+				SuitUtils.lack(player, "Energy");
 				return;
 			}
-			if(player.isFlying()&&SchedulerHunger.containPlayer(player)){
+			if (player.isFlying() && HungerScheduler.containPlayer(player)) {
 				return;
 			}
 
-				player.playSound(player.getLocation(),Values.SuitSneakSound, 1F, 1.0F);
+			player.playSound(player.getLocation(), Values.SuitSneakSound, 1F, 1.0F);
 
-				player.setFlySpeed(1F);
-				player.setAllowFlight(true);
-				player.setFlying(true);
-				player.setVelocity(new Vector(0, 1, 0));
-				
-				hungerscheduler.addFlyingPlayer(player);
+			player.setFlySpeed(1F);
+			player.setAllowFlight(true);
+			player.setFlying(true);
+			player.setVelocity(new Vector(0, 1, 0));
+
+			hungerscheduler.addFlyingPlayer(player);
 		}
-				
 	}
 
 	public static void addpotion(PotionEffect effect, LivingEntity livingEntity) {
-		if (!ContainPotionEffect(livingEntity, effect.getType(),
-				effect.getAmplifier())) {
+		if (!containPotionEffect(livingEntity, effect.getType(), effect.getAmplifier())) {
 			livingEntity.removePotionEffect(effect.getType());
 		}
 		livingEntity.addPotionEffect(effect);
 	}
 
-	public static boolean ContainPotionEffect(LivingEntity livingEntity,
-			PotionEffectType type, int level) {
-
+	public static boolean containPotionEffect(LivingEntity livingEntity, PotionEffectType type, int level) {
 		for (PotionEffect effect : livingEntity.getActivePotionEffects()) {
-
 			if (effect.getType().equals(type) && effect.getAmplifier() == level) {
-
 				return true;
-
 			}
 		}
-		
 		return false;
 	}
 
-
-	
-
-
-
-	public static void removingeffects(Player player) {
-
+	public static void removeEffects(Player player) {
 		player.setFlying(false);
 		player.setAllowFlight(false);
 		player.setFlySpeed(0.5F);
-
-
+		
 		player.removePotionEffect(PotionEffectType.FIRE_RESISTANCE);
 		player.removePotionEffect(PotionEffectType.ABSORPTION);
 		player.removePotionEffect(PotionEffectType.HEALTH_BOOST);
@@ -494,9 +410,5 @@ public class PlayerEffect implements Listener {
 		player.removePotionEffect(PotionEffectType.WATER_BREATHING);
 		player.removePotionEffect(PotionEffectType.NIGHT_VISION);
 		player.removePotionEffect(PotionEffectType.SLOW);
-		
-
-		
 	}
-
 }

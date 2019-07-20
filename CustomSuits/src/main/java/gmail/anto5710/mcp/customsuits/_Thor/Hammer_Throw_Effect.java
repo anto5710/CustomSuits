@@ -8,6 +8,7 @@ import gmail.anto5710.mcp.customsuits.CustomSuits.PlayEffect;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.WeaponListner;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
 import gmail.anto5710.mcp.customsuits.Utils.MathUtils;
+import gmail.anto5710.mcp.customsuits.Utils.ParticleUtil;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 import gmail.anto5710.mcp.customsuits.Utils.ThorUtils;
 
@@ -18,6 +19,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
+import org.bukkit.material.MaterialData;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
@@ -55,7 +57,7 @@ public class Hammer_Throw_Effect extends BukkitRunnable {
 				item.setPickupDelay(1);
 				java.util.List<Entity> list;
 				
-				SuitUtils.playEffect(loc, Values.HammerDefaultEffect, 55, 0, 4);
+				ParticleUtil.playEffect(Values.HammerDefaultEffect, loc, 55, 4);
 				list = WeaponListner.findEntity(loc, player, 1);
 		
 				ThorUtils.damage(list, Hammer.HammerDeafultDamage, player);
@@ -97,7 +99,7 @@ public class Hammer_Throw_Effect extends BukkitRunnable {
 		                    	
 		                        Location l = new Location(loc.getWorld(), x, y- 2, z);
 		                        float sx = (float) -1 + (float) (Math.random() * ((1 - -1) + 1));
-		            	        float sy = (float) (2/l.distance(loc)+MathUtils.Random(0.025));
+		            	        float sy = (float) (2/l.distance(loc)+MathUtils.randomRadius(0.025));
 		            	        float sz = (float) -0.3 + (float)(Math.random() * ((0.3 - -0.3) + 1));
 		            	        spawnFallingBlock(l.getBlock() , new Vector(sx*0.4, sy*0.4, sz));
 					}
@@ -115,12 +117,12 @@ public class Hammer_Throw_Effect extends BukkitRunnable {
 		World world = block.getWorld();
 		
 		Location loc = block.getLocation();
-		int id = block.getType().getId();
-		byte data = block.getData();
+//		int id = block.getType().getId();
+//		byte data = block.getData();
 		
 		block.breakNaturally();
 		
-		FallingBlock fallingBlock =world.spawnFallingBlock(loc,id ,data);
+		FallingBlock fallingBlock =world.spawnFallingBlock(loc, block.getBlockData());
 		
 		fallingBlock.setVelocity(vector);
 		

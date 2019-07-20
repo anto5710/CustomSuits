@@ -4,7 +4,7 @@
 
 	<groupId>gmail.anto5710.mcp.customsuits</groupId>
 	<artifactId>CustomSuits</artifactId>
-	<version>0.4.0.</version>
+	<version>0.5.0</version>
 	<packaging>jar</packaging>
 
 	<name>CustomSuits</name>
@@ -12,7 +12,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<JAR_DEST_DIR>/Users/anto5710/Desktop/spg/plugins</JAR_DEST_DIR>
+		<JAR_DEST_DIR>/Users/anto5710/게임/spg/plugins/</JAR_DEST_DIR>
 	</properties>
 
 	<repositories>
@@ -21,8 +21,8 @@
 			<url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
 		</repository>
 	</repositories>
-
 	<build>
+
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -42,17 +42,28 @@
 			</plugin>
 		</plugins>
 	</build>
+
+
 	<dependencies>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.8.1</version>
+			<scope>test</scope>
+		</dependency>
+
+
 		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot-api</artifactId>
-			<version>1.8.3-R0.1-SNAPSHOT</version>
+			<version>1.13.2-R0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.bukkit</groupId>
 			<artifactId>craftbukkit</artifactId>
-			<version>1.8.3-R0.1-SNAPSHOT</version>
+			<version>1.13.2-R0.1-SNAPSHOT</version>
 		</dependency>
-	</dependencies>
 
+	</dependencies>
 </project>

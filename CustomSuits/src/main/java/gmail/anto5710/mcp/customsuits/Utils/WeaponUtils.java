@@ -24,17 +24,18 @@ import org.bukkit.util.Vector;
 
 public class WeaponUtils {
 	static String regex = Values.regex;
-	public static boolean checkgun(Player player, ItemStack checkitem, ItemStack same) {
-		if (player.getItemInHand().getType() == same.getType()) {
 
-			if (player.getItemInHand().getItemMeta().getDisplayName() != null
-					&& player.getItemInHand().getItemMeta().getDisplayName()
-							.contains(regex)) {
-
-				return true;
-			}
+	public static boolean checkgun(Player player, ItemStack sample) {
+		ItemStack itemInHand = SuitUtils.getHoldingItem(player);
+		return containsRegex(itemInHand, sample, regex);
+	}
+	
+	private static boolean containsRegex(ItemStack itemInHand, ItemStack sample, String regex){
+		if(itemInHand==null){
+			return false;
 		}
-		return false;
+		return sample.getType() == itemInHand.getType() && 
+			   itemInHand.getItemMeta().getDisplayName().contains(regex); 
 	}
 
 	public static Location setRandomLoc(Location location, double a) {
@@ -50,8 +51,7 @@ public class WeaponUtils {
 		return loc;
 	}
 
-	public static int charge(final Player player, Material ammomat,
-			int amount, final CustomSuitPlugin plugin) {
+	public static int charge(final Player player, Material ammomat, int amount, final CustomSuitPlugin plugin) {
 		int ammoamount = 0;
 		final ItemStack ammo = new ItemStack(ammomat, 1);
 		if (player.getInventory().contains(ammomat, 1)) {
@@ -66,82 +66,71 @@ public class WeaponUtils {
 			}
 
 			player.updateInventory();
+			player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 4.0F, 1.0F);
 
-			player.playSound(player.getLocation(), Sound.LEVEL_UP, 4.0F, 1.0F);
-			
-			
-			
 			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-				
+
 				@Override
 				public void run() {
-					
-					player.playSound(player.getLocation(), Sound.ANVIL_LAND, 4.0F, 4.0F);
-					player.playSound(player.getLocation(), Sound.EXPLODE, 4.0F, 4.0F);
-					player.playSound(player.getLocation(), Sound.VILLAGER_HIT, 4.0F,
-							4.0F);
-					player.playSound(player.getLocation(), Sound.CLICK, 4.0F, 4.0F);
-					player.playSound(player.getLocation(), Sound.CREEPER_HISS, 4.0F,
-							4.0F);
-					
+
+					player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_LAND, 4.0F, 4.0F);
+					player.playSound(player.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 4.0F, 4.0F);
+					player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_HURT, 4.0F, 4.0F);
+					player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 4.0F, 4.0F);
+					player.playSound(player.getLocation(), Sound.ENTITY_CREEPER_PRIMED, 4.0F, 4.0F);
+
 				}
 			}, 40);
 			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-				
+
 				@Override
 				public void run() {
-			
-			
-			player.playSound(player.getLocation(), Sound.IRONGOLEM_HIT, 4.0F,
-					4.0F);
 
-			player.playSound(player.getLocation(), Sound.DIG_WOOD, 15.0F, 3.5F);
-			player.playSound(player.getLocation(), Sound.DOOR_CLOSE, 4.0F, 2.5F);
-			player.playSound(player.getLocation(), Sound.DOOR_OPEN, 4.0F, 4.0F);
-			WeaponListner.charging.put(player, false);
-				} 
-				}, 65);
+					player.playSound(player.getLocation(), Sound.ENTITY_IRON_GOLEM_HURT, 4.0F, 4.0F);
+					player.playSound(player.getLocation(), Sound.ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR, 15.0F, 3.5F);
+					player.playSound(player.getLocation(), Sound.BLOCK_IRON_DOOR_CLOSE, 4.0F, 2.5F);
+					player.playSound(player.getLocation(), Sound.BLOCK_IRON_DOOR_OPEN, 4.0F, 4.0F);
+					WeaponListner.charging.put(player, false);
+				}
+			}, 65);
 
 		} else {
-			SuitUtils.Wrong(player, "Ammo");
-			player.playSound(player.getLocation(), Sound.NOTE_STICKS, 6.0F,
-					6.0F);
+			SuitUtils.lack(player, "Ammo");
+			player.playSound(player.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 6.0F, 6.0F);
 		}
 		return ammoamount;
 	}
-	 public static Vector determinePosition(Player player, boolean dualWield, boolean leftClick)
-	  {
-	    int leftOrRight = 90;
-	    if ((dualWield) && (leftClick)) {
-	      leftOrRight = -90;
-	    }
-	    double playerYaw = (player.getLocation().getYaw() + 90.0F + leftOrRight) * 3.141592653589793D / 180.0D;
-	    double x = Math.cos(playerYaw);
-	    double y = Math.sin(playerYaw);
-	    Vector vector = new Vector(x, 0.0D, y);
-	    
-	    return vector;
-	  }
-	public static void damageandeffect(Location currentLoc, double damage,
-			Entity shooter, boolean isMissile, boolean isProjectile ,double  radius ) {
-		
-		for (Entity entity : WeaponListner.findEntity(currentLoc, shooter,radius)) {
 
-		
-				Damageable damageable = (Damageable) entity;
-
-				if (!isMissile&&isProjectile) {
-					if (entity instanceof LivingEntity) {
-						if(((LivingEntity)entity).getEyeLocation().distance(currentLoc)<=0.35){
-						damage = damage * 2;
-						WeaponListner.firework(currentLoc, shooter);
-						}
-					}
-				
-			}
-				damageable.damage(damage,shooter);
+	public static Vector determinePosition(Player player, boolean dualWield, boolean leftClick) {
+		int leftOrRight = 90;
+		if ((dualWield) && (leftClick)) {
+			leftOrRight = -90;
 		}
-		
+		double playerYaw = (player.getLocation().getYaw() + 90.0F + leftOrRight) * 3.141592653589793D / 180.0D;
+		double x = Math.cos(playerYaw);
+		double y = Math.sin(playerYaw);
+		Vector vector = new Vector(x, 0.0D, y);
+
+		return vector;
+	}
+
+	public static void damageNeffect(Location currentLoc, double damage, Entity shooter, boolean isMissile,
+			boolean isProjectile, double radius) {
+
+		for (Entity entity : WeaponListner.findEntity(currentLoc, shooter, radius)) {
+
+			Damageable damageable = (Damageable) entity;
+
+			if (!isMissile && isProjectile) {
+				if (entity instanceof LivingEntity
+						&& ((LivingEntity) entity).getEyeLocation().distanceSquared(currentLoc) <= 0.35 * 0.35) {
+					damage = damage * 2;
+					WeaponListner.firework(currentLoc, shooter);
+
+				}
+			}
+			damageable.damage(damage, shooter);
+		}
 	}
 
 	public static boolean ischarging(Player player) {
@@ -169,7 +158,7 @@ public class WeaponUtils {
 		}
 	}
 
-	public static void cooldown(double msec, CustomSuitPlugin plugin,final Player player) {
+	public static void cooldown(double msec, CustomSuitPlugin plugin, final Player player) {
 
 		// 1 tick = 0.05 sec
 		// 1 sec = 20 tick
@@ -177,21 +166,18 @@ public class WeaponUtils {
 
 		WeaponListner.cooldowns.put(player, true);
 		new BukkitRunnable() {
-			
+
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
-				
-				player.playSound(player.getLocation(), Sound.IRONGOLEM_HIT, 4.0F, 4.0F);	
-				
-				
-				
-				player.playSound(player.getLocation(), Sound.DIG_WOOD, 15.0F,3.5F);
-				player.playSound(player.getLocation(), Sound.DOOR_CLOSE, 4.0F, 2.5F);
-				player.playSound(player.getLocation(), Sound.DOOR_OPEN, 4.0F, 4.0F);	
+
+				player.playSound(player.getLocation(), Sound.ENTITY_IRON_GOLEM_HURT, 4.0F, 4.0F);
+
+				player.playSound(player.getLocation(), Sound.ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR, 15.0F, 3.5F);
+				player.playSound(player.getLocation(), Sound.BLOCK_WOODEN_DOOR_CLOSE, 4.0F, 2.5F);
+				player.playSound(player.getLocation(), Sound.BLOCK_WOODEN_DOOR_OPEN, 4.0F, 4.0F);
 				WeaponListner.cooldowns.put(player, false);
 			}
 		}.runTaskLater(plugin, tick);
-    
 	}
 }

@@ -1,7 +1,8 @@
 name: CustomSuits
 main: gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin
 description: The Special Suits.
-version: 0.4.0
+version: 0.5.0
+api-version: 1.13
 authors: [anto5710 , 02hunnam , sanseong] 
 
 commands:
@@ -21,13 +22,13 @@ commands:
         description: §bMake that player's head
         usage: "/head / head <Player>"
     clist:
-        description: §bGet the list about that topic.
+        description: §bGet the list about the topic.
         usage: "/clist [Color / Entity]"
     setcolor:
-        description: §bSet color of that ArmorType.
+        description: §bSet the color of the ArmorType.
         usage: "/setcolor [helmet / chestplate / leggings / boots] [Color]"
     setvehicle:
-        description: §bSet EntityType of Vehicle.
+        description: §bSet the EntityType of Vehicle.
         usage: "/setvehicle [Entity]"
     
     

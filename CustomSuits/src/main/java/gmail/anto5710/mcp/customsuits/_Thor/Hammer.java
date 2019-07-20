@@ -1,37 +1,39 @@
 package gmail.anto5710.mcp.customsuits._Thor;
 
 import java.util.HashSet;
+
+
 import java.util.Set;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.FireworkPlay;
+import gmail.anto5710.mcp.customsuits.CustomSuits.FireworkProccesor;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
+import gmail.anto5710.mcp.customsuits.Utils.ParticleUtil;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 import gmail.anto5710.mcp.customsuits.Utils.ThorUtils;
-import net.minecraft.server.v1_8_R2.EnumParticle;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
+import org.bukkit.GameMode;
 import org.bukkit.FireworkEffect.Type;
 import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Wither;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
+import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
@@ -42,6 +44,7 @@ public class Hammer implements Listener {
 	static double HammerDeafultDamage = Values.HammerDamage*2;
 	static Set<Player>Double_Jump_Cooldowns = new HashSet<>();
 	public static Player thor = null;
+	public static Thor_Move move = null; 
 
 	public Hammer(CustomSuitPlugin plugin) {
 		Hammer.plugin = plugin;
@@ -75,31 +78,29 @@ public class Hammer implements Listener {
 	 * @param event PlayerMoveEvent 
 	 */
 	@EventHandler
-	public void ThorMove(PlayerMoveEvent event) {
-		
+	public void ThorMove(PlayerMoveEvent event) {	
 		Player player = event.getPlayer();
-		if (Thor(player)) {
-			if(!Thor_Move.isRunning){
-				new Thor_Move(plugin, player).runTaskTimer(plugin, 0,1);
-				if(thor==null){
-					thor =  player;
-				}
+		if (isPractiallyThor(player) && !Thor_Move.isRunning) {
+			move = new Thor_Move(plugin, player); 
+			move.runTaskTimer(plugin, 0,1);
+			if(thor == null){
+				thor = player;
 			}
-			
 		}
 	}
+	
 	/**
 	 * Strike Lightning To Attacked Entity 
 	 * 
 	 * @param event EntityDamageByEntityEvent event
 	 */
 	@EventHandler
-	public void DamageLightning(EntityDamageByEntityEvent event) {
+	public void damageLightning(EntityDamageByEntityEvent event) {
 		Entity damager = event.getDamager();
 		Entity entity = event.getEntity();
 		if (damager instanceof Player) {
 			Player player = (Player) damager;
-			if(!Thor(player)){
+			if(!isPractiallyThor(player)){
 				return;
 			}
 			if (ThorUtils.isHammerinHand(player)) {
@@ -114,7 +115,7 @@ public class Hammer implements Listener {
 	 * @param entity  Entity to Teleport
 	 * @param location TargetLocation
 	 */
-	public static void TeleportItem(Item entity, Location location ) {
+	public static void teleportItem(Item entity, Location location) {
 		Vector vectorStart = entity.getLocation().toVector();
 		
 		Vector vectorEnd = location.toVector();
@@ -123,71 +124,64 @@ public class Hammer implements Listener {
 		
 		
 		final double distance = difference.length();
-		final Vector v =difference.normalize().multiply(0.5);
-		if (distance < 0) {
+		final Vector v = difference.normalize().multiply(0.5);
+		if (distance <= 0) {
 			return;
 		}
+		
 		Location currentLoc  = entity.getLocation().clone();
 		for(double x = 0; x<=distance ; x+=0.5){
-				currentLoc.add(v);
-				SuitUtils.playEffect(currentLoc, EnumParticle.HEART, 30 , 1 ,0);
-				entity.teleport(currentLoc);
+			currentLoc.add(v);
+			ParticleUtil.playEffect(Particle.NAUTILUS, currentLoc, 30);
+			entity.teleport(currentLoc);
 		}
-		
-			
-		
 	}
 	
-	/**
-	 * Teleport Entity to Targeted Location With Particle Trails
-	 * 
-	 * @param entity Entity to Teleport
-	 * @param To Target Location
-	 * @param effect EnumParticle type
-	 */
+	public static boolean canBeThor(Player player){
+		return player == Hammer.thor || Hammer.thor==null;
+	}
+	
+	public static boolean isThor(Player p){
+		return p == thor;
+	}
 	
 	/**
 	 * Check is that Player Thor 
 	 * @param player Player to Check
 	 * @return return true if Player is Thor
 	 */
-	public static boolean Thor(Player player) {
+	public static boolean isPractiallyThor(Player player) {
 		int count = 0;
-		if (SuitUtils.CheckItem(CustomSuitPlugin.Helemt_Thor, player.getEquipment()
-				.getHelmet())) {
+		EntityEquipment equipment = player.getEquipment();
+		if (SuitUtils.checkItem(CustomSuitPlugin.Helemt_Thor, equipment.getHelmet())) {
 			count++;
 		}
-		if (SuitUtils.CheckItem(CustomSuitPlugin.Chestplate_Thor, player
-				.getEquipment().getChestplate())) {
+		if (SuitUtils.checkItem(CustomSuitPlugin.Chestplate_Thor, equipment.getChestplate())) {
 			count++;
 		}
-		if (SuitUtils.CheckItem(CustomSuitPlugin.Leggings_Thor, player
-				.getEquipment().getLeggings())) {
+		if (SuitUtils.checkItem(CustomSuitPlugin.Leggings_Thor, equipment.getLeggings())) {
 			count++;
 		}
-		if (SuitUtils.CheckItem(CustomSuitPlugin.Boots_Thor, player.getEquipment()
-				.getBoots())) {
+		if (SuitUtils.checkItem(CustomSuitPlugin.Boots_Thor, equipment.getBoots())) {
 			count++;
 		}
-		if (count >= 2) {
-			return true;
-		}
-		return false;
+		return count >= 2;
 	}
+	
    /**
     * Cancel Picking up Hammer if Player is not Thor
     * @param event PlayerPickupItemEvent
     */
 	@EventHandler
-	public void CancelPicking_Up_Hammer(PlayerPickupItemEvent event){
+	public void cancelPicking_Up_Hammer(PlayerPickupItemEvent event){
 		Item item = event.getItem();
 		Player player =event.getPlayer();
-		if(SuitUtils.CheckItem(CustomSuitPlugin.hammer, item.getItemStack())){
-				if(player==thor){
-					ThorUtils.remove(item);
-					return;
-				}
-					event.setCancelled(true);
+		if(SuitUtils.checkItem(CustomSuitPlugin.hammer, item.getItemStack())){
+			if(player==thor){
+				ThorUtils.remove(item);
+				return;
+			}
+			event.setCancelled(true);
 		}
 	}
 	/**
@@ -195,13 +189,10 @@ public class Hammer implements Listener {
 	 * @param player Player to set
 	 */
 	public static void setThor(final Player player) {
-	
-
 		Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
-			
 			@Override
 			public void run() {
-				FireworkEffect effect = SuitUtils.getEffect(Color.RED, Type.STAR);
+				FireworkEffect effect = FireworkProccesor.getEffect(Color.RED, Type.STAR);
 				FireworkPlay.spawn(player.getLocation().add(0, 3, 0), effect, null);
 				player.getWorld().strikeLightningEffect(player.getLocation());
 				
@@ -217,44 +208,40 @@ public class Hammer implements Listener {
 			}
 		}, 10);
 	}
+	
+	private static int strength = 10;
 	/**
 	 * Spell the Leap Skill when Thor use space bar twice
 	 * @param event PlayerToggleFlightEvent
 	 */
 	@EventHandler
-	public static void Jump(PlayerInteractEvent event){
-		 Player player = event.getPlayer();
-		 if(event.getAction()==Action.RIGHT_CLICK_AIR||event.getAction()==Action.RIGHT_CLICK_BLOCK){
-		boolean canspell = (player==thor&&player.isSneaking()&&!player.isDead()&&ThorUtils.isHammerinHand(player));
-		boolean isCooldown = false;
-		if(Double_Jump_Cooldowns!=null){
-			if(Double_Jump_Cooldowns.contains(player)){
-				isCooldown = true;
-			}
-		}
-		 
-		if(canspell){
-			if(!isCooldown){
-				int strength = 10;
-	       
-				Vector vector = player.getLocation().getDirection().normalize().multiply(strength);
-				
-				SuitUtils.playEffect(player.getLocation(), EnumParticle.EXPLOSION_HUGE, 1, 0, 0);
-				player.setVelocity(vector);
-         
-				player.playSound(player.getLocation(), Sound.GHAST_FIREBALL, 5F, 1F);
-				Double_Jump_Cooldowns.add(player);
-				final Player player_ = player;
-				new BukkitRunnable() {
-			
-					@Override
-					public void run() {
-						Double_Jump_Cooldowns.remove(player_);
-					}
-				}.runTaskLater(plugin, 40);
+	public static void Jump(PlayerToggleFlightEvent event) {
+		Player player = event.getPlayer();
+
+		boolean canspell = player == thor && !player.isDead() && ThorUtils.isHammerinHand(player);
+		boolean isCooldown = Double_Jump_Cooldowns != null && Double_Jump_Cooldowns.contains(player);
+
+		if (canspell && !isCooldown) {
+			Vector vector = player.getLocation().getDirection().normalize().multiply(strength);
+
+			ParticleUtil.playEffect(Particle.EXPLOSION_HUGE, player.getLocation(), 1);
+			player.setVelocity(vector);
+
+			player.playSound(player.getLocation(), Sound.ENTITY_GHAST_SHOOT, 5F, 1F);
+			Double_Jump_Cooldowns.add(player);
+			final Player player_ = player;
+
+			new BukkitRunnable() {
+				@Override
+				public void run() {
+					Double_Jump_Cooldowns.remove(player_);
 				}
-			}
+			}.runTaskLater(plugin, 40);
+			
+		}
+		if(player==thor && isPractiallyThor(player) && player.getGameMode()!=GameMode.CREATIVE){
+			player.setFlying(false);
+			event.setCancelled(true);
 		}
 	}
-
 }

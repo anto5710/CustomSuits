@@ -42,7 +42,7 @@ public class Player_Move extends BukkitRunnable{
 			if(removed.contains(player)){
 				iterator.remove();
 			}
-			if(!CustomSuitPlugin.MarkEntity(player)){
+			if(!CustomSuitPlugin.isMarkEntity(player)){
 				removed.add(player);
 				iterator.remove();
 			}
@@ -75,7 +75,7 @@ public class Player_Move extends BukkitRunnable{
 			}
 		}
 		for(Player player:removed){
-			PlayerEffect.removingeffects(player);
+			PlayerEffect.removeEffects(player);
 		}
 		list.removeAll(removed);
 		removed.clear();
@@ -102,13 +102,15 @@ public class Player_Move extends BukkitRunnable{
 		
 	}
 	public static boolean isUnder_Water(Player player){
+		
 		Material checkEye = player.getEyeLocation().getBlock().getType();
 		Material checkUnder = player.getLocation().getBlock().getType();
 		Material checkMiddle = player.getLocation().add(0, 1, 0).getBlock().getType();
-		if((checkEye == Material.WATER|| checkEye == Material.STATIONARY_WATER)&& (checkUnder == Material.WATER|| checkUnder==Material.STATIONARY_WATER)&&
-				(checkMiddle == Material.WATER|| checkMiddle==Material.STATIONARY_WATER)){
-			return true;
-		}
-		return false;
+		
+		return isWater(checkEye) && isWater(checkMiddle) && isWater(checkUnder);
+	}
+	
+	private static boolean isWater(Material m){
+		return m!=null&& (m==Material.WATER || m==Material.LEGACY_STATIONARY_WATER);
 	}
 }

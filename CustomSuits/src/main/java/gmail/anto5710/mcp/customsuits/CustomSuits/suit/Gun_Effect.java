@@ -1,16 +1,15 @@
 package gmail.anto5710.mcp.customsuits.CustomSuits.suit;
 
-import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
+import gmail.anto5710.mcp.customsuits.Utils.ParticleUtil;
 import gmail.anto5710.mcp.customsuits.Utils.ThorUtils;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import net.minecraft.server.v1_8_R2.EnumParticle;
-
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_8_R2.util.UnsafeList.Itr;
+import org.bukkit.Particle;
+import org.bukkit.craftbukkit.v1_13_R2.util.UnsafeList.Itr;
 import org.bukkit.entity.Snowball;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -41,7 +40,7 @@ public class Gun_Effect extends BukkitRunnable{
 				iterator.remove();
 			}
 			else{
-				SuitUtils.playEffect(snowball.getLocation(), EnumParticle.CRIT, 1, 0, 0);
+				ParticleUtil.playEffect(Particle.CRIT, snowball.getLocation(), 1);
 			}
 		}
 		snowballs.removeAll(removed);

@@ -2,19 +2,22 @@ package gmail.anto5710.mcp.customsuits._Thor;
 
 import java.util.ArrayList;
 
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
 import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
-import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
-import net.minecraft.server.v1_8_R2.EnumParticle;
+import gmail.anto5710.mcp.customsuits.Utils.ParticleUtil;
+
 
 public class Thor_Changing extends BukkitRunnable{
 	CustomSuitPlugin plugin;
@@ -77,7 +80,7 @@ public class Thor_Changing extends BukkitRunnable{
               }else{
               PhiValues.put(player, phi+=Math.PI/8);
                
-              player.playSound(player.getLocation(), Sound.FUSE, 6F, 6F);
+              player.playSound(player.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, 6F, 6F);
               }
                  
          
@@ -107,7 +110,7 @@ public class Thor_Changing extends BukkitRunnable{
              y = 0.5*t;
              z = 0.4*(2*Math.PI-t)*0.5*Math.sin(t + phi + i*Math.PI);
              location.add(x, y, z);
-             SuitUtils.playEffect(location, EnumParticle.REDSTONE, 1,0, 0);
+             ParticleUtil.playDust(Particle.REDSTONE, location, 0D, 0D, 0D, 1, 0D, Color.RED, 0.8F);
              location.subtract(x,y,z);
 		}
 

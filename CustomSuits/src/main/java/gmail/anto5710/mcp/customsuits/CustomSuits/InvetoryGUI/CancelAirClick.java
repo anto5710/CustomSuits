@@ -1,19 +1,17 @@
 package gmail.anto5710.mcp.customsuits.CustomSuits.InvetoryGUI;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+
+import com.google.common.collect.Sets;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
 
-public class CancelAirClick  implements Listener{
+public class CancelAirClick extends InventoryNames implements Listener{
 	CustomSuitPlugin plugin;
 
 	public CancelAirClick(CustomSuitPlugin plugin) {
@@ -24,24 +22,12 @@ public class CancelAirClick  implements Listener{
 	 * @param event InventoryClickEvent
 	 */
 	@EventHandler
-	public void onClickAir_in_Inventorys(InventoryClickEvent event) {
-		if(event.getClickedInventory()==null){
-			return;
-		}
-		if(event.getClickedInventory().getName()==null){
-			return;
-		}
-		List<String> Inventorys = Arrays.asList("[Settings]" , "[Online Players]"
-			,	CustomSuitPlugin.type_inventory.getName()
-			,	CustomSuitPlugin.vehicle_inventory.getName()
-			,	CustomSuitPlugin.CommandInventory.getName()	);
-		
-		if (Inventorys.contains(event.getClickedInventory().getName())) {
-
+	public void onClickAir_in_Inventorys(InventoryClickEvent event) {	
+		if(SuitInventoryGUI.authenticateAccess(event, true, 
+			inventory_name, list_name, type_inventory_name, vehicle_inventory_name, CommandInventory_name)){
 			if (event.getCurrentItem().getType() == Material.AIR) {
 				event.setCurrentItem(new ItemStack(Material.AIR));
 				event.setCancelled(true);
-				return;
 			}
 		}
 	}
@@ -51,16 +37,8 @@ public class CancelAirClick  implements Listener{
 	 */
 	@EventHandler
 	public void onDragSettingInventory(InventoryDragEvent event) {
-		if(event.getInventory()==null){
-			return;
-		}
-		if(event.getInventory().getName()==null){
-			return;
-		}
-		if (event.getInventory().getName().contains("[Settings]")) {
-			
+		if(SuitInventoryGUI.authenticateAccess(event, inventory_name)){
 			event.setCancelled(true);
-			return;
 		}
 	}
 	/**
@@ -69,16 +47,8 @@ public class CancelAirClick  implements Listener{
 	 */
 	@EventHandler
 	public void onDragPlayerList(InventoryDragEvent event) {
-		if(event.getInventory()==null){
-			return;
-		}
-		if(event.getInventory().getName()==null){
-			return;
-		}
-		if (event.getInventory().getName().contains("[Online Players]")) {
-			
+		if(SuitInventoryGUI.authenticateAccess(event, list_name)){
 			event.setCancelled(true);
-			return;
 		}
 	}
 	/**
@@ -87,17 +57,10 @@ public class CancelAirClick  implements Listener{
 	 */
 	@EventHandler
 	public void onClickAirInArmorInventory(InventoryClickEvent event) {
-		if(event.getClickedInventory()==null){
-			return;
-		}
-		if(event.getClickedInventory().getName()==null){
-			return;
-		}
-		if (event.getClickedInventory().getName().contains("[Armor]")) {
-				if(!Arrays.asList(0 , 1 ,2 , 3 , 4 , 5 , 6 , 7 ,8,19 , 28 , 37 , 46 ,29).contains(event.getSlot())){
-					if(event.getCurrentItem().getType() == Material.AIR){
-						event.setCancelled(true);
-				}
+		if(SuitInventoryGUI.authenticateAccess(event, armorinventory_name)) {
+				if(!Sets.newHashSet(0, 1, 2, 3, 4, 5, 6, 7, 8, 19, 28, 37, 46, 29).contains(event.getSlot()) && 
+						event.getCurrentItem().getType() == Material.AIR){
+					event.setCancelled(true);
 			}
 		}
 	}
@@ -107,60 +70,30 @@ public class CancelAirClick  implements Listener{
 	 */
 	@EventHandler
 	public void onDragArmorSettingInventory(InventoryDragEvent event) {
-		if(event.getInventory()==null){
-			return;
-		}
-		if(event.getInventory().getName()==null){
-			return;
-		}
-		if (event.getInventory().getName().contains("[Armor]")) {
-				
-				event.setCancelled(true);
-			}
-		}
+		if(SuitInventoryGUI.authenticateAccess(event, armorinventory_name)){
+			event.setCancelled(true);
+		}	
+	}
 	/**
 	 * Cancel InventoryClickEvent in ArmorColorSettingInventory if player clicked Air
 	 * @param event InventoryClickEvent
 	 */
 	@EventHandler
-	public void onClickAirInArmorColorInventorys(InventoryClickEvent event) {
-		if(event.getClickedInventory()==null){
-			return;
-		}
-		if(event.getClickedInventory().getName()==null){
-			return;
-		}
-		List<String>names = Arrays.asList(CustomSuitPlugin.HelmetColorInventory.getName()
-			,	CustomSuitPlugin.ChestPlateColorInventory.getName()
-			,	CustomSuitPlugin.LeggingsColorInventory.getName()
-			,	CustomSuitPlugin.BootsColorInventory.getName()
-				);
-		if (names.contains(event.getClickedInventory().getName())) {
-			
-					if(event.getCurrentItem().getType() == Material.AIR){
-						event.setCancelled(true);
-					}
-				}
+	public void onClickAirInArmorColorInventorys(InventoryClickEvent event) {		
+		if(SuitInventoryGUI.authenticateAccess(event, true, HelmetColorInventory_name, ChestPlateColorInventory_name, 
+															LeggingsColorInventory_name, BootsColorInventory_name) &&
+			event.getCurrentItem().getType() == Material.AIR){
+					event.setCancelled(true);
 			}
+		}
 	/**
 	 * Cancel Drag Event in Armor Setting Invnetory
 	 * @param event InventoryDragEvent
 	 */
 	@EventHandler
 	public void onDragColorArmorInventory(InventoryDragEvent event) {
-		if(event.getInventory()==null){
-			return;
-		}
-		if(event.getInventory().getName()==null){
-			return;
-		}
-		List<String>names = Arrays.asList(CustomSuitPlugin.HelmetColorInventory.getName()
-			,	CustomSuitPlugin.ChestPlateColorInventory.getName()
-			,	CustomSuitPlugin.LeggingsColorInventory.getName()
-			,	CustomSuitPlugin.BootsColorInventory.getName()
-				);
-		if (names.contains(event.getInventory().getName())) {
-			
+		if(SuitInventoryGUI.authenticateAccess(event, true, HelmetColorInventory_name, ChestPlateColorInventory_name, 
+				LeggingsColorInventory_name, BootsColorInventory_name)){		
 			event.setCancelled(true);
 		}
 	}
@@ -170,14 +103,7 @@ public class CancelAirClick  implements Listener{
 	 */
 	@EventHandler
 	public void onClickAirInEntityTypeInventory(InventoryDragEvent event) {
-		if(event.getInventory()==null){
-			return;
-		}
-		if(event.getInventory().getName()==null){
-			return;
-		}
-		List<String>names = Arrays.asList(CustomSuitPlugin.type_inventory.getName(),CustomSuitPlugin.vehicle_inventory.getName());
-		if (names.contains(event.getInventory().getName())) {
+		if(SuitInventoryGUI.authenticateAccess(event, true, type_inventory_name, vehicle_inventory_name)){	
 			event.setCancelled(true);
 		}
 	}
@@ -187,28 +113,7 @@ public class CancelAirClick  implements Listener{
 	 */
 	@EventHandler
 	public void onDragCommandInventory(InventoryDragEvent event) {
-		if(event.getInventory()==null){
-			return;
-		}
-		if(event.getInventory().getName()==null){
-			return;
-		}
-		
-		if(CheckInventory(event.getInventory(), CustomSuitPlugin.CommandInventory)) {
-			
-						event.setCancelled(true);
-				}
-			}
-	
-	/**
-	 * 
-	 * @param inventory Inventory
-	 * @param check Inventory to check
-	 * @return is Inventory's name equals check Inventory's
-	 */
-	public static boolean CheckInventory(Inventory inventory , Inventory check){
-		
-		return inventory.getName().equals(check.getName());
+		if(!SuitInventoryGUI.authenticateAccess(event, CommandInventory_name)) return;
 	}
-		
+
 }
