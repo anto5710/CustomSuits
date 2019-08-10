@@ -55,9 +55,10 @@ public class Enchant {
 	}
 	
 	public static void enchantment(ItemStack item, Enchantment enchantment, int level, boolean IgnoreLevelLimit) {
-		ItemMeta meta = item.getItemMeta();
-		meta.addEnchant(enchantment, level, IgnoreLevelLimit);
-		item.setItemMeta(meta);
+		item.addUnsafeEnchantment(enchantment, level);
+//		ItemMeta meta = item.getItemMeta();
+//		meta.addEnchant(enchantment, level, IgnoreLevelLimit);
+//		item.setItemMeta(meta);
 	}
 
 	public static void enchantBooks() {

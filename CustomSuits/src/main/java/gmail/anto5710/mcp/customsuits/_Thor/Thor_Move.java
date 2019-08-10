@@ -75,6 +75,7 @@ public class Thor_Move extends BukkitRunnable {
 		removeThorPotion_Effects();
 		player.setAllowFlight(false);
 		isRunning = false;
+		Hammer.move = null;
 		cancel();
 	}
 

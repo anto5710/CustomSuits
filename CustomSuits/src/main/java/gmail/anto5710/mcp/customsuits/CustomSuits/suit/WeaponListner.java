@@ -7,10 +7,12 @@ import gmail.anto5710.mcp.customsuits.Setting.Enchant;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
 import gmail.anto5710.mcp.customsuits.Utils.Glow;
 import gmail.anto5710.mcp.customsuits.Utils.MathUtils;
+import gmail.anto5710.mcp.customsuits.Utils.PacketUtil;
 import gmail.anto5710.mcp.customsuits.Utils.ParticleUtil;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 import gmail.anto5710.mcp.customsuits.Utils.WeaponUtils;
 import net.minecraft.server.v1_13_R2.Items;
+import net.minecraft.server.v1_13_R2.PacketPlayOutEntityDestroy;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -19,12 +21,17 @@ import java.util.HashSet;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.EntityEffect;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
+import org.bukkit.craftbukkit.v1_13_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_13_R2.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_13_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_13_R2.entity.CraftSnowball;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
@@ -47,6 +54,7 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
+import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
@@ -85,8 +93,9 @@ public class WeaponListner implements Listener {
 		if (event.getEntity() instanceof Player) {
 			Player player = (Player) event.getEntity();
 			if (CustomSuitPlugin.isCreatedBy(entity, player)) {
-				if (CustomSuitPlugin.target.containsKey(entity)) {
-					LivingEntity target = CustomSuitPlugin.getTarget(player);
+				SuitSettings hdle = CustomSuitPlugin.hdle(player);
+				if (hdle.isTargetting(entity)) {
+					LivingEntity target = hdle.getCurrentTarget();
 					((Creature) entity).setTarget(target);
 				}
 				event.setCancelled(true);
@@ -105,36 +114,33 @@ public class WeaponListner implements Listener {
 				}
 
 				if (projectile.getShooter() instanceof LivingEntity) {
-					LivingEntity livingEntity = (LivingEntity) projectile.getShooter();
-					CustomSuitPlugin.putTarget(player, livingEntity);
+					LivingEntity lentity = (LivingEntity) projectile.getShooter();
+					CustomSuitPlugin.hdle(player).putTarget(lentity);
 				}
 			}
 		}
 	}
 
 	@EventHandler
-	public void targetTo_Protect(EntityDamageByEntityEvent event) {
-
+	public void targetToProtect(EntityDamageByEntityEvent event) {
 		if (event.getEntity() instanceof Player) {
 			Player player = (Player) event.getEntity();
 			if (CustomSuitPlugin.isMarkEntity(player) && event.getDamager() instanceof LivingEntity) {
 				if (!CustomSuitPlugin.isCreatedBy(event.getDamager(), player)) {
-					LivingEntity livingEntity = (LivingEntity) event.getDamager();
-
-					CustomSuitPlugin.putTarget(player, livingEntity);
+					LivingEntity lentity = (LivingEntity) event.getDamager();
+					CustomSuitPlugin.hdle(player).putTarget(lentity);
 				}
 			}
 		}
 	}
 
 	@EventHandler
-	public void target(EntityDamageByEntityEvent event) {
+	public void cooperate(EntityDamageByEntityEvent event) {
 		if (event.getDamager() instanceof Player) {
 			Player player = (Player) event.getDamager();
-			if (CustomSuitPlugin.isMarkEntity(player) && !CustomSuitPlugin.isCreatedBy(event.getEntity(), player)
-					&& event.getEntity() instanceof LivingEntity) {
-				LivingEntity livingEntity = (LivingEntity) event.getEntity();
-				CustomSuitPlugin.putTarget(player, livingEntity);
+			if (CustomSuitPlugin.isMarkEntity(player) && !CustomSuitPlugin.isCreatedBy(event.getEntity(), player) && event.getEntity() instanceof LivingEntity) {
+				LivingEntity lentity = (LivingEntity) event.getEntity();
+				CustomSuitPlugin.hdle(player).putTarget(lentity);
 			}
 		}
 	}
@@ -214,19 +220,14 @@ public class WeaponListner implements Listener {
 
 	@EventHandler
 	public void ENTITY_GENERIC_EXPLODEFireball(ProjectileHitEvent event) {
-		if (event.getEntity() instanceof Fireball) {
-			if (event.getEntity().getShooter() != null) {
-				if (event.getEntity().getShooter() instanceof Player) {
+		Projectile e = event.getEntity();
+		if (e instanceof Fireball) {
+			ProjectileSource s = e.getShooter();
+			if (s != null && s instanceof Player && listFireball.contains(e)) {
+				e.getWorld().createExplosion(e.getLocation(), Values.LauncherPower);
 
-					if (listFireball.contains(event.getEntity())) {
-
-						event.getEntity().getWorld().createExplosion(event.getEntity().getLocation(),
-								Values.LauncherPower);
-					}
-				}
 			}
 		}
-
 	}
 
 	@EventHandler
@@ -246,7 +247,7 @@ public class WeaponListner implements Listener {
 				return;
 			}
 			if (CustomSuitPlugin.isMarkEntity(player)) {
-				if (player.getItemInHand().getType() == launcher) {
+				if (SuitUtils.getHoldingItem(player).getType() == launcher) {
 					if (player.getInventory().contains(ammo)) {
 						removeItem(player, new ItemStack(ammo), 1);
 						TNT_cooldowns.add(player);
@@ -274,7 +275,7 @@ public class WeaponListner implements Listener {
 				Location location = player.getEyeLocation();
 				Vector velocity = player.getLocation().getDirection().multiply(strength).add(getRandomVector(0.5));
 				ItemStack itemStack = new ItemStack(Material.TNT);
-				CustomSuitPlugin.SetDisplayName(ChatColor.AQUA + "[Bomb]", itemStack);
+				CustomSuitPlugin.name(ChatColor.AQUA + "[Bomb]", itemStack);
 				Enchant.enchantment(itemStack, new Glow(), 1, true);
 				Item tnt = player.getWorld().dropItem(location, itemStack);
 
@@ -291,10 +292,7 @@ public class WeaponListner implements Listener {
 	public static void PickUpTNT(PlayerPickupItemEvent event) {
 		Item item = event.getItem();
 		ItemStack itemStack = item.getItemStack();
-		if (itemStack.getItemMeta().getDisplayName() == null) {
-			return;
-		}
-		if (itemStack.getType() != Material.TNT) {
+		if (itemStack.getItemMeta().getDisplayName() == null || itemStack.getType() != Material.TNT) {
 			return;
 		}
 		if (itemStack.getItemMeta().getDisplayName().equals(ChatColor.AQUA + "[Bomb]")) {
@@ -526,7 +524,7 @@ public class WeaponListner implements Listener {
 
 								int amount = WeaponUtils.charge(player, Material.FLINT, Values.MachineGunAmmoAmount,
 										plugin);
-								CustomSuitPlugin.SetDisplayName(
+								CustomSuitPlugin.name(
 										gunfirstName + amount + regex + values[1].replace("»", "") + "»", copy);
 
 								SuitUtils.setHoldingItem(player, copy);
@@ -538,7 +536,7 @@ public class WeaponListner implements Listener {
 						}
 						PlayEffect.play_Gun_Shot_Effect(player);
 						shot_Machine_Gun(player);
-						CustomSuitPlugin.SetDisplayName(
+						CustomSuitPlugin.name(
 								gunfirstName + (Integer.parseInt(values[0].replace(gunfirstName, "")) - 1) + regex
 										+ values[1].replace("»", "") + "»",
 								copy);
@@ -555,7 +553,7 @@ public class WeaponListner implements Listener {
 
 								int amount = WeaponUtils.charge(player, Material.GHAST_TEAR, Values.SnipeAmmoAmount,
 										plugin);
-								CustomSuitPlugin.SetDisplayName(values[0] + regex + amount + "»", copy);
+								CustomSuitPlugin.name(values[0] + regex + amount + "»", copy);
 
 								SuitUtils.setHoldingItem(player, copy);
 							}
@@ -588,7 +586,7 @@ public class WeaponListner implements Listener {
 									Values.SniperDamage, 0.5, true, false, false, 20);
 
 							WeaponUtils.cooldown(2, plugin, player);
-							CustomSuitPlugin.SetDisplayName(
+							CustomSuitPlugin.name(
 									values[0] + regex + (Integer.parseInt(values[1].replace("»", "")) - 1) + "»", copy);
 							SuitUtils.setHoldingItem(player, copy);
 						}
@@ -641,7 +639,7 @@ public class WeaponListner implements Listener {
 		playGunSound(player);
 
 		Snowball snowball = player.launchProjectile(Snowball.class);
-
+		enshroud(snowball);;
 		Vector v = player.getLocation().getDirection();
 		v.multiply(3.0);
 		v.add(MathUtils.randomVector(spread));
@@ -651,6 +649,10 @@ public class WeaponListner implements Listener {
 		Gun_Effect.snowballs.add(snowball);
 
 		PlayEffect.play_Gun_Shot_Effect(player);
+	}
+	
+	private static void enshroud(Entity e){
+		PacketUtil.castDestroyPacket(e);
 	}
 
 	private static void recoil(Player player, double amplitude) {

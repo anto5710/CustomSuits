@@ -80,7 +80,7 @@ public class Hammer implements Listener {
 	@EventHandler
 	public void ThorMove(PlayerMoveEvent event) {	
 		Player player = event.getPlayer();
-		if (isPractiallyThor(player) && !Thor_Move.isRunning) {
+		if (isPractiallyThor(player) && !Thor_Move.isRunning && move == null) {
 			move = new Thor_Move(plugin, player); 
 			move.runTaskTimer(plugin, 0,1);
 			if(thor == null){
@@ -215,15 +215,20 @@ public class Hammer implements Listener {
 	 * @param event PlayerToggleFlightEvent
 	 */
 	@EventHandler
-	public static void Jump(PlayerToggleFlightEvent event) {
+	public static void Leap(PlayerToggleFlightEvent event) {
 		Player player = event.getPlayer();
 
-		boolean canspell = player == thor && !player.isDead() && ThorUtils.isHammerinHand(player);
+		boolean canspell = player == thor && !player.isDead() && ThorUtils.isHammerinHand(player) && isPractiallyThor(player);
 		boolean isCooldown = Double_Jump_Cooldowns != null && Double_Jump_Cooldowns.contains(player);
 
 		if (canspell && !isCooldown) {
-			Vector vector = player.getLocation().getDirection().normalize().multiply(strength);
-
+			Location ploc = player.getLocation();
+			Location target = SuitUtils.getTargetBlock(player, 100).getLocation();
+			double distance = ploc.distance(target);
+			Vector vector = player.getLocation().getDirection().normalize().multiply(distance);
+			
+//			Vector vector = target.toVector().subtract(ploc.toVector());
+			
 			ParticleUtil.playEffect(Particle.EXPLOSION_HUGE, player.getLocation(), 1);
 			player.setVelocity(vector);
 

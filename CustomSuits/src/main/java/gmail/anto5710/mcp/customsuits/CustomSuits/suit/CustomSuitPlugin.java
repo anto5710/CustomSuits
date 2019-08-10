@@ -7,6 +7,7 @@ import gmail.anto5710.mcp.customsuits.CustomSuits.InvetoryGUI.InventoryNames;
 import gmail.anto5710.mcp.customsuits.CustomSuits.InvetoryGUI.SuitInventoryGUI;
 import gmail.anto5710.mcp.customsuits.CustomSuits.dao.SpawningDao;
 import gmail.anto5710.mcp.customsuits.Setting.Enchant;
+import gmail.anto5710.mcp.customsuits.Setting.EnchantBuilder;
 import gmail.anto5710.mcp.customsuits.Setting.Recipe;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
 import gmail.anto5710.mcp.customsuits.Utils.Glow;
@@ -20,7 +21,6 @@ import gmail.anto5710.mcp.customsuits._Thor.HammerWeapons;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -30,7 +30,6 @@ import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
-import org.bukkit.DyeColor;
 import org.bukkit.EntityEffect;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -40,46 +39,29 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.AnimalTamer;
-import org.bukkit.entity.Blaze;
-import org.bukkit.entity.CaveSpider;
-import org.bukkit.entity.Creature;
 import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Enderman;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Ghast;
-import org.bukkit.entity.Giant;
-import org.bukkit.entity.Guardian;
 import org.bukkit.entity.Horse;
-import org.bukkit.entity.Horse.Variant;
 import org.bukkit.entity.IronGolem;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.PigZombie;
+import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Silverfish;
-import org.bukkit.entity.Skeleton;
-import org.bukkit.entity.Snowman;
-import org.bukkit.entity.WitherSkeleton;
 import org.bukkit.entity.Wolf;
-import org.bukkit.entity.Zombie;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.HorseInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.material.MaterialData;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
-
-import com.google.common.util.concurrent.Monitor.Guard;
 
 /**
  * Hello world!
@@ -94,12 +76,12 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 	static JavaPlugin plugin;
 	Target targetting;
 	HungerScheduler hscheduler;
-	static boolean isPlayed = false;
 	/**
 	 * entityType 이름과 대응하는 EntityClass 모음
 	 */
-	static Map<String, Class<? extends Entity>> entityMap = new HashMap<>();
+//	static Map<String, Class<? extends Entity>> entityMap = new HashMap<>();
 	static Map<String, Color> colorMap = new HashMap<>();
+	public static Map<Player, SuitSettings> settings = new HashMap<>();
 
 	public static ItemStack Bomb = new ItemStack(Material.FIREWORK_STAR);
 	public static ItemStack Smoke = new ItemStack(Material.CLAY_BALL);
@@ -113,43 +95,22 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 	static ItemStack AmmoForSniper = new ItemStack(Material.GOLD_NUGGET);
 	static ItemStack AmmoForMachineGun = new ItemStack(Material.FLINT);
 
-	static Inventory inventory = Bukkit.createInventory(null, 27, InventoryNames.inventory_name);
-
-	static Inventory armorinventory = Bukkit.createInventory(null, 63, InventoryNames.armorinventory_name);
+	public static Inventory inventory = Bukkit.createInventory(null, 27, InventoryNames.inventory_name);
+	public static Inventory armorinventory = Bukkit.createInventory(null, 54, InventoryNames.armorinventory_name);
 	static Inventory chestinventory = Bukkit.createInventory(null, 27, InventoryNames.chestinventory_name);
 	static Inventory bootsinventory = Bukkit.createInventory(null, 27, InventoryNames.bootsinventory_name);
 	static Inventory helmetinventory = Bukkit.createInventory(null, 27, InventoryNames.helmetinventory_name);
 	static Inventory leggingsinventory = Bukkit.createInventory(null, 27, InventoryNames.leggingsinventory_name);
 
 	public static Inventory type_inventory = Bukkit.createInventory(null, 27, InventoryNames.type_inventory_name);
-
-	public static HashMap<Player, String> Type_Map = new HashMap<>();
-	public static HashMap<Player, List<LivingEntity>> target = new HashMap<>();
-
-	static HashMap<Player, String> color = new HashMap<>();
-	static HashMap<Player, Integer> amount = new HashMap<>();
-
 	public static Inventory vehicle_inventory = Bukkit.createInventory(null, 27, InventoryNames.vehicle_inventory_name);
 
 	public static SpawningDao dao;
 
-	public static HashMap<Player, Inventory> handequipment = new HashMap<>(), chestequipment = new HashMap<>(),
-			helmetequipment = new HashMap<>(), leggingsequipment = new HashMap<>(), bootsequipment = new HashMap<>();
-
-	public static HashMap<Player, Inventory> equipment = new HashMap<>();
-	public static HashMap<Player, Inventory> armorequipment = new HashMap<>();
-
-	public static HashMap<Player, Color> HelmetColorMap = new HashMap<>(), ChestPlatecolorMap = new HashMap<>(),
-			LeggingsColorMap = new HashMap<>(), BootsColorMap = new HashMap<>();
-
-	public static Inventory HelmetColorInventory = Bukkit.createInventory(null, 45,
-			InventoryNames.HelmetColorInventory_name);
-	public static Inventory ChestplateColorInventory = Bukkit.createInventory(null, 45,
-			InventoryNames.ChestPlateColorInventory_name);
-	public static Inventory LeggingsColorInventory = Bukkit.createInventory(null, 45,
-			InventoryNames.LeggingsColorInventory_name);
-	public static Inventory BootsColorInventory = Bukkit.createInventory(null, 45,
-			InventoryNames.BootsColorInventory_name);
+	public static Inventory HelmetColorInventory = Bukkit.createInventory(null, 45, InventoryNames.HelmetColorInventory_name);
+	public static Inventory ChestplateColorInventory = Bukkit.createInventory(null, 45, InventoryNames.ChestPlateColorInventory_name);
+	public static Inventory LeggingsColorInventory = Bukkit.createInventory(null, 45, InventoryNames.LeggingsColorInventory_name);
+	public static Inventory BootsColorInventory = Bukkit.createInventory(null, 45, InventoryNames.BootsColorInventory_name);
 	public static Inventory commandInventory = Bukkit.createInventory(null, 27, InventoryNames.CommandInventory_name);
 
 	public static ItemStack missileLauncher = new ItemStack(Material.GOLDEN_HORSE_ARMOR);
@@ -166,17 +127,16 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 	public static ItemStack Boots_Man = new ItemStack(Material.IRON_BOOTS);
 	public static ItemStack Sword_Man = new ItemStack(Material.GOLDEN_SWORD, 1, (short) Values.ManDeafultDamage);
 
-	public static HashMap<String, ItemStack> entity_Icon_Map = new HashMap<>(), vehicle_Icon_Map = new HashMap<>();
-	public static HashMap<Player, String> vehicle_map = new HashMap<>();
+//	public static HashMap<String, ItemStack> entity_Icon_Map = new HashMap<>(), vehicle_Icon_Map = new HashMap<>();
 
 	@Override
 	public void onEnable() {
 		plugin = this;
 		Glow.registerGlow();
 
-		SetDisplayName(ChatColor.YELLOW + "[Bomb]", Bomb);
+		name(ChatColor.YELLOW + "[Bomb]", Bomb);
 
-		SetDisplayName(ChatColor.GRAY + "[Smoke]", Smoke);
+		name(ChatColor.GRAY + "[Smoke]", Smoke);
 		ItemMeta meta = Smoke.getItemMeta();
 		ArrayList<String> lore = new ArrayList<>();
 		lore.add(ChatColor.GOLD + "Smoke for " + Values.ManSmoke_Time + " Seconds");
@@ -186,76 +146,59 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		Enchant.enchantBooks();
 
 		ItemStack levelitem = new ItemStack(Material.EXPERIENCE_BOTTLE);
-		SetDisplayName(ChatColor.GREEN + "[Level]", levelitem);
+		name(ChatColor.GREEN + "[Level]", levelitem);
 
 		ItemStack armorset = new ItemStack(Material.DIAMOND_CHESTPLATE);
-		SetDisplayName(ChatColor.GOLD + "[Armor]", armorset);
+		name(ChatColor.GOLD + "[Armor]", armorset);
 
 		ItemStack command = new ItemStack(Material.COMPARATOR);
-		SetDisplayName(ChatColor.RED + "[Command]", command);
+		name(ChatColor.RED + "[Command]", command);
+		
+		hammer.addUnsafeEnchantments(new EnchantBuilder().enchant(Enchantment.DAMAGE_ALL, 5)
+				.enchant(Enchantment.DURABILITY, 10).enchant(Enchantment.FIRE_ASPECT, 8)
+				.enchant(Enchantment.LOOT_BONUS_MOBS, 5).enchant(Enchantment.KNOCKBACK, 8).serialize());
 
-		Enchant.enchantment(hammer, Enchantment.DAMAGE_ALL, 5, true);
-		Enchant.enchantment(hammer, Enchantment.DURABILITY, 10, true);
-		Enchant.enchantment(hammer, Enchantment.FIRE_ASPECT, 8, true);
-		Enchant.enchantment(hammer, Enchantment.LOOT_BONUS_MOBS, 5, true);
-		Enchant.enchantment(hammer, Enchantment.KNOCKBACK, 8, true);
+		name(ChatColor.GOLD + "Thor Helmet", Helemt_Thor);
+		name(ChatColor.GOLD + "Thor ChestPlate", Chestplate_Thor);
+		name(ChatColor.GOLD + "Thor Leggings", Leggings_Thor);
+		name(ChatColor.GOLD + "Thor Boots", Boots_Thor);
 
-		SetDisplayName(ChatColor.GOLD + "Thor_Helmet", Helemt_Thor);
-		SetDisplayName(ChatColor.GOLD + "Thor_ChestPlate", Chestplate_Thor);
-		SetDisplayName(ChatColor.GOLD + "Thor_Leggings", Leggings_Thor);
-		SetDisplayName(ChatColor.GOLD + "Thor_Boots", Boots_Thor);
+		Helemt_Thor.addUnsafeEnchantments(new EnchantBuilder().enchant(Enchantment.PROTECTION_FIRE, 15).enchant(Enchantment.DURABILITY, 50)
+				.enchant(Enchantment.OXYGEN, 2).enchant(Enchantment.THORNS, 15).serialize());
+		
+		Chestplate_Thor.addUnsafeEnchantments(new EnchantBuilder().enchant(Enchantment.PROTECTION_ENVIRONMENTAL, 15)
+				.enchant(Enchantment.THORNS, 15).enchant(Enchantment.DURABILITY, 50).serialize());
+		
+		Leggings_Thor.addUnsafeEnchantments(new EnchantBuilder().enchant(Enchantment.THORNS, 15)
+				.enchant(Enchantment.DURABILITY, 50).enchant(Enchantment.PROTECTION_EXPLOSIONS, 15).serialize());
 
-		Enchant.enchantment(Helemt_Thor, Enchantment.PROTECTION_FIRE, 15, true);
-		Enchant.enchantment(Helemt_Thor, Enchantment.DURABILITY, 50, true);
-		Enchant.enchantment(Helemt_Thor, Enchantment.OXYGEN, 2, true);
-		Enchant.enchantment(Helemt_Thor, Enchantment.THORNS, 15, true);
+		Boots_Thor.addUnsafeEnchantments(new EnchantBuilder().enchant(Enchantment.THORNS, 15).enchant(Enchantment.DURABILITY, 50).enchant(Enchantment.PROTECTION_FALL, 15).serialize());
+	
 
-		Enchant.enchantment(Chestplate_Thor, Enchantment.PROTECTION_ENVIRONMENTAL, 15, true);
-		Enchant.enchantment(Chestplate_Thor, Enchantment.THORNS, 15, true);
-		Enchant.enchantment(Chestplate_Thor, Enchantment.DURABILITY, 50, true);
+		Chestplate_Man.addUnsafeEnchantments(new EnchantBuilder().enchant(Enchantment.THORNS, 8).enchant(Enchantment.PROTECTION_ENVIRONMENTAL, 8).
+				enchant(Enchantment.DURABILITY, 30).serialize());
+		Leggings_Man.addUnsafeEnchantments(new EnchantBuilder().enchant(Enchantment.THORNS, 8).enchant(Enchantment.PROTECTION_ENVIRONMENTAL, 8).
+				enchant(Enchantment.DURABILITY, 30).serialize());
+		Boots_Man.addUnsafeEnchantments(new EnchantBuilder().enchant(Enchantment.THORNS, 8).enchant(Enchantment.PROTECTION_FALL, 8).
+				enchant(Enchantment.DURABILITY, 30).serialize());
 
-		Enchant.enchantment(Leggings_Thor, Enchantment.THORNS, 15, true);
-		Enchant.enchantment(Leggings_Thor, Enchantment.DURABILITY, 50, true);
-		Enchant.enchantment(Leggings_Thor, Enchantment.PROTECTION_EXPLOSIONS, 15, true);
+		Sword_Man.addUnsafeEnchantments(new EnchantBuilder().enchant(Enchantment.DAMAGE_ALL, 10)
+				.enchant(Enchantment.FIRE_ASPECT, 10).enchant(Enchantment.LOOT_BONUS_MOBS, 10)
+				.enchant(Enchantment.KNOCKBACK, 10).enchant(Enchantment.DURABILITY, 20).serialize());
 
-		Enchant.enchantment(Boots_Thor, Enchantment.THORNS, 15, true);
-		Enchant.enchantment(Boots_Thor, Enchantment.DURABILITY, 50, true);
-		Enchant.enchantment(Boots_Thor, Enchantment.PROTECTION_FALL, 15, true);
-
-		Enchant.enchantment(Chestplate_Man, Enchantment.THORNS, 8, true);
-		Enchant.enchantment(Chestplate_Man, Enchantment.PROTECTION_ENVIRONMENTAL, 8, true);
-		Enchant.enchantment(Chestplate_Man, Enchantment.DURABILITY, 30, true);
-		Enchant.enchantment(Leggings_Man, Enchantment.THORNS, 8, true);
-		Enchant.enchantment(Leggings_Man, Enchantment.DURABILITY, 30, true);
-		Enchant.enchantment(Leggings_Man, Enchantment.PROTECTION_ENVIRONMENTAL, 8, true);
-		Enchant.enchantment(Boots_Man, Enchantment.THORNS, 8, true);
-		Enchant.enchantment(Boots_Man, Enchantment.DURABILITY, 30, true);
-		Enchant.enchantment(Boots_Man, Enchantment.PROTECTION_FALL, 8, true);
-
-		Enchant.enchantment(Sword_Man, Enchantment.DAMAGE_ALL, 10, true);
-
-		Enchant.enchantment(Sword_Man, Enchantment.FIRE_ASPECT, 10, true);
-
-		Enchant.enchantment(Sword_Man, Enchantment.LOOT_BONUS_MOBS, 10, true);
-
-		Enchant.enchantment(Sword_Man, Enchantment.KNOCKBACK, 10, true);
-
-		Enchant.enchantment(Sword_Man, Enchantment.DURABILITY, 20, true);
-		SetDisplayName(ChatColor.YELLOW + "Sword Of Killer", Sword_Man);
+		name(ChatColor.YELLOW + "Sword Of Killer", Sword_Man);
 
 		Color Chestplate_Man_Color = Color.fromRGB(217, 206, 206);
 		Color Leggings_Man_Color = Color.fromRGB(31, 28, 28);
 
-		leathercolor(Chestplate_Man, Chestplate_Man_Color);
-		leathercolor(Leggings_Man, Leggings_Man_Color);
+		dye(Chestplate_Man, Chestplate_Man_Color);
+		dye(Leggings_Man, Leggings_Man_Color);
 
-		leathercolor(Chestplate_Thor, Color.fromRGB(35, 35, 35));
-		leathercolor(Leggings_Thor, Color.fromRGB(0, 0, 65));
+		dye(Chestplate_Thor, Color.fromRGB(35, 35, 35));
+		dye(Leggings_Thor, Color.fromRGB(0, 0, 65));
 
 		inventory.setItem(0, new ItemStack(command));
-
 		inventory.setItem(4, new ItemStack(armorset));
-
 		inventory.setItem(8, new ItemStack(levelitem));
 
 		ItemStack ArmorIcon = new ItemStack(Material.ARMOR_STAND);
@@ -275,10 +218,10 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		Enchant.enchantBook(leggings, new Glow(), 1, true);
 		Enchant.enchantBook(boots, new Glow(), 1, true);
 
-		SetDisplayName(ChatColor.AQUA + "[Helmet]", helmet);
-		SetDisplayName(ChatColor.AQUA + "[ChestPlate]", chestplate);
-		SetDisplayName(ChatColor.AQUA + "[Leggings]", leggings);
-		SetDisplayName(ChatColor.AQUA + "[Boots]", boots);
+		name(ChatColor.AQUA + "[Helmet]", helmet);
+		name(ChatColor.AQUA + "[ChestPlate]", chestplate);
+		name(ChatColor.AQUA + "[Leggings]", leggings);
+		name(ChatColor.AQUA + "[Boots]", boots);
 
 		armorinventory.setItem(19, new ItemStack(Material.GOLDEN_HELMET));
 		armorinventory.setItem(28, new ItemStack(Material.LEATHER_CHESTPLATE));
@@ -286,11 +229,11 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		armorinventory.setItem(37, new ItemStack(Material.GOLDEN_LEGGINGS));
 		armorinventory.setItem(46, new ItemStack(Material.LEATHER_BOOTS));
 
-		SetDisplayName(ChatColor.YELLOW + "[Set Armor]", ArmorIcon);
+		name(ChatColor.YELLOW + "[Set Armor]", ArmorIcon);
 
-		SetDisplayName(ChatColor.AQUA + "[Enchant]", enchantIcon);
+		name(ChatColor.AQUA + "[Enchant]", enchantIcon);
 
-		SetDisplayName(ChatColor.GOLD + "[Set Color]", ColorIcon);
+		name(ChatColor.GOLD + "[Set Color]", ColorIcon);
 
 		armorinventory.setItem(1, ArmorIcon);
 		armorinventory.setItem(4, enchantIcon);
@@ -322,35 +265,35 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		helmetinventory.setItem(4, Enchant.Unbreaking);
 
 		ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
-		SetDisplayName(ChatColor.AQUA + "[Party Protocol]", skull);
+		name(ChatColor.AQUA + "[Party Protocol]", skull);
 
 		ItemStack helmetM = new ItemStack(Material.DIAMOND_HELMET);
-		SetDisplayName(ChatColor.AQUA + "[Suit Summon]", helmetM);
+		name(ChatColor.AQUA + "[Suit Summon]", helmetM);
 
 		ItemStack Targetitem = new ItemStack(Material.SKELETON_SKULL);
-		SetDisplayName(ChatColor.BLUE + "[Target]", Targetitem);
+		name(ChatColor.BLUE + "[Target]", Targetitem);
 
 		ItemStack firework = new ItemStack(Material.FIREWORK_ROCKET);
-		SetDisplayName(ChatColor.DARK_RED + "[Fireworks]", firework);
+		name(ChatColor.DARK_RED + "[Fireworks]", firework);
 
-		SetDisplayName(ChatColor.GOLD + "Mjöllnir", hammer);
+		name(ChatColor.GOLD + "Mjöllnir", hammer);
 
-		SetDisplayName(ChatColor.GRAY + "Leggings", Leggings_Man);
-		SetDisplayName(ChatColor.GRAY + "ChestPlate", Chestplate_Man);
-		SetDisplayName(ChatColor.GRAY + "Boots", Boots_Man);
+		name(ChatColor.GRAY + "Leggings", Leggings_Man);
+		name(ChatColor.GRAY + "ChestPlate", Chestplate_Man);
+		name(ChatColor.GRAY + "Boots", Boots_Man);
 
 		ItemStack ColorHelmet = new ItemStack(Material.LEATHER_HELMET);
 		Enchant.enchantment(ColorHelmet, new Glow(), 1, true);
-		SetDisplayName(ChatColor.GOLD + "[Helmet Color]", ColorHelmet);
+		name(ChatColor.GOLD + "[Helmet Color]", ColorHelmet);
 		ItemStack ColorChestplate = new ItemStack(Material.LEATHER_CHESTPLATE);
 		Enchant.enchantment(ColorChestplate, new Glow(), 1, true);
-		SetDisplayName(ChatColor.GOLD + "[Chestplate Color]", ColorChestplate);
+		name(ChatColor.GOLD + "[Chestplate Color]", ColorChestplate);
 		ItemStack ColorLeggings = new ItemStack(Material.LEATHER_LEGGINGS);
 		Enchant.enchantment(ColorLeggings, new Glow(), 1, true);
-		SetDisplayName(ChatColor.GOLD + "[Leggings Color]", ColorLeggings);
+		name(ChatColor.GOLD + "[Leggings Color]", ColorLeggings);
 		ItemStack ColorBoots = new ItemStack(Material.LEATHER_BOOTS);
 		Enchant.enchantment(ColorBoots, new Glow(), 1, true);
-		SetDisplayName(ChatColor.GOLD + "[Boots Color]", ColorBoots);
+		name(ChatColor.GOLD + "[Boots Color]", ColorBoots);
 
 		armorinventory.setItem(25, ColorHelmet);
 		armorinventory.setItem(34, ColorChestplate);
@@ -365,9 +308,9 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		// key 에 대응하는 Entity 종류를 맵에 담아둡니다.
 		logger = getLogger();
 
-		SetDisplayName(ChatColor.RED + "[Suit Commander]", suitremote);
+		name(ChatColor.RED + "[Suit Commander]", suitremote);
 
-		SetDisplayName(ChatColor.YELLOW + "Knif-1220 " + "«" + WeaponListner.maxformachine + Values.regex
+		name(ChatColor.YELLOW + "Knif-1220 " + "«" + WeaponListner.maxformachine + Values.regex
 				+ WeaponListner.maxforsniper + "»", gunitem);
 
 		List<String> GunLore = new ArrayList<>();
@@ -385,43 +328,8 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		ItemMeta gunMeta = gunitem.getItemMeta();
 		gunMeta.setLore(GunLore);
 		gunitem.setItemMeta(gunMeta);
-		SetDisplayName(ChatColor.DARK_RED + "[Launcher]", missileLauncher);
+		name(ChatColor.DARK_RED + "[Launcher]", missileLauncher);
 
-		entityMap.put("archer", Skeleton.class);
-		putItemWithName(ChatColor.WHITE + "archer", Material.BOW, "archer");
-		entityMap.put("golem", IronGolem.class);
-		putItemWithName(ChatColor.WHITE + "golem", Material.ROSE_RED, "golem");
-		entityMap.put("spider", CaveSpider.class);
-		putItemWithName(ChatColor.RED + "spider", Material.SPIDER_EYE, "spider");
-		entityMap.put("bomb", Creeper.class);
-		putItemWithName(ChatColor.GRAY + "bomb", Material.GUNPOWDER, "bomb");
-		entityMap.put("giant", Giant.class);
-		putItemWithName(ChatColor.DARK_GREEN + "giant", Material.ZOMBIE_HEAD, "giant");
-		entityMap.put("enderman", Enderman.class);
-		putItemWithName(ChatColor.DARK_PURPLE + "enderman", Material.ENDER_PEARL, "enderman");
-		entityMap.put("ghast", Ghast.class);
-		putItemWithName(ChatColor.WHITE + "ghast", Material.GHAST_TEAR, "ghast");
-		entityMap.put("snowman", Snowman.class);
-		putItemWithName(ChatColor.YELLOW + "snowman", Material.PUMPKIN, "snowman");
-		entityMap.put("blaze", Blaze.class);
-		putItemWithName(ChatColor.DARK_RED + "blaze", Material.BLAZE_POWDER, "blaze");
-		entityMap.put("wolf", Wolf.class);
-		putItemWithName(ChatColor.WHITE + "wolf", Material.BONE, "wolf");
-
-		entityMap.put("zombie", Zombie.class);
-		putItemWithName(ChatColor.DARK_GREEN + "zombie", Material.ZOMBIE_HEAD, "zombie");
-		entityMap.put("silverfish", Silverfish.class);
-		putItemWithName(ChatColor.WHITE + "silverfish", Material.STONE, "silverfish");
-		entityMap.put("horse", Horse.class);
-		putItemWithName(ChatColor.GRAY + "horse", Material.IRON_HORSE_ARMOR, "horse");
-		entityMap.put("guardian", org.bukkit.entity.Guardian.class);
-		putItemWithName(ChatColor.AQUA + "guardian", Material.PRISMARINE_SHARD, "guardian");
-
-		entityMap.put("warrior", PigZombie.class);
-		putItemWithName(ChatColor.GOLD + "warrior", Material.GOLDEN_SWORD, "warrior");
-
-		entityMap.put("warrior", WitherSkeleton.class);
-		putItemWithName(ChatColor.BLACK + "buster", Material.GOLDEN_SWORD, "buster");
 
 		colorMap.put("red", Color.RED);
 		colorMap.put("blue", Color.BLUE);
@@ -457,21 +365,25 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		manager.registerEvents(new Hammer(this), this);
 		manager.registerEvents(new ForceLightning(this), this);
 		
+		//test
+//		manager.registerEvents(new The_World(this), this);
+		
 		Recipe.addRecipe(getServer());
 
+		
 		dao = new SpawningDao(this);
-		inventory.setItem(18, entity_Icon_Map.get("warrior"));
-		inventory.setItem(22, entity_Icon_Map.get("spider"));
+		inventory.setItem(18, CustomEntities.WARRIOR.getIcon());
+		inventory.setItem(22, CustomEntities.SPIDER.getIcon());
 		dao.init();
 
 		new PlayEffect(this);
 
-		resetTypeMap();
+		initTypeMap();
 
-		HelmetColorInventory.setContents(Color_Items(new ItemStack(Material.LEATHER_HELMET)));
-		ChestplateColorInventory.setContents(Color_Items(new ItemStack(Material.LEATHER_CHESTPLATE)));
-		LeggingsColorInventory.setContents(Color_Items(new ItemStack(Material.LEATHER_LEGGINGS)));
-		BootsColorInventory.setContents(Color_Items(new ItemStack(Material.LEATHER_BOOTS)));
+		HelmetColorInventory.setContents(dyeSpectrum(new ItemStack(Material.LEATHER_HELMET)));
+		ChestplateColorInventory.setContents(dyeSpectrum(new ItemStack(Material.LEATHER_CHESTPLATE)));
+		LeggingsColorInventory.setContents(dyeSpectrum(new ItemStack(Material.LEATHER_LEGGINGS)));
+		BootsColorInventory.setContents(dyeSpectrum(new ItemStack(Material.LEATHER_BOOTS)));
 	}
 
 	public HungerScheduler getHungerScheduler() {
@@ -497,10 +409,11 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 				SuitUtils.wrongCommand(spnSender, command);
 			} else {
 				if (args[0].equals("entity")) {
-					for (String key : entityMap.keySet()) {
-
+					for (CustomEntities species : CustomEntities.values()) {
+						String key = species.getName();
+						String official_name = species.getClass().getSimpleName();
 						spnSender.sendMessage(ChatColor.BLUE + "[Input]: " + ChatColor.AQUA + key + ChatColor.BLUE
-								+ "    [Entity]: " + ChatColor.AQUA + entityMap.get(key).getSimpleName());
+								+ "    [Entity]: " + ChatColor.AQUA + official_name);
 					}
 				} else if (args[0].equals("color")) {
 					for (String key : colorMap.keySet()) {
@@ -562,7 +475,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 					spawnall(player);
 				} else {
 					if (command.getName().equals("target")) {
-						putTarget(spnSender, player);
+						hdle(spnSender).putTarget(player);
 					} else if (args[0].equals("firework")) {
 						PlayerEffect.spawnfireworks(player);
 					} else {
@@ -573,13 +486,13 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		}
 		if (command.getName().equals("head")) {
 			if (args.length == 0) {
-				ItemStack head = Head(spnSender.getName());
+				ItemStack head = decapitate(spnSender.getName());
 				spnSender.getInventory().addItem(head);
 				spnSender.updateInventory();
 			} else {
 
 				if (args[0] != null) {
-					ItemStack head = Head(args[0]);
+					ItemStack head = decapitate(args[0]);
 					spnSender.getInventory().addItem(head);
 					spnSender.updateInventory();
 				} else if (args[0] == null) {
@@ -606,39 +519,32 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 				color.toLowerCase();
 				if (!isWrong) {
 					Color Color = colorMap.get(color);
-					ItemStack item = new ItemStack(Material.LEATHER_HELMET);
-					Material material = Material.LEATHER_HELMET;
-					leathercolor(item, Color);
+					SuitSettings hdle = hdle(spnSender);
 					if (armor.equals("HELMET")) {
-						HelmetColorMap.put(spnSender, Color);
-
+						hdle.setHelmetColor(Color);
+						
 					} else if (armor.equals("CHESTPLATE")) {
-						ChestPlatecolorMap.put(spnSender, Color);
-						material = Material.LEATHER_CHESTPLATE;
+						hdle.setChestColor(Color);
+
 					} else if (armor.equals("LEGGINGS")) {
-						LeggingsColorMap.put(spnSender, Color);
-						material = Material.LEATHER_LEGGINGS;
+						hdle.setLeggingsColor(Color);
+
 					} else if (armor.equals("BOOTS")) {
-						BootsColorMap.put(spnSender, Color);
-						material = Material.LEATHER_BOOTS;
+						hdle.setBootsColor(Color);
+
 					}
-
-					item.setType(material);
-
 					spnSender.sendMessage(ChatColor.BLUE + "[Info]: " + ChatColor.AQUA + "Changed " + armor
 							+ "'s Color to " + color.toUpperCase());
-					resetColorIcon(item, spnSender);
 				}
 			}
 		}
 		if (command.getName().equals("setvehicle")) {
 			if (args.length >= 1) {
 				String entityName = args[0].toLowerCase();
-				if (!entityMap.containsKey(entityName)) {
+				
+				if(!hdle(spnSender).assessVehicleType(entityName)){
 					SuitUtils.wrongCommand(spnSender, command);
 					spnSender.playSound(spnSender.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 6.0F, 6.0F);
-				} else {
-					vehicle_map.put(spnSender, entityName);
 				}
 			} else {
 				SuitUtils.wrongCommand(spnSender, command);
@@ -652,31 +558,19 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 					SuitUtils.wrongCommand(spnSender, command);
 					spnSender.playSound(spnSender.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 6.0F, 6.0F);
 
-				} else if (args.length >= 2) {
-					int creatureCnt = 0;
+				} else if (args.length >= 2) {				
 					try {
-						creatureCnt = Integer.parseInt(args[1]);
+						int creatureCnt = Integer.parseInt(args[1]);
+						hdle(spnSender).setCount(creatureCnt);
 					} catch (NumberFormatException e) {
 						SuitUtils.wrongCommand(spnSender, command);
 						spnSender.playSound(spnSender.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 6.0F, 6.0F);
 					}
-					LivingEntity target = null;
-					if (CustomSuitPlugin.target.containsKey(spnSender)) {
-						target = getTarget(spnSender);
+					if(!hdle(spnSender).asessSentityType(args[0])){
+						SuitUtils.warn(spnSender, Values.CantFindEntityType);
+					}else{
+						spawnEntity(spnSender, spnSender.getLocation());
 					}
-					String vehicle = null;
-					String type = args[0];
-
-					if (vehicle_map.containsKey(spnSender)) {
-						vehicle = vehicle_map.get(spnSender);
-					}
-					if (entityMap.containsKey(type)) {
-						Type_Map.put(spnSender, type);
-					}
-					spawnEntity(type, vehicle, creatureCnt, target, spnSender, spnSender.getLocation());
-					Inventory inventory = CustomSuitPlugin.inventory;
-
-					spnSender.openInventory(inventory);
 				}
 			} else {
 				SuitUtils.warn(spnSender, "Please Hold Your " + suitremote.getItemMeta().getDisplayName());
@@ -685,11 +579,18 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		return true;
 	}
 
+	public static SuitSettings hdle(Player p){
+		if(!settings.containsKey(p)){
+			settings.put(p, new SuitSettings(p));
+		}
+		return settings.get(p);
+	}
+	
 	public static boolean isCreatedBy(Entity entity, Player player) {
 		return dao.isCreatedBy(entity, player);
 	}
 
-	public static ItemStack Head(String name) {
+	public static ItemStack decapitate(String name) {
 		ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
 		SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
 		skullMeta.setOwner(name);
@@ -697,96 +598,8 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		return skull;
 	}
 
-	public static void targetPlayer(Player player, LivingEntity entity, boolean sendMessage) {
-		isPlayed = false;
-		Collection<Creature> list = player.getWorld().getEntitiesByClass(Creature.class);
-
-		String name = "";
-		boolean setAnger = entity != null;
-		if (entity != null) {
-			if (entity instanceof Player == false) {
-				name = entity.getType().getEntityClass().getSimpleName();
-			} else {
-				name = ((Player) entity).getName();
-			}
-		}
-		for (Entity e : list) {
-			if (dao.isCreatedBy(e, player)) {
-				((Creature) e).setTarget(entity);
-				if (e instanceof PigZombie) {
-					PigZombie pg = (PigZombie) e; 
-					
-					if (setAnger) {
-						pg.setAnger(100000);
-						pg.setAngry(true);
-						pg.setAnger(100000);
-					} else {
-						pg.setAnger(0);
-						pg.setAngry(false);
-						pg.setAnger(0);
-					}
-				}
-				isPlayed = true;
-			}
-		}
-		if (sendMessage) {
-			if (!isPlayed) {
-
-				player.sendMessage(ChatColor.BLUE + "[Info]: " + ChatColor.AQUA + "No such entity");
-				player.playSound(player.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 6.0F, 6.0F);
-			} else {
-				putTarget(player, entity);
-				player.sendMessage(
-						ChatColor.BLUE + "[Info]: " + ChatColor.AQUA + "Target : " + ChatColor.DARK_AQUA + name);
-			}
-		}
-	}
-
-	public static void putTarget(Player player, LivingEntity entity) {
-		List<LivingEntity> list = target.get(player);
-		if (list == null || list.isEmpty()) {
-			target.put(player, new ArrayList<>(Arrays.asList(entity)));
-			return;
-		} else {
-			ArrayList<LivingEntity> targets = new ArrayList<>(list);
-			if (!targets.contains(entity)) {
-				targets.add(entity);
-			}
-			target.put(player, targets);
-		}
-	}
-
-	public static LivingEntity getTarget(Player player) {
-		List<LivingEntity> targets = target.get(player);
-		if (targets == null || targets.isEmpty()) {
-			return null;
-		} 
-		return targets.get(targets.size() - 1);
-	}
-
-	public static void removeDeadTarget(Player player) {
-		if (CustomSuitPlugin.target.get(player) == null) {
-			return;
-		}
-		List<LivingEntity> targets = new ArrayList<>(CustomSuitPlugin.target.get(player));
-		if (targets.isEmpty()) {
-			return;
-		}
-		List<LivingEntity> removed = new ArrayList<>();
-		Iterator<LivingEntity> iterator = targets.iterator();
-		while (iterator.hasNext()) {
-			LivingEntity livingEntity = iterator.next();
-			if (livingEntity.isDead()) {
-				removed.add(livingEntity);
-				iterator.remove();
-			}
-		}
-		targets.removeAll(removed);
-		CustomSuitPlugin.target.put(player, targets);
-	}
-
 	public static void spawnall(Player player) {
-		isPlayed = false;
+		boolean isPlayed = false;
 		List<Entity> list = player.getWorld().getEntities();
 		for (Entity entity : list) {
 			if (dao.isCreatedBy(entity, player) && entity.getVehicle() == null) { // 제일 아랫놈만 tp
@@ -816,69 +629,51 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		}
 	}
 
-	public static void putItemWithName(String name, Material material, String key) {
+	public static ItemStack createWithName(Material material, String name) {
 		ItemStack item = new ItemStack(material, 1);
-		SetDisplayName(name, item);
-		entity_Icon_Map.put(key, item);
-		vehicle_Icon_Map.put(key, item);
+		name(name, item);
+		return item;
 	}
 
-	public static void spawnEntity(String ENTITYNAME, String vehicle, int creatureCnt, LivingEntity target, Player spnSender, Location location) {
-		String entityname = ENTITYNAME.toLowerCase();
-		// int vehicleCount = 0;
-		boolean useVehicle = false;
-
-		if (!entityMap.containsKey(ENTITYNAME)) {
-			SuitUtils.warn(spnSender, Values.CantFindEntityType);
-			return;
-		}
-		if (vehicle != null) {
-			if (!entityMap.containsKey(vehicle)) {
-				SuitUtils.warn(spnSender, Values.CantFindEntityType);
-				return;
-			} else {
-				useVehicle = true;
-			}
-		}
-
+	public static void spawnEntity(Player player, Location loc) {
+		SuitSettings sett = hdle(player);
+		spawnEntity(sett.getSentity(), sett.getVehicle(), sett.getCount(), sett.getCurrentTarget(), player, loc);
+	}
+	
+	public static void spawnEntity(CustomEntities entity, CustomEntities vehicle, int creatureCnt, LivingEntity target, Player spnSender, Location location) {
+		boolean useVehicle = vehicle != null && vehicle != CustomEntities.NONE;
 		/* spnSender: 명령어를 입력한 플레이어 */
 		ItemStack inHand = SuitUtils.getHoldingItem(spnSender);
 		if (SuitUtils.checkItem(suitremote, inHand)) {
-
-			refreshInventory(spnSender);
+			SuitSettings hdle = hdle(spnSender);
+			hdle.reinitInv();
 
 			for (int cnt = 0; cnt < creatureCnt; cnt++) {
 				Material type = Values.Suit_Spawn_Material;
-				int level = 1;
-				if (equipment.containsKey(spnSender)) {
-					level = equipment.get(spnSender).getItem(8).getAmount();
-				}
-				int amount = useVehicle ? level*2 :level;
+				int level = hdle.level();
+			
+				int amount = useVehicle ? level * 2 : level;
 				ItemStack material = new ItemStack(type, amount);
 
 				if (spnSender.getInventory().contains(type, amount)) {
 
-					Class<Entity> entityClass = loadEntityClass(ENTITYNAME);
+					@SuppressWarnings("unchecked")
+					Class<Entity> entityClass = (Class<Entity>) entity.getSpecies();
 
 					/* spawning 위치를 잡아줍니다. */
 					Entity spawnedEntity = spnSender.getWorld().spawn(location, entityClass);
-					// int entityID = spawnedEntity.getEntityId();
-					// logger.info("[Entity ID]: " + entityID
-					// + " by " + spnSender.getName()
-					// + "(" +spnSender.getEntityId()
-					// + ")");
-					addElseData(spawnedEntity, entityname, spnSender, target);
+
+					addElseData(spawnedEntity, spnSender, target);
 					dao.saveEntity(spawnedEntity, spnSender);
 					spnSender.getInventory().removeItem(material);
 					spnSender.updateInventory();
 					spnSender.playSound(location, Sound.BLOCK_ANVIL_USE, 1.5F, 1.5F);
 
 					if (spawnedEntity instanceof LivingEntity) {
-						entityEquipArmor((LivingEntity) spawnedEntity, level, spnSender, entityname);
+						entityEquipArmor((LivingEntity) spawnedEntity, level, spnSender);
 					}
-
 					if (useVehicle) {
-						CreateVehicle(spnSender, target, spawnedEntity, vehicle, ENTITYNAME, level);
+						createVehicle(spnSender, target, spawnedEntity, vehicle, level);
 					}
 				} else {
 					SuitUtils.lack(spnSender, "Material");
@@ -887,20 +682,20 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		}
 	}
 
-	private static void CreateVehicle(Player spnSender, LivingEntity target, Entity spawnedEntity, String vehicle, String EntityName, int level) {
-		Entity Vehicle = spawnedEntity.getWorld().spawn(spawnedEntity.getLocation(), loadEntityClass(vehicle));
-		setVehicleData(spawnedEntity, Vehicle, spnSender, target, EntityName, level);
+	private static void createVehicle(Player spnSender, LivingEntity target, Entity spawnedEntity, CustomEntities vehicle, int level) {
+		Entity Vehicle = spawnedEntity.getWorld().spawn(spawnedEntity.getLocation(), vehicle.getSpecies());
+		setVehicleData(spawnedEntity, Vehicle, spnSender, target, level);
 
 		Vehicle.teleport(spawnedEntity.getLocation());
 		Vehicle.addPassenger(spawnedEntity);
 	}
 
-	public static void addElseData(Entity spawnedEntity, String entityName, Player spnSender, LivingEntity target) {
-		if (spawnedEntity instanceof Creature) {
-			((Creature) spawnedEntity).setTarget(target);
+	public static void addElseData(Entity spawnedEntity, Player spnSender, LivingEntity target) {
+		if (spawnedEntity instanceof Mob) {
+			((Mob) spawnedEntity).setTarget(target);
 		}
 		if (spawnedEntity instanceof Horse) {
-			setHorseData((Horse) spawnedEntity, entityName, spnSender, true);
+			setHorseData((Horse) spawnedEntity, spnSender, true);
 		}
 		if (spawnedEntity instanceof Enderman) {
 			setMaterialForEnderMan((Enderman) spawnedEntity, Material.TNT);
@@ -915,21 +710,16 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		if (spawnedEntity instanceof Creeper) {
 			((Creeper) spawnedEntity).setPowered(true);
 		}
-		if (spawnedEntity instanceof Guardian) {
-			if (entityName.endsWith("guardian_king")) {
-				((Guardian)spawnedEntity).setElder(true);
-			}
-		}
 	}
 
-	private static void setVehicleData(Entity spawnedEntity, Entity Vehicle, Player spnSender, LivingEntity target, String EntityName, int level) {
+	private static void setVehicleData(Entity spawnedEntity, Entity Vehicle, Player spnSender, LivingEntity target, int level) {
 		dao.saveEntity(Vehicle, spnSender);
-		addElseData(spawnedEntity, EntityName, spnSender, target);
+		addElseData(spawnedEntity, spnSender, target);
 		if (Vehicle instanceof LivingEntity) {
-			entityEquipArmor(((LivingEntity) Vehicle), level, spnSender, EntityName);
+			entityEquipArmor(((LivingEntity) Vehicle), level, spnSender);
 		}
-		if (Vehicle instanceof Creature) {
-			((Creature) spawnedEntity).setTarget(target);
+		if(Vehicle instanceof Mob){
+			((Mob)Vehicle).setTarget(target);
 		}
 		if(Vehicle instanceof Horse){
 			((Horse) Vehicle).setTamed(true);
@@ -937,7 +727,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		Vehicle.addPassenger(spawnedEntity);
 	}
 
-	private static void entityEquipArmor(LivingEntity livingentity, int level, Player spnSender, String entityName) {
+	private static void entityEquipArmor(LivingEntity livingentity, int level, Player spnSender) {
 		livingentity.setRemoveWhenFarAway(false);
 		addPotionEffects(livingentity, new PotionEffect[] { 
 				new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 999999990, 1),
@@ -946,25 +736,25 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 				new PotionEffect(PotionEffectType.SPEED, 999999990, 1 + (int)(level/32D)),
 				new PotionEffect(PotionEffectType.WATER_BREATHING, 999999990, 1) });
 		if (SuitUtils.canWearArmor(livingentity)) {
-			setEquipment(armorequipment.get(spnSender), spnSender, livingentity, entityName);
+			setEquipment(hdle(spnSender).armorequipment, spnSender, livingentity);
 		}
 	}
 
-	private static void setHorseData(Horse horse, String entityName, Player spnSender, boolean isAdult) {
+	private static void setHorseData(Horse horse, Player spnSender, boolean isAdult) {
 		if (isAdult) {
 			horse.setAdult();
 		}
 		HorseInventory horseinventory = horse.getInventory();
-		ItemStack item = armorequipment.get(spnSender).getItem(8);
+		ItemStack item = hdle(spnSender).armorequipment.getItem(8);
 
 		horse.getInventory().setContents(horseinventory.getContents());
 		horse.setJumpStrength(1 + (double) getLevel(spnSender) / 64);
 
 		horse.setOwner(spnSender);
 
-		if (item != null && 
-		(item.getType() == Material.IRON_HORSE_ARMOR || item.getType() == Material.GOLDEN_HORSE_ARMOR || item.getType() == Material.DIAMOND_HORSE_ARMOR)) {
-				horseinventory.setItem(1, item);
+		if (item != null && (item.getType() == Material.IRON_HORSE_ARMOR
+				|| item.getType() == Material.GOLDEN_HORSE_ARMOR || item.getType() == Material.DIAMOND_HORSE_ARMOR)) {
+			horseinventory.setItem(1, item);
 		}
 		horseinventory.addItem(new ItemStack(Material.SADDLE));
 	}
@@ -974,7 +764,8 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		enderman.setCarriedBlock(data);
 	}
 
-	private static void setEquipment(Inventory inventoryitem, Player player, LivingEntity spawnedEntity, String entityName) {
+	@SuppressWarnings("deprecation")
+	private static void setEquipment(Inventory inventoryitem, Player player, LivingEntity spawnedEntity) {
 		boolean CustomColor = true;
 
 		CustomColor = false;
@@ -985,33 +776,21 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		lentity.setCustomName(player.getName() + "|" + Values.SuitName);
 		ItemStack itemForCreature = createItemForCreature(lentity);
 		lentity.getEquipment().setItemInMainHand(itemForCreature);
-		Color HelmetColor = Color.MAROON;
-		Color ChestplateColor = Color.MAROON;
-		Color LeggingsColor = Color.MAROON;
-		Color BootsColor = Color.MAROON;
 
-		if (HelmetColorMap.containsKey(player)) {
-			HelmetColor = HelmetColorMap.get(player);
-		}
-		if (LeggingsColorMap.containsKey(player)) {
-			LeggingsColor = LeggingsColorMap.get(player);
-		}
-		if (BootsColorMap.containsKey(player)) {
-			BootsColor = BootsColorMap.get(player);
-		}
-		if (ChestPlatecolorMap.containsKey(player)) {
-			ChestplateColor = ChestPlatecolorMap.get(player);
-		}
-
-		int level = equipment.get(player).getItem(8).getAmount();
+		SuitSettings hdle = hdle(player);
+		int level = hdle.equipment.getItem(8).getAmount();
 
 		lentity.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 999999990, 10));
+		Color HelmetColor = hdle.getHelmetColor();
+		Color ChestplateColor = hdle.getChestColor();
+		Color LeggingsColor = hdle.getLeggingsColor();
+		Color BootsColor = hdle.getBootsColor();
 
 		/* 신발 신기기 */
 		ItemStack helmetitem = inventoryitem.getItem(19);
 
 		if (helmetitem != null) {
-			addData(helmetitem, helmetequipment.get(player), level, player, CustomColor, HelmetColor);
+			addData(helmetitem, hdle.helmetequipment, level, player, CustomColor, HelmetColor);
 
 			lentity.getEquipment().setHelmet(new ItemStack(helmetitem));
 			lentity.getEquipment().setHelmetDropChance(0F);
@@ -1019,7 +798,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		
 		ItemStack chestplate = inventoryitem.getItem(28);
 		if (chestplate != null) {
-			addData(chestplate, chestequipment.get(player), level, player, CustomColor, ChestplateColor);
+			addData(chestplate, hdle.chestequipment, level, player, CustomColor, ChestplateColor);
 
 			lentity.getEquipment().setChestplate(new ItemStack(chestplate));
 			lentity.getEquipment().setChestplateDropChance(0F);
@@ -1027,7 +806,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		
 		ItemStack leggings = inventoryitem.getItem(37);
 		if (leggings != null) {
-			addData(leggings, leggingsequipment.get(player), level, player, CustomColor, LeggingsColor);
+			addData(leggings, hdle.leggingsequipment, level, player, CustomColor, LeggingsColor);
 
 			lentity.getEquipment().setLeggings(new ItemStack(leggings));
 			lentity.getEquipment().setLeggingsDropChance(0F);
@@ -1036,30 +815,23 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		ItemStack boots = inventoryitem.getItem(46);
 		if (boots != null) {
 
-			addData(boots, bootsequipment.get(player), level, player, CustomColor, BootsColor);
+			addData(boots, hdle.bootsequipment, level, player, CustomColor, BootsColor);
 			lentity.getEquipment().setBoots(new ItemStack(boots));
 			lentity.getEquipment().setBootsDropChance(0F);
 		}
 		
 		ItemStack hand = inventoryitem.getItem(29);
 		if (hand != null) {
-			SetDisplayName(ChatColor.AQUA + Values.SuitName + Values.SuitInforegex + level, hand);
+			name(ChatColor.AQUA + Values.SuitName + Values.SuitInforegex + level, hand);
 			Enchant.enchantment(hand, new Glow(), 1, true);
 			lentity.getEquipment().setItemInMainHand(hand);
 			lentity.getEquipment().setItemInMainHandDropChance(0);
 		}
 	}
-
-	public static void leatherDyecolor(ItemStack item, DyeColor color) {
-		Color c = color.getColor();
-
-		LeatherArmorMeta meta = (LeatherArmorMeta) item.getItemMeta();
-		meta.setColor(c);
-		item.setItemMeta(meta);
-	}
-
-	public static void leathercolor(ItemStack item, Color color) {
-
+	
+	public static void dye(ItemStack item, Color color) {
+		if(!dyeable(item)) return;
+		
 		LeatherArmorMeta meta = (LeatherArmorMeta) item.getItemMeta();
 		meta.setColor(color);
 		item.setItemMeta(meta);
@@ -1071,12 +843,12 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 			if (item.getType() == Material.LEATHER_HELMET || item.getType() == Material.LEATHER_CHESTPLATE
 					|| item.getType() == Material.LEATHER_LEGGINGS || item.getType() == Material.LEATHER_BOOTS) {
 				if (color != null) {
-					leathercolor(item, color);
+					dye(item, color);
 				}
 			}
 
 			if (enchantInventory != null) {
-				SetDisplayName(ChatColor.AQUA + Values.SuitName + Values.SuitInforegex + level, item);
+				name(ChatColor.AQUA + Values.SuitName + Values.SuitInforegex + level, item);
 				int size = enchantInventory.getSize();
 
 				if (size != 0) {
@@ -1098,10 +870,6 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 
 		}
 		return item;
-	}
-
-	public static <T extends Entity> Class<T> loadEntityClass(String entityType) {
-		return (Class<T>) entityMap.get(entityType.toLowerCase());
 	}
 
 	public static void addPotionEffects(LivingEntity ett, PotionEffect... effects) {
@@ -1184,81 +952,59 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		return gunitem;
 	}
 
-	public static void refreshInventory(Player spnSender) {
-		reset(spnSender, equipment, inventory, InventoryNames.inventory_name);
-		reset(spnSender, armorequipment, armorinventory, InventoryNames.armorinventory_name);
-
-		reset(spnSender, helmetequipment, helmetinventory, InventoryNames.helmetinventory_name);
-		reset(spnSender, chestequipment, chestinventory, InventoryNames.chestinventory_name);
-		reset(spnSender, leggingsequipment, leggingsinventory, InventoryNames.leggingsinventory_name);
-		reset(spnSender, bootsequipment, bootsinventory, InventoryNames.bootsinventory_name);
-		resetCommand_GUI(spnSender, command_equipment, commandInventory);
-	}
-
-	private static void resetCommand_GUI(Player spnSender, HashMap<Player, Inventory> command_equipment, Inventory commandInventory) {
-
-		Inventory NewcommandInventory = Bukkit.createInventory(null, commandInventory.getSize(),
-				InventoryNames.CommandInventory_name + ":" + spnSender.getDisplayName());
-
-		NewcommandInventory.setContents(commandInventory.getContents());
-		ItemStack Head = Head(spnSender.getName());
-		NewcommandInventory.setItem(14, Head);
-		command_equipment.put(spnSender, NewcommandInventory);
-	}
-
-	private static void resetTypeMap() {
-		Iterator<ItemStack> iterator = entity_Icon_Map.values().iterator();
-		int slot = 0;
-		while (iterator.hasNext()) {
-
-			ItemStack item = iterator.next();
-			type_inventory.setItem(slot, item);
-			vehicle_inventory.setItem(slot, item);
-			slot++;
-		}
-	}
-
-	public static void SetDisplayName(String name, ItemStack item) {
+	public static void name(String name, ItemStack item) {
 		ItemMeta meta = item.getItemMeta();
 		meta.setDisplayName(name);
 		item.setItemMeta(meta);
 	}
 
-	public static void reset(Player player, HashMap<Player, Inventory> map, Inventory inventory, String name) {
-		if (!map.containsKey(player)) {
-			Inventory Newinventory = Bukkit.createInventory(player, inventory.getSize(), name);
-			Newinventory.setContents(inventory.getContents());
-			map.put(player, Newinventory);
+	private static void initTypeMap() {
+		int eslot = 0, vslot = 0;
+		
+		for(CustomEntities e : CustomEntities.values()){
+			ItemStack icon = e.getIcon();
+			if(e!=CustomEntities.NONE){
+				type_inventory.setItem(eslot, icon);
+				eslot++;
+			}
+			vehicle_inventory.setItem(vslot, icon);
+			vslot++;
 		}
+	}
+
+	public static Inventory copyCommand_GUI(Player spnSender, Inventory commandInventory) {
+		Inventory NewcommandInventory = Bukkit.createInventory(null, commandInventory.getSize(), InventoryNames.CommandInventory_name + ":" + spnSender.getDisplayName());
+		NewcommandInventory.setContents(commandInventory.getContents());
+		ItemStack Head = decapitate(spnSender.getName());
+		NewcommandInventory.setItem(14, Head);
+		return NewcommandInventory;
+	}
+
+	public static Inventory copy(Player player, Inventory inventory, String title){
+		Inventory Newinventory = Bukkit.createInventory(player, inventory.getSize(), title);
+		Newinventory.setContents(inventory.getContents());
+		return Newinventory;
 	}
 
 	public static int getLevel(Player p) {
-		if (p.getEquipment().getLeggings() != null) {
-
-			String leggings = p.getEquipment().getLeggings().getItemMeta().getDisplayName();
-			if (leggings != null) {
-				if (leggings.contains(Values.SuitName + Values.SuitInforegex)) {
-
-					String[] values = leggings.split(Values.SuitInforegex);
-					return Integer.parseInt(values[1]);
-				}
-
+		for(ItemStack armor : p.getEquipment().getArmorContents()){
+			if(SuitUtils.checkName(armor, Values.SuitName + Values.SuitInforegex)){				
+				String name = armor.getItemMeta().getDisplayName();
+				String[] values = name.split(Values.SuitInforegex);
+				return Integer.parseInt(values[1]);
 			}
 		}
-		if (p.getEquipment().getHelmet() != null) {
-			String helmetname = p.getEquipment().getHelmet().getItemMeta().getDisplayName();
-			if (helmetname != null) {
-
-				if (helmetname.contains(Values.SuitName + Values.SuitInforegex)) {
-					String[] values = helmetname.split(Values.SuitInforegex);
-					return Integer.parseInt(values[1]);
-				}
-			}
-		}
-		return 0;
+		return hdle(p).level();
 	}
 
-	public static ItemStack[] Color_Items(ItemStack itemstack) {
+	public static boolean dyeable(ItemStack item){
+		if(item==null) return false;
+		
+		Material type = item.getType();
+		return type == Material.LEATHER_HELMET || type == Material.LEATHER_CHESTPLATE || type == Material.LEATHER_LEGGINGS || type == Material.LEATHER_BOOTS;
+	}
+	
+	public static ItemStack[] dyeSpectrum(ItemStack itemstack) {
 		ItemStack[] items = new ItemStack[colorMap.size()];
 		Iterator<String> colors = colorMap.keySet().iterator();
 		int index = 0;
@@ -1266,46 +1012,15 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 			String colorName = colors.next();
 			Color color = colorMap.get(colorName);
 			ItemStack item = itemstack.clone();
-			leathercolor(item, color);
-			SetDisplayName((colorName + "").toUpperCase(), item);
+			dye(item, color);
+			name((colorName).toUpperCase(), item);
 			items[index] = item;
 			index++;
 		}
 		return items;
 	}
 
-	public static void resetColorIcon(ItemStack item, Player player) {
-		if (armorequipment.get(player) == null) {
-			refreshInventory(player);
-		}
-		Inventory inventory = armorequipment.get(player);
-		Material type = item.getType();
-		Color color = ((LeatherArmorMeta) item.getItemMeta()).getColor();
-		if (type == Material.LEATHER_HELMET) {
-			int slot = 25;
-			ItemStack itemstack = inventory.getItem(slot);
-			leathercolor(itemstack, color);
-			inventory.setItem(slot, itemstack);
-		} else if (type == Material.LEATHER_CHESTPLATE) {
-			int slot = 34;
-			ItemStack itemstack = inventory.getItem(slot);
-			leathercolor(itemstack, color);
-			inventory.setItem(slot, itemstack);
-		} else if (type == Material.LEATHER_LEGGINGS) {
-			int slot = 43;
-			ItemStack itemstack = inventory.getItem(slot);
-			leathercolor(itemstack, color);
-			inventory.setItem(slot, itemstack);
-		} else if (type == Material.LEATHER_BOOTS) {
-			int slot = 52;
-			ItemStack itemstack = inventory.getItem(slot);
-			leathercolor(itemstack, color);
-			inventory.setItem(slot, itemstack);
-		}
+	public static void refreshInventory(Player player) {
+		hdle(player).reinitInv();
 	}
-	
-//	 public static Inventory createInventory(int size, String title){
-//		 return Bukkit.createInventory(null, size, title);
-//	 }
-
 }
