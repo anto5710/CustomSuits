@@ -1,10 +1,9 @@
 package gmail.anto5710.mcp.customsuits._Thor;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
-import gmail.anto5710.mcp.customsuits.CustomSuits.suit.PlayerEffect;
 import gmail.anto5710.mcp.customsuits.Setting.PotionEffects;
 import gmail.anto5710.mcp.customsuits.Utils.ParticleUtil;
-import gmail.anto5710.mcp.customsuits.Utils.ThorUtils;
+import gmail.anto5710.mcp.customsuits.Utils.PotionBrewer;
 
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -80,24 +79,14 @@ public class Thor_Move extends BukkitRunnable {
 	}
 
 	private void addThorPotion_Effects() {
-		PlayerEffect.addpotion(PotionEffects.Thor_FAST_DIGGING, player);
-		PlayerEffect.addpotion(PotionEffects.Thor_FIRE_RESISTANCE, player);
-		PlayerEffect.addpotion(PotionEffects.Thor_HEALTH_BOOST, player);
-		PlayerEffect.addpotion(PotionEffects.Thor_INCREASE_DAMAGE, player);
-		PlayerEffect.addpotion(PotionEffects.Thor_JUMP, player);
-		PlayerEffect.addpotion(PotionEffects.Thor_REGENERATION, player);
-		PlayerEffect.addpotion(PotionEffects.Thor_SPEED, player);
-		PlayerEffect.addpotion(PotionEffects.Thor_WATER_BREATHING, player);
+		PotionBrewer.addPotions(player, PotionEffects.Thor_FAST_DIGGING, PotionEffects.Thor_FIRE_RESISTANCE,
+				PotionEffects.Thor_HEALTH_BOOST, PotionEffects.Thor_INCREASE_DAMAGE, PotionEffects.Thor_JUMP,
+				PotionEffects.Thor_REGENERATION, PotionEffects.Thor_SPEED, PotionEffects.Thor_WATER_BREATHING);
 	}
 
 	private void removeThorPotion_Effects() {
-		ThorUtils.removePotionEffect(PotionEffects.Thor_FAST_DIGGING, player);
-		ThorUtils.removePotionEffect(PotionEffects.Thor_FIRE_RESISTANCE, player);
-		ThorUtils.removePotionEffect(PotionEffects.Thor_HEALTH_BOOST, player);
-		ThorUtils.removePotionEffect(PotionEffects.Thor_INCREASE_DAMAGE, player);
-		ThorUtils.removePotionEffect(PotionEffects.Thor_JUMP, player);
-		ThorUtils.removePotionEffect(PotionEffects.Thor_REGENERATION, player);
-		ThorUtils.removePotionEffect(PotionEffects.Thor_SPEED, player);
-		ThorUtils.removePotionEffect(PotionEffects.Thor_WATER_BREATHING, player);
+		PotionBrewer.removePotionEffects(player, PotionEffects.Thor_FAST_DIGGING, PotionEffects.Thor_FIRE_RESISTANCE,
+				PotionEffects.Thor_HEALTH_BOOST, PotionEffects.Thor_INCREASE_DAMAGE, PotionEffects.Thor_JUMP,
+				PotionEffects.Thor_REGENERATION, PotionEffects.Thor_SPEED, PotionEffects.Thor_WATER_BREATHING);
 	}
 }

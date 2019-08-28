@@ -6,6 +6,7 @@ import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.PlayerEffect;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.SuitSettings;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
+import gmail.anto5710.mcp.customsuits.Utils.ItemUtil;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 
 import org.bukkit.Bukkit;
@@ -67,7 +68,7 @@ public class SuitInventoryGUI extends InventoryNames implements Listener {
 			CustomEntities type = CustomEntities.get(Clicked);
 			if (type != null) {
 				Player player = (Player) e.getWhoClicked();
-				CustomSuitPlugin.hdle(player).setSentityType(type);
+				CustomSuitPlugin.handle(player).setSentityType(type);
 				e.setCancelled(true);
 			}
 		}
@@ -83,7 +84,7 @@ public class SuitInventoryGUI extends InventoryNames implements Listener {
 			CustomEntities type = CustomEntities.get(Clicked);
 			if (type != null) {
 				Player player = (Player) e.getWhoClicked();
-				CustomSuitPlugin.hdle(player).setVehicleType(type);
+				CustomSuitPlugin.handle(player).setVehicleType(type);
 				e.setCancelled(true);
 			}
 		}
@@ -94,7 +95,7 @@ public class SuitInventoryGUI extends InventoryNames implements Listener {
 		if(authenticateAccess(e, CommandInventory_name)) {
 			Player p = (Player) e.getWhoClicked();
 			if (e.getSlot() == 10) {
-				CustomSuitPlugin.runSpawn(p);
+				CustomSuitPlugin.summonNearestSuit(p);;
 				e.setCancelled(true);
 				
 			} else if (e.getSlot() == 12) {
@@ -102,7 +103,7 @@ public class SuitInventoryGUI extends InventoryNames implements Listener {
 				e.setCancelled(true);
 				
 			} else if (e.getSlot() == 14) {
-				CustomSuitPlugin.spawnall(p);
+				CustomSuitPlugin.summonAll(p);
 				e.setCancelled(true);
 				
 			} else if (e.getSlot() == 16) {
@@ -122,10 +123,10 @@ public class SuitInventoryGUI extends InventoryNames implements Listener {
 
 			String name = e.getView().getTitle();
 			ItemStack item = e.getCurrentItem();
-			if (CustomSuitPlugin.dyeable(item)) {
+			if (ItemUtil.dyeable(item)) {
 				Color color = ((LeatherArmorMeta) item.getItemMeta()).getColor();
 				Player player = (Player) e.getWhoClicked();
-				SuitSettings hdle = CustomSuitPlugin.hdle(player);
+				SuitSettings hdle = CustomSuitPlugin.handle(player);
 
 				if (name.equals(HelmetColorInventory_name)) {
 					hdle.setHelmetColor(color);
@@ -146,7 +147,7 @@ public class SuitInventoryGUI extends InventoryNames implements Listener {
 		Inventory list = Bukkit.createInventory(null, 36, list_name);
 
 		for (Player player : whoClicked.getServer().getOnlinePlayers()) {
-			ItemStack skull = CustomSuitPlugin.decapitate(player.getName());
+			ItemStack skull = ItemUtil.decapitate(player.getName());
 			list.addItem(skull);
 		}
 		whoClicked.openInventory(list);
@@ -163,7 +164,7 @@ public class SuitInventoryGUI extends InventoryNames implements Listener {
 					String name = skull.getOwner();
 					Player player = Bukkit.getPlayer(name);
 					if (player != null) {
-						CustomSuitPlugin.hdle(player).putTarget(WhoClicked);
+						CustomSuitPlugin.handle(player).putTarget(WhoClicked);
 					} else {
 						WhoClicked.sendMessage(Values.NoSuchEntity);
 
@@ -175,26 +176,26 @@ public class SuitInventoryGUI extends InventoryNames implements Listener {
 	}
 
 	@EventHandler
-	public void clickHelmet(InventoryClickEvent e) {
+	public void clickArmorGUI(InventoryClickEvent e) {
 		if (authenticateAccess(e, true, "[Armor]")) {
 			Player player = (Player) e.getWhoClicked();
-
+			
 			int slot = e.getSlot();
 			boolean toCancel = true;
 			if (slot == 22) {
-				player.openInventory(CustomSuitPlugin.hdle(player).helmetequipment);
+				player.openInventory(CustomSuitPlugin.handle(player).helmetequipment);
 			} else if (slot == 25) {
 				player.openInventory(CustomSuitPlugin.HelmetColorInventory);
 			} else if (slot == 31) {
-				player.openInventory(CustomSuitPlugin.hdle(player).chestequipment);
+				player.openInventory(CustomSuitPlugin.handle(player).chestequipment);
 			} else if (slot == 34) {
 				player.openInventory(CustomSuitPlugin.ChestplateColorInventory);
 			} else if (slot == 40) {
-				player.openInventory(CustomSuitPlugin.hdle(player).leggingsequipment);
+				player.openInventory(CustomSuitPlugin.handle(player).leggingsequipment);
 			} else if (slot == 43) {
 				player.openInventory(CustomSuitPlugin.LeggingsColorInventory);
 			} else if (slot == 49) {
-				player.openInventory(CustomSuitPlugin.hdle(player).bootsequipment);
+				player.openInventory(CustomSuitPlugin.handle(player).bootsequipment);
 			} else if (slot == 52) {
 				player.openInventory(CustomSuitPlugin.BootsColorInventory);				
 			} else {
@@ -212,10 +213,10 @@ public class SuitInventoryGUI extends InventoryNames implements Listener {
 	public void clickGUI(PlayerInteractEvent e) {
 		Player player = (Player) e.getPlayer();
 		if (SuitUtils.isRightClick(e)) {
-			if (SuitUtils.checkItem(CustomSuitPlugin.suitremote, SuitUtils.getHoldingItem(player))) {
+			if (ItemUtil.checkItem(CustomSuitPlugin.suitremote, SuitUtils.getHoldingItem(player))) {
 				CustomSuitPlugin.refreshInventory((Player) e.getPlayer());
 
-				e.getPlayer().openInventory(CustomSuitPlugin.hdle(player).equipment);
+				e.getPlayer().openInventory(CustomSuitPlugin.handle(player).equipment);
 				e.setCancelled(true);
 			}
 		}
@@ -228,12 +229,12 @@ public class SuitInventoryGUI extends InventoryNames implements Listener {
 
 			int slot = e.getSlot();
 			if (slot == 0) {
-				player.openInventory(CustomSuitPlugin.hdle(player).command_equipment);
+				player.openInventory(CustomSuitPlugin.handle(player).command_equipment);
 				e.setCancelled(true);
 			} else if (slot == 4) {
 				CustomSuitPlugin.refreshInventory(player);
 
-				player.openInventory(CustomSuitPlugin.hdle(player).armorequipment);
+				player.openInventory(CustomSuitPlugin.handle(player).armorequipment);
 				e.setCancelled(true);
 			}else if(slot==18){
 				CustomSuitPlugin.refreshInventory(player);

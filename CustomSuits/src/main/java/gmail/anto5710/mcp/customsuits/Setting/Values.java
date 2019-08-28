@@ -104,7 +104,7 @@ public class Values {
 	final public static int Suit_Gun_Shot_Radius =500;
 	final public static int Suit_Gun_Shot_Effect_Data =Material.STONE.getId();
 	
-	final public static String regex = ChatColor.YELLOW+"» ∞ «";
+	final public static String gun_regex = ChatColor.YELLOW+"» ∞ «";
 	final public static String SuitInforegex = ChatColor.DARK_AQUA+":";
 	final public static String SuitName = "Mark";
 	
@@ -112,13 +112,14 @@ public class Values {
 	final public static List<Material> IgnoreMaterials_Gun = Arrays.asList(Material.AIR , Material.LAVA,  Material.LEGACY_STATIONARY_LAVA , Material.WATER , Material.LEGACY_STATIONARY_WATER , Material.OBSIDIAN , Material.BEDROCK , Material.BEACON);
 	
 	
+	final public static String MachineGunName = "Knif-1220";
 	final public static double MachineGunDamage =7 ;
 	final public static double MachineGunDamageRadiues =1.5 ;
 	final public static int MachineGunAmmoAmount = 50;
 	final public static Material MachineGunAmmo = Material.FLINT;
 	
-	final public static double Bim = 13.5;
-	final public static float BimExplosionPower =4F ;
+	final public static double Bim = 16;
+	final public static float BimExplosionPower =4.5F ;
 	final public static int BimEffectAmount =5 ;
 	final public static double BimRadius =1 ;
 	final public static int BimHunger =-2 ;

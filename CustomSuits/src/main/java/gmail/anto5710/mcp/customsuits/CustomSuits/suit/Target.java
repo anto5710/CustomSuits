@@ -39,7 +39,7 @@ public class Target extends BukkitRunnable{
 		try {
 			taskID = this.getTaskId();
 		} catch (IllegalStateException e) {
-			System.out.println("EMPTY TARGET");
+			CustomSuitPlugin.logger.info("EMPTY TARGET");
 //			e.printStackTrace();
 		}
 
@@ -48,10 +48,10 @@ public class Target extends BukkitRunnable{
 			ThorUtils.cancel(taskID);
 		} else {
 			isRunning = true;
-			Iterator<Player> iterator = getPlayers(SpawningDao.spawnMap);
+			Iterator<Player> iterator = getSuitedPlayers(SpawningDao.spawnMap);
 			while (iterator.hasNext()) {
 				Player player = iterator.next();
-				SuitSettings hdle = CustomSuitPlugin.hdle(player);
+				SuitSettings hdle = CustomSuitPlugin.handle(player);
 				hdle.removeDeadTarget();
 				target(player, hdle.getCurrentTarget(), false);
 			}
@@ -93,9 +93,9 @@ public class Target extends BukkitRunnable{
 		}
 	}
 	
-	private Iterator<Player> getPlayers(Map<String, String> Map) {
+	private Iterator<Player> getSuitedPlayers(Map<String, String> stringMap) {
 		List<Player> list = new ArrayList<Player>();
-		Iterator<String> iterator = Map.values().iterator();
+		Iterator<String> iterator = stringMap.values().iterator();
 		while (iterator.hasNext()) {
 			String name = iterator.next();
 			Player player = Bukkit.getServer().getPlayer(name);

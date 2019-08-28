@@ -1,9 +1,9 @@
 package gmail.anto5710.mcp.customsuits._Thor;
 
-import gmail.anto5710.mcp.customsuits.CustomSuits.PlayEffect;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.HungerScheduler;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
+import gmail.anto5710.mcp.customsuits.Utils.CustomEffects;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 import gmail.anto5710.mcp.customsuits.Utils.ThorUtils;
 
@@ -42,7 +42,7 @@ public class HammerWeapons implements Listener{
 //	
 //	public static void launchLightningMissile(Player player){
 //		Location targetblock = SuitUtils.getTargetBlock(player, 100).getLocation();
-//		player.playSound(player.getLocation(), Values.LightningMissileSound, 16.0F,0F);
+//		SuitUtils.playSound(player.getLocation(), Values.LightningMissileSound, 16.0F,0F);
 //		SuitUtils.LineParticle(targetblock, player.getEyeLocation(), player, Particle.LAVA, 3, 0, Values.LightningMissile, 2, false , true, false,5);
 //	}
 	/**
@@ -50,7 +50,7 @@ public class HammerWeapons implements Listener{
 	 * @param event PlayerInteractEvent
 	 */
 	@EventHandler
-	public void ThrowHammer(PlayerInteractEvent event) {
+	public void throwHammer(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
 		if(player.isSneaking()){
 			return;
@@ -71,7 +71,7 @@ public class HammerWeapons implements Listener{
 	}
 	
 	public void awakenThor(Player player){
-		PlayEffect.play_Thor_Change_Effect(player , 0);
+		CustomEffects.play_Thor_Change_Effect(player , 0);
 		Hammer.thor = player;
 	}
 	
@@ -82,7 +82,7 @@ public class HammerWeapons implements Listener{
 			return;
 		}
 		Hammer.teleportItem(hammer , playerEyeLocation);
-		player.playSound(playerEyeLocation, Values.HammerTeleportSound, 6.0F,6.0F);
+		SuitUtils.playSound(playerEyeLocation, Values.HammerTeleportSound, 6.0F,6.0F);
 	}
 	
 	public void throwHammer(Player player) {
@@ -101,8 +101,8 @@ public class HammerWeapons implements Listener{
 		
 		addEffectToHammer(dropped, player);
 	
-		player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_LAND,6.0F, 6.0F);
-		player.playSound(player.getLocation(), Sound.ENTITY_IRON_GOLEM_HURT,4.0F, 2.0F);
+		SuitUtils.playSound(player, Sound.BLOCK_ANVIL_LAND,6.0F, 6.0F);
+		SuitUtils.playSound(player, Sound.ENTITY_IRON_GOLEM_HURT,4.0F, 2.0F);
 	}
 	
 	/**

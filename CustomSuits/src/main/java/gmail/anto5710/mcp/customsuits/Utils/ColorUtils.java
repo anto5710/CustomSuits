@@ -1,9 +1,34 @@
 package gmail.anto5710.mcp.customsuits.Utils;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.bukkit.Color;
 
 public class ColorUtils {
 
+	public static Map<String, Color> colorMap = new HashMap<>();
+	
+	public static void initColorMap(){
+		ColorUtils.colorMap.put("red", Color.RED);
+		ColorUtils.colorMap.put("blue", Color.BLUE);
+		ColorUtils.colorMap.put("aqua", Color.AQUA);
+		ColorUtils.colorMap.put("black", Color.BLACK);
+		ColorUtils.colorMap.put("yellow", Color.YELLOW);
+		ColorUtils.colorMap.put("green", Color.GREEN);
+		ColorUtils.colorMap.put("lime", Color.LIME);
+		ColorUtils.colorMap.put("orange", Color.ORANGE);
+		ColorUtils.colorMap.put("olive", Color.OLIVE);
+		ColorUtils.colorMap.put("gray", Color.GRAY);
+		ColorUtils.colorMap.put("purple", Color.PURPLE);
+		ColorUtils.colorMap.put("white", Color.WHITE);
+		ColorUtils.colorMap.put("silver", Color.SILVER);
+		ColorUtils.colorMap.put("navy", Color.NAVY);
+		ColorUtils.colorMap.put("maroon", Color.MAROON);
+		ColorUtils.colorMap.put("fuchsia", Color.FUCHSIA);
+		ColorUtils.colorMap.put("teal", Color.TEAL);
+	}
+	
 	public static Color[] getColors(Color color){
 		float [] HSB =ColorUtils.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue());
 		float H = HSB[0];
@@ -44,5 +69,6 @@ public class ColorUtils {
 		java.awt.Color.RGBtoHSB(R, G, B, HSB);
 		return HSB;
 	}
+
 
 }

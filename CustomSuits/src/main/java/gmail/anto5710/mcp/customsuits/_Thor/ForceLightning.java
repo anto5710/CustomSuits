@@ -51,9 +51,9 @@ public class ForceLightning extends BukkitRunnable implements Listener{
 				continue;
 			}
 			Location ploc = p.getLocation();
-			p.playSound(ploc, Sound.ENTITY_BLAZE_AMBIENT, 1F, 3F);
-//			p.playSound(ploc, Sound.ENTITY_ENDER_DRAGON_SHOOT, 4F, 3F);
-			p.playSound(ploc, Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 0.2F, 1F);
+			SuitUtils.playSound(ploc, Sound.ENTITY_BLAZE_AMBIENT, 1F, 3F);
+//			SuitUtils.playSound(ploc, Sound.ENTITY_ENDER_DRAGON_SHOOT, 4F, 3F);
+			SuitUtils.playSound(ploc, Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 0.2F, 1F);
 			new BlockIterator(p.getWorld(), p.getEyeLocation().toVector(), ploc.getDirection(), 0, 100).forEachRemaining(b->{
 				Location curloc = b.getLocation();
 				WeaponUtils.damageNeffect(curloc, 6, p, false, false, 1);
@@ -81,7 +81,7 @@ public class ForceLightning extends BukkitRunnable implements Listener{
 		if(!canUseLazer(p)) return;
 		
 		if(e.isSneaking()){
-			if(!isUsingLazer(p) && HungerScheduler.addHunger(p, Values.LightningMissileHunger)) startLazer(p);
+			if(!isUsingLazer(p) && HungerScheduler.deltaHunger(p, Values.LightningMissileHunger)) startLazer(p);
 		}else{
 			stopLazer(p);
 		}
@@ -114,8 +114,8 @@ public class ForceLightning extends BukkitRunnable implements Listener{
 		cr.setShowingBottom(false);
 		cr.setInvulnerable(true);
 		crystals.put(p, cr);
-		p.playSound(p.getLocation(), Sound.ENTITY_MAGMA_CUBE_DEATH, 1F, 3F);
-		p.playSound(p.getLocation(), Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 2F, 1F);
+		SuitUtils.playSound(p.getLocation(), Sound.ENTITY_MAGMA_CUBE_DEATH, 1F, 3F);
+		SuitUtils.playSound(p.getLocation(), Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 2F, 1F);
 		
 		if(!running){
 			new ForceLightning(plugin).runTaskTimer(plugin, 0, 10);

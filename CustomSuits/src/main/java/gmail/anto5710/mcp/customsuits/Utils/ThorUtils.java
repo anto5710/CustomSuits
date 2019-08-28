@@ -1,7 +1,6 @@
 package gmail.anto5710.mcp.customsuits.Utils;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
-import gmail.anto5710.mcp.customsuits.CustomSuits.suit.PlayerEffect;
 import gmail.anto5710.mcp.customsuits._Thor.Hammer_Throw_Effect;
 
 import java.util.ArrayList;
@@ -19,8 +18,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 public class ThorUtils {
 	public static void removeItemInHand(Player player){
@@ -40,7 +37,7 @@ public class ThorUtils {
 	public static Item getDroppedHammer(World world, Player player) {
 		for (Entity entity : world.getEntitiesByClass(Item.class)) {
 			Item item = (Item) entity;
-			if (SuitUtils.checkItem(CustomSuitPlugin.hammer, item.getItemStack())) {
+			if (ItemUtil.checkItem(CustomSuitPlugin.hammer, item.getItemStack())) {
 				return item;
 			}
 		}
@@ -52,7 +49,7 @@ public class ThorUtils {
 	 * @return is player holding Hammer
 	 */
 	public static boolean isHammerinHand(Player player){
-		return SuitUtils.checkItem(CustomSuitPlugin.hammer, SuitUtils.getHoldingItem(player));
+		return ItemUtil.checkItem(CustomSuitPlugin.hammer, SuitUtils.getHoldingItem(player));
 	}
 	/**
 	 * 
@@ -96,26 +93,6 @@ public class ThorUtils {
 		return false;
 	}
 	/**
-	 * Remove PotionEffect
-	 * @param PotionEffectType PotionEffectType
-	 * @param player Player to remove PotionEfffect
-	 */
-	public static void removePotionEffectType(PotionEffectType PotionEffectType, Player player) {
-		if(player.hasPotionEffect(PotionEffectType)){
-			player.removePotionEffect(PotionEffectType);
-		}
-	}
-	/**
-	 * Remove PotionEffect
-	 * @param PotionEffect PotionEffect
-	 * @param player Player to remove PotionEfffect
-	 */
-	public static void removePotionEffect(PotionEffect PotionEffect, Player player) {
-		if(PlayerEffect.containPotionEffect(player, PotionEffect.getType(), PotionEffect.getAmplifier())){
-			player.removePotionEffect(PotionEffect.getType());
-		}
-	}
-	/**
 	 * Check is entity burning
 	 * @param entity Entity to Check
 	 * @return is entity burning
@@ -145,7 +122,7 @@ public class ThorUtils {
 	 * @param item Item to remove from Thorwn Hammer list 
 	 */
 	public static void remove(Item item) {
-			Hammer_Throw_Effect.listPlayer.remove(item);
+		Hammer_Throw_Effect.listPlayer.remove(item);
 	}
 	/**
 	 * Cancel That BukkitTask
@@ -161,7 +138,7 @@ public class ThorUtils {
 	 * @param damage Damage
 	 * @param player player
 	 */
-	public static void damage(java.util.List<Entity> list, double damage, Player player) {
+	public static void damage(List<Entity> list, double damage, Player player) {
 			list.remove(player);
 		for (Entity e : list) {
 			if (e instanceof Damageable) {
@@ -181,5 +158,4 @@ public class ThorUtils {
 			loc.getWorld().strikeLightning(loc);
 		}
 	}
-
 }

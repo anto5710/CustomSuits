@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import gmail.anto5710.mcp.customsuits.CustomSuits.PlayEffect;
-import gmail.anto5710.mcp.customsuits.CustomSuits.suit.WeaponListner;
+import gmail.anto5710.mcp.customsuits.CustomSuits.suit.SuitWeapons;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
 import gmail.anto5710.mcp.customsuits.Utils.MathUtils;
 import gmail.anto5710.mcp.customsuits.Utils.ParticleUtil;
+import gmail.anto5710.mcp.customsuits.Utils.CustomEffects;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 import gmail.anto5710.mcp.customsuits.Utils.ThorUtils;
 
@@ -30,8 +30,7 @@ public class Hammer_Throw_Effect extends BukkitRunnable {
 	public static HashMap<Item, Player> listPlayer = new HashMap<>();
 	public static ArrayList<Item>removed = new ArrayList<>();
 	
-	public Hammer_Throw_Effect() {
-	}
+	public Hammer_Throw_Effect() {}
 	
 	@Override
 	public void run() throws IllegalStateException{
@@ -58,13 +57,13 @@ public class Hammer_Throw_Effect extends BukkitRunnable {
 				java.util.List<Entity> list;
 				
 				ParticleUtil.playEffect(Values.HammerDefaultEffect, loc, 55, 4);
-				list = WeaponListner.findEntity(loc, player, 1);
+				list = SuitWeapons.findEntity(loc, player, 1);
 		
 				ThorUtils.damage(list, Hammer.HammerDeafultDamage, player);
 				
 				if (ThorUtils.isOnGround(item)|| item.isDead()) {
 				
-					PlayEffect.play_Hammer_Hit_Ground(item);
+					CustomEffects.play_Hammer_Hit_Ground(item);
 					item.getWorld().strikeLightning(item.getLocation());
 					player.getInventory().addItem(item.getItemStack());
 					item.remove();

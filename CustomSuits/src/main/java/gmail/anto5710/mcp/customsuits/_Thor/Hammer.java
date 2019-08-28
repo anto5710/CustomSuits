@@ -9,6 +9,8 @@ import gmail.anto5710.mcp.customsuits.CustomSuits.FireworkPlay;
 import gmail.anto5710.mcp.customsuits.CustomSuits.FireworkProccesor;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
+import gmail.anto5710.mcp.customsuits.Utils.ItemUtil;
+import gmail.anto5710.mcp.customsuits.Utils.MathUtils;
 import gmail.anto5710.mcp.customsuits.Utils.ParticleUtil;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 import gmail.anto5710.mcp.customsuits.Utils.ThorUtils;
@@ -28,7 +30,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
@@ -100,16 +101,12 @@ public class Hammer implements Listener {
 		Entity entity = event.getEntity();
 		if (damager instanceof Player) {
 			Player player = (Player) damager;
-			if(!isPractiallyThor(player)){
-				return;
-			}
-			if (ThorUtils.isHammerinHand(player)) {
-				if (entity instanceof Damageable) {
-					ThorUtils.strikeLightnings(entity.getLocation(), player , 1);
-				}
+			if (isPractiallyThor(player) && ThorUtils.isHammerinHand(player) && entity instanceof Damageable) {
+				ThorUtils.strikeLightnings(entity.getLocation(), player, 1);
 			}
 		}
 	}
+	
 	/**
 	 * Telelport Item to targeted Location
 	 * @param entity  Entity to Teleport
@@ -153,16 +150,16 @@ public class Hammer implements Listener {
 	public static boolean isPractiallyThor(Player player) {
 		int count = 0;
 		EntityEquipment equipment = player.getEquipment();
-		if (SuitUtils.checkItem(CustomSuitPlugin.Helemt_Thor, equipment.getHelmet())) {
+		if (ItemUtil.checkItem(CustomSuitPlugin.Helemt_Thor, equipment.getHelmet())) {
 			count++;
 		}
-		if (SuitUtils.checkItem(CustomSuitPlugin.Chestplate_Thor, equipment.getChestplate())) {
+		if (ItemUtil.checkItem(CustomSuitPlugin.Chestplate_Thor, equipment.getChestplate())) {
 			count++;
 		}
-		if (SuitUtils.checkItem(CustomSuitPlugin.Leggings_Thor, equipment.getLeggings())) {
+		if (ItemUtil.checkItem(CustomSuitPlugin.Leggings_Thor, equipment.getLeggings())) {
 			count++;
 		}
-		if (SuitUtils.checkItem(CustomSuitPlugin.Boots_Thor, equipment.getBoots())) {
+		if (ItemUtil.checkItem(CustomSuitPlugin.Boots_Thor, equipment.getBoots())) {
 			count++;
 		}
 		return count >= 2;
@@ -172,11 +169,12 @@ public class Hammer implements Listener {
     * Cancel Picking up Hammer if Player is not Thor
     * @param event PlayerPickupItemEvent
     */
+	@SuppressWarnings("deprecation")
 	@EventHandler
 	public void cancelPicking_Up_Hammer(PlayerPickupItemEvent event){
 		Item item = event.getItem();
 		Player player =event.getPlayer();
-		if(SuitUtils.checkItem(CustomSuitPlugin.hammer, item.getItemStack())){
+		if(ItemUtil.checkItem(CustomSuitPlugin.hammer, item.getItemStack())){
 			if(player==thor){
 				ThorUtils.remove(item);
 				return;
@@ -203,7 +201,7 @@ public class Hammer implements Listener {
 				player.updateInventory();
 				
 				
-				player.playSound(player.getLocation(), Values.ThorChangeSound, 7.0F, 7.0F);
+				SuitUtils.playSound(player, Values.ThorChangeSound, 7.0F, 7.0F);
 				Hammer.thor = player;
 			}
 		}, 10);
@@ -225,14 +223,14 @@ public class Hammer implements Listener {
 			Location ploc = player.getLocation();
 			Location target = SuitUtils.getTargetBlock(player, 100).getLocation();
 			double distance = ploc.distance(target);
-			Vector vector = player.getLocation().getDirection().normalize().multiply(distance);
+			Vector vector = MathUtils.calculateVelocity(ploc.toVector(), target.toVector(), 0.08, 0);
 			
 //			Vector vector = target.toVector().subtract(ploc.toVector());
 			
 			ParticleUtil.playEffect(Particle.EXPLOSION_HUGE, player.getLocation(), 1);
 			player.setVelocity(vector);
-
-			player.playSound(player.getLocation(), Sound.ENTITY_GHAST_SHOOT, 5F, 1F);
+			
+			SuitUtils.playSound(player, Sound.ENTITY_GHAST_SHOOT, 5F, 1F);
 			Double_Jump_Cooldowns.add(player);
 			final Player player_ = player;
 

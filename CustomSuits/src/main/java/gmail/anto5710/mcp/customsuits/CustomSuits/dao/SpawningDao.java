@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.logging.Logger;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
@@ -146,5 +147,13 @@ public class SpawningDao {
 		String entityID = entity.getUniqueId() + "";
 		String playername = player.getName();
 		return spawnMap.containsKey(entityID) && playername.equals(spawnMap.get(entityID));
+	}
+	
+	public Player getOwner(Entity entity){
+		if(entity == null || entity instanceof Player){
+			return null;
+		}
+		String pname = spawnMap.get(entity.getUniqueId()+"");
+		return pname == null ? null : Bukkit.getPlayer(pname);
 	}
 }

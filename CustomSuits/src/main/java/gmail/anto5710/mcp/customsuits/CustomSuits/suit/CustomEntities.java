@@ -25,29 +25,31 @@ import org.bukkit.entity.Zombie;
 import org.bukkit.entity.ZombieHorse;
 import org.bukkit.inventory.ItemStack;
 
+import gmail.anto5710.mcp.customsuits.Utils.ItemUtil;
+
 
 public enum CustomEntities {
-	NONE(Zombie.class, "none", CustomSuitPlugin.createWithName(Material.GLASS_PANE, ChatColor.RED + "NONE")),
-	ARCHER(Zombie.class, "archer", CustomSuitPlugin.createWithName(Material.BOW, ChatColor.WHITE + "archer")),
-	GOLEM(IronGolem.class, "golem", CustomSuitPlugin.createWithName(Material.ROSE_RED, ChatColor.WHITE + "Golem")),
-	SPIDER(CaveSpider.class, "spider", CustomSuitPlugin.createWithName(Material.SPIDER_EYE, ChatColor.RED + "Spider")),
-	BOMB(Creeper.class, "bomb", CustomSuitPlugin.createWithName(Material.GUNPOWDER, ChatColor.GRAY + "BOMB")),
-	TITAN(Giant.class, "titan", CustomSuitPlugin.createWithName(Material.ZOMBIE_HEAD, ChatColor.DARK_GREEN + "Titan")),
-	ENDERMAN(Enderman.class, "enderman", CustomSuitPlugin.createWithName(Material.ENDER_PEARL, ChatColor.DARK_PURPLE + "Enderman")),
-	SNOWMAN(Snowman.class, "snowman", CustomSuitPlugin.createWithName(Material.PUMPKIN, ChatColor.WHITE + "SnowGolem")),
-	BLAZE(Blaze.class, "blaze", CustomSuitPlugin.createWithName(Material.BLAZE_POWDER, ChatColor.DARK_RED + "Blazer")),
-	GHAST(Ghast.class, "ghast", CustomSuitPlugin.createWithName(Material.GHAST_TEAR, ChatColor.WHITE + "Ghastea")),
-	ZOMBIE(Zombie.class, "zombie", CustomSuitPlugin.createWithName(Material.ZOMBIE_HEAD, ChatColor.GREEN + "Zombie")),
-	SILVERFISH(Silverfish.class, "silverfish", CustomSuitPlugin.createWithName(Material.STONE, ChatColor.WHITE + "Silveralge")),
-	HORSE(Horse.class, "horse", CustomSuitPlugin.createWithName(Material.IRON_HORSE_ARMOR, ChatColor.GRAY + "Horse")),
-	ZOMBIE_HORSE(ZombieHorse.class, "zombie_horse", CustomSuitPlugin.createWithName(Material.GOLDEN_HORSE_ARMOR, ChatColor.DARK_GREEN + "Zombie Horse")),
-	SKELETON_HORSE(Horse.class, "skeleton_horse", CustomSuitPlugin.createWithName(Material.DIAMOND_HORSE_ARMOR, ChatColor.BLACK + "The Undead Horse")),
-	GUARDIAN(Guardian.class, "guardian", CustomSuitPlugin.createWithName(Material.PRISMARINE_CRYSTALS, ChatColor.AQUA + "Guardians of the Galaxy")),
-	WARRIOR(PigZombie.class, "warrior", CustomSuitPlugin.createWithName(Material.GOLDEN_SWORD, ChatColor.GOLD + "Spartan")),
-	VARCHER(WitherSkeleton.class, "varcher", CustomSuitPlugin.createWithName(Material.WITHER_SKELETON_SKULL, ChatColor.WHITE + "V-archer")),
-	WOLF(Wolf.class, "wolf", CustomSuitPlugin.createWithName(Material.BONE, ChatColor.WHITE + "Cerberus")),
-	ILLUSIONER(Illusioner.class, "illusioner", CustomSuitPlugin.createWithName(Material.BLAZE_ROD, ChatColor.LIGHT_PURPLE + "MAGIC KAITO")),
-	SHULKER(Shulker.class, "shulker", CustomSuitPlugin.createWithName(Material.SHULKER_SHELL, ChatColor.LIGHT_PURPLE + "MAGIC BOX"));
+	NONE(Zombie.class, "none", ItemUtil.createWithName(Material.GLASS_PANE, ChatColor.RED + "NONE")),
+	ARCHER(Zombie.class, "archer", ItemUtil.createWithName(Material.BOW, ChatColor.WHITE + "archer")),
+	GOLEM(IronGolem.class, "golem", ItemUtil.createWithName(Material.ROSE_RED, ChatColor.WHITE + "Golem")),
+	SPIDER(CaveSpider.class, "spider", ItemUtil.createWithName(Material.SPIDER_EYE, ChatColor.RED + "Spider")),
+	BOMB(Creeper.class, "bomb", ItemUtil.createWithName(Material.GUNPOWDER, ChatColor.GRAY + "BOMB")),
+	TITAN(Giant.class, "titan", ItemUtil.createWithName(Material.ZOMBIE_HEAD, ChatColor.DARK_GREEN + "Titan")),
+	ENDERMAN(Enderman.class, "enderman", ItemUtil.createWithName(Material.ENDER_PEARL, ChatColor.DARK_PURPLE + "Enderman")),
+	SNOWMAN(Snowman.class, "snowman", ItemUtil.createWithName(Material.PUMPKIN, ChatColor.WHITE + "SnowGolem")),
+	BLAZE(Blaze.class, "blaze", ItemUtil.createWithName(Material.BLAZE_POWDER, ChatColor.DARK_RED + "Blazer")),
+	GHAST(Ghast.class, "ghast", ItemUtil.createWithName(Material.GHAST_TEAR, ChatColor.WHITE + "Ghastea")),
+	ZOMBIE(Zombie.class, "zombie", ItemUtil.createWithName(Material.ZOMBIE_HEAD, ChatColor.GREEN + "Zombie")),
+	SILVERFISH(Silverfish.class, "silverfish", ItemUtil.createWithName(Material.STONE, ChatColor.WHITE + "Silveralge")),
+	HORSE(Horse.class, "horse", ItemUtil.createWithName(Material.IRON_HORSE_ARMOR, ChatColor.GRAY + "Horse")),
+	ZOMBIE_HORSE(ZombieHorse.class, "zombie_horse", ItemUtil.createWithName(Material.GOLDEN_HORSE_ARMOR, ChatColor.DARK_GREEN + "Zombie Horse")),
+	SKELETON_HORSE(Horse.class, "skeleton_horse", ItemUtil.createWithName(Material.DIAMOND_HORSE_ARMOR, ChatColor.BLACK + "The Undead Horse")),
+	GUARDIAN(Guardian.class, "guardian", ItemUtil.createWithName(Material.PRISMARINE_CRYSTALS, ChatColor.AQUA + "Guardians of the Galaxy")),
+	WARRIOR(PigZombie.class, "warrior", ItemUtil.createWithName(Material.GOLDEN_SWORD, ChatColor.GOLD + "Spartan")),
+	VARCHER(WitherSkeleton.class, "varcher", ItemUtil.createWithName(Material.WITHER_SKELETON_SKULL, ChatColor.WHITE + "V-archer")),
+	WOLF(Wolf.class, "wolf", ItemUtil.createWithName(Material.BONE, ChatColor.WHITE + "Cerberus")),
+	ILLUSIONER(Illusioner.class, "illusioner", ItemUtil.createWithName(Material.BLAZE_ROD, ChatColor.LIGHT_PURPLE + "MAGIC KAITO")),
+	SHULKER(Shulker.class, "shulker", ItemUtil.createWithName(Material.SHULKER_SHELL, ChatColor.LIGHT_PURPLE + "MAGIC BOX"));
 	
 	private Class<? extends Entity> species;
 	private String name;

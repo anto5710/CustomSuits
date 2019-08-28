@@ -3,6 +3,7 @@ package gmail.anto5710.mcp.customsuits.CustomSuits.InvetoryGUI;
 import java.util.Set;
 
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -40,7 +41,7 @@ public class CancelAirClick extends InventoryNames implements Listener{
 		if(SuitInventoryGUI.authenticateAccess(event, true, 
 			inventory_name, list_name, type_inventory_name, vehicle_inventory_name, CommandInventory_name)){
 			System.out.println(event.getSlot());
-			if (SuitUtils.isNull(event.getCurrentItem()) && withinUpperInv(event, CustomSuitPlugin.type_inventory)) {
+			if (SuitUtils.isAir(event.getCurrentItem()) && withinUpperInv(event, CustomSuitPlugin.type_inventory)) {
 				event.setCancelled(true);
 			}
 		}
@@ -77,11 +78,10 @@ public class CancelAirClick extends InventoryNames implements Listener{
 	
 	@EventHandler
 	public void onClickAirInArmorInventory(InventoryClickEvent event) {
-		if(SuitInventoryGUI.authenticateAccess(event, armorinventory_name)) {
-			if(!accessable.contains(event.getSlot())){
-				System.out.println(event.getSlot());
-					event.setCancelled(true);
-			}
+		if(SuitInventoryGUI.authenticateAccess(event, armorinventory_name) && event.getWhoClicked() instanceof Player) {
+			Player p = (Player) event.getWhoClicked();
+			
+			if(event.getClickedInventory().equals(CustomSuitPlugin.handle(p).armorequipment) && !accessable.contains(event.getSlot())) event.setCancelled(true);
 		}
 	}
 	/**
@@ -92,7 +92,6 @@ public class CancelAirClick extends InventoryNames implements Listener{
 	public void onDragArmorSettingInventory(InventoryDragEvent event) {
 		if(SuitInventoryGUI.authenticateAccess(event, armorinventory_name) && anyWithinUpperInv(event, CustomSuitPlugin.armorinventory) ){
 			if(!accessable.containsAll(event.getInventorySlots())){
-				System.out.println(event.getInventorySlots());
 				event.setCancelled(true);
 			}
 		}	
@@ -105,7 +104,7 @@ public class CancelAirClick extends InventoryNames implements Listener{
 	public void onClickAirInArmorColorInventorys(InventoryClickEvent event) {		
 		if(SuitInventoryGUI.authenticateAccess(event, true, HelmetColorInventory_name, ChestPlateColorInventory_name, 
 															LeggingsColorInventory_name, BootsColorInventory_name) &&
-			SuitUtils.isNull(event.getCurrentItem()) && withinUpperInv(event, CustomSuitPlugin.HelmetColorInventory)){
+			SuitUtils.isAir(event.getCurrentItem()) && withinUpperInv(event, CustomSuitPlugin.HelmetColorInventory)){
 			
 					event.setCancelled(true);
 			}

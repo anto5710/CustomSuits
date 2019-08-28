@@ -1,8 +1,8 @@
 package gmail.anto5710.mcp.customsuits.Utils;
 
-import gmail.anto5710.mcp.customsuits.CustomSuits.PlayEffect;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
-import gmail.anto5710.mcp.customsuits.CustomSuits.suit.WeaponListner;
+
+import gmail.anto5710.mcp.customsuits.CustomSuits.suit.SuitWeapons;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
 
 import java.util.List;
@@ -42,9 +42,22 @@ public class SuitUtils {
 		return false;
 	}
 	
-	public static void LineParticle(final Location target,final Location location,
+	public static void playSound(Location loc, Sound sound, float volume, float pitch){
+		loc.getWorld().playSound(loc, sound, volume, pitch);
+	}
+	
+	public static void playSound(Entity entity, Sound sound, float volume, float pitch){
+		entity.getWorld().playSound(entity.getLocation(), sound, volume, pitch);
+	}
+	
+	public static void playerSound(Player player, Sound sound, float volume, float pitch){
+		player.playSound(player.getLocation(), sound, volume, pitch);
+	}
+	
+	public static void lineParticle(final Location target,final Location location,
 			final Entity shooter, final Particle effect, final int amount, final double speed,
-			 final double damage, final double radius,final boolean isSuitProjectile, final boolean isMissile ,final boolean isSneaking, final int Effect_Count_Second) {
+			 final double damage, final double radius,final boolean isSuitProjectile, 
+			 final boolean isMissile ,final boolean isSneaking, final int Effect_Count_Second) {
 		Vector vectorStart = location.toVector();
 
 		Vector vectorEnd = target.toVector();
@@ -71,14 +84,14 @@ public class SuitUtils {
 							SuitUtils.createExplosion(currentLoc, power, false, true);
 
 						} else {
-							WeaponListner.breakblock(target.getBlock());
+							SuitWeapons.breakblock(target.getBlock());
 						}
 						this.cancel();
 						break;
 					}
 					currentLoc.add(v);
 
-					PlayEffect.play_Suit_Missile_Effect(currentLoc, effect, amount, speed, isSneaking, (isMissile && isSuitProjectile));
+					CustomEffects.play_Suit_Missile_Effect(currentLoc, effect, amount, speed, isSneaking, (isMissile && isSuitProjectile));
 					WeaponUtils.damageNeffect(currentLoc, damage, shooter, isMissile, isSuitProjectile, radius);
 					count += 1;
 				}
@@ -106,10 +119,10 @@ public class SuitUtils {
 	
 	public static boolean holdingNothing(Player player){
 		ItemStack item = getHoldingItem(player);
-		return isNull(item);
+		return isAir(item);
 	}
 	
-	public static boolean isNull(ItemStack item){
+	public static boolean isAir(ItemStack item){
 		return item==null || item.getType() == Material.AIR;
 	}
 	
@@ -128,65 +141,18 @@ public class SuitUtils {
 	public static void lack(Player player,String warn){
 		player.sendMessage(ChatColor.DARK_RED
 				+ "[Warn]: "+ChatColor.RED+"You don't have enough "+ ChatColor.GOLD+warn+ChatColor.RED+" !");
-		
-		player.playSound(player.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 6.0F, 6.0F);
+		tick(player);
 	}
 	
 	
 	public static void warn(Player player,String warn){
 		player.sendMessage(ChatColor.DARK_RED
-				+ "[Warn]: "+ChatColor.RED+warn+" !");
-		
-		player.playSound(player.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 6.0F, 6.0F);
+				+ "[Warn]: "+ChatColor.RED+warn+" !");		
+		tick(player);
 	}
 	
-	public static boolean checkItem(ItemStack sample, ItemStack check){
-		if(check==null){
-			return false;
-		}
-		if(sample.getType()==check.getType () && checkName(sample , check)){
-			return checkLore(sample, check);
-		}
-		return false;
-	}
-
-	public static boolean checkLore(ItemStack sample, ItemStack check) {
-		if (!sample.getItemMeta().hasLore() && !check.getItemMeta().hasLore()) return true;
-		
-		if (sample.getItemMeta().hasLore() && check.getItemMeta().hasLore()) {
-			
-			List<String> sampleList = sample.getItemMeta().getLore();
-			List<String> checkList = check.getItemMeta().getLore();
-
-			if (sampleList.size() != checkList.size()) {
-				return false;
-			}
-			for (int index = 0; index <= checkList.size() - 1; index++) {
-				if (!checkList.get(index).endsWith(sampleList.get(index))) {
-					return false;
-				}
-			}
-			return true;
-		}
-		return false;
-	}
-
-	public static boolean checkName(ItemStack item, String token){
-		if (item==null || token ==null || token.isEmpty()) return false;
-		
-		String name = item.getItemMeta().getDisplayName();
-		return name != null && name.contains(token);
-	}
-	
-	public static boolean checkName(ItemStack sample, ItemStack check) {
-		if(sample == null || check == null) return sample == check;
-		
-		String sampleName = sample.getItemMeta().getDisplayName();
-		String checkName = check.getItemMeta().getDisplayName();
-		
-		if(sampleName == null && checkName == null) return true;
-		
-		return sampleName != null && checkName != null && sampleName.endsWith(checkName);
+	public static void tick(Player player){
+		playerSound(player, Sound.BLOCK_DISPENSER_FAIL, 6.0F, 6.0F);
 	}
 	
 	public static Block getTargetBlock(Player player , int maxDistance){
@@ -233,8 +199,8 @@ public class SuitUtils {
 			});
 		}
 	}
-	private static Set<EntityType> armorables = Sets.newHashSet(EntityType.ARMOR_STAND, EntityType.ZOMBIE, EntityType.SKELETON, EntityType.WITHER_SKELETON, EntityType.HUSK, EntityType.PIG_ZOMBIE);
-	public static boolean canWearArmor(LivingEntity lentity) {
-		return armorables.contains(lentity.getType());
+	private static Set<EntityType> armables = Sets.newHashSet(EntityType.ARMOR_STAND, EntityType.ZOMBIE, EntityType.SKELETON, EntityType.WITHER_SKELETON, EntityType.HUSK, EntityType.PIG_ZOMBIE);
+	public static boolean isArmable(LivingEntity lentity) {
+		return armables.contains(lentity.getType());
 	}
 }

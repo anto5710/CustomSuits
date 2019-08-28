@@ -51,7 +51,7 @@ public class HungerScheduler extends BukkitRunnable {
 						player.setFlying(false);
 					} else {
 						if (count % 60 == 0) {
-							addHunger(player, Values.SuitFlyHunger);
+							deltaHunger(player, Values.SuitFlyHunger);
 						}
 						if (count % 100 == 0) {
 							if (!sufficeHunger(player, Values.SuitEnoughFly)) {
@@ -60,7 +60,7 @@ public class HungerScheduler extends BukkitRunnable {
 						}
 					}
 				} else if (count % 25 == 0) {
-					addHunger(player, Values.SuitHungerRelod);
+					deltaHunger(player, Values.SuitHungerRelod);
 					repairarmor(player);
 				}
 			}
@@ -87,7 +87,7 @@ public class HungerScheduler extends BukkitRunnable {
 	}
 
 	public static void addDurability(ItemStack item, short delta) {
-		if (SuitUtils.isNull(item)) {
+		if (SuitUtils.isAir(item)) {
 			return;
 		}
 		short durability = item.getDurability();
@@ -118,13 +118,13 @@ public class HungerScheduler extends BukkitRunnable {
 		return playerQueue;
 	}
 
-	public static boolean addHunger(Player player, int delta) {
+	public static boolean deltaHunger(Player player, int delta) {
 		int curHunger = player.getFoodLevel();
 		int rough = curHunger + delta;
 		int bounded = (int) MathUtils.bound(0, rough, 20);
 		
 		boolean suffice = bounded == rough;
-		if(suffice)player.setFoodLevel(bounded);
+		if (suffice) player.setFoodLevel(bounded);
 		return suffice;
 	}
 

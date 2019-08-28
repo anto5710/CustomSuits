@@ -22,8 +22,8 @@ import org.bukkit.util.Vector;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.HungerScheduler;
-import gmail.anto5710.mcp.customsuits.CustomSuits.suit.PlayerEffect;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
+import gmail.anto5710.mcp.customsuits.Utils.PotionBrewer;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 
 public class CreeperDicer implements Listener{
@@ -41,12 +41,12 @@ public class CreeperDicer implements Listener{
 
 		if (!(Hammer.isThor(player) && Hammer.isPractiallyThor(player) 
 				&& player.isSneaking() && SuitUtils.isLeftClick(event)
-				&& HungerScheduler.addHunger(player, Values.Thunder_Creeper_Hunger))) {
+				&& HungerScheduler.deltaHunger(player, Values.Thunder_Creeper_Hunger))) {
 			return;
 		}
 
 		final Location location = player.getLocation();
-		player.playSound(location, Values.Thunder_Creeper_Start_Sound, 10F, 1F);
+		SuitUtils.playSound(location, Values.Thunder_Creeper_Start_Sound, 10F, 1F);
 		location.setDirection(new Vector(1, 0, 1));
 		final World world = player.getWorld();
 		final int Point = 7;
@@ -63,7 +63,6 @@ public class CreeperDicer implements Listener{
 			@Override
 			public void run() {
 				if (count >= maxim) {
-
 					this.cancel();
 					return;
 				}
@@ -78,8 +77,8 @@ public class CreeperDicer implements Listener{
 					creeper.setPowered(true);
 					creeper.setVelocity(vector);
 					
-					PlayerEffect.addpotion(new PotionEffect(PotionEffectType.INVISIBILITY, 100000, 1), creeper);
-					PlayerEffect.addpotion(new PotionEffect(PotionEffectType.SLOW, 100000, 20), creeper);
+					PotionBrewer.addPotion(creeper, PotionEffectType.INVISIBILITY, 100000, 1);
+					PotionBrewer.addPotion(creeper, PotionEffectType.SLOW, 100000, 20);
 					dicedOnes.add(creeper);
 					count++;
 				}

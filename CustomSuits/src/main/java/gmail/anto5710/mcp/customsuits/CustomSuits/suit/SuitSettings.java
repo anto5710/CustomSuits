@@ -16,6 +16,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.InvetoryGUI.InventoryNames;
+import gmail.anto5710.mcp.customsuits.Utils.ItemUtil;
 
 public class SuitSettings {	
 	final Player p;
@@ -46,32 +47,32 @@ public class SuitSettings {
 	
 	public void reinitInv(){
 		if(command_equipment==null){
-			command_equipment = CustomSuitPlugin.copyCommand_GUI(p, CustomSuitPlugin.commandInventory);
+			command_equipment = CustomSuitPlugin.copyCommandGUI(p, CustomSuitPlugin.commandInventory);
 		}
 		if(equipment==null){
-			equipment = CustomSuitPlugin.copy(p, CustomSuitPlugin.inventory, InventoryNames.inventory_name);
+			equipment = CustomSuitPlugin.copyInv(p, CustomSuitPlugin.inventory, InventoryNames.inventory_name);
 		}
 		if(armorequipment==null){
-			armorequipment = CustomSuitPlugin.copy(p, CustomSuitPlugin.armorinventory, InventoryNames.armorinventory_name);
+			armorequipment = CustomSuitPlugin.copyInv(p, CustomSuitPlugin.armorinventory, InventoryNames.armorinventory_name);
 		}
 		if(helmetequipment==null){
-			helmetequipment = CustomSuitPlugin.copy(p, CustomSuitPlugin.helmetinventory, InventoryNames.helmetinventory_name);
+			helmetequipment = CustomSuitPlugin.copyInv(p, CustomSuitPlugin.helmetinventory, InventoryNames.helmetinventory_name);
 		}
 		if(chestequipment==null){
-			chestequipment = CustomSuitPlugin.copy(p, CustomSuitPlugin.chestinventory, InventoryNames.chestinventory_name);
+			chestequipment = CustomSuitPlugin.copyInv(p, CustomSuitPlugin.chestinventory, InventoryNames.chestinventory_name);
 		}
 		if(leggingsequipment==null){
-			leggingsequipment = CustomSuitPlugin.copy(p, CustomSuitPlugin.leggingsinventory, InventoryNames.leggingsinventory_name);
+			leggingsequipment = CustomSuitPlugin.copyInv(p, CustomSuitPlugin.leggingsinventory, InventoryNames.leggingsinventory_name);
 		}
 		if(bootsequipment==null){
-			bootsequipment = CustomSuitPlugin.copy(p, CustomSuitPlugin.bootsinventory, InventoryNames.bootsinventory_name);
+			bootsequipment = CustomSuitPlugin.copyInv(p, CustomSuitPlugin.bootsinventory, InventoryNames.bootsinventory_name);
 		}
 		p.updateInventory();
 	}
 	
 	private void resetColorIcon(int slot, Color color) {
 		ItemStack itemstack = armorequipment.getItem(slot);
-		CustomSuitPlugin.dye(itemstack, color);
+		ItemUtil.dye(itemstack, color);
 		armorequipment.setItem(slot, itemstack);
 		p.updateInventory();
 	}
@@ -170,7 +171,6 @@ public class SuitSettings {
 		}
 	}
 	
-	
 	public Color getHelmetColor() {
 		return helmetColor;
 	}
@@ -183,13 +183,10 @@ public class SuitSettings {
 	public Color getBootsColor() {
 		return bootsColor;
 	}
-
 	public CustomEntities getSentity() {
 		return sentity;
 	}
 	public CustomEntities getVehicle() {
 		return vehicle;
 	}
-
-	
 }
