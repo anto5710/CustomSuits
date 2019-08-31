@@ -16,7 +16,7 @@ import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.gadgets.SuitWeapons;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
 import gmail.anto5710.mcp.customsuits.Utils.CustomEffects;
-import gmail.anto5710.mcp.customsuits.Utils.MathUtils;
+import gmail.anto5710.mcp.customsuits.Utils.MathUtil;
 import gmail.anto5710.mcp.customsuits.Utils.ParticleUtil;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 import gmail.anto5710.mcp.customsuits.Utils.ThorUtils;
@@ -84,7 +84,7 @@ public class HammerThrowEffect extends MapEncompassor<Item, Player>{
 						Location l = new Location(loc.getWorld(), x, y - 2, z);
 						if(!SuitUtils.isUnbreakable(l.getBlock())){
 							float sx = (float) -1 + (float) (Math.random() * ((1 - -1) + 1));
-							float sy = (float) (2 / l.distance(loc) + MathUtils.randomRadius(0.025));
+							float sy = (float) (2 / l.distance(loc) + MathUtil.randomRadius(0.025));
 							float sz = (float) -0.3 + (float) (Math.random() * ((0.3 - -0.3) + 1));
 							spawnFallingBlock(l.getBlock(), new Vector(sx * 0.4, sy * 0.4, sz));
 						}

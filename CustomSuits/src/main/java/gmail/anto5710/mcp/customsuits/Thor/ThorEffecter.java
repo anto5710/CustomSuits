@@ -10,7 +10,6 @@ import gmail.anto5710.mcp.customsuits.Setting.PotionEffects;
 import gmail.anto5710.mcp.customsuits.Utils.ParticleUtil;
 import gmail.anto5710.mcp.customsuits.Utils.PotionBrewer;
 import gmail.anto5710.mcp.customsuits.Utils.encompassor.MapEncompassor;
-import gmail.anto5710.mcp.customsuits._Thor.Hammer;
 
 
 public class ThorEffecter extends MapEncompassor<Player, VorticalMeta>{	

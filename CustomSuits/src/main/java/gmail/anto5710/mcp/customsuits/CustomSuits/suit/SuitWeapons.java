@@ -417,7 +417,7 @@ public class SuitWeapons implements Listener {
 				CustomEffects.play_Gun_Shot_Effect(player);
 				shot_Machine_Gun(player);
 				ItemUtil.name(copy, gunfirstName + (Integer.parseInt(values[0].replace(gunfirstName, "")) - 1) + gun_regex
-								+ values[1].replace("»", "") + "»");
+						+ values[1].replace("»", "") + "»");
 
 				SuitUtils.setHoldingItem(player, copy);
 
@@ -461,8 +461,7 @@ public class SuitWeapons implements Listener {
 							0.5, true, false, false, 20);
 
 					SuitWeapons.cooldown(2, plugin, player);
-					ItemUtil.name(copy,
-							values[0] + gun_regex + (Integer.parseInt(values[1].replace("»", "")) - 1) + "»");
+					ItemUtil.name(copy, values[0] + gun_regex + (Integer.parseInt(values[1].replace("»", "")) - 1) + "»");
 					SuitUtils.setHoldingItem(player, copy);
 				}
 			}

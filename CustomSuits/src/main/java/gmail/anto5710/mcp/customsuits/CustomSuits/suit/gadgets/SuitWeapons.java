@@ -7,7 +7,7 @@ import gmail.anto5710.mcp.customsuits.Setting.Enchant;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
 import gmail.anto5710.mcp.customsuits.Utils.Glow;
 import gmail.anto5710.mcp.customsuits.Utils.ItemUtil;
-import gmail.anto5710.mcp.customsuits.Utils.MathUtils;
+import gmail.anto5710.mcp.customsuits.Utils.MathUtil;
 import gmail.anto5710.mcp.customsuits.Utils.PacketUtil;
 import gmail.anto5710.mcp.customsuits.Utils.ParticleUtil;
 import gmail.anto5710.mcp.customsuits.Utils.CustomEffects;
@@ -223,7 +223,7 @@ public class SuitWeapons implements Listener {
 		// currentLoc.getWorld().getNearbyEntities(arg0, arg1, arg2, arg3);
 		ArrayList<Entity> list = new ArrayList<>();
 		for (Entity entity : near) {
-			if (MathUtils.distanceBody(currentLoc, entity, radius) && !list.contains(entity)) {
+			if (MathUtil.distanceBody(currentLoc, entity, radius) && !list.contains(entity)) {
 				list.add(entity);
 			}
 		}
@@ -235,7 +235,7 @@ public class SuitWeapons implements Listener {
 		Firework firework = (Firework) location.getWorld().spawnEntity(location, EntityType.FIREWORK);
 		FireworkMeta meta = firework.getFireworkMeta();
 		meta.addEffect(effect);
-		meta.setPower((int) (MathUtils.randomRadius(3) + 1.5));
+		meta.setPower((int) (MathUtil.randomRadius(3) + 1.5));
 		firework.setFireworkMeta(meta);
 		if (shooter != null) {
 			SuitUtils.playSound(shooter, Sound.ENTITY_GENERIC_EXPLODE, 14.0F, 14.0F);

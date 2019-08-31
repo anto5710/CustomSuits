@@ -48,12 +48,12 @@ public class ParticleShaper {
 		Location loc = e.getLocation();
 		loc.add(0, -0.2, 0);
 
-		Vector v1 = MathUtils.linearRotate(90, loc);
+		Vector v1 = MathUtil.linearRotate(90, loc);
 		loc.add(v1);
 		effect.accept(loc);
 		loc.subtract(v1);
 		
-		Vector v2 = MathUtils.linearRotate(90+180, loc);
+		Vector v2 = MathUtil.linearRotate(90+180, loc);
 		loc.add(v2);
 		effect.accept(loc);		
 	}

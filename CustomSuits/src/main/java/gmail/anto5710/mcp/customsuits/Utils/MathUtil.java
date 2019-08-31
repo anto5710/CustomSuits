@@ -5,8 +5,8 @@ import org.bukkit.craftbukkit.v1_13_R2.entity.CraftEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.util.Vector;
 
-public class MathUtils {
-
+public class MathUtil {
+	
 	public static double wholeRandom(double m){
 		return Math.random()*m;
 	}
@@ -25,11 +25,14 @@ public class MathUtils {
 		return boundMax;
 	}
 	
+	public static boolean gacha(double percent){
+		return wholeRandom(100) < percent;
+	}
+	
 	public static Vector calculateVelocity(Vector from, Vector to, double gravity, int heightGain){
-
 	    // Block locations
 	    int endGain = to.getBlockY() - from.getBlockY();
-	    double horizDist = Math.sqrt(MathUtils.distanceSqrd(from, to));
+	    double horizDist = Math.sqrt(MathUtil.distanceSqrd(from, to));
 	    // Height gain
 	    int gain = heightGain;
 	    double maxGain = gain > (endGain + gain) ? gain : (endGain + gain);
@@ -41,7 +44,7 @@ public class MathUtils {
 	    // Vertical velocity
 	    double vy = Math.sqrt(maxGain * gravity);
 	    // Horizontal velocity
-	    double vh = vy / slope;
+	    double vh = vy / slope; 
 	    // Calculate horizontal direction
 	    int dx = to.getBlockX() - from.getBlockX();
 	    int dz = to.getBlockZ() - from.getBlockZ();
@@ -62,7 +65,7 @@ public class MathUtils {
 
 	public static boolean distanceSqrdBody(Location currentLoc, Entity entity, double radiusSqrd) {
 		Location location = entity.getLocation();
-		if(MathUtils.distanceSqrd(location, currentLoc, radiusSqrd)){
+		if(MathUtil.distanceSqrd(location, currentLoc, radiusSqrd)){
 			return true;
 		}
 		// 몸 높이를 따라 올라가며 체크
@@ -70,7 +73,7 @@ public class MathUtils {
 		double offset = 0.25;
 		for(double y= -offset; y<=height; y+=offset){
 			location.add(0, y, 0);
-			if(MathUtils.distanceSqrd(location, currentLoc, radiusSqrd)){
+			if(MathUtil.distanceSqrd(location, currentLoc, radiusSqrd)){
 				return true;
 			}
 			location.subtract(0, y, 0);

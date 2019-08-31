@@ -85,7 +85,7 @@ public class CustomEffects {
 				z = r * Math.cos(c);
 				
 				Vector vector = new Vector(x, y, z);
-				vector = MathUtils.rotate(vector, finalLoc);
+				vector = MathUtil.rotate(vector, finalLoc);
 				loc.add(vector);
 				ParticleUtil.playEffect(Particle.FLAME, loc, 0, 0, 0, 1, 0, null);
 				if (c == 0) {

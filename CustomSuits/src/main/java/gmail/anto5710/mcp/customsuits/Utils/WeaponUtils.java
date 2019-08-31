@@ -39,7 +39,7 @@ public class WeaponUtils {
 	}
 	
 	private static boolean isHeadshot(Location shotLoc, Entity entity){
-		return entity instanceof LivingEntity && MathUtils.distance(shotLoc, ((LivingEntity) entity).getEyeLocation(), 0.35);
+		return entity instanceof LivingEntity && MathUtil.distance(shotLoc, ((LivingEntity) entity).getEyeLocation(), 0.35);
 	}
 	
 	public static boolean damage(Entity toDamage, double damage, Entity afflicter){

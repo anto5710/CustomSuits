@@ -152,7 +152,7 @@ public class ItemUtil {
 		}
 		short durability = item.getDurability();
 		short max_durability = item.getType().getMaxDurability();
-		short final_durability = (short) MathUtils.bound(0, durability - delta, max_durability);
+		short final_durability = (short) MathUtil.bound(0, durability - delta, max_durability);
 	
 		item.setDurability(final_durability);
 	}

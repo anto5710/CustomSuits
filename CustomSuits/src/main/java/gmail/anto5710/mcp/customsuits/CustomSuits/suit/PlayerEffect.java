@@ -5,7 +5,7 @@ import gmail.anto5710.mcp.customsuits.CustomSuits.FireworkProccesor;
 import gmail.anto5710.mcp.customsuits.CustomSuits.dao.SpawningDao;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.gadgets.MachineGun;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
-import gmail.anto5710.mcp.customsuits.Utils.MathUtils;
+import gmail.anto5710.mcp.customsuits.Utils.MathUtil;
 import gmail.anto5710.mcp.customsuits.Utils.CustomEffects;
 import gmail.anto5710.mcp.customsuits.Utils.ItemUtil;
 import gmail.anto5710.mcp.customsuits.Utils.PotionBrewer;
@@ -79,7 +79,7 @@ public class PlayerEffect implements Listener {
 						FireworkMeta meta = firework.getFireworkMeta();
 						FireworkEffect effect = FireworkProccesor.getRandomEffect();
 						meta.addEffect(effect);
-						int power = (int) (MathUtils.randomRadius(3) + 1.5);
+						int power = (int) (MathUtil.randomRadius(3) + 1.5);
 						if (power < 1) {
 							power++;
 						}

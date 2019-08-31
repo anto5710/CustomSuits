@@ -19,7 +19,7 @@ import gmail.anto5710.mcp.customsuits.Utils.ColorUtil;
 import gmail.anto5710.mcp.customsuits.Utils.EnchantBuilder;
 import gmail.anto5710.mcp.customsuits.Utils.Glow;
 import gmail.anto5710.mcp.customsuits.Utils.ItemUtil;
-import gmail.anto5710.mcp.customsuits.Utils.MathUtils;
+import gmail.anto5710.mcp.customsuits.Utils.MathUtil;
 import gmail.anto5710.mcp.customsuits.Utils.CustomEffects;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 import gmail.anto5710.mcp.customsuits.Utils.WeaponUtils;
@@ -630,7 +630,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		double distanceSqrd = range * range;
 		for (LivingEntity lentity : near) {
 			if (SuitUtils.isArmable(lentity) && dao.isCreatedBy(lentity, player)
-					&& MathUtils.distanceSqrdBody(O, lentity, distanceSqrd)) {
+					&& MathUtil.distanceSqrdBody(O, lentity, distanceSqrd)) {
 				distanceSqrd = lentity.getLocation().distanceSquared(O);
 				nearest = lentity;
 			}

@@ -8,7 +8,7 @@ import org.bukkit.entity.Firework;
 import org.bukkit.inventory.meta.FireworkMeta;
 
 import gmail.anto5710.mcp.customsuits.Utils.ColorUtil;
-import gmail.anto5710.mcp.customsuits.Utils.MathUtils;
+import gmail.anto5710.mcp.customsuits.Utils.MathUtil;
 
 public class FireworkProccesor {
 	
@@ -27,11 +27,11 @@ public class FireworkProccesor {
 	}
 
 	public static FireworkEffect getRandomEffect(){
-	    int type_index = (int) (MathUtils.wholeRandom(Type.values().length));
+	    int type_index = (int) (MathUtil.wholeRandom(Type.values().length));
 	    Type type = Type.values()[type_index];
-	    int R= (int) MathUtils.wholeRandom(255);
-	    int G= (int) MathUtils.wholeRandom(255);
-	    int B= (int) MathUtils.wholeRandom(255);
+	    int R= (int) MathUtil.wholeRandom(255);
+	    int G= (int) MathUtil.wholeRandom(255);
+	    int B= (int) MathUtil.wholeRandom(255);
 	   
 		Color[] colors= ColorUtil.getColors(Color.fromRGB(R, G, B));
 		Color[] fadecolors  = ColorUtil.getColors(Color.WHITE);

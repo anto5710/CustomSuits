@@ -22,7 +22,7 @@ import gmail.anto5710.mcp.customsuits.CustomSuits.suit.PlayerEffect;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
 import gmail.anto5710.mcp.customsuits.Utils.CustomEffects;
 import gmail.anto5710.mcp.customsuits.Utils.ItemUtil;
-import gmail.anto5710.mcp.customsuits.Utils.MathUtils;
+import gmail.anto5710.mcp.customsuits.Utils.MathUtil;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 
 public class MachineGun implements Listener{
@@ -54,7 +54,7 @@ public class MachineGun implements Listener{
 		recoil(player, 0.5);
 	
 		if (PlayerEffect.zooms.containsKey(player) && PlayerEffect.zooms.get(player)) {
-			spread = MathUtils.randomRadius(0.025);
+			spread = MathUtil.randomRadius(0.025);
 		}
 	
 		final double Spread = spread;
@@ -126,7 +126,7 @@ public class MachineGun implements Listener{
 		// enshroud(snowball);;
 		Vector v = player.getLocation().getDirection();
 		v.multiply(3.0);
-		v.add(MathUtils.randomVector(spread));
+		v.add(MathUtil.randomVector(spread));
 
 		snowball.setVelocity(v);
 
@@ -167,7 +167,7 @@ public class MachineGun implements Listener{
 					CustomEffects.play_Gun_Shot_Effect(player);
 					shotMachineGun(player);
 					ItemUtil.name(copy, gunfirstName + (Integer.parseInt(values[0].replace(gunfirstName, "")) - 1) + 
-													gun_regex + values[1].replace("»", "") + "»");
+									gun_regex + values[1].replace("»", "") + "»");
 					SuitUtils.setHoldingItem(player, copy);
 				}
 			} else {
@@ -188,7 +188,7 @@ public class MachineGun implements Listener{
 						Location location = player.getEyeLocation();
 						Vector direction = location.getDirection();
 						location.setDirection(
-								MathUtils.randomLoc(target.clone().subtract(location), 5).toVector().normalize());
+								MathUtil.randomLoc(target.clone().subtract(location), 5).toVector().normalize());
 						if (PlayerEffect.zooms.containsKey(player) && PlayerEffect.zooms.get(player)) {
 							location.setDirection(direction);
 						}
