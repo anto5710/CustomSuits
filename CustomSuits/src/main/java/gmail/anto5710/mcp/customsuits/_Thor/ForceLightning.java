@@ -81,7 +81,7 @@ public class ForceLightning extends BukkitRunnable implements Listener{
 		if(!canUseLazer(p)) return;
 		
 		if(e.isSneaking()){
-			if(!isUsingLazer(p) && HungerScheduler.deltaHunger(p, Values.LightningMissileHunger)) startLazer(p);
+			if(!isUsingLazer(p) && HungerScheduler.sufficeHunger(p, Values.LightningMissileHunger)) startLazer(p);
 		}else{
 			stopLazer(p);
 		}

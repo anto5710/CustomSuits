@@ -1,12 +1,11 @@
 package gmail.anto5710.mcp.customsuits.Utils;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.FireworkPlay;
+
+
 import gmail.anto5710.mcp.customsuits.CustomSuits.FireworkProccesor;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
-import gmail.anto5710.mcp.customsuits._Thor.Hammer;
-import gmail.anto5710.mcp.customsuits._Thor.Thor_Changing;
-import projectiler.PProjectileDisplayer;
-
+import gmail.anto5710.mcp.customsuits.Thor.Hammer;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.FireworkEffect.Type;
@@ -16,6 +15,7 @@ import org.bukkit.Particle;
 import org.bukkit.Particle.DustOptions;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Wither;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -24,8 +24,6 @@ import org.bukkit.util.Vector;
 public class CustomEffects {
 	static CustomEffects playEffect;
 	static CustomSuitPlugin plugin;
-	
-	
 	
 	public CustomEffects(CustomSuitPlugin plugin){
 		CustomEffects.plugin = plugin;
@@ -62,20 +60,18 @@ public class CustomEffects {
 	
 	public static void play_Rotation_Effect(double t, Location loc, Player player){
 		double x,y,z;
-		double xi,yi,zi;
-		double xii,yii,zii;
 		
 		double r = 0.2;
-
-		xii = Math.sin(2 * t);
-		yii = 2 * Math.cos(t);
-		zii = Math.sin(3 * t);
+		
+		double xii = Math.sin(2 * t);
+		double yii = 2 * Math.cos(t);
+		double zii = Math.sin(3 * t);
 
 		t -= Math.PI / 200;
 
-		xi = Math.sin(2 * t);
-		yi = 2 * Math.cos(t);
-		zi = Math.sin(3 * t);
+		double xi = Math.sin(2 * t);
+		double yi = 2 * Math.cos(t);
+		double zi = Math.sin(3 * t);
 		t += Math.PI / 200;
 
 		Vector direction = new Vector(xii - xi, yii - yi, zii - zi);
@@ -102,7 +98,7 @@ public class CustomEffects {
 
 	public static void play_Suit_NoDamageTime(final Player player ,final Particle Effect){	
 //		FireworkPlay.spawn(player.getLocation(), FireworkProccesor.getEffect(Color.AQUA , Type.STAR), null);
-		ParticleUtil.playEffect(Particle.FIREWORKS_SPARK, player.getLocation(), 30, 1);
+		ParticleUtil.playEffect(Particle.FIREWORKS_SPARK, player.getLocation(), 30, 3);
 		SuitUtils.playSound(player, Sound.BLOCK_ANVIL_PLACE, 10, 6);
 	}
 	
@@ -129,10 +125,9 @@ public class CustomEffects {
 		}
 	}
 
-	public static void drawSphere(final double phi, final Location loc, final double r, final Particle effect) {
+	public static void drawSphere(double phi, Location loc, double r, Particle effect) {
 		new BukkitRunnable() {
 			double PI = phi;
-
 			@Override
 			public void run() {
 				if (PI > 8 * Math.PI) {
@@ -193,20 +188,16 @@ public class CustomEffects {
 //		ParticleUtil.playSpell(Particle.SPELL_MOB_AMBIENT, location, 0, 200, 100, 3, 0);
 	}
 	
-	public static void play_Thor_Change_Effect(Player player , double phi) {
-		if(player!=Hammer.thor && Hammer.thor!=null) return;
-			
-        Location location = player.getLocation();
-        if(!Thor_Changing.Changing_players.containsKey(player)){
-        	if(Thor_Changing.Changing_players.isEmpty()){
-        		new Thor_Changing(plugin).runTaskTimer(plugin, 0, 3);
-        	}
-        	
-        	Thor_Changing.Changing_players.put(player, location);
-        }
+	public static void playThorChangeEffect(Player player) {
+		Hammer.thorform.register(player);
 	}
 
-	public static void play_Hammer_Hit_Ground(final org.bukkit.entity.Item item) {
+	public static void playThorFormationFin(Wither wither) {
+		FireworkEffect effect = FireworkProccesor.getEffect(Color.MAROON, Type.BALL_LARGE);
+		FireworkPlay.spawn(wither.getLocation(), effect, null);
+	}
+
+	public static void playHammerHitGround(Item item) {
 		// int n = 1;
 		// Location location = item.getLocation();
 		// Vector directionI = new Vector(-n, 0 ,0);
@@ -270,8 +261,4 @@ public class CustomEffects {
 //		}.runTaskTimer(plugin, 0, 1);
 //	}
 
-	public static void play_Thunder_Strike_End(Wither wither) {
-		FireworkEffect effect = FireworkProccesor.getEffect(Color.MAROON, Type.BALL_LARGE);
-		FireworkPlay.spawn(wither.getLocation(), effect, null);
-	}
 }

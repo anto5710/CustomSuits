@@ -1,13 +1,13 @@
 package gmail.anto5710.mcp.customsuits.Utils;
 
-import gmail.anto5710.mcp.customsuits.CustomSuits.suit.SuitWeapons;
-
 import org.bukkit.Location;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
+
+import gmail.anto5710.mcp.customsuits.CustomSuits.suit.gadgets.SuitWeapons;
 
 public class WeaponUtils {
 	public static Vector determinePosition(Player player, boolean dualWield, boolean leftClick) {

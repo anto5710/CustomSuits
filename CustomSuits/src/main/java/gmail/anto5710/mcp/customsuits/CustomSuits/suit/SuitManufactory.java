@@ -32,37 +32,34 @@ import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 
 public class SuitManufactory {
 
-	public static void spawnEntity(CustomEntities entityType, CustomEntities vehicleType, int creatureCnt, LivingEntity target, Player spnSender, Location location) {
+	public static void manufacture(CustomEntities entityType, CustomEntities vehicleType, int creatureCnt,
+			LivingEntity target, Player spnSender, Location location) {
 		/* spnSender: 명령어를 입력한 플레이어 */
 		boolean useVehicle = vehicleType != null && vehicleType != CustomEntities.NONE;
-		ItemStack inHand = SuitUtils.getHoldingItem(spnSender);
-	
-		if (ItemUtil.checkItem(CustomSuitPlugin.suitremote, inHand)) {
-			SuitSettings hdle = CustomSuitPlugin.handle(spnSender);
-			int level = hdle.level();
-			int amount = useVehicle ? level * 2 : level;
-			hdle.reinitInv();
-			Material type = Values.Suit_Spawn_Material;
-	
-			for (int cnt = 0; cnt < creatureCnt; cnt++) {
-				ItemStack material = new ItemStack(type, amount);
-				if (spnSender.getInventory().contains(type, amount)) {
-					Entity rider = SuitManufactory.createAnEntity(entityType, location, spnSender, level, target);
-					
-					spnSender.getInventory().removeItem(material);
-					spnSender.updateInventory();
-					if (useVehicle) {
-						Entity vehicle = SuitManufactory.createAnEntity(vehicleType, location, spnSender, level, target);
-						SuitManufactory.jockize(rider, vehicle);
-					}
-				} else {
-					SuitUtils.lack(spnSender, "Material");
+		SuitSettings hdle = CustomSuitPlugin.handle(spnSender);
+		int level = hdle.level();
+		int amount = useVehicle ? level * 2 : level;
+		hdle.reinitUInv();
+		Material type = Values.Suit_Spawn_Material;
+
+		for (int cnt = 0; cnt < creatureCnt; cnt++) {
+			ItemStack material = new ItemStack(type, amount);
+			if (spnSender.getInventory().contains(type, amount)) {
+				Entity rider = createEntity(entityType, location, spnSender, level, target);
+
+				spnSender.getInventory().removeItem(material);
+				spnSender.updateInventory();
+				if (useVehicle) {
+					Entity vehicle = createEntity(vehicleType, location, spnSender, level, target);
+					SuitManufactory.jockize(rider, vehicle);
 				}
+			} else {
+				SuitUtils.lack(spnSender, "Material");
 			}
 		}
 	}
 
-	static Entity createAnEntity(CustomEntities species, Location loc, Player spnSender, int level, LivingEntity target){
+	static Entity createEntity(CustomEntities species, Location loc, Player spnSender, int level, LivingEntity target){
 		@SuppressWarnings("unchecked")
 		Class<Entity> entityClass = (Class<Entity>) species.getSpecies();
 	
@@ -116,7 +113,7 @@ public class SuitManufactory {
 		}
 	}
 
-	static void steroid(LivingEntity lentity, int level) {
+	private static void steroid(LivingEntity lentity, int level) {
 		PotionBrewer.addPotions(lentity, new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 999999990, 1),
 				new PotionEffect(PotionEffectType.HEALTH_BOOST, 999999990, 1 + (int) (level / 32D)),
 				new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 999999990, 1 + (int) (level / 16D)),
@@ -124,13 +121,13 @@ public class SuitManufactory {
 				new PotionEffect(PotionEffectType.WATER_BREATHING, 999999990, 1));
 	}
 
-	static void armorize(LivingEntity lentity, Player spnSender) {
+	private static void armorize(LivingEntity lentity, Player spnSender) {
 		if (SuitUtils.isArmable(lentity)) {
 			SuitManufactory.setEquipment(CustomSuitPlugin.handle(spnSender).armorequipment, spnSender, lentity);
 		}
 	}
 
-	static void setHorseData(Horse horse, Player spnSender, int level) {
+	private static void setHorseData(Horse horse, Player spnSender, int level) {
 		horse.setAge(level);
 		
 		HorseInventory horseinventory = horse.getInventory();
@@ -144,27 +141,26 @@ public class SuitManufactory {
 		horseinventory.addItem(new ItemStack(Material.SADDLE));
 	}
 
-	static void setMaterialForEnderMan(Enderman enderman, Material material) {
+	private static void setMaterialForEnderMan(Enderman enderman, Material material) {
 		BlockData data = material.isBlock() ? material.createBlockData() : null;
 		enderman.setCarriedBlock(data);
 	}
 
 	@SuppressWarnings("deprecation")
-	static void setEquipment(Inventory inventoryitem, Player player, LivingEntity spawnedEntity) {
+	private static void setEquipment(Inventory inventoryitem, Player player, LivingEntity spawnedEntity) {
 		boolean CustomColor = true;
 	
 		CustomColor = false;
 	
 		LivingEntity lentity = (LivingEntity) spawnedEntity;
 		lentity.setHealth(lentity.getMaxHealth());
-	
 		lentity.setCustomName(player.getName() + "|" + Values.SuitName);
 	
 	
 		SuitSettings hdle = CustomSuitPlugin.handle(player);
-		int level = hdle.equipment.getItem(8).getAmount();
+		int level = hdle.level();
 	
-		lentity.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 999999990, 10));
+		PotionBrewer.addPotion(lentity, PotionEffectType.INVISIBILITY, 999999990, 10);
 		Color HelmetColor = hdle.getHelmetColor();
 		Color ChestplateColor = hdle.getChestColor();
 		Color LeggingsColor = hdle.getLeggingsColor();
@@ -206,7 +202,7 @@ public class SuitManufactory {
 		
 		ItemStack hand = inventoryitem.getItem(29);
 		if (hand != null) {
-			ItemUtil.name(ChatColor.AQUA + Values.SuitName + Values.SuitInforegex + level, hand);
+			ItemUtil.name(hand, ChatColor.AQUA + Values.SuitName + Values.SuitInforegex + level);
 			Enchant.enchantment(hand, new Glow(), 1, true);
 			lentity.getEquipment().setItemInMainHand(hand);
 			lentity.getEquipment().setItemInMainHandDropChance(0);
@@ -218,7 +214,7 @@ public class SuitManufactory {
 		
 		ItemUtil.dye(item, color); //try dying
 		if (enchantInventory != null) {
-			ItemUtil.name(ChatColor.AQUA + Values.SuitName + Values.SuitInforegex + level, item);
+			ItemUtil.name(item, ChatColor.AQUA + Values.SuitName + Values.SuitInforegex + level);
 			enchantInventory.forEach(book -> Enchant.enchantFromBook(item, book, level));
 		}
 	}

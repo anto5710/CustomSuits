@@ -11,7 +11,7 @@ import org.bukkit.event.entity.ProjectileHitEvent;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
-import gmail.anto5710.mcp.customsuits.Utils.MathUtil;
+import gmail.anto5710.mcp.customsuits.Utils.MathUtils;
 import gmail.anto5710.mcp.customsuits.Utils.ParticleUtil;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 import gmail.anto5710.mcp.customsuits.Utils.encompassor.LinearEncompassor;
@@ -51,7 +51,7 @@ public class GunEffecter extends LinearEncompassor<Snowball>{
 			if (isRegistered(snowball)) {
 				Block hitblock = event.getHitBlock();
 				System.out.println(hitblock);
-				if(hitblock!=null && !SuitUtils.isUnbreakable(hitblock) && MathUtil.gacha(60)){ //60%의 확률로 부숨
+				if(hitblock!=null && !SuitUtils.isUnbreakable(hitblock) && MathUtils.gacha(60)){ //60%의 확률로 부숨
 					hitblock.breakNaturally();
 				}
 				discard(snowball);

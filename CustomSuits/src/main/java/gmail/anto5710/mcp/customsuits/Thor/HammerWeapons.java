@@ -1,4 +1,4 @@
-package gmail.anto5710.mcp.customsuits._Thor;
+package gmail.anto5710.mcp.customsuits.Thor;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.HungerScheduler;
@@ -27,24 +27,6 @@ public class HammerWeapons implements Listener{
 	public HammerWeapons(CustomSuitPlugin plugin){
 		this.plugin = plugin;
 	}
-	/**
-	 * Launch LightningMissile if player is Thor and have enough Hunger
-	 * @param event PlayerInteractEvent 
-	 */
-//	@EventHandler
-//	public void Lightning(PlayerInteractEvent event) {
-//		Player player = event.getPlayer();
-//		if (SuitUtils.isLeftClick(event) && SuitUtils.holdingNothing(player)
-//				&& Hammer.isPractiallyThor(player) && HungerScheduler.addHunger(player, Values.LightningMissileHunger)) {
-//			launchLightningMissile(player);
-//		}
-//	}
-//	
-//	public static void launchLightningMissile(Player player){
-//		Location targetblock = SuitUtils.getTargetBlock(player, 100).getLocation();
-//		SuitUtils.playSound(player.getLocation(), Values.LightningMissileSound, 16.0F,0F);
-//		SuitUtils.LineParticle(targetblock, player.getEyeLocation(), player, Particle.LAVA, 3, 0, Values.LightningMissile, 2, false , true, false,5);
-//	}
 	/**
 	 * Throw Hammer if Player is Thor
 	 * @param event PlayerInteractEvent
@@ -99,22 +81,9 @@ public class HammerWeapons implements Listener{
 		dropped.teleport(location);
 		dropped.setVelocity(v);
 		
-		addEffectToHammer(dropped, player);
+		Hammer.hammerEffecter.register(dropped, player);
 	
 		SuitUtils.playSound(player, Sound.BLOCK_ANVIL_LAND,6.0F, 6.0F);
 		SuitUtils.playSound(player, Sound.ENTITY_IRON_GOLEM_HURT,4.0F, 2.0F);
-	}
-	
-	/**
-	 * Add Particle Trail to thrown hammer
-	 * @param dropped Hammer Item
-	 * @param player Player
-	 */
-	public void addEffectToHammer(Item dropped, Player player) {
-		Hammer_Throw_Effect.listPlayer.put(dropped, player);
-		
-		if(!Hammer_Throw_Effect.isRunning()){
-			new Hammer_Throw_Effect().runTaskTimer(plugin, 0, 1);
-		}
 	}
 }

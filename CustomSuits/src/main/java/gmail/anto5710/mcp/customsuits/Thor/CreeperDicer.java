@@ -1,4 +1,4 @@
-package gmail.anto5710.mcp.customsuits._Thor;
+package gmail.anto5710.mcp.customsuits.Thor;
 
 import java.util.HashSet;
 import java.util.Set;

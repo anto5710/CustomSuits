@@ -111,10 +111,9 @@ public class Values {
 	
 	final public static List<Material> IgnoreMaterials_Gun = Arrays.asList(Material.AIR , Material.LAVA,  Material.LEGACY_STATIONARY_LAVA , Material.WATER , Material.LEGACY_STATIONARY_WATER , Material.OBSIDIAN , Material.BEDROCK , Material.BEACON);
 	
-	
 	final public static String MachineGunName = "Knif-1220";
 	final public static double MachineGunDamage =7 ;
-	final public static double MachineGunDamageRadiues =1.5 ;
+	final public static double MachineGunDamageRadiues = 1.5;
 	final public static int MachineGunAmmoAmount = 50;
 	final public static Material MachineGunAmmo = Material.FLINT;
 	

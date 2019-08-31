@@ -1,14 +1,7 @@
 package gmail.anto5710.mcp.customsuits.CustomSuits.suit;
 
-import java.util.ArrayList;
-
 import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import gmail.anto5710.mcp.customsuits.CustomSuits.dao.SpawningDao;
-import gmail.anto5710.mcp.customsuits.Utils.ThorUtils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -18,94 +11,80 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
-public class Target extends BukkitRunnable{
-	
-	
+public class Target implements Runnable{
 	CustomSuitPlugin plugin;
-	static boolean isRunning = false;
-	public Thread thread;
+	private BukkitTask task;
+	
 	public Target(CustomSuitPlugin plugin){
 		this.plugin = plugin;
-		this.thread = new Thread(this,"T-SUIT_TARGET");
-	}
-	public void start(){
-		this.thread.start();
 	}
 	
-	public void run() throws IllegalStateException {
-		int taskID = 0;
-		try {
-			taskID = this.getTaskId();
-		} catch (IllegalStateException e) {
-			CustomSuitPlugin.logger.info("EMPTY TARGET");
-//			e.printStackTrace();
-		}
-
+	public void awaken(){
+		task = Bukkit.getScheduler().runTaskTimer(plugin, this, 0, 1);
+	}
+	
+	public void run(){
 		if (SpawningDao.spawnMap.isEmpty()) {
-			isRunning = false;
-			ThorUtils.cancel(taskID);
+			stop();		
 		} else {
-			isRunning = true;
-			Iterator<Player> iterator = getSuitedPlayers(SpawningDao.spawnMap);
-			while (iterator.hasNext()) {
-				Player player = iterator.next();
+			for(Player player : plugin.getSuitedPlayers(SpawningDao.spawnMap)){
 				SuitSettings hdle = CustomSuitPlugin.handle(player);
-				hdle.removeDeadTarget();
+				hdle.removeDeadTargets();
 				target(player, hdle.getCurrentTarget(), false);
 			}
 		}
+	}
+	
+	private void stop(){
+		task.cancel();
+		task = null;
+	}
+	
+	public boolean isRunning(){
+		return task != null;
 	}
 	
 	public static void target(Player player, LivingEntity target, boolean sendMessage) {
 		boolean isPlayed = false;
 		Collection<Mob> list = player.getWorld().getEntitiesByClass(Mob.class);
 
-		String name = "";
 		boolean engage = target != null;
-		if (engage) {
-			name = target instanceof Player ?  ((Player) target).getName() : target.getType().getEntityClass().getSimpleName();			
-		}
-		for (Entity e : list) {
+		String targetName = engage ? getTargetName(target) : "";
+
+		for (Mob e : list) {
 			if (CustomSuitPlugin.dao.isCreatedBy(e, player)) {
-				((Mob) e).setTarget(target);
-				if (e instanceof PigZombie) {
-					PigZombie pg = (PigZombie) e;
-					if (engage) {
-						pg.setAngry(true);
-						pg.setAnger(100000);
-					} else {
-						pg.setAngry(false);
-						pg.setAnger(0);
-					}
-				}
+				target(e, target, engage);
 				isPlayed = true;
 			}
 		}
+
 		if (sendMessage) {
 			if (!isPlayed) {
 				player.sendMessage(ChatColor.BLUE + "[Info]: " + ChatColor.AQUA + "No such entity");
 				player.playSound(player.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 6.0F, 6.0F);
 			} else {
-				player.sendMessage(ChatColor.BLUE + "[Info]: " + ChatColor.AQUA + "Target : " + ChatColor.DARK_AQUA + name);
+				player.sendMessage(ChatColor.BLUE + "[Info]: " + ChatColor.AQUA + "Target : " + ChatColor.DARK_AQUA + targetName);
 			}
 		}
 	}
 	
-	private Iterator<Player> getSuitedPlayers(Map<String, String> stringMap) {
-		List<Player> list = new ArrayList<Player>();
-		Iterator<String> iterator = stringMap.values().iterator();
-		while (iterator.hasNext()) {
-			String name = iterator.next();
-			Player player = Bukkit.getServer().getPlayer(name);
-			if (list.isEmpty() && player != null) {
-				list.add(player);
-			} else if (player != null && !list.contains(player)) {
-				list.add(player);
+	private static String getTargetName(LivingEntity target){
+		return target instanceof Player ?  ((Player) target).getName() : target.getType().getEntityClass().getSimpleName();
+	}
+	
+	private static void target(Mob mob, LivingEntity target, boolean engage){
+		mob.setTarget(target);
+		if (mob instanceof PigZombie) {
+			PigZombie pg = (PigZombie) mob;
+			if (engage) {
+				pg.setAngry(true);
+				pg.setAnger(100000);
+			} else {
+				pg.setAngry(false);
+				pg.setAnger(0);
 			}
 		}
-
-		return list.iterator();
 	}
 }

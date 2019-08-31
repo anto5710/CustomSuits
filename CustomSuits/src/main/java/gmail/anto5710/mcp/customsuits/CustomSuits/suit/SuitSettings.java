@@ -22,30 +22,25 @@ public class SuitSettings {
 	final Player p;
 	private CustomEntities sentity = CustomEntities.WARRIOR;
 	private CustomEntities vehicle = null;
+	
 	private Queue<LivingEntity> targets = new ArrayBlockingQueue<>(20);
 	private int summonAmount = 1;
 	
-	
 	public Inventory command_equipment, handequipment;
-	public Inventory chestequipment;
 	public Inventory helmetequipment;
+	public Inventory chestequipment;
 	public Inventory leggingsequipment;
 	public Inventory bootsequipment;
 	public Inventory equipment;
 	public Inventory armorequipment;
 	private Color helmetColor = Color.MAROON, chestColor = Color.MAROON, leggingsColor = Color.MAROON, bootsColor = Color.MAROON;
-	
-	{
-//		Arrays.stream(CustomEntities.values()).forEach(e->entity_Icon_Map.put(e.getName(), e.getIcon()));
-//		Arrays.stream(CustomEntities.values()).forEach(e->vehicle_Icon_Map.put(e.getName(), e.getIcon()));
-	}
 
 	public SuitSettings(Player p) {
 		this.p = p;
-		reinitInv();
+		reinitUInv();
 	}
 	
-	public void reinitInv(){
+	public void reinitUInv(){
 		if(command_equipment==null){
 			command_equipment = CustomSuitPlugin.copyCommandGUI(p, CustomSuitPlugin.commandInventory);
 		}
@@ -70,18 +65,28 @@ public class SuitSettings {
 		p.updateInventory();
 	}
 	
-	private void resetColorIcon(int slot, Color color) {
+	private void resetUInv(){
+		command_equipment = CustomSuitPlugin.copyCommandGUI(p, CustomSuitPlugin.commandInventory);
+		equipment = CustomSuitPlugin.copyInv(p, CustomSuitPlugin.inventory, InventoryNames.inventory_name);
+		armorequipment = CustomSuitPlugin.copyInv(p, CustomSuitPlugin.armorinventory, InventoryNames.armorinventory_name);
+		helmetequipment = CustomSuitPlugin.copyInv(p, CustomSuitPlugin.helmetinventory, InventoryNames.helmetinventory_name);
+		chestequipment = CustomSuitPlugin.copyInv(p, CustomSuitPlugin.chestinventory, InventoryNames.chestinventory_name);
+		leggingsequipment = CustomSuitPlugin.copyInv(p, CustomSuitPlugin.leggingsinventory, InventoryNames.leggingsinventory_name);
+		bootsequipment = CustomSuitPlugin.copyInv(p, CustomSuitPlugin.bootsinventory, InventoryNames.bootsinventory_name);
+	}
+	
+	private void updateColorIcon(int slot, Color color) {
 		ItemStack itemstack = armorequipment.getItem(slot);
 		ItemUtil.dye(itemstack, color);
 		armorequipment.setItem(slot, itemstack);
 		p.updateInventory();
 	}
 	
-	public void resetColorIcons(){
-		resetColorIcon(25, helmetColor);
-		resetColorIcon(34, chestColor);
-		resetColorIcon(43, leggingsColor);
-		resetColorIcon(52, bootsColor);
+	public void updateColorIcons(){
+		updateColorIcon(25, helmetColor);
+		updateColorIcon(34, chestColor);
+		updateColorIcon(43, leggingsColor);
+		updateColorIcon(52, bootsColor);
 	}
 	
 	public int level(){
@@ -102,7 +107,7 @@ public class SuitSettings {
 		}
 	}
 
-	public void removeDeadTarget() {
+	public void removeDeadTargets() {
 		targets.removeIf(e->e.isDead());
 	}
 	
@@ -143,31 +148,31 @@ public class SuitSettings {
 	}
 	
 	public void setCount(int spnCnt) {
-		summonAmount = Math.min(1, spnCnt);
+		summonAmount = Math.max(1, spnCnt);
 	}
 	
 	public void setHelmetColor(Color helmetColor) {
 		if(helmetColor!=null){
 			this.helmetColor = helmetColor;
-			resetColorIcons();
+			updateColorIcons();
 		}
 	}
 	public void setChestColor(Color chestColor) {
 		if(chestColor!=null){
 			this.chestColor = chestColor;
-			resetColorIcons();
+			updateColorIcons();
 		}
 	}
 	public void setLeggingsColor(Color leggingsColor) {
 		if(leggingsColor!=null){
 			this.leggingsColor = leggingsColor;
-			resetColorIcons();
+			updateColorIcons();
 		}
 	}
 	public void setBootsColor(Color bootsColor) {
 		if(bootsColor!=null){
 			this.bootsColor = bootsColor;
-			resetColorIcons();
+			updateColorIcons();
 		}
 	}
 	

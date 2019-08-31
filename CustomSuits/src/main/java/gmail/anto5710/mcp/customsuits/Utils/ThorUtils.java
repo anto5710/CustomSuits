@@ -1,7 +1,7 @@
 package gmail.anto5710.mcp.customsuits.Utils;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
-import gmail.anto5710.mcp.customsuits._Thor.Hammer_Throw_Effect;
+import gmail.anto5710.mcp.customsuits.Thor.Hammer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -100,29 +100,27 @@ public class ThorUtils {
 	public static boolean isBurning(Entity entity) {
 		return entity.getFireTicks() > 0;
 	}
+	
+	private static 
+	List<Material> Ignore_materials = Arrays.asList(Material.WATER, Material.LEGACY_STATIONARY_WATER, Material.AIR, Material.LAVA);
 	/**
 	 * Check is item onGround
 	 * @param item Item to check
 	 * @return is item onGround
 	 */
 	public static boolean isOnGround(Item item) {
-		if (item.isOnGround()) {
-			return true;
-		}
+		if (item.isOnGround()) return true;
+		
 		Location location = item.getLocation().add(0, -1, 0);
 		Block block = location.getBlock();
-
-		Material matareial = block.getType();
-		List<Material> Ignore_materials = Arrays.asList(Material.WATER, Material.LEGACY_STATIONARY_WATER, Material.AIR);
-		
-		return !Ignore_materials.contains(matareial);
+		return !Ignore_materials.contains(block.getType());
 	}
 	/**
 	 * Remove item from Thorwn Hammers
 	 * @param item Item to remove from Thorwn Hammer list 
 	 */
 	public static void remove(Item item) {
-		Hammer_Throw_Effect.listPlayer.remove(item);
+		Hammer.hammerEffecter.remove(item);
 	}
 	/**
 	 * Cancel That BukkitTask

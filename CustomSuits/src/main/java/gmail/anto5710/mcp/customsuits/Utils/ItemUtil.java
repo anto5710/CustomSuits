@@ -5,12 +5,38 @@ import java.util.List;
 
 import org.bukkit.Color;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
-public class ItemUtil {	
+public class ItemUtil {
+
+	public static boolean sufficeItem(Player player, ItemStack itemStack){
+		return sufficeItem(player, itemStack, 1);
+	}
+	
+	public static boolean sufficeMaterial(Player player, Material material) {
+		return sufficeMaterial(player, material, 1);
+	}
+	
+	public static boolean sufficeItem(Player player, ItemStack itemStack, int amount) {
+		Inventory inventory = player.getInventory();
+		boolean suffice = inventory.containsAtLeast(itemStack, amount); 
+		if (suffice){
+			inventory.removeItem(itemStack);
+			player.updateInventory();
+		}
+		return suffice;
+	}
+	
+	public static boolean sufficeMaterial(Player player, Material material, int amount){
+		return sufficeItem(player, new ItemStack(material, amount), 1);
+	}
+
+	
 	public static boolean isHorseArmor(ItemStack item){
 		if(item==null) return false;
 		
@@ -25,7 +51,7 @@ public class ItemUtil {
 		return type == Material.LEATHER_HELMET || type == Material.LEATHER_CHESTPLATE || type == Material.LEATHER_LEGGINGS || type == Material.LEATHER_BOOTS;
 	}
 
-	public static void name(String name, ItemStack item) {
+	public static void name(ItemStack item, String name) {
 		ItemMeta meta = item.getItemMeta();
 		meta.setDisplayName(name);
 		item.setItemMeta(meta);
@@ -41,7 +67,7 @@ public class ItemUtil {
 
 	public static ItemStack createWithName(Material material, String name) {
 		ItemStack item = new ItemStack(material, 1);
-		name(name, item);
+		name(item, name);
 		return item;
 	}
 
@@ -54,16 +80,16 @@ public class ItemUtil {
 	}
 
 	public static ItemStack[] dyeSpectrum(ItemStack itemstack) {
-		ItemStack[] items = new ItemStack[ColorUtils.colorMap.size()];
-		Iterator<String> colors = ColorUtils.colorMap.keySet().iterator();
+		ItemStack[] items = new ItemStack[ColorUtil.colorMap.size()];
+		Iterator<String> colors = ColorUtil.colorMap.keySet().iterator();
 		int index = 0;
 		while (colors.hasNext()) {
 			String colorName = colors.next();
-			Color color = ColorUtils.colorMap.get(colorName);
+			Color color = ColorUtil.colorMap.get(colorName);
 			
 			ItemStack item = itemstack.clone();
 			dye(item, color);
-			name((colorName).toUpperCase(), item);
+			name(item, (colorName).toUpperCase());
 			items[index] = item;
 			index++;
 		}
@@ -73,8 +99,8 @@ public class ItemUtil {
 	public static boolean checkName(ItemStack sample, ItemStack check) {
 		if(sample == null || check == null) return sample == check;
 		
-		String sampleName = sample.getItemMeta().getDisplayName();
-		String checkName = check.getItemMeta().getDisplayName();
+		String sampleName = getName(sample);
+		String checkName = getName(check);
 		
 		if(sampleName == null && checkName == null) return true;
 		
@@ -84,8 +110,12 @@ public class ItemUtil {
 	public static boolean checkName(ItemStack item, String token){
 		if (item==null || token ==null || token.isEmpty() || !item.hasItemMeta()) return false;
 		
-		String name = item.getItemMeta().getDisplayName();
+		String name = getName(item);
 		return name != null && name.contains(token);
+	}
+	
+	public static String getName(ItemStack item){
+		return (item!=null && item.hasItemMeta()) ? item.getItemMeta().getDisplayName() : null;
 	}
 
 	public static boolean checkLore(ItemStack sample, ItemStack check) {
@@ -114,5 +144,16 @@ public class ItemUtil {
 			return check == sample; // 둘 다 null(air)?
 		}
 		return sample.getType()==check.getType () && checkName(sample , check) && checkLore(sample, check);
+	}
+
+	public static void addDurability(ItemStack item, short delta) {
+		if (SuitUtils.isAir(item)) {
+			return;
+		}
+		short durability = item.getDurability();
+		short max_durability = item.getType().getMaxDurability();
+		short final_durability = (short) MathUtils.bound(0, durability - delta, max_durability);
+	
+		item.setDurability(final_durability);
 	}
 }

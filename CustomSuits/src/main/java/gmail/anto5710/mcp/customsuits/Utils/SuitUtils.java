@@ -1,8 +1,7 @@
 package gmail.anto5710.mcp.customsuits.Utils;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
-
-import gmail.anto5710.mcp.customsuits.CustomSuits.suit.SuitWeapons;
+import gmail.anto5710.mcp.customsuits.CustomSuits.suit.gadgets.SuitWeapons;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
 
 import java.util.List;
@@ -155,14 +154,16 @@ public class SuitUtils {
 		playerSound(player, Sound.BLOCK_DISPENSER_FAIL, 6.0F, 6.0F);
 	}
 	
+	private static Set<Material> transparents = 
+	Sets.newHashSet(Material.WATER, Material.LAVA, Material.AIR, Material.COBWEB, 
+					Material.LEGACY_SAPLING, Material.DEAD_BUSH, Material.GRASS, 
+					Material.FERN, Material.WHEAT);
 	public static Block getTargetBlock(Player player , int maxDistance){
-		Set<Material> transparents = 
-		Sets.newHashSet(Material.WATER, Material.LAVA, Material.AIR, Material.COBWEB, 
-						Material.LEGACY_SAPLING, Material.DEAD_BUSH, Material.GRASS, 
-						Material.FERN, Material.WHEAT);
-			
-		Block targetblock = player.getTargetBlock(transparents, maxDistance);
-		return targetblock;
+		return player.getTargetBlock(transparents, maxDistance);
+	}
+	
+	public static Location getTargetLoc(Player player, int maxDistance){
+		return getTargetBlock(player, maxDistance).getLocation();
 	}
 	
 	public static void wrongCommand(Player player, Command command) {
@@ -202,5 +203,26 @@ public class SuitUtils {
 	private static Set<EntityType> armables = Sets.newHashSet(EntityType.ARMOR_STAND, EntityType.ZOMBIE, EntityType.SKELETON, EntityType.WITHER_SKELETON, EntityType.HUSK, EntityType.PIG_ZOMBIE);
 	public static boolean isArmable(LivingEntity lentity) {
 		return armables.contains(lentity.getType());
+	}
+
+	public static boolean isHolding(Player player, ItemStack sample) {
+		return !anyNull(player, sample) && ItemUtil.checkItem(sample, getHoldingItem(player));
+	}
+
+	public static boolean isUnderWater(Player player){	
+		Block eye = player.getEyeLocation().getBlock();
+		Block foot = player.getLocation().getBlock();
+		Block waist = player.getLocation().add(0, 1, 0).getBlock();
+		
+		return SuitUtils.isWater(eye) && SuitUtils.isWater(waist) && SuitUtils.isWater(foot);
+	}
+
+	public static boolean isWater(Block block){
+		Material m = block.getType();
+ 		return m==Material.WATER || m==Material.LEGACY_STATIONARY_WATER;
+	}
+
+	public static boolean isUnbreakable(Block hitblock) {
+		return hitblock.getType() == Material.BEDROCK;
 	}
 }

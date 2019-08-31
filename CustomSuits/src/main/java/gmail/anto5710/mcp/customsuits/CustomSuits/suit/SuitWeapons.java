@@ -74,7 +74,7 @@ public class SuitWeapons implements Listener {
 			if (CustomSuitPlugin.isMarkEntity(player)) {
 				ItemStack itemInHand = SuitUtils.getHoldingItem(player);
 				if (itemInHand != null && itemInHand.getType() == Values.SuitLauncher) {
-					if (HungerScheduler.deltaHunger(player, Values.SuitShieldHunger)) {
+					if (HungerScheduler.sufficeHunger(player, Values.SuitShieldHunger)) {
 						final int sec = (CustomSuitPlugin.getSuitLevel(player)) / 20 + 3;
 						player.setNoDamageTicks(sec * 20);
 						player.sendMessage(ChatColor.BLUE + "[Info]: " + ChatColor.AQUA + "Created Shield: "+ ChatColor.DARK_AQUA + sec + " Seconds! ");
@@ -194,7 +194,7 @@ public class SuitWeapons implements Listener {
 	private void shootTNT(Player player, Location location){
 		Vector v = player.getLocation().getDirection().multiply(TNT_strength).add(MathUtils.randomVector(0.5));
 		ItemStack itemStack = new ItemStack(Material.TNT);
-		ItemUtil.name(ChatColor.AQUA + "[Bomb]", itemStack);
+		ItemUtil.name(itemStack, ChatColor.AQUA + "[Bomb]");
 		Enchant.enchantment(itemStack, new Glow(), 1, true);
 		Item tnt = player.getWorld().dropItem(location, itemStack);
 
@@ -259,7 +259,7 @@ public class SuitWeapons implements Listener {
 			if (CustomSuitPlugin.isMarkEntity(player) && !player.isSneaking()
 					&& SuitUtils.getHoldingItem(player).getType() == launcher) {
 
-				if (HungerScheduler.deltaHunger(player, energy)) {
+				if (HungerScheduler.sufficeHunger(player, energy)) {
 					launch(player, message);
 				} else {
 					SuitUtils.lack(player, "Energy");
@@ -404,7 +404,7 @@ public class SuitWeapons implements Listener {
 					} else if (!isCharging(player)) {
 
 						int amount = SuitWeapons.charge(player, Material.FLINT, Values.MachineGunAmmoAmount, plugin);
-						ItemUtil.name(gunfirstName + amount + gun_regex + values[1].replace("»", "") + "»", copy);
+						ItemUtil.name(copy, gunfirstName + amount + gun_regex + values[1].replace("»", "") + "»");
 
 						SuitUtils.setHoldingItem(player, copy);
 					}
@@ -416,8 +416,8 @@ public class SuitWeapons implements Listener {
 				
 				CustomEffects.play_Gun_Shot_Effect(player);
 				shot_Machine_Gun(player);
-				ItemUtil.name(gunfirstName + (Integer.parseInt(values[0].replace(gunfirstName, "")) - 1) + gun_regex
-						+ values[1].replace("»", "") + "»", copy);
+				ItemUtil.name(copy, gunfirstName + (Integer.parseInt(values[0].replace(gunfirstName, "")) - 1) + gun_regex
+								+ values[1].replace("»", "") + "»");
 
 				SuitUtils.setHoldingItem(player, copy);
 
@@ -430,7 +430,7 @@ public class SuitWeapons implements Listener {
 					} else if (!isCharging(player)) {
 
 						int amount = SuitWeapons.charge(player, Material.GHAST_TEAR, Values.SnipeAmmoAmount, plugin);
-						ItemUtil.name(values[0] + gun_regex + amount + "»", copy);
+						ItemUtil.name(copy, values[0] + gun_regex + amount + "»");
 
 						SuitUtils.setHoldingItem(player, copy);
 					}
@@ -447,7 +447,7 @@ public class SuitWeapons implements Listener {
 					Vector direction = location.getDirection();
 					location.setDirection(
 							MathUtils.randomLoc(target.clone().subtract(location), 5).toVector().normalize());
-					if (PlayerEffect.Zoom.containsKey(player) && PlayerEffect.Zoom.get(player)) {
+					if (PlayerEffect.zooms.containsKey(player) && PlayerEffect.zooms.get(player)) {
 						location.setDirection(direction);
 					}
 
@@ -461,8 +461,8 @@ public class SuitWeapons implements Listener {
 							0.5, true, false, false, 20);
 
 					SuitWeapons.cooldown(2, plugin, player);
-					ItemUtil.name(values[0] + gun_regex + (Integer.parseInt(values[1].replace("»", "")) - 1) + "»",
-							copy);
+					ItemUtil.name(copy,
+							values[0] + gun_regex + (Integer.parseInt(values[1].replace("»", "")) - 1) + "»");
 					SuitUtils.setHoldingItem(player, copy);
 				}
 			}
@@ -475,7 +475,7 @@ public class SuitWeapons implements Listener {
 		shoot(player, spread);
 		recoil(player, 0.5);
 
-		if (PlayerEffect.Zoom.containsKey(player) && PlayerEffect.Zoom.get(player)) {
+		if (PlayerEffect.zooms.containsKey(player) && PlayerEffect.zooms.get(player)) {
 			spread = MathUtils.randomRadius(0.025);
 		}
 

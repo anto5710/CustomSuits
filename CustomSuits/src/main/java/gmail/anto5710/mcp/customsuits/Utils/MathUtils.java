@@ -6,7 +6,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.util.Vector;
 
 public class MathUtils {
-
+	
 	public static double wholeRandom(double m){
 		return Math.random()*m;
 	}
@@ -25,8 +25,11 @@ public class MathUtils {
 		return boundMax;
 	}
 	
+	public static boolean gacha(double percent){
+		return wholeRandom(100) < percent;
+	}
+	
 	public static Vector calculateVelocity(Vector from, Vector to, double gravity, int heightGain){
-
 	    // Block locations
 	    int endGain = to.getBlockY() - from.getBlockY();
 	    double horizDist = Math.sqrt(MathUtils.distanceSqrd(from, to));
@@ -41,7 +44,7 @@ public class MathUtils {
 	    // Vertical velocity
 	    double vy = Math.sqrt(maxGain * gravity);
 	    // Horizontal velocity
-	    double vh = vy / slope;
+	    double vh = vy / slope; 
 	    // Calculate horizontal direction
 	    int dx = to.getBlockX() - from.getBlockX();
 	    int dz = to.getBlockZ() - from.getBlockZ();

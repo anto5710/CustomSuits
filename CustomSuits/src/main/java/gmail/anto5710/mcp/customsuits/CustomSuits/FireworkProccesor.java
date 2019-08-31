@@ -7,19 +7,19 @@ import org.bukkit.Location;
 import org.bukkit.entity.Firework;
 import org.bukkit.inventory.meta.FireworkMeta;
 
-import gmail.anto5710.mcp.customsuits.Utils.ColorUtils;
+import gmail.anto5710.mcp.customsuits.Utils.ColorUtil;
 import gmail.anto5710.mcp.customsuits.Utils.MathUtils;
 
 public class FireworkProccesor {
-
+	
 	public static FireworkEffect getEffect(Color color , Type type) {
 		int r = color.getRed();
 		int g = color.getGreen();
 		int b = color.getBlue();
 	    
 	    
-		Color[] colors= ColorUtils.getColors(Color.fromRGB(r, g, b));
-		Color[] fadecolors  = ColorUtils.getColors(Color.WHITE);
+		Color[] colors= ColorUtil.getColors(Color.fromRGB(r, g, b));
+		Color[] fadecolors  = ColorUtil.getColors(Color.WHITE);
 		
 		
 		FireworkEffect effect = FireworkEffect.builder().trail(true).flicker(true).with(type).withColor(colors).withFade(fadecolors).withFlicker().withTrail().build();
@@ -33,8 +33,8 @@ public class FireworkProccesor {
 	    int G= (int) MathUtils.wholeRandom(255);
 	    int B= (int) MathUtils.wholeRandom(255);
 	   
-		Color[] colors= ColorUtils.getColors(Color.fromRGB(R, G, B));
-		Color[] fadecolors  = ColorUtils.getColors(Color.WHITE);
+		Color[] colors= ColorUtil.getColors(Color.fromRGB(R, G, B));
+		Color[] fadecolors  = ColorUtil.getColors(Color.WHITE);
 		
 		
 		FireworkEffect effect = FireworkEffect.builder().trail(true).flicker(true).with(type).withColor(colors).withFade(fadecolors).withFlicker().withTrail().build();

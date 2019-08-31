@@ -63,7 +63,7 @@ public class Hammer_Throw_Effect extends BukkitRunnable {
 				
 				if (ThorUtils.isOnGround(item)|| item.isDead()) {
 				
-					CustomEffects.play_Hammer_Hit_Ground(item);
+					CustomEffects.playHammerHitGround(item);
 					item.getWorld().strikeLightning(item.getLocation());
 					player.getInventory().addItem(item.getItemStack());
 					item.remove();

@@ -107,7 +107,7 @@ public class SuitInventoryGUI extends InventoryNames implements Listener {
 				e.setCancelled(true);
 				
 			} else if (e.getSlot() == 16) {
-				PlayerEffect.spawnfireworks(p);
+				PlayerEffect.spawnFireworks(p);
 				e.setCancelled(true);
 				
 			} else {

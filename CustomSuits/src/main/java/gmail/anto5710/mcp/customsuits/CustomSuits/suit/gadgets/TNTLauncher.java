@@ -20,7 +20,7 @@ import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.Setting.Enchant;
 import gmail.anto5710.mcp.customsuits.Utils.Glow;
 import gmail.anto5710.mcp.customsuits.Utils.ItemUtil;
-import gmail.anto5710.mcp.customsuits.Utils.MathUtil;
+import gmail.anto5710.mcp.customsuits.Utils.MathUtils;
 import gmail.anto5710.mcp.customsuits.Utils.ParticleUtil;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 import gmail.anto5710.mcp.customsuits.Utils.encompassor.MapEncompassor;
@@ -58,7 +58,7 @@ public class TNTLauncher extends MapEncompassor<Item, Long>{
 	}
 	
 	private void shootTNT(Player player, Location location){
-		Vector v = player.getLocation().getDirection().multiply(TNT_strength).add(MathUtil.randomVector(0.5));
+		Vector v = player.getLocation().getDirection().multiply(TNT_strength).add(MathUtils.randomVector(0.5));
 		ItemStack itemStack = new ItemStack(Material.TNT);
 		ItemUtil.name(itemStack, ChatColor.AQUA + "[Bomb]");
 		Enchant.enchantment(itemStack, new Glow(), 1, true);

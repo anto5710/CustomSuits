@@ -5,32 +5,32 @@ import java.util.Map;
 
 import org.bukkit.Color;
 
-public class ColorUtils {
+public class ColorUtil {
 
 	public static Map<String, Color> colorMap = new HashMap<>();
 	
 	public static void initColorMap(){
-		ColorUtils.colorMap.put("red", Color.RED);
-		ColorUtils.colorMap.put("blue", Color.BLUE);
-		ColorUtils.colorMap.put("aqua", Color.AQUA);
-		ColorUtils.colorMap.put("black", Color.BLACK);
-		ColorUtils.colorMap.put("yellow", Color.YELLOW);
-		ColorUtils.colorMap.put("green", Color.GREEN);
-		ColorUtils.colorMap.put("lime", Color.LIME);
-		ColorUtils.colorMap.put("orange", Color.ORANGE);
-		ColorUtils.colorMap.put("olive", Color.OLIVE);
-		ColorUtils.colorMap.put("gray", Color.GRAY);
-		ColorUtils.colorMap.put("purple", Color.PURPLE);
-		ColorUtils.colorMap.put("white", Color.WHITE);
-		ColorUtils.colorMap.put("silver", Color.SILVER);
-		ColorUtils.colorMap.put("navy", Color.NAVY);
-		ColorUtils.colorMap.put("maroon", Color.MAROON);
-		ColorUtils.colorMap.put("fuchsia", Color.FUCHSIA);
-		ColorUtils.colorMap.put("teal", Color.TEAL);
+		ColorUtil.colorMap.put("red", Color.RED);
+		ColorUtil.colorMap.put("blue", Color.BLUE);
+		ColorUtil.colorMap.put("aqua", Color.AQUA);
+		ColorUtil.colorMap.put("black", Color.BLACK);
+		ColorUtil.colorMap.put("yellow", Color.YELLOW);
+		ColorUtil.colorMap.put("green", Color.GREEN);
+		ColorUtil.colorMap.put("lime", Color.LIME);
+		ColorUtil.colorMap.put("orange", Color.ORANGE);
+		ColorUtil.colorMap.put("olive", Color.OLIVE);
+		ColorUtil.colorMap.put("gray", Color.GRAY);
+		ColorUtil.colorMap.put("purple", Color.PURPLE);
+		ColorUtil.colorMap.put("white", Color.WHITE);
+		ColorUtil.colorMap.put("silver", Color.SILVER);
+		ColorUtil.colorMap.put("navy", Color.NAVY);
+		ColorUtil.colorMap.put("maroon", Color.MAROON);
+		ColorUtil.colorMap.put("fuchsia", Color.FUCHSIA);
+		ColorUtil.colorMap.put("teal", Color.TEAL);
 	}
 	
 	public static Color[] getColors(Color color){
-		float [] HSB =ColorUtils.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue());
+		float [] HSB =ColorUtil.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue());
 		float H = HSB[0];
 		float S = HSB[1];
 		float B = HSB[2];
@@ -39,10 +39,10 @@ public class ColorUtils {
 		
 		Color[] colors= new Color[N];
 		for(int n = 0; n<N ; n++){
-			if(ColorUtils.isOutOfHSB(add, H, S ,B)){
+			if(ColorUtil.isOutOfHSB(add, H, S ,B)){
 				add*=-1;
 			}
-			colors[n]=ColorUtils.HSBtoRGB(H, S, B);
+			colors[n]=ColorUtil.HSBtoRGB(H, S, B);
 		}
 		return colors;
 	}
