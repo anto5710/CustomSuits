@@ -84,7 +84,7 @@ public class TNTLauncher extends MapEncompassor<Item, Long>{
 	}
 	
 	@Override
-	public boolean toBeRemoved(Item tnt) {
+	public boolean toRemove(Item tnt) {
 		return tnt.isDead() || tnt.isOnGround();
 	}
 
@@ -96,7 +96,7 @@ public class TNTLauncher extends MapEncompassor<Item, Long>{
 			SuitUtils.playSound(loc, Sound.ENTITY_CREEPER_HURT, 0.2F, 0.6F);
 			SuitUtils.playSound(loc, Sound.ENTITY_TNT_PRIMED, 1F, 1F);
 		}
-		if (toBeRemoved(tnt)) {
+		if (toRemove(tnt)) {
 			impact(loc);
 		}
 		maptia.put(tnt, t++);

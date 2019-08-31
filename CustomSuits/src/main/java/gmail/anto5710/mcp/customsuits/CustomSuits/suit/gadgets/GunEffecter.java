@@ -24,7 +24,7 @@ public class GunEffecter extends LinearEncompassor<Snowball>{
 	}
 
 	@Override
-	public boolean toBeRemoved(Snowball e) {
+	public boolean toRemove(Snowball e) {
 		return e.isDead();
 	}
 

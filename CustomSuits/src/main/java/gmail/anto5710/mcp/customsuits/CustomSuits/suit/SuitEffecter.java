@@ -17,7 +17,7 @@ public class SuitEffecter extends LinearEncompassor<Player>{
 	}
 
 	@Override
-	public boolean toBeRemoved(Player p) {
+	public boolean toRemove(Player p) {
 		return !CustomSuitPlugin.isMarkEntity(p) || p.isDead();
 	}
 

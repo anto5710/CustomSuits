@@ -96,13 +96,13 @@ public class AutoTarget implements Listener{
 		if(event.getDamager() instanceof Projectile){
 			Projectile proj = (Projectile) damager;
 			ProjectileSource shooter = proj.getShooter();
-			if(shooter!=null && shooter instanceof Entity) targetD((Entity) shooter, victim);
+			if(shooter!=null && shooter instanceof Entity) targetMutual((Entity) shooter, victim);
 		}else{
-			targetD(damager, victim);
+			targetMutual(damager, victim);
 		}
 	}
 	
-	public void targetD(Entity damager, Entity victim){
+	public void targetMutual(Entity damager, Entity victim){
 		Player pd = damager instanceof Player? (Player) damager : CustomSuitPlugin.dao.getOwner(damager);
 		Player pv = victim instanceof Player ? (Player) victim : CustomSuitPlugin.dao.getOwner(victim);
 		if(pd==pv) return; //friendlyfire

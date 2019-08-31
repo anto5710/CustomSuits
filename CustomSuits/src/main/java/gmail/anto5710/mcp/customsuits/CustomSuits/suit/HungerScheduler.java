@@ -20,13 +20,13 @@ public class HungerScheduler extends LinearEncompassor<Player> {
 	}
 
 	@Override
-	public boolean toBeRemoved(Player player) {
+	public boolean toRemove(Player player) {
 		return !player.isOnline() || player.isDead() || !CustomSuitPlugin.isMarkEntity(player);
 	}
 	
 	@Override
 	public void particulate(Player player) {
-		if (toBeRemoved(player)) return;
+		if (toRemove(player)) return;
 
 		if (player.isFlying()) {
 			if (!checkHunger(player, Values.leastFlyHunger)) {

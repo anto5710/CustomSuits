@@ -53,7 +53,7 @@ public abstract class MapEncompassor<E extends Entity, V> extends AbstractEncomp
 		}
 		for (E e : maptia.keySet()) {
 			particulate(e, maptia.get(e));
-			if(toBeRemoved(e)) discard(e);
+			if(toRemove(e)) discard(e);
 		}
 		autoclear();
 		tick();

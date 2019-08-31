@@ -35,7 +35,7 @@ public class ForceLightning extends MapEncompassor<Player, EnderCrystal>{
 	
 	@Override
 	public void particulate(Player p, EnderCrystal cr) {
-		if(!toBeRemoved(p)){
+		if(!toRemove(p)){
 			Location ploc = p.getEyeLocation();
 			SuitUtils.playSound(ploc, Sound.ENTITY_BLAZE_AMBIENT, 1F, 3F);
 			SuitUtils.playSound(ploc, Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 0.2F, 1F);
@@ -59,7 +59,7 @@ public class ForceLightning extends MapEncompassor<Player, EnderCrystal>{
 	}
 	
 	@Override
-	public boolean toBeRemoved(Player player) {
+	public boolean toRemove(Player player) {
 		return !canUseLazer(player) || player.isDead() || !player.isOnline();
 	}
 

@@ -34,14 +34,13 @@ public abstract class LinearEncompassor<E extends Entity> extends AbstractEncomp
 	
 	@Override
 	public void run() {
-		
 		if(entia.isEmpty()){
 			cancel();
 			return;
 		}
 		for (E e : entia) {
 			particulate(e);
-			if(toBeRemoved(e)) discard(e);
+			if(toRemove(e)) discard(e);
 		}
 		autoclear();
 		tick();

@@ -18,7 +18,7 @@ public class Thorformation extends MapEncompassor<Player, Double>{
 	}
 
 	@Override
-	public boolean toBeRemoved(Player player) {
+	public boolean toRemove(Player player) {
 		return player.isDead() || !player.isOnline();
 	}
 

@@ -29,7 +29,7 @@ public class HammerThrowEffect extends MapEncompassor<Item, Player>{
 	}
 	
 	@Override
-	public boolean toBeRemoved(Item item) {
+	public boolean toRemove(Item item) {
 		return ThorUtils.isOnGround(item)|| item.isDead();
 	}
 
@@ -44,7 +44,7 @@ public class HammerThrowEffect extends MapEncompassor<Item, Player>{
 
 		ThorUtils.damage(list, Hammer.HammerDeafultDamage, player);
 		
-		if(toBeRemoved(item)) impact(item);
+		if(toRemove(item)) impact(item);
 	}
 	
 	private void impact(Item item){

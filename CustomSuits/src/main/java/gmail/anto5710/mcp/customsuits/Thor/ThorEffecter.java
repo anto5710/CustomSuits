@@ -32,13 +32,13 @@ public class ThorEffecter extends MapEncompassor<Player, VorticalMeta>{
 	}
 	
 	@Override
-	public boolean toBeRemoved(Player player) {
+	public boolean toRemove(Player player) {
 		return !Hammer.isPractiallyThor(player) || !player.isOnline();
 	}
 
 	@Override
 	public void particulate(Player player, VorticalMeta v) {
-		if(!toBeRemoved(player)){
+		if(!toRemove(player)){
 			Location origin = player.getLocation();
 			Location loci = origin.clone();
 			double y = loci.getY() + v.getY_Offset();
