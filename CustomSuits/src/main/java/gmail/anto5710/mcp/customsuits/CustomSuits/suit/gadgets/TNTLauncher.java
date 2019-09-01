@@ -99,7 +99,7 @@ public class TNTLauncher extends MapEncompassor<Item, Long>{
 		if (toRemove(tnt)) {
 			impact(loc);
 		}
-		maptia.put(tnt, t++);
+		put(tnt, t+1);
 	}
 
 	@Override

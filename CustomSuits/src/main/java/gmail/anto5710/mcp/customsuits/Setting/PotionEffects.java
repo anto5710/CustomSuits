@@ -32,13 +32,5 @@ public class PotionEffects {
 	final public static PotionEffect Man_BOOST_HEALTH_BOOST = new PotionEffect(PotionEffectType.HEALTH_BOOST ,Man_Boost_Tick,30);
 	
 	final public static PotionEffect Man_BOOST_INCREASE_DAMAGE = new PotionEffect(PotionEffectType.INCREASE_DAMAGE ,Man_Boost_Tick, 15);
-
-	
-	
-	
-	
-	
-	
-	
 	
 }

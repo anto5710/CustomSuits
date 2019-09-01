@@ -2,10 +2,15 @@ package gmail.anto5710.mcp.customsuits.Utils;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
 
 import org.bukkit.Color;
 import org.bukkit.Material;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeModifier;
+import org.bukkit.attribute.AttributeModifier.Operation;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -156,4 +161,29 @@ public class ItemUtil {
 	
 		item.setDurability(final_durability);
 	}
+	
+	public static void suffix(ItemStack item, Attribute type, String name, double amount, Operation op, EquipmentSlot slot){
+		if(SuitUtils.anyNull(item, type, name, op)) return;
+		
+		
+		ItemMeta meta = item.getItemMeta();
+		if(slot!=null){
+			meta.addAttributeModifier(type, new AttributeModifier(UUID.randomUUID(), name, amount, op, slot));
+		}else{
+			meta.addAttributeModifier(type, new AttributeModifier(name, amount, op));
+		}
+		item.setItemMeta(meta);
+	}
+
+	public static void suffix(ItemStack item, Attribute type, double amount) {
+		suffix(item, type, type.name(), amount, Operation.ADD_NUMBER, null);
+	}
+	
+	public static void suffix(ItemStack item, Attribute type, double amount, EquipmentSlot slot) {
+		suffix(item, type, type.name(), amount, Operation.ADD_NUMBER, slot);
+	}
+	
+	
+	
+	
 }

@@ -20,12 +20,20 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.bukkit.ChatColor;
+import org.bukkit.DyeColor;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeModifier;
+import org.bukkit.attribute.AttributeModifier.Operation;
+import org.bukkit.block.Banner;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.banner.Pattern;
+import org.bukkit.block.banner.PatternType;
 import org.bukkit.block.data.type.TNT;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
@@ -42,9 +50,13 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BannerMeta;
+import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.FireworkMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
@@ -52,12 +64,9 @@ import org.bukkit.util.Vector;
 public class SuitWeapons implements Listener {
 
 	static ArrayList<Fireball> listFireball = new ArrayList<>();
+	public static TNTLauncher tnter; 	
 
 	public static CustomSuitPlugin plugin;
-
-//	public static Set<Player> TNT_cooldowns = new HashSet<>();
-	public static TNTLauncher tnter; 
-	
 	private static Material suitlauncher = Values.SuitLauncher;
 	
 	
@@ -76,18 +85,22 @@ public class SuitWeapons implements Listener {
 				player.setNoDamageTicks(sec * 20);
 				player.sendMessage(ChatColor.BLUE + "[Info]: " + ChatColor.AQUA + "Created Shield: "
 						+ ChatColor.DARK_AQUA + sec + " Seconds! ");
-				new BukkitRunnable() {
-					int tick;
-
-					@Override
-					public void run() {
-						if (tick >= sec * 20) {
-							this.cancel();
-						}
-						CustomEffects.play_Suit_NoDamageTime(player, null);
-						tick += 5;
-					}
-				}.runTaskTimer(plugin, 0, 5);
+				
+				ItemStack shield = new ItemStack(Material.SHIELD);
+						
+				BlockStateMeta shieldMeta = (BlockStateMeta) shield.getItemMeta();
+				Banner ban = (Banner) shieldMeta.getBlockState();
+				ban.setBaseColor(DyeColor.CYAN);
+				ban.addPattern(new Pattern(DyeColor.WHITE, PatternType.CIRCLE_MIDDLE));
+				
+				shieldMeta.setBlockState(ban);
+				shield.setItemMeta(shieldMeta);
+				
+				
+				ItemUtil.suffix(shield, Attribute.GENERIC_ARMOR, "NANOARMOR", 1.8, Operation.ADD_SCALAR, EquipmentSlot.OFF_HAND);
+				ItemUtil.suffix(shield, Attribute.GENERIC_ARMOR_TOUGHNESS, "DURABLE", 1.4, Operation.ADD_SCALAR, EquipmentSlot.OFF_HAND);
+				player.getInventory().addItem(shield);
+				player.updateInventory();
 				SuitUtils.playSound(player, Values.SuitShieldSound, 2.0F, 2.0F);
 			} else {
 				SuitUtils.lack(player, "Energy");

@@ -60,7 +60,7 @@ public class HammerThrowEffect extends MapEncompassor<Item, Player>{
 	}
 
 	@Override
-	public Player defaultVal(Item e) {
+	public Player defaultVal(Item item) {
 		return null;
 	}
 	
@@ -70,7 +70,7 @@ public class HammerThrowEffect extends MapEncompassor<Item, Player>{
 	 */
 	public static void explosionEffect(Location loc) {
 		boolean hollow = false;
-		boolean sphere = true;
+		boolean sphere = false;
 		int r = 3;
 		int cx = loc.getBlockX();
 		int cy = loc.getBlockY();

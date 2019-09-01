@@ -25,6 +25,11 @@ public class MathUtil {
 		return boundMax;
 	}
 	
+	//inclusive
+	public static boolean within(double min, double num, double max){
+		return bound(min, num, max) == num;
+	}
+	
 	public static boolean gacha(double percent){
 		return wholeRandom(100) < percent;
 	}
