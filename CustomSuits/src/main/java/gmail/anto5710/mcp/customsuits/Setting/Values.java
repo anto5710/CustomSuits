@@ -1,9 +1,9 @@
 package gmail.anto5710.mcp.customsuits.Setting;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
-
-
+import java.util.Set;
 
 //import net.minecraft.server.v1_8_R2.Particle;
 
@@ -109,7 +109,9 @@ public class Values {
 	final public static String SuitName = "Mark";
 	
 	
-	final public static List<Material> IgnoreMaterials_Gun = Arrays.asList(Material.AIR , Material.LAVA,  Material.LEGACY_STATIONARY_LAVA , Material.WATER , Material.LEGACY_STATIONARY_WATER , Material.OBSIDIAN , Material.BEDROCK , Material.BEACON);
+	final public static Set<Material> unbreakable = new HashSet<>(
+			Arrays.asList(Material.AIR, Material.LAVA, Material.LEGACY_STATIONARY_LAVA, Material.WATER,
+					Material.LEGACY_STATIONARY_WATER , Material.OBSIDIAN , Material.BEDROCK , Material.BEACON));
 	
 	final public static String MachineGunName = "Knif-1220";
 	final public static double MachineGunDamage =7 ;
@@ -117,8 +119,8 @@ public class Values {
 	final public static int MachineGunAmmoAmount = 50;
 	final public static Material MachineGunAmmo = Material.FLINT;
 	
-	final public static double Bim = 16;
-	final public static float BimExplosionPower =4.5F ;
+	final public static double Bim = 8;
+	final public static float BimExplosionPower =2.7F ;
 	final public static int BimEffectAmount =5 ;
 	final public static double BimRadius =1 ;
 	final public static int BimHunger =-2 ;

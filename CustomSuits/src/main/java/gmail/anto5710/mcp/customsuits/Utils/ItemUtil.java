@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
@@ -16,6 +17,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+
+import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
+import gmail.anto5710.mcp.customsuits.Setting.Values;
 
 public class ItemUtil {
 
@@ -83,7 +87,16 @@ public class ItemUtil {
 		skull.setItemMeta(skullMeta);
 		return skull;
 	}
-
+	
+	public static Player capitate(ItemStack skull){
+		if(skull.getType() == Material.PLAYER_HEAD){
+			SkullMeta meta = (SkullMeta) skull.getItemMeta();
+			String name = meta.getOwner();
+			return Bukkit.getPlayer(name);
+		}
+		return null;
+	}
+	
 	public static ItemStack[] dyeSpectrum(ItemStack itemstack) {
 		ItemStack[] items = new ItemStack[ColorUtil.colorMap.size()];
 		Iterator<String> colors = ColorUtil.colorMap.keySet().iterator();

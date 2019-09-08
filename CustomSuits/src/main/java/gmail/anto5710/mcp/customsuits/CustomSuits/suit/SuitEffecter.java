@@ -46,6 +46,8 @@ public class SuitEffecter extends LinearEncompassor<Player>{
 		}else{
 			if(SuitUtils.isUnderWater(player)){
 				CustomEffects.playSuit_Move_Under_Water_Effect(player);
+			}else if(player.isGliding()){
+				CustomEffects.playSuit_Glide_Effect(player);
 			}else{
 				CustomEffects.playSuit_Move_Effect(player);
 			}			

@@ -1,78 +1,63 @@
 package gmail.anto5710.mcp.customsuits.CustomSuits.suit.gadgets;
 
-import gmail.anto5710.mcp.customsuits.CustomSuits.FireworkProccesor;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.HungerScheduler;
 import gmail.anto5710.mcp.customsuits.Setting.Enchant;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
 import gmail.anto5710.mcp.customsuits.Utils.Glow;
 import gmail.anto5710.mcp.customsuits.Utils.ItemUtil;
-import gmail.anto5710.mcp.customsuits.Utils.MathUtil;
 import gmail.anto5710.mcp.customsuits.Utils.PacketUtil;
 import gmail.anto5710.mcp.customsuits.Utils.ParticleUtil;
-import gmail.anto5710.mcp.customsuits.Utils.CustomEffects;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
-import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.attribute.AttributeModifier.Operation;
 import org.bukkit.block.Banner;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.banner.PatternType;
-import org.bukkit.block.data.type.TNT;
-import org.bukkit.entity.Damageable;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Fireball;
-import org.bukkit.entity.Firework;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
+import org.bukkit.entity.Snowball;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityToggleGlideEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.event.player.PlayerToggleSneakEvent;
+import org.bukkit.event.player.PlayerToggleSprintEvent;
 import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.BannerMeta;
 import org.bukkit.inventory.meta.BlockStateMeta;
-import org.bukkit.inventory.meta.FireworkMeta;
-import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.projectiles.ProjectileSource;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 public class SuitWeapons implements Listener {
 
 	static ArrayList<Fireball> listFireball = new ArrayList<>();
 	public static TNTLauncher tnter; 	
-
+	public static ArcReffecter reffecter;
+	
+	
 	public static CustomSuitPlugin plugin;
 	private static Material suitlauncher = Values.SuitLauncher;
 	
 	
 	public SuitWeapons(CustomSuitPlugin plugin) {
-		this.plugin = plugin;
+		SuitWeapons.plugin = plugin;
 		tnter = new TNTLauncher(plugin, 1);
+		reffecter = new ArcReffecter(plugin, 1);
 	}
 
 	@EventHandler
@@ -95,8 +80,10 @@ public class SuitWeapons implements Listener {
 				
 				shieldMeta.setBlockState(ban);
 				shield.setItemMeta(shieldMeta);
+				Enchant.enchantment(shield, new Glow(), 1, true);
 				
-				
+				ItemUtil.name(shield, ChatColor.AQUA+"S.H.I.E.L.D.");
+				ItemUtil.suffix(shield, Attribute.GENERIC_KNOCKBACK_RESISTANCE, "KNOCKARMOR", 1.1, Operation.ADD_SCALAR, EquipmentSlot.OFF_HAND);
 				ItemUtil.suffix(shield, Attribute.GENERIC_ARMOR, "NANOARMOR", 1.8, Operation.ADD_SCALAR, EquipmentSlot.OFF_HAND);
 				ItemUtil.suffix(shield, Attribute.GENERIC_ARMOR_TOUGHNESS, "DURABLE", 1.4, Operation.ADD_SCALAR, EquipmentSlot.OFF_HAND);
 				player.getInventory().addItem(shield);
@@ -107,19 +94,53 @@ public class SuitWeapons implements Listener {
 			}
 		}
 	}
+	
+	@EventHandler
+	public void toggleC(PlayerToggleSprintEvent e){
+		System.out.println("toggle RUn! "+e.isSprinting());
+	}
+	
+	@EventHandler
+	public void toggleSneak(PlayerToggleSneakEvent e){
+		Player p = e.getPlayer();
+		if(CustomSuitPlugin.isMarkEntity(p)){
+			boolean wasGliding = p.isGliding();
+			boolean toGlide = !p.isOnGround() && e.isSneaking(); 
+			p.setFlying(p.isFlying() && !toGlide);
+			p.setGliding(toGlide);
+			
+			boolean change = wasGliding != toGlide;
+			if(change){
+				if (toGlide) {
+					SuitUtils.playSound(p, Sound.BLOCK_IRON_TRAPDOOR_OPEN, 2F, 2F);
+					SuitUtils.playSound(p, Sound.BLOCK_TRIPWIRE_ATTACH, 2F, 2F);
+					SuitUtils.playSound(p, Sound.BLOCK_ANVIL_STEP, 1.5F, 2F);
+					SuitUtils.playSound(p, Sound.BLOCK_FIRE_EXTINGUISH, 0.5F, 2F);
+				} else {
+					SuitUtils.playSound(p, Sound.BLOCK_PISTON_CONTRACT, 2F, 2F);
+					SuitUtils.playSound(p, Sound.BLOCK_BEACON_POWER_SELECT, 2F, 2F);
+				}
+			}
+		}
+	}
+	
+	@EventHandler
+	public void toggleGlide(EntityToggleGlideEvent e){
+		if(e.getEntityType() == EntityType.PLAYER){
+			Player p = (Player) e.getEntity();
+			if(CustomSuitPlugin.isMarkEntity(p) && !e.isGliding() && !p.isOnGround()){
+				e.setCancelled(true); //toggle jammer 면 cancel
+			}
+		}
+	}
 
 	@EventHandler
-	public void LaunchFireball(PlayerInteractEvent clickevent) {
-		Player player = clickevent.getPlayer();
-		if (SuitUtils.isRightClick(clickevent)
+	public void launchFireball(PlayerInteractEvent event) {
+		Player player = event.getPlayer();
+		if (SuitUtils.isRightClick(event)
 				&& ItemUtil.checkItem(CustomSuitPlugin.missileLauncher, SuitUtils.getHoldingItem(player))) {
-			Material ammoMaterial = Values.LauncherAmmo;
-			ItemStack ammo = new ItemStack(ammoMaterial, 1);
-			
-			if (player.getInventory().contains(ammoMaterial, 1)) {
-				player.getInventory().removeItem(ammo);
-				player.updateInventory();
 
+			if (ItemUtil.sufficeMaterial(player, Values.LauncherAmmo)) {
 				SuitUtils.playSound(player, Values.LauncherSound, 5.0F, 5.0F);
 				fireball(player);
 			} else {
@@ -149,7 +170,7 @@ public class SuitWeapons implements Listener {
 			}
 		}
 	}
-
+	
 	private static Material ammo = Material.TNT;
 	@EventHandler
 	public void onPlayerLeftClick(PlayerInteractEvent e) {
@@ -164,12 +185,13 @@ public class SuitWeapons implements Listener {
 
 				if(!player.isSneaking()){
 					if (HungerScheduler.sufficeHunger(player, energy)) {
-						launch(player, message);
+						repulseBim(player, message);
 					} else {
 						SuitUtils.lack(player, "Energy");
 					}
-				}else{
-					if (!tnter.inTNTcooldown(player) && ItemUtil.sufficeMaterial(player, ammo)) {
+				} else if (!tnter.inTNTcooldown(player)) {
+
+					if (ItemUtil.sufficeMaterial(player, ammo)) {
 						tnter.throwTNT(player, 5);
 					} else {
 						SuitUtils.lack(player, ammo.name());
@@ -179,80 +201,28 @@ public class SuitWeapons implements Listener {
 		}
 	}
 
-	private void launch(Player player, String message) {
-		Location targetloc = SuitUtils.getTargetLoc(player, 500);
-		Location loc = player.getLocation();
+	private void repulseBim(Player player, String message) {
+		Snowball bim = player.launchProjectile(Snowball.class, player.getLocation().getDirection().multiply(2));
+		bim.setGravity(false);
+		bim.setInvulnerable(true);
 		
-		playEffect(targetloc, loc, player, true);
-		player.sendMessage(message);
-	}
-
-	private void playEffect(Location to, Location from, final Player player, boolean isMissile) {
-		double radius, damage;
-		int amount, data, effect_count;
-		Particle effect;
+		double damage = Values.Bim * ((Math.sqrt(CustomSuitPlugin.getSuitLevel(player))/8) + 1);
 		
-		if(isMissile){
-			radius = Values.BimRadius;
-			damage = Values.Bim * ((CustomSuitPlugin.getSuitLevel(player) / 32D) + 1);
-			amount = Values.BimEffectAmount;
-			
-			data = Values.SuitBim_MissileEffectData;
-			effect = Values.SuitProjectileEffect;
-			effect_count = 3;
-		}else{ // sniper
-			radius = Values.SniperRadius;
-			damage = Values.SniperDamage;
-			amount = Values.SniperEffectAmount; 
-			
-			data = Material.ANVIL.getId();
-			effect = Values.SniperEffect;
-			effect_count = 100;
-		}
+		bim.setMetadata("repulseDamage", new FixedMetadataValue(plugin, damage));
+		PacketUtil.castDestroyPacket(bim);
+		reffecter.register(bim);
 		
 		SuitUtils.playSound(player, Sound.ENTITY_WITHER_SHOOT, 1F, 5F);
 		SuitUtils.playSound(player, Sound.ENTITY_GENERIC_EXPLODE, 1F, 0F);
 		SuitUtils.playSound(player, Sound.ENTITY_BLAZE_AMBIENT, 1F, -1F);
-		SuitUtils.lineParticle(to, player.getEyeLocation(), player, effect, amount, data, damage, radius, true, 
-				isMissile, player.isSneaking(), effect_count);
+		
+		player.sendMessage(message);
 	}
 
 	public static void breakblock(Block block) {
-		Material material = block.getType();
-
-		if (!Values.IgnoreMaterials_Gun.contains(material)) {
+		if (!SuitUtils.isUnbreakable(block)) {
 			ParticleUtil.playBlockEffect(Particle.BLOCK_CRACK, block.getLocation(), 10, 5D, block.getBlockData());
 			block.breakNaturally();
-		}
-	}
-
-	public static ArrayList<Entity> findEntity(Location currentLoc, Entity shooter, double radius) {
-		Collection<Entity> near = currentLoc.getWorld().getNearbyEntities(currentLoc, radius, radius, radius,
-				e -> e instanceof Damageable);
-		near.remove(shooter);
-		if (shooter.isInsideVehicle()) {
-			near.remove(shooter.getVehicle());
-		}
-		// currentLoc.getWorld().getNearbyEntities(arg0, arg1, arg2, arg3);
-		ArrayList<Entity> list = new ArrayList<>();
-		for (Entity entity : near) {
-			if (MathUtil.distanceBody(currentLoc, entity, radius) && !list.contains(entity)) {
-				list.add(entity);
-			}
-		}
-		return list;
-	}
-
-	public static void firework(Location location, Entity shooter) {
-		FireworkEffect effect = FireworkProccesor.getRandomEffect();
-		Firework firework = (Firework) location.getWorld().spawnEntity(location, EntityType.FIREWORK);
-		FireworkMeta meta = firework.getFireworkMeta();
-		meta.addEffect(effect);
-		meta.setPower((int) (MathUtil.randomRadius(3) + 1.5));
-		firework.setFireworkMeta(meta);
-		if (shooter != null) {
-			SuitUtils.playSound(shooter, Sound.ENTITY_GENERIC_EXPLODE, 14.0F, 14.0F);
-			SuitUtils.playSound(shooter, Sound.ENTITY_WITHER_DEATH, 14.0F, 14.0F);
 		}
 	}
 }

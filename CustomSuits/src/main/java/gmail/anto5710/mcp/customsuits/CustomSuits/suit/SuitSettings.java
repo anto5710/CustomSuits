@@ -1,20 +1,14 @@
 package gmail.anto5710.mcp.customsuits.CustomSuits.suit;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 
 import org.bukkit.Color;
-import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.LeatherArmorMeta;
-
 import gmail.anto5710.mcp.customsuits.CustomSuits.InvetoryGUI.InventoryNames;
 import gmail.anto5710.mcp.customsuits.Utils.ItemUtil;
 

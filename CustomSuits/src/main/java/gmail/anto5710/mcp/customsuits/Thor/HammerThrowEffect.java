@@ -13,13 +13,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
-import gmail.anto5710.mcp.customsuits.CustomSuits.suit.gadgets.SuitWeapons;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
 import gmail.anto5710.mcp.customsuits.Utils.CustomEffects;
 import gmail.anto5710.mcp.customsuits.Utils.MathUtil;
 import gmail.anto5710.mcp.customsuits.Utils.ParticleUtil;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 import gmail.anto5710.mcp.customsuits.Utils.ThorUtils;
+import gmail.anto5710.mcp.customsuits.Utils.WeaponUtils;
 import gmail.anto5710.mcp.customsuits.Utils.encompassor.MapEncompassor;
 
 public class HammerThrowEffect extends MapEncompassor<Item, Player>{
@@ -40,7 +40,7 @@ public class HammerThrowEffect extends MapEncompassor<Item, Player>{
 		Location loc = item.getLocation();
 
 		ParticleUtil.playEffect(Values.HammerDefaultEffect, loc, 5, 0.1);
-		List<Entity> list = SuitWeapons.findEntity(loc, player, 1);
+		List<Entity> list = WeaponUtils.findEntity(loc, player, 1);
 
 		ThorUtils.damage(list, Hammer.HammerDeafultDamage, player);
 		

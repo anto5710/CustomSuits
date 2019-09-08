@@ -52,7 +52,7 @@ public class GunEffecter extends LinearEncompassor<Snowball>{
 				Block hitblock = event.getHitBlock();
 				System.out.println(hitblock);
 				if(hitblock!=null && !SuitUtils.isUnbreakable(hitblock) && MathUtil.gacha(60)){ //60%의 확률로 부숨
-					hitblock.breakNaturally();
+					SuitWeapons.breakblock(hitblock);
 				}
 				discard(snowball);
 			}

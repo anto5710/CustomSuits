@@ -71,12 +71,12 @@ public class ThorEffecter extends MapEncompassor<Player, VorticalMeta>{
 	private void addThorPotion_Effects(Player player) {
 		PotionBrewer.addPotions(player, PotionEffects.Thor_FAST_DIGGING, PotionEffects.Thor_FIRE_RESISTANCE,
 				PotionEffects.Thor_HEALTH_BOOST, PotionEffects.Thor_INCREASE_DAMAGE, PotionEffects.Thor_JUMP,
-				PotionEffects.Thor_REGENERATION, PotionEffects.Thor_SPEED, PotionEffects.Thor_WATER_BREATHING);
+				PotionEffects.Thor_REGENERATION, PotionEffects.Thor_SPEED, PotionEffects.Thor_WATER_BREATHING, PotionEffects.Thor_ANTIDAMAGE);
 	}
 
 	private void removeThorPotion_Effects(Player player) {
 		PotionBrewer.removePotionEffects(player, PotionEffects.Thor_FAST_DIGGING, PotionEffects.Thor_FIRE_RESISTANCE,
 				PotionEffects.Thor_HEALTH_BOOST, PotionEffects.Thor_INCREASE_DAMAGE, PotionEffects.Thor_JUMP,
-				PotionEffects.Thor_REGENERATION, PotionEffects.Thor_SPEED, PotionEffects.Thor_WATER_BREATHING);
+				PotionEffects.Thor_REGENERATION, PotionEffects.Thor_SPEED, PotionEffects.Thor_WATER_BREATHING, PotionEffects.Thor_ANTIDAMAGE);
 	}
 }

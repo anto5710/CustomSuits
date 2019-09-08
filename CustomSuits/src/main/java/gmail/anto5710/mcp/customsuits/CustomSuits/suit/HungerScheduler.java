@@ -30,7 +30,7 @@ public class HungerScheduler extends LinearEncompassor<Player> {
 
 		if (player.isFlying()) {
 			if (!checkHunger(player, Values.leastFlyHunger)) {
-				player.setFlySpeed((float) 0.5);
+				player.setFlySpeed(0.5F);
 				player.setFlying(false);
 			} else {
 				if (t % 60 == 0) {

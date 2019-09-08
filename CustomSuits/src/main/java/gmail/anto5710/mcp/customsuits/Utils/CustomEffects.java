@@ -167,6 +167,9 @@ public class CustomEffects {
 		ParticleShaper.playUnderFoot(entity, loc-> playArcReactor(loc));
 	}
 	
+	public static void playSuit_Glide_Effect(Player player) {
+		ParticleShaper.playUnderFoot(player, loc-> ParticleUtil.playEffect(Particle.EXPLOSION_NORMAL, loc, 2));
+	}
 	private static DustOptions mainArcColor =  new DustOptions(Color.fromRGB(255, 204, 153), 1);
 	private static DustOptions subArcColor =  new DustOptions(Color.fromRGB(204, 68, 0), 0.6F);
 	

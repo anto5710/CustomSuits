@@ -159,16 +159,11 @@ public class SuitInventoryGUI extends InventoryNames implements Listener {
 			if (e.getCurrentItem() != null) {
 				Player WhoClicked = (Player) e.getWhoClicked();
 				ItemStack item = e.getCurrentItem();
-				if (item.getType() == Material.SKELETON_SKULL) {
-					SkullMeta skull = (SkullMeta) item.getItemMeta();
-					String name = skull.getOwner();
-					Player player = Bukkit.getPlayer(name);
-					if (player != null) {
-						CustomSuitPlugin.handle(player).putTarget(WhoClicked);
-					} else {
-						WhoClicked.sendMessage(Values.NoSuchEntity);
-
-					}
+				Player player = ItemUtil.capitate(item);
+				if (player != null) {
+					CustomSuitPlugin.handle(player).putTarget(WhoClicked);
+				} else {
+					WhoClicked.sendMessage(Values.NoSuchEntity);
 				}
 			}
 			e.setCancelled(true);
@@ -182,6 +177,7 @@ public class SuitInventoryGUI extends InventoryNames implements Listener {
 			
 			int slot = e.getSlot();
 			boolean toCancel = true;
+		
 			if (slot == 22) {
 				player.openInventory(CustomSuitPlugin.handle(player).helmetequipment);
 			} else if (slot == 25) {

@@ -45,7 +45,7 @@ public class ForceLightning extends MapEncompassor<Player, EnderCrystal>{
 			
 			new BlockIterator(p.getWorld(), p.getEyeLocation().toVector(), ploc.getDirection(), 0, 100).forEachRemaining(b->{
 				Location curloc = b.getLocation();
-				WeaponUtils.damageNeffect(curloc, 6, p, false, false, 1);
+				WeaponUtils.damageAdjacent(curloc, 6, p, 1, false);
 			});
 			ThorUtils.strikeLightnings(SuitUtils.getTargetLoc(p, 100), p, 2);
 		}

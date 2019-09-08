@@ -340,6 +340,7 @@ public class CustomSuitPlugin extends JavaPlugin implements Listener {
 		manager.registerEvents(new PlayerEffect(this), this);
 		manager.registerEvents(new SuitWeapons(this), this);
 		manager.registerEvents(SuitWeapons.tnter, this);
+		manager.registerEvents(SuitWeapons.reffecter, this);
 		manager.registerEvents(new SuitInventoryGUI(this), this);
 		manager.registerEvents(new HammerWeapons(this), this);
 		manager.registerEvents(new CancelAirClick(this), this);

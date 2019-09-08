@@ -4,6 +4,7 @@ import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.gadgets.SuitWeapons;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -91,7 +92,7 @@ public class SuitUtils {
 					currentLoc.add(v);
 
 					CustomEffects.play_Suit_Missile_Effect(currentLoc, effect, amount, speed, isSneaking, (isMissile && isSuitProjectile));
-					WeaponUtils.damageNeffect(currentLoc, damage, shooter, isMissile, isSuitProjectile, radius);
+					WeaponUtils.damageAdjacent(currentLoc, damage, shooter, radius, isSuitProjectile);
 					count += 1;
 				}
 
@@ -223,6 +224,6 @@ public class SuitUtils {
 	}
 
 	public static boolean isUnbreakable(Block hitblock) {
-		return hitblock.getType() == Material.BEDROCK;
+		return Values.unbreakable.contains(hitblock);
 	}
 }
