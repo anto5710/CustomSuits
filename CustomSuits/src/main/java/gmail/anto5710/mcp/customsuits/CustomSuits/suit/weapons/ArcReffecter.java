@@ -1,4 +1,4 @@
-package gmail.anto5710.mcp.customsuits.CustomSuits.suit.gadgets;
+package gmail.anto5710.mcp.customsuits.CustomSuits.suit.weapons;
 
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;

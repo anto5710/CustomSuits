@@ -1,10 +1,9 @@
 package gmail.anto5710.mcp.customsuits.Utils;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
-import gmail.anto5710.mcp.customsuits.CustomSuits.suit.gadgets.SuitWeapons;
+import gmail.anto5710.mcp.customsuits.CustomSuits.suit.weapons.SuitWeapons;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -155,6 +154,7 @@ public class SuitUtils {
 		playerSound(player, Sound.BLOCK_DISPENSER_FAIL, 6.0F, 6.0F);
 	}
 	
+	@SuppressWarnings("deprecation")
 	private static Set<Material> transparents = 
 	Sets.newHashSet(Material.WATER, Material.LAVA, Material.AIR, Material.COBWEB, 
 					Material.LEGACY_SAPLING, Material.DEAD_BUSH, Material.GRASS, 
@@ -218,6 +218,7 @@ public class SuitUtils {
 		return SuitUtils.isWater(eye) && SuitUtils.isWater(waist) && SuitUtils.isWater(foot);
 	}
 
+	@SuppressWarnings("deprecation")
 	public static boolean isWater(Block block){
 		Material m = block.getType();
  		return m==Material.WATER || m==Material.LEGACY_STATIONARY_WATER;

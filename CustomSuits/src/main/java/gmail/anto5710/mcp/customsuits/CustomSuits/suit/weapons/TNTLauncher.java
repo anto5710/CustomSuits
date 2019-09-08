@@ -1,6 +1,7 @@
-package gmail.anto5710.mcp.customsuits.CustomSuits.suit.gadgets;
+package gmail.anto5710.mcp.customsuits.CustomSuits.suit.weapons;
 
 import java.util.HashSet;
+
 import java.util.Set;
 
 import org.bukkit.ChatColor;
@@ -11,7 +12,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
@@ -75,7 +76,7 @@ public class TNTLauncher extends MapEncompassor<Item, Long>{
 	}
 	
 	@EventHandler
-	public void cancelPickUpTNT(PlayerPickupItemEvent event) {
+	public void cancelPickUpTNT(EntityPickupItemEvent event) {
 		Item item = event.getItem();
 		ItemStack itemStack = item.getItemStack();
 		if (itemStack.getType() == Material.TNT && ItemUtil.checkName(itemStack, ChatColor.AQUA + "[Bomb]")) {

@@ -40,7 +40,7 @@ public class HammerThrowEffect extends MapEncompassor<Item, Player>{
 		Location loc = item.getLocation();
 
 		ParticleUtil.playEffect(Values.HammerDefaultEffect, loc, 5, 0.1);
-		List<Entity> list = WeaponUtils.findEntity(loc, player, 1);
+		List<Entity> list = WeaponUtils.findEntities(loc, player, 1);
 
 		ThorUtils.damage(list, Hammer.HammerDeafultDamage, player);
 		

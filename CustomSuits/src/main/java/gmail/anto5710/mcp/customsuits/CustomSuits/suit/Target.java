@@ -1,12 +1,12 @@
 package gmail.anto5710.mcp.customsuits.CustomSuits.suit;
 
 import java.util.Collection;
+
 import gmail.anto5710.mcp.customsuits.CustomSuits.dao.SpawningDao;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.PigZombie;

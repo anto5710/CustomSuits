@@ -34,7 +34,7 @@ public class ThorUtils {
 	 * @param player Player
 	 * @return
 	 */
-	public static Item getDroppedHammer(World world, Player player) {
+	public static Item getDroppedHammer(World world) {
 		for (Entity entity : world.getEntitiesByClass(Item.class)) {
 			Item item = (Item) entity;
 			if (ItemUtil.checkItem(CustomSuitPlugin.hammer, item.getItemStack())) {

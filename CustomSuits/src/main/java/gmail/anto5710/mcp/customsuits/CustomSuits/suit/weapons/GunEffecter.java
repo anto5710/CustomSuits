@@ -1,9 +1,8 @@
-package gmail.anto5710.mcp.customsuits.CustomSuits.suit.gadgets;
+package gmail.anto5710.mcp.customsuits.CustomSuits.suit.weapons;
 
 import org.bukkit.Particle;
+
 import org.bukkit.block.Block;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
 import org.bukkit.entity.Snowball;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;

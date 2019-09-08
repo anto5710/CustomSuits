@@ -1,10 +1,8 @@
 package gmail.anto5710.mcp.customsuits.Utils.encompassor;
 
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
+import java.util.Map;
 import org.bukkit.entity.Entity;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;

@@ -2,6 +2,7 @@ package gmail.anto5710.mcp.customsuits.CustomSuits.dao;
 
 import java.io.File;
 
+
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -17,7 +18,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
-import gmail.anto5710.mcp.customsuits.Setting.Values;
 
 /**
  * This class save the Suit Entities that spawned by player

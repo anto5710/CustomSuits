@@ -2,17 +2,14 @@ package gmail.anto5710.mcp.customsuits.Setting;
 
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-
-//import net.minecraft.server.v1_8_R2.Particle;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
-import org.bukkit.entity.EntityType;
+import org.bukkit.block.data.BlockData;
 /**
  * The Values Of This Plugin
  * 
@@ -53,7 +50,7 @@ public class Values {
 	final public static long ManSmoke_Time = 20;
 
 
-	final public static double HammerDamage = 6.5;
+	final public static double HammerDamage = 6;
 	final public static double LightningMissile = 10D ;
 	final public static int LightningMissileHunger = -1;
 	final public static Sound LightningMissileSound = Sound.ENTITY_LIGHTNING_BOLT_THUNDER;
@@ -70,26 +67,18 @@ public class Values {
 	final public static Material Suit_Spawn_Material = Material.IRON_INGOT;
 	final public static Material SuitLauncher = Material.AIR;
 	
-
-
-	
-
-	final public static int SuitGetEffectData = Material.COBBLESTONE.getId();
-	
 	final public static Sound SuitSound = Sound.ENTITY_ENDER_DRAGON_DEATH;
 	final public static Sound SuitSneakSound = Sound.ENTITY_WITHER_SPAWN;
-	final public static String SuitCallMessage =ChatColor.BLUE + "[Info]: "
-			+ ChatColor.AQUA + "You called an armor";
+	final public static String SuitCallMessage =ChatColor.BLUE + "[Info]: " + ChatColor.AQUA + "You called an armor";
 	final public static String CantFindEntityType = "Can't find that EntityType,   use '/clist entity'  to get list of EntityType";
 	
-	final public static String NoSuchEntity =ChatColor.BLUE + "[Info]: "
-			+ ChatColor.AQUA + "No such entity";
+	final public static String NoSuchEntity =ChatColor.BLUE + "[Info]: " + ChatColor.AQUA + "No such entity";
 	final public static int leastFlyHunger = 5;
 	final public static int SuitEnoughFly = 10;
 	final public static String FlyEnergyWarn ="FlySpeed Decreasing";
 	final public static int SuitFlyHunger = -2;
 	final public static int SuitHungerRelod = 1;
-	   
+	
 	final public static int spawnSuit_max_target_distance = 200;
 		   
 	
@@ -102,13 +91,14 @@ public class Values {
 	final public static Particle SniperEffect = Particle.CRIT;
 	
 	final public static int Suit_Gun_Shot_Radius =500;
-	final public static int Suit_Gun_Shot_Effect_Data =Material.STONE.getId();
+	final public static BlockData Suit_Gun_Shot_Effect_Data = Material.ANVIL.createBlockData();
 	
 	final public static String gun_regex = ChatColor.YELLOW+"» ∞ «";
 	final public static String SuitInforegex = ChatColor.DARK_AQUA+":";
 	final public static String SuitName = "Mark";
 	
 	
+	@SuppressWarnings("deprecation")
 	final public static Set<Material> unbreakable = new HashSet<>(
 			Arrays.asList(Material.AIR, Material.LAVA, Material.LEGACY_STATIONARY_LAVA, Material.WATER,
 					Material.LEGACY_STATIONARY_WATER , Material.OBSIDIAN , Material.BEDROCK , Material.BEACON));
@@ -127,10 +117,6 @@ public class Values {
 	final public static String BimMessage =  ChatColor.BLUE + "[Info]: " + ChatColor.AQUA
 			+ "Fired a Repulser Bim!";
 	final public static Sound BimSound = Sound.ENTITY_BLAZE_AMBIENT;
-	final public static Particle SuitProjectileEffect = Particle.SPELL_MOB;
-	final public static int SuitBim_MissileEffectData = Material.DIAMOND_BLOCK.getId();
-	
-	
 	
 	final public static Sound SuitShieldSound = Sound.ITEM_FIRECHARGE_USE;
 	final public static int SuitShieldHunger = -20;
@@ -145,7 +131,7 @@ public class Values {
 
 	final public static double HammerExplosionDamageRadius = 2;
 
-	final public static Particle HammerBackEffect = Particle.HEART;
+	final public static Particle HammerReturnEffect = Particle.NAUTILUS;
 
 	final public static Particle HammerPickUpCancel = Particle.BARRIER;
 

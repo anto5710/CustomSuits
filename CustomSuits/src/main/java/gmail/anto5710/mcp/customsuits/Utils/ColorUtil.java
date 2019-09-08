@@ -42,25 +42,23 @@ public class ColorUtil {
 			if(ColorUtil.isOutOfHSB(add, H, S ,B)){
 				add*=-1;
 			}
-			colors[n]=ColorUtil.HSBtoRGB(H, S, B);
+			colors[n]=ColorUtil.HSBtoRGB(H, S, B+add);
 		}
 		return colors;
 	}
 
 	public static Color HSBtoRGB(float H , float S ,float B){
-	    
-		  int rgb = java.awt.Color.HSBtoRGB(H ,S ,B);
-		    int red = (rgb >> 16) & 0xFF;
-		    int green = (rgb >> 8) & 0xFF;
-		    int blue = rgb & 0xFF;
+		int rgb = java.awt.Color.HSBtoRGB(H, S, B);
+		int red = (rgb >> 16) & 0xFF;
+		int green = (rgb >> 8) & 0xFF;
+		int blue = rgb & 0xFF;
 		return Color.fromRGB(red, green, blue);
 	}
 
-	static boolean isOutOfHSB(float general_FadeColor_Add,float fH, float fS, float fB) {
-		float H = fH+general_FadeColor_Add;
-		float S = fS+general_FadeColor_Add;
+	private static boolean isOutOfHSB(float general_FadeColor_Add,float fH, float fS, float fB) {
+//		float H = fH+general_FadeColor_Add;
+//		float S = fS+general_FadeColor_Add;
 		float B = fB+general_FadeColor_Add;
-	
 		return (B>1||B<0);
 	}
 
@@ -69,6 +67,4 @@ public class ColorUtil {
 		java.awt.Color.RGBtoHSB(R, G, B, HSB);
 		return HSB;
 	}
-
-
 }

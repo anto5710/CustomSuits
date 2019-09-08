@@ -147,60 +147,53 @@ public class SuitManufactory {
 	}
 
 	@SuppressWarnings("deprecation")
-	private static void setEquipment(Inventory inventoryitem, Player player, LivingEntity spawnedEntity) {
-		boolean CustomColor = true;
-	
-		CustomColor = false;
-	
+	private static void setEquipment(Inventory armorInv, Player player, LivingEntity spawnedEntity) {
 		LivingEntity lentity = (LivingEntity) spawnedEntity;
 		lentity.setHealth(lentity.getMaxHealth());
 		lentity.setCustomName(player.getName() + "|" + Values.SuitName);
-	
+		lentity.setCustomNameVisible(true);
 	
 		SuitSettings hdle = CustomSuitPlugin.handle(player);
 		int level = hdle.level();
 	
 		PotionBrewer.addPotion(lentity, PotionEffectType.INVISIBILITY, 999999990, 10);
+		
 		Color HelmetColor = hdle.getHelmetColor();
 		Color ChestplateColor = hdle.getChestColor();
 		Color LeggingsColor = hdle.getLeggingsColor();
 		Color BootsColor = hdle.getBootsColor();
 	
 		/* 신발 신기기 */
-		ItemStack helmetitem = inventoryitem.getItem(19);
+		ItemStack helmetitem = armorInv.getItem(19);
 	
 		if (helmetitem != null) {
-			SuitManufactory.addData(helmetitem, hdle.helmetequipment, level, player, CustomColor, HelmetColor);
-	
+			SuitManufactory.addData(helmetitem, hdle.helmetequipment, level, player, HelmetColor);
 			lentity.getEquipment().setHelmet(new ItemStack(helmetitem));
 			lentity.getEquipment().setHelmetDropChance(0F);
 		}
 		
-		ItemStack chestplate = inventoryitem.getItem(28);
+		ItemStack chestplate = armorInv.getItem(28);
 		if (chestplate != null) {
-			SuitManufactory.addData(chestplate, hdle.chestequipment, level, player, CustomColor, ChestplateColor);
-	
+			SuitManufactory.addData(chestplate, hdle.chestequipment, level, player, ChestplateColor);
 			lentity.getEquipment().setChestplate(new ItemStack(chestplate));
 			lentity.getEquipment().setChestplateDropChance(0F);
 		}
 		
-		ItemStack leggings = inventoryitem.getItem(37);
+		ItemStack leggings = armorInv.getItem(37);
 		if (leggings != null) {
-			SuitManufactory.addData(leggings, hdle.leggingsequipment, level, player, CustomColor, LeggingsColor);
-	
+			SuitManufactory.addData(leggings, hdle.leggingsequipment, level, player, LeggingsColor);
 			lentity.getEquipment().setLeggings(new ItemStack(leggings));
 			lentity.getEquipment().setLeggingsDropChance(0F);
 		}
 	
-		ItemStack boots = inventoryitem.getItem(46);
+		ItemStack boots = armorInv.getItem(46);
 		if (boots != null) {
-	
-			SuitManufactory.addData(boots, hdle.bootsequipment, level, player, CustomColor, BootsColor);
+			SuitManufactory.addData(boots, hdle.bootsequipment, level, player, BootsColor);
 			lentity.getEquipment().setBoots(new ItemStack(boots));
 			lentity.getEquipment().setBootsDropChance(0F);
 		}
 		
-		ItemStack hand = inventoryitem.getItem(29);
+		ItemStack hand = armorInv.getItem(29);
 		if (hand != null) {
 			ItemUtil.name(hand, ChatColor.AQUA + Values.SuitName + Values.SuitInforegex + level);
 			Enchant.enchantment(hand, new Glow(), 1, true);
@@ -209,8 +202,8 @@ public class SuitManufactory {
 		}
 	}
 
-	public static void addData(ItemStack item, Inventory enchantInventory, int level, Player player, boolean getColorFromInventory, Color color) {
-		if (item == null) {return;}
+	public static void addData(ItemStack item, Inventory enchantInventory, int level, Player player, Color color) {
+		if (item == null) return;
 		
 		ItemUtil.dye(item, color); //try dying
 		if (enchantInventory != null) {
@@ -218,5 +211,4 @@ public class SuitManufactory {
 			enchantInventory.forEach(book -> Enchant.enchantFromBook(item, book, level));
 		}
 	}
-
 }

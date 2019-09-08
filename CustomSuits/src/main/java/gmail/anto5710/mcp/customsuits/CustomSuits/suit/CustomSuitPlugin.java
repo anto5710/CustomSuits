@@ -3,11 +3,12 @@ package gmail.anto5710.mcp.customsuits.CustomSuits.suit;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.InvetoryGUI.CancelAirClick;
 
+
 import gmail.anto5710.mcp.customsuits.CustomSuits.InvetoryGUI.InventoryNames;
 import gmail.anto5710.mcp.customsuits.CustomSuits.InvetoryGUI.SuitInventoryGUI;
 import gmail.anto5710.mcp.customsuits.CustomSuits.dao.SpawningDao;
-import gmail.anto5710.mcp.customsuits.CustomSuits.suit.gadgets.MachineGun;
-import gmail.anto5710.mcp.customsuits.CustomSuits.suit.gadgets.SuitWeapons;
+import gmail.anto5710.mcp.customsuits.CustomSuits.suit.weapons.MachineGun;
+import gmail.anto5710.mcp.customsuits.CustomSuits.suit.weapons.SuitWeapons;
 import gmail.anto5710.mcp.customsuits.Setting.Enchant;
 import gmail.anto5710.mcp.customsuits.Setting.Recipe;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
@@ -40,16 +41,12 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Server;
 import org.bukkit.Sound;
-import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -62,7 +59,7 @@ import org.bukkit.util.Vector;
  * Hello world!
  *
  */
-public class CustomSuitPlugin extends JavaPlugin implements Listener {
+public class CustomSuitPlugin extends JavaPlugin {
 	SuitUtils suitl = new SuitUtils(this);
 	WeaponUtils wuitl = new WeaponUtils();
 

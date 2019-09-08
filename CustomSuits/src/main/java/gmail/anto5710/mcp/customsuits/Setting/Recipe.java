@@ -1,7 +1,6 @@
 package gmail.anto5710.mcp.customsuits.Setting;
 
 import org.bukkit.Material;
-
 import org.bukkit.Server;
 import org.bukkit.inventory.ShapedRecipe;
 
@@ -13,6 +12,7 @@ public class Recipe {
 		this.plugin = plugin;
 		
 	}
+	@SuppressWarnings("deprecation")
 	public static void addRecipe(Server server) {
 		ShapedRecipe hammerRecipe = new ShapedRecipe(CustomSuitPlugin.hammer);
 		hammerRecipe.shape("###","%%%","_|_");

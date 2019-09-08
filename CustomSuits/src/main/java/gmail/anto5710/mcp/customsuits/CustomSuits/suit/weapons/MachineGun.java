@@ -1,4 +1,4 @@
-package gmail.anto5710.mcp.customsuits.CustomSuits.suit.gadgets;
+package gmail.anto5710.mcp.customsuits.CustomSuits.suit.weapons;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -8,7 +8,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Snowball;
 import org.bukkit.event.EventHandler;
@@ -35,7 +34,7 @@ public class MachineGun implements Listener{
 	public static GunEffecter effecter;
 
 	public MachineGun(CustomSuitPlugin plugin) {
-		this.plugin = plugin;
+		MachineGun.plugin = plugin;
 		effecter = new GunEffecter(plugin, 1);
 	}
 

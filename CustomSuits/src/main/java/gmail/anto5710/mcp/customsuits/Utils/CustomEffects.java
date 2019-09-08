@@ -1,16 +1,15 @@
 package gmail.anto5710.mcp.customsuits.Utils;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.FireworkPlay;
-
-
 import gmail.anto5710.mcp.customsuits.CustomSuits.FireworkProccesor;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
+
+import gmail.anto5710.mcp.customsuits.Setting.Values;
 import gmail.anto5710.mcp.customsuits.Thor.Hammer;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.FireworkEffect.Type;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Particle.DustOptions;
 import org.bukkit.Sound;
@@ -142,7 +141,7 @@ public class CustomEffects {
 
 	public static void play_Gun_Shot_Effect(Player player) {
 		Particle e = Particle.BLOCK_CRACK;
-		ParticleUtil.playBlockEffect(e, player.getEyeLocation(), 5, Material.ANVIL.createBlockData());	
+		ParticleUtil.playBlockEffect(e, player.getEyeLocation(), 5, Values.Suit_Gun_Shot_Effect_Data);	
 	}
 
 	/**

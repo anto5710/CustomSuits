@@ -14,7 +14,6 @@ import org.bukkit.entity.Firework;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
-import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.Vector;
@@ -27,17 +26,17 @@ public class WeaponUtils {
 		if ((dualWield) && (leftClick)) {
 			leftOrRight = -90;
 		}
-		double playerYaw = (player.getLocation().getYaw() + 90.0F + leftOrRight) * 3.141592653589793D / 180.0D;
-		double x = Math.cos(playerYaw);
-		double y = Math.sin(playerYaw);
-		Vector vector = new Vector(x, 0.0D, y);
+		double pYaw = (player.getLocation().getYaw() + 90F + leftOrRight) * Math.PI / 180D;
+		double x = Math.cos(pYaw);
+		double y = Math.sin(pYaw);
+		Vector dHand = new Vector(x, 0, y);
 
-		return vector;
+		return dHand;
 	}
 
-	public static void damageAdjacent(Location currentLoc, double damage, Entity shooter, double radius, boolean firework) {
-		for (Entity entity : WeaponUtils.findEntity(currentLoc, shooter, radius)) {
-			shot(entity, damage, shooter, currentLoc, firework);
+	public static void damageAdjacent(Location origin, double damage, Entity shooter, double radius, boolean firework) {
+		for (Entity entity : WeaponUtils.findEntities(origin, shooter, radius)) {
+			shot(entity, damage, shooter, origin, firework);
 		}
 	}
 
@@ -62,9 +61,8 @@ public class WeaponUtils {
 		return entity instanceof LivingEntity && MathUtil.distance(shotLoc, ((LivingEntity) entity).getEyeLocation(), 0.35);
 	}
 		
-
-	public static <E extends Entity> List<Entity>  findEntity(Location currentLoc, Entity shooter, double radius) {
-		Collection<Entity> near = currentLoc.getWorld().getNearbyEntities(currentLoc, radius, radius, radius,
+	public static <E extends Entity> List<Entity> findEntities(Location center, Entity shooter, double radius) {
+		Collection<Entity> near = center.getWorld().getNearbyEntities(center, radius, radius, radius,
 				e -> e instanceof Damageable);
 		near.remove(shooter);
 		if (shooter.isInsideVehicle()) {
@@ -73,16 +71,16 @@ public class WeaponUtils {
 		// currentLoc.getWorld().getNearbyEntities(arg0, arg1, arg2, arg3);
 		ArrayList<Entity> list = new ArrayList<>();
 		for (Entity entity : near) {
-			if (MathUtil.distanceBody(currentLoc, entity, radius) && !list.contains(entity)) {
+			if (MathUtil.distanceBody(center, entity, radius) && !list.contains(entity)) {
 				list.add(entity);
 			}
 		}
 		return list;
 	}
 
-	public static void firework(Location location, Entity shooter) {
+	public static void firework(Location loc, Entity shooter) {
 		FireworkEffect effect = FireworkProccesor.getRandomEffect();
-		Firework firework = (Firework) location.getWorld().spawnEntity(location, EntityType.FIREWORK);
+		Firework firework = (Firework) loc.getWorld().spawnEntity(loc, EntityType.FIREWORK);
 		FireworkMeta meta = firework.getFireworkMeta();
 		meta.addEffect(effect);
 		meta.setPower((int) (MathUtil.randomRadius(3) + 1.5));

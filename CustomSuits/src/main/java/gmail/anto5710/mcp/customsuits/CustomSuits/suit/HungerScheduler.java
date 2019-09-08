@@ -44,16 +44,16 @@ public class HungerScheduler extends LinearEncompassor<Player> {
 			}
 		} else if (t % 25 == 0) {
 			sufficeHunger(player, Values.SuitHungerRelod);
-			repairArmor(player);
+			repairArmor(player, (short) 1);
 		}
 	}
 
-	private void repairArmor(Player player) {
+	private void repairArmor(Player player, short deltaPer) {
 		ItemStack[] armor = player.getEquipment().getArmorContents();
-		ItemUtil.addDurability(armor[0], (short) 1);
-		ItemUtil.addDurability(armor[1], (short) 1);
-		ItemUtil.addDurability(armor[2], (short) 1);
-		ItemUtil.addDurability(armor[3], (short) 1);
+		ItemUtil.addDurability(armor[0], deltaPer);
+		ItemUtil.addDurability(armor[1], deltaPer);
+		ItemUtil.addDurability(armor[2], deltaPer);
+		ItemUtil.addDurability(armor[3], deltaPer);
 	}
 
 	@Override

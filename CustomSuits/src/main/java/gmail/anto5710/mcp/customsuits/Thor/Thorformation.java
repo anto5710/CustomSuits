@@ -29,7 +29,7 @@ public class Thorformation extends MapEncompassor<Player, Double>{
 
 		if (phi > 10 * Math.PI) {
 			discard(player);
-			Hammer.setThor(player);
+			Hammer.thormorphosize(player);
 		} else {
 			put(player, phi += Math.PI / 8);
 			SuitUtils.playSound(player, Sound.BLOCK_FIRE_EXTINGUISH, 6F, 6F);

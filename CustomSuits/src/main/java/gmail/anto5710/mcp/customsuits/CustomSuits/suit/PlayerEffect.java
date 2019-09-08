@@ -2,8 +2,9 @@ package gmail.anto5710.mcp.customsuits.CustomSuits.suit;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.FireworkProccesor;
 
+
 import gmail.anto5710.mcp.customsuits.CustomSuits.dao.SpawningDao;
-import gmail.anto5710.mcp.customsuits.CustomSuits.suit.gadgets.MachineGun;
+import gmail.anto5710.mcp.customsuits.CustomSuits.suit.weapons.MachineGun;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
 import gmail.anto5710.mcp.customsuits.Utils.MathUtil;
 import gmail.anto5710.mcp.customsuits.Utils.CustomEffects;
@@ -13,8 +14,6 @@ import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Logger;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.FireworkEffect;
@@ -29,18 +28,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.EntityToggleGlideEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
-import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.Vector;
 
 /**
  * 
@@ -50,14 +45,13 @@ import org.bukkit.util.Vector;
 
 public class PlayerEffect implements Listener {
 	private static CustomSuitPlugin mainPlugin;
-	private Logger logger;
 	static HungerScheduler hungerscheduler;
 	String regex = Values.gun_regex;
 	public static HashMap<Player, Boolean>zooms = new HashMap<>();
 
 	public PlayerEffect(CustomSuitPlugin main) {
 		PlayerEffect.mainPlugin = main;
-		logger = mainPlugin.getLogger();
+		mainPlugin.getLogger();
 		hungerscheduler = main.hscheduler;
 	}
 

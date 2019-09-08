@@ -10,6 +10,8 @@ import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.attribute.AttributeModifier.Operation;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
@@ -17,9 +19,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SkullMeta;
-
-import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
-import gmail.anto5710.mcp.customsuits.Setting.Values;
 
 public class ItemUtil {
 
@@ -45,7 +44,6 @@ public class ItemUtil {
 		return sufficeItem(player, new ItemStack(material, amount), 1);
 	}
 
-	
 	public static boolean isHorseArmor(ItemStack item){
 		if(item==null) return false;
 		
@@ -60,6 +58,16 @@ public class ItemUtil {
 		return type == Material.LEATHER_HELMET || type == Material.LEATHER_CHESTPLATE || type == Material.LEATHER_LEGGINGS || type == Material.LEATHER_BOOTS;
 	}
 
+	public static void equip(LivingEntity lentity, ItemStack helemt, ItemStack chestplate, ItemStack leggings, ItemStack boots){
+		if(lentity==null) return;
+	
+		lentity.getEquipment().setHelmet(helemt);
+		lentity.getEquipment().setChestplate(chestplate);
+		lentity.getEquipment().setLeggings(leggings);
+		lentity.getEquipment().setBoots(boots);
+		if(lentity.getType()==EntityType.PLAYER) ((Player)lentity).updateInventory();
+	}
+	
 	public static void name(ItemStack item, String name) {
 		ItemMeta meta = item.getItemMeta();
 		meta.setDisplayName(name);
@@ -80,6 +88,7 @@ public class ItemUtil {
 		return item;
 	}
 
+	@SuppressWarnings("deprecation")
 	public static ItemStack decapitate(String name) {
 		ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
 		SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
@@ -91,6 +100,7 @@ public class ItemUtil {
 	public static Player capitate(ItemStack skull){
 		if(skull.getType() == Material.PLAYER_HEAD){
 			SkullMeta meta = (SkullMeta) skull.getItemMeta();
+			@SuppressWarnings("deprecation")
 			String name = meta.getOwner();
 			return Bukkit.getPlayer(name);
 		}
@@ -137,24 +147,22 @@ public class ItemUtil {
 	}
 
 	public static boolean checkLore(ItemStack sample, ItemStack check) {
-		if (!sample.getItemMeta().hasLore() && !check.getItemMeta().hasLore()) return true;
-		
-		if (sample.getItemMeta().hasLore() && check.getItemMeta().hasLore()) {
-			
-			List<String> sampleList = sample.getItemMeta().getLore();
-			List<String> checkList = check.getItemMeta().getLore();
+		boolean sampleHasLore = sample.getItemMeta().hasLore();
+		boolean checkHasLore = check.getItemMeta().hasLore();
+		if(!sampleHasLore || !checkHasLore) return sampleHasLore == checkHasLore ; //anyNull -> then if null=null return true
 	
-			if (sampleList.size() != checkList.size()) {
+		List<String> sampleList = sample.getItemMeta().getLore();
+		List<String> checkList = check.getItemMeta().getLore();
+
+		if (sampleList.size() != checkList.size()) {
+			return false;
+		}
+		for (int index = 0; index <= checkList.size() - 1; index++) {
+			if (!checkList.get(index).endsWith(sampleList.get(index))) {
 				return false;
 			}
-			for (int index = 0; index <= checkList.size() - 1; index++) {
-				if (!checkList.get(index).endsWith(sampleList.get(index))) {
-					return false;
-				}
-			}
-			return true;
 		}
-		return false;
+		return true;		
 	}
 
 	public static boolean checkItem(ItemStack sample, ItemStack check){
@@ -164,6 +172,7 @@ public class ItemUtil {
 		return sample.getType()==check.getType () && checkName(sample , check) && checkLore(sample, check);
 	}
 
+	@SuppressWarnings("deprecation")
 	public static void addDurability(ItemStack item, short delta) {
 		if (SuitUtils.isAir(item)) {
 			return;
@@ -178,11 +187,10 @@ public class ItemUtil {
 	public static void suffix(ItemStack item, Attribute type, String name, double amount, Operation op, EquipmentSlot slot){
 		if(SuitUtils.anyNull(item, type, name, op)) return;
 		
-		
 		ItemMeta meta = item.getItemMeta();
 		if(slot!=null){
 			meta.addAttributeModifier(type, new AttributeModifier(UUID.randomUUID(), name, amount, op, slot));
-		}else{
+		}else{ //slot null = apply to all slots
 			meta.addAttributeModifier(type, new AttributeModifier(name, amount, op));
 		}
 		item.setItemMeta(meta);
@@ -195,8 +203,5 @@ public class ItemUtil {
 	public static void suffix(ItemStack item, Attribute type, double amount, EquipmentSlot slot) {
 		suffix(item, type, type.name(), amount, Operation.ADD_NUMBER, slot);
 	}
-	
-	
-	
 	
 }

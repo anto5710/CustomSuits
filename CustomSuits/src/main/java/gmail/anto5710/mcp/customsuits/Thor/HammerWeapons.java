@@ -1,22 +1,18 @@
 package gmail.anto5710.mcp.customsuits.Thor;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
-import gmail.anto5710.mcp.customsuits.CustomSuits.suit.HungerScheduler;
-import gmail.anto5710.mcp.customsuits.Setting.Values;
+
 import gmail.anto5710.mcp.customsuits.Utils.CustomEffects;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 import gmail.anto5710.mcp.customsuits.Utils.ThorUtils;
 
 
 import org.bukkit.Location;
-import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
@@ -47,7 +43,7 @@ public class HammerWeapons implements Listener{
 				}
 				
 			}else if(Hammer.isThor(player)){
-				returnHammer(player);
+				Hammer.returnHammer(player);
 			}
 		}
 	}
@@ -55,16 +51,6 @@ public class HammerWeapons implements Listener{
 	public void awakenThor(Player player){
 		CustomEffects.playThorChangeEffect(player);
 		Hammer.thor = player;
-	}
-	
-	public void returnHammer(Player player){
-		Location playerEyeLocation = player.getEyeLocation();
-		Item hammer =ThorUtils.getDroppedHammer(player.getWorld() , player);
-		if(hammer==null){
-			return;
-		}
-		Hammer.teleportItem(hammer , playerEyeLocation);
-		SuitUtils.playSound(playerEyeLocation, Values.HammerTeleportSound, 6.0F,6.0F);
 	}
 	
 	public void throwHammer(Player player) {
