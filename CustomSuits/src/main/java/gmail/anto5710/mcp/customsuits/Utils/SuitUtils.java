@@ -116,13 +116,13 @@ public class SuitUtils {
 		}
 	}
 	
-	public static boolean holdingNothing(Player player){
-		ItemStack item = getHoldingItem(player);
-		return isAir(item);
+	public static boolean holding(Player player, ItemStack sample) {
+		return !anyNull(player, sample) && ItemUtil.checkItem(sample, getHoldingItem(player));
 	}
-	
-	public static boolean isAir(ItemStack item){
-		return item==null || item.getType() == Material.AIR;
+
+	public static boolean holdingNone(Player player){
+		ItemStack item = getHoldingItem(player);
+		return ItemUtil.isAir(item);
 	}
 	
 	public static ItemStack getHoldingItem(Player player){
@@ -137,12 +137,12 @@ public class SuitUtils {
 		List<Entity> passengers = vehicle.getPassengers();
 		return (passengers == null||passengers.isEmpty()) ? null : passengers.get(0);
 	}
+	
 	public static void lack(Player player,String warn){
 		player.sendMessage(ChatColor.DARK_RED
 				+ "[Warn]: "+ChatColor.RED+"You don't have enough "+ ChatColor.GOLD+warn+ChatColor.RED+" !");
 		tick(player);
 	}
-	
 	
 	public static void warn(Player player,String warn){
 		player.sendMessage(ChatColor.DARK_RED
@@ -206,11 +206,7 @@ public class SuitUtils {
 		return armables.contains(lentity.getType());
 	}
 
-	public static boolean isHolding(Player player, ItemStack sample) {
-		return !anyNull(player, sample) && ItemUtil.checkItem(sample, getHoldingItem(player));
-	}
-
-	public static boolean isUnderWater(Player player){	
+	public static boolean inWater(Player player){	
 		Block eye = player.getEyeLocation().getBlock();
 		Block foot = player.getLocation().getBlock();
 		Block waist = player.getLocation().add(0, 1, 0).getBlock();

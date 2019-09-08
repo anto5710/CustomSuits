@@ -174,7 +174,7 @@ public class ItemUtil {
 
 	@SuppressWarnings("deprecation")
 	public static void addDurability(ItemStack item, short delta) {
-		if (SuitUtils.isAir(item)) {
+		if (ItemUtil.isAir(item)) {
 			return;
 		}
 		short durability = item.getDurability();
@@ -202,6 +202,10 @@ public class ItemUtil {
 	
 	public static void suffix(ItemStack item, Attribute type, double amount, EquipmentSlot slot) {
 		suffix(item, type, type.name(), amount, Operation.ADD_NUMBER, slot);
+	}
+
+	public static boolean isAir(ItemStack item){
+		return item==null || item.getType() == Material.AIR;
 	}
 	
 }

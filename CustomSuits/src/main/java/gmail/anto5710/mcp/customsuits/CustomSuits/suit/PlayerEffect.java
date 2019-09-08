@@ -222,7 +222,7 @@ public class PlayerEffect implements Listener {
 		int checkCount = 0;
 		for (int index = 0; index < armorContents.length; index++) {
 			ItemStack arm = armorContents[index]; 
-			if (SuitUtils.isAir(arm)) checkCount++; 
+			if (ItemUtil.isAir(arm)) checkCount++; 
 		}
 		return checkCount < armorContents.length;
 	}

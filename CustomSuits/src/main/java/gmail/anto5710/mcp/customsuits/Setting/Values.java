@@ -50,7 +50,7 @@ public class Values {
 	final public static long ManSmoke_Time = 20;
 
 
-	final public static double HammerDamage = 6;
+	final public static double HammerDamage = 8;
 	final public static double LightningMissile = 10D ;
 	final public static int LightningMissileHunger = -1;
 	final public static Sound LightningMissileSound = Sound.ENTITY_LIGHTNING_BOLT_THUNDER;

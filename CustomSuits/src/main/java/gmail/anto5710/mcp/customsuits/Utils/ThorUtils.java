@@ -49,7 +49,7 @@ public class ThorUtils {
 	 * @return is player holding Hammer
 	 */
 	public static boolean isHammerinHand(Player player){
-		return ItemUtil.checkItem(CustomSuitPlugin.hammer, SuitUtils.getHoldingItem(player));
+		return SuitUtils.holding(player, CustomSuitPlugin.hammer);
 	}
 	/**
 	 * 
@@ -151,7 +151,7 @@ public class ThorUtils {
 	 * @param player player
 	 * @param amount Amount of Striking
 	 */
-	public static void strikeLightnings(Location loc, Player player , int amount) {
+	public static void strikeLightnings(Location loc, Player player, int amount) {
 		for (int c = 0; c < amount; c++) {
 			loc.getWorld().strikeLightning(loc);
 		}

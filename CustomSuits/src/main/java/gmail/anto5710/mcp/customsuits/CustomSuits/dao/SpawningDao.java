@@ -20,7 +20,7 @@ import org.bukkit.entity.Player;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
 
 /**
- * This class save the Suit Entities that spawned by player
+ * This class saves the Suit Entities spawned by player
  * 
  * @author anto5710
  *

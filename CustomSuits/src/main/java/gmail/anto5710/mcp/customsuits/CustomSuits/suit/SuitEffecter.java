@@ -38,13 +38,13 @@ public class SuitEffecter extends LinearEncompassor<Player>{
 	
 	public static void playStateEffect(Player player){
 		if(player.isFlying()){
-			if(SuitUtils.isUnderWater(player)){
+			if(SuitUtils.inWater(player)){
 				CustomEffects.playSuit_Move_Under_Water_Effect(player);
 			}else{
 				CustomEffects.playSuit_Move_Fly_Effect(player);
 			}			
 		}else{
-			if(SuitUtils.isUnderWater(player)){
+			if(SuitUtils.inWater(player)){
 				CustomEffects.playSuit_Move_Under_Water_Effect(player);
 			}else if(player.isGliding()){
 				CustomEffects.playSuit_Glide_Effect(player);

@@ -11,7 +11,7 @@ import org.bukkit.inventory.Inventory;
 import com.google.common.collect.Sets;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
-import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
+import gmail.anto5710.mcp.customsuits.Utils.ItemUtil;
 
 public class CancelAirClick extends InventoryNames implements Listener{
 	CustomSuitPlugin plugin;
@@ -38,7 +38,7 @@ public class CancelAirClick extends InventoryNames implements Listener{
 		if(SuitInventoryGUI.authenticateAccess(event, true, 
 			inventory_name, list_name, type_inventory_name, vehicle_inventory_name, CommandInventory_name)){
 			System.out.println(event.getSlot());
-			if (SuitUtils.isAir(event.getCurrentItem()) && withinUpperInv(event, CustomSuitPlugin.type_inventory)) {
+			if (ItemUtil.isAir(event.getCurrentItem()) && withinUpperInv(event, CustomSuitPlugin.type_inventory)) {
 				event.setCancelled(true);
 			}
 		}
@@ -101,7 +101,7 @@ public class CancelAirClick extends InventoryNames implements Listener{
 	public void onClickAirInArmorColorInventorys(InventoryClickEvent event) {		
 		if(SuitInventoryGUI.authenticateAccess(event, true, HelmetColorInventory_name, ChestPlateColorInventory_name, 
 															LeggingsColorInventory_name, BootsColorInventory_name) &&
-			SuitUtils.isAir(event.getCurrentItem()) && withinUpperInv(event, CustomSuitPlugin.HelmetColorInventory)){
+			ItemUtil.isAir(event.getCurrentItem()) && withinUpperInv(event, CustomSuitPlugin.HelmetColorInventory)){
 			
 					event.setCancelled(true);
 			}

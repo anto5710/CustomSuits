@@ -41,6 +41,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Server;
 import org.bukkit.Sound;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
@@ -104,7 +105,7 @@ public class CustomSuitPlugin extends JavaPlugin {
 
 	public static ItemStack missileLauncher = new ItemStack(Material.GOLDEN_HORSE_ARMOR);
 
-	public static ItemStack hammer = new ItemStack(Material.IRON_AXE, 1, (short) Values.HammerDamage);
+	public static ItemStack hammer = new ItemStack(Material.IRON_AXE);
 
 	public static ItemStack Helemt_Thor = new ItemStack(Material.IRON_HELMET);
 	public static ItemStack Chestplate_Thor = new ItemStack(Material.LEATHER_CHESTPLATE);
@@ -150,6 +151,7 @@ public class CustomSuitPlugin extends JavaPlugin {
 		ItemStack command = new ItemStack(Material.COMPARATOR);
 		ItemUtil.name(command, ChatColor.RED + "[Command]");
 		
+		ItemUtil.suffix(hammer, Attribute.GENERIC_ATTACK_DAMAGE, Values.HammerDamage);
 		hammer.addUnsafeEnchantments(new EnchantBuilder().enchant(Enchantment.DAMAGE_ALL, 5)
 				.enchant(Enchantment.DURABILITY, 10).enchant(Enchantment.FIRE_ASPECT, 8)
 				.enchant(Enchantment.LOOT_BONUS_MOBS, 5).enchant(Enchantment.KNOCKBACK, 8).serialize());
@@ -568,7 +570,7 @@ public class CustomSuitPlugin extends JavaPlugin {
 	}
 
 	public static void summonNearestSuit(Player player) {
-		if (SuitUtils.isHolding(player, CustomSuitPlugin.suitremote)){
+		if (SuitUtils.holding(player, CustomSuitPlugin.suitremote)){
 			List<LivingEntity> near = player.getWorld().getLivingEntities();
 
 			LivingEntity nearest = nearestArmedLentity(near, player, 1000);
@@ -583,7 +585,7 @@ public class CustomSuitPlugin extends JavaPlugin {
 	}
 
 	public static void spawnSuit(Player player, Location loc) {
-		if (SuitUtils.isHolding(player, CustomSuitPlugin.suitremote)){
+		if (SuitUtils.holding(player, CustomSuitPlugin.suitremote)){
 			SuitSettings sett = handle(player);
 			SuitManufactory.manufacture(sett.getSentity(), sett.getVehicle(), sett.getCount(), sett.getCurrentTarget(), player, loc);
 		} else {
