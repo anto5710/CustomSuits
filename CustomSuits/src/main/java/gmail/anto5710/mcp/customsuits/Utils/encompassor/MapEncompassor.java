@@ -20,6 +20,15 @@ public abstract class MapEncompassor<E extends Entity, V> extends AbstractEncomp
 		return maptia.containsKey(e);
 	}
 	
+	public E getKey(V val){
+		if(maptia.containsValue(val)){
+			for(E e:maptia.keySet()){
+				if(get(e) == val) return e;
+			}
+		}
+		return null;
+	}
+	
 	public V get(E e){
 		return maptia.get(e);
 	}

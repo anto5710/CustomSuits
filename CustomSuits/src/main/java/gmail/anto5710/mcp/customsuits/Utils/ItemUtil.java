@@ -207,5 +207,12 @@ public class ItemUtil {
 	public static boolean isAir(ItemStack item){
 		return item==null || item.getType() == Material.AIR;
 	}
+
+	public static void removeItemInHand(Player player){
+		ItemStack ItemInHand = SuitUtils.getHoldingItem(player);
+		ItemInHand.setAmount(ItemInHand.getAmount()-1);
+		player.getInventory().setItemInMainHand(ItemInHand);
+		player.updateInventory();
+	}
 	
 }

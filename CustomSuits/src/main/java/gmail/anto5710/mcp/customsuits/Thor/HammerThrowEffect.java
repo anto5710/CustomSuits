@@ -1,12 +1,11 @@
 package gmail.anto5710.mcp.customsuits.Thor;
 
-import java.util.List;
-
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.entity.Entity;
+import org.bukkit.craftbukkit.v1_13_R2.entity.CraftBat;
+import org.bukkit.entity.Bat;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -16,21 +15,20 @@ import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
 import gmail.anto5710.mcp.customsuits.Utils.CustomEffects;
 import gmail.anto5710.mcp.customsuits.Utils.MathUtil;
+import gmail.anto5710.mcp.customsuits.Utils.PacketUtil;
 import gmail.anto5710.mcp.customsuits.Utils.ParticleUtil;
+import gmail.anto5710.mcp.customsuits.Utils.PotionBrewer;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 import gmail.anto5710.mcp.customsuits.Utils.ThorUtils;
-import gmail.anto5710.mcp.customsuits.Utils.WeaponUtils;
+import gmail.anto5710.mcp.customsuits.Utils.damagiom.DamageAttribute;
+import gmail.anto5710.mcp.customsuits.Utils.damagiom.DamageUtil;
 import gmail.anto5710.mcp.customsuits.Utils.encompassor.MapEncompassor;
+import gmail.anto5710.mcp.customsuits.Utils.encompassor.standardized.DispenseEncompassor;
 
-public class HammerThrowEffect extends MapEncompassor<Item, Player>{
-
+public class HammerThrowEffect extends DispenseEncompassor<Item, Player>{
+	
 	public HammerThrowEffect(CustomSuitPlugin plugin, long period) {
 		super(plugin, period);
-	}
-	
-	@Override
-	public boolean toRemove(Item item) {
-		return ThorUtils.isOnGround(item)|| item.isDead();
 	}
 
 	@Override
@@ -40,21 +38,19 @@ public class HammerThrowEffect extends MapEncompassor<Item, Player>{
 		Location loc = item.getLocation();
 
 		ParticleUtil.playEffect(Values.HammerDefaultEffect, loc, 5, 0.1);
-		List<Entity> list = WeaponUtils.findEntities(loc, player, 1);
-
-		ThorUtils.damage(list, Hammer.HammerDeafultDamage, player);
+		DamageUtil.areaDamage(loc, Hammer.HammerDeafultDamage, player, 1, DamageAttribute.X_TEN);
 		
 		if(toRemove(item)) impact(item);
 	}
 	
 	private void impact(Item item){
 		Player player = get(item);
+		Location loc = item.getLocation();
 		CustomEffects.playHammerHitGround(item);
-		item.getWorld().strikeLightning(item.getLocation());
+		item.getWorld().strikeLightning(loc);
 		player.getInventory().addItem(item.getItemStack());
 		item.remove();
 
-		Location loc = item.getLocation();
 		SuitUtils.createExplosion(loc, 6F, false, false);
 		explosionEffect(loc);
 	}

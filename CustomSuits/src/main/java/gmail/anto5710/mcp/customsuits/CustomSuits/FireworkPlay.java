@@ -12,11 +12,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.FireworkMeta;
 
 public class FireworkPlay extends EntityFireworks {
-	Player[] players = null;
-
-	public FireworkPlay(World world, Player... p) {
+	public FireworkPlay(World world) {
 		super(world);
-		players = p;
 		this.a(0.25F, 0.25F);
 	}
 
@@ -33,9 +30,9 @@ public class FireworkPlay extends EntityFireworks {
 		return true;
 	}
 
-	public static void spawn(Location location, FireworkEffect effect, Player... players) {
+	public static void spawn(Location location, FireworkEffect effect) {
 		try {
-			FireworkPlay firework = new FireworkPlay(((CraftWorld) location.getWorld()).getHandle(), players);
+			FireworkPlay firework = new FireworkPlay(((CraftWorld) location.getWorld()).getHandle());
 			FireworkMeta meta = ((Firework) firework.getBukkitEntity()).getFireworkMeta();
 			meta.addEffect(effect);
 			((Firework) firework.getBukkitEntity()).setFireworkMeta(meta);

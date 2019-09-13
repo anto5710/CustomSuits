@@ -99,14 +99,6 @@ public class CustomEffects {
 //		FireworkPlay.spawn(player.getLocation(), FireworkProccesor.getEffect(Color.AQUA , Type.STAR), null);
 		ParticleUtil.playEffect(Particle.FIREWORKS_SPARK, player.getLocation(), 30, 3);
 		SuitUtils.playSound(player, Sound.BLOCK_ANVIL_PLACE, 10, 6);
-	}
-	
-	public static void play_Suit_Missile_Effect(Location currentLoc, Particle effect, int amount, double speed, boolean isRoof, boolean isMissile) {
-		if (isMissile) {
-			playArcReactor(currentLoc);
-		} else {
-			ParticleUtil.playEffect(effect, currentLoc, 0, 0, 0, amount, speed, null);
-		}
 	}                             
 
 	public static void run(double r , Location loc, double phi, Particle particle ) {
@@ -196,7 +188,7 @@ public class CustomEffects {
 
 	public static void playThorFormationFin(Wither wither) {
 		FireworkEffect effect = FireworkProccesor.getEffect(Color.MAROON, Type.BALL_LARGE);
-		FireworkPlay.spawn(wither.getLocation(), effect, null);
+		FireworkPlay.spawn(wither.getLocation(), effect);
 	}
 
 	public static void playHammerHitGround(Item item) {

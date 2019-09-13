@@ -153,12 +153,11 @@ public class Hammer implements Listener {
 	
 	public static void returnHammer(Player player){
 		Location pEyeLoc = player.getEyeLocation();
-		Item hammer =ThorUtils.getDroppedHammer(player.getWorld());
-		if(hammer==null){
-			return;
+		Item hammer =ThorUtils.getDroppedHammer(player);
+		if (hammer != null) {
+			Hammer.teleportItem(hammer, pEyeLoc);
+			SuitUtils.playSound(pEyeLoc, Values.HammerTeleportSound, 6.0F, 6.0F);
 		}
-		Hammer.teleportItem(hammer , pEyeLoc);
-		SuitUtils.playSound(pEyeLoc, Values.HammerTeleportSound, 6.0F,6.0F);
 	}
 	
 	/**
@@ -193,7 +192,7 @@ public class Hammer implements Listener {
 		Item item = event.getItem();
 		if(ItemUtil.checkItem(CustomSuitPlugin.hammer, item.getItemStack())){
 			if(event.getEntityType() == EntityType.PLAYER && event.getEntity() == thor){
-				ThorUtils.remove(item);				
+				Hammer.hammerEffecter.remove(item);				
 			} else{
 				ParticleUtil.playEffect(Values.HammerPickUpCancel, item.getLocation(), 1);
 				event.setCancelled(true);
@@ -208,7 +207,7 @@ public class Hammer implements Listener {
 	public static void thormorphosize(Player player) {
 		Bukkit.getScheduler().runTaskLater(plugin, () -> {
 			FireworkEffect effect = FireworkProccesor.getEffect(Color.RED, Type.STAR);
-			FireworkPlay.spawn(player.getLocation().add(0, 3, 0), effect, null);
+			FireworkPlay.spawn(player.getLocation().add(0, 3, 0), effect);
 			player.getWorld().strikeLightningEffect(player.getLocation());
 			ItemUtil.equip(player, CustomSuitPlugin.Helemt_Thor, CustomSuitPlugin.Chestplate_Thor, 
 								   CustomSuitPlugin.Leggings_Thor, CustomSuitPlugin.Boots_Thor);

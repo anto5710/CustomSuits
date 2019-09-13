@@ -9,8 +9,9 @@ import gmail.anto5710.mcp.customsuits.Utils.ItemUtil;
 import gmail.anto5710.mcp.customsuits.Utils.PacketUtil;
 import gmail.anto5710.mcp.customsuits.Utils.ParticleUtil;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
-
-import java.util.ArrayList;
+import gmail.anto5710.mcp.customsuits.Utils.damagiom.DamageControl;
+import gmail.anto5710.mcp.customsuits.Utils.damagiom.DamageUtil;
+import gmail.anto5710.mcp.customsuits.Utils.metadative.Metadative;
 
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
@@ -27,12 +28,10 @@ import org.bukkit.block.banner.PatternType;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Snowball;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityToggleGlideEvent;
-import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.event.player.PlayerToggleSprintEvent;
@@ -40,12 +39,9 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.projectiles.ProjectileSource;
-import org.bukkit.util.Vector;
 
 public class SuitWeapons implements Listener {
 
-	static ArrayList<Fireball> listFireball = new ArrayList<>();
 	public static TNTLauncher tnter; 	
 	public static ArcReffecter reffecter;
 	
@@ -150,25 +146,10 @@ public class SuitWeapons implements Listener {
 	}
 
 	private void fireball(Player player) {
-		Location targetloc = SuitUtils.getTargetLoc(player, 1000);
-		Location locationplayer = player.getLocation();
-		Vector vector = targetloc.toVector().subtract(locationplayer.toVector()).normalize().multiply(2);
-
-		Fireball fireball = player.launchProjectile(Fireball.class, vector);
-
+		Location ploc = player.getLocation();
+		Fireball fireball = player.launchProjectile(Fireball.class, ploc.getDirection().multiply(2));
 		fireball.setIsIncendiary(true);
-		listFireball.add(fireball);
-	}
-
-	@EventHandler
-	public void explodeFireball(ProjectileHitEvent event) {
-		Projectile e = event.getEntity();
-		if (e instanceof Fireball) {
-			ProjectileSource s = e.getShooter();
-			if (s != null && s instanceof Player && listFireball.contains(e)) {
-				e.getWorld().createExplosion(e.getLocation(), Values.LauncherPower);
-			}
-		}
+		fireball.setYield(Values.LauncherPower);
 	}
 	
 	private static Material ammo = Material.TNT;
@@ -207,8 +188,10 @@ public class SuitWeapons implements Listener {
 		bim.setInvulnerable(true);
 		
 		double damage = Values.Bim * ((Math.sqrt(CustomSuitPlugin.getSuitLevel(player))/8) + 1);
+		float power = (float) (Values.BimExplosionPower * ((Math.sqrt(CustomSuitPlugin.getSuitLevel(player))/10) + 1));
 		
-		bim.setMetadata("repulseDamage", new FixedMetadataValue(plugin, damage));
+		Metadative.imprint(bim, damage, power, false, true);
+		
 		PacketUtil.castDestroyPacket(bim);
 		reffecter.register(bim);
 		

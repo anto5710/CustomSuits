@@ -39,34 +39,34 @@ public class SuitSettings {
 			command_equipment = CustomSuitPlugin.copyCommandGUI(p, CustomSuitPlugin.commandInventory);
 		}
 		if(equipment==null){
-			equipment = CustomSuitPlugin.copyInv(p, CustomSuitPlugin.inventory, InventoryNames.inventory_name);
+			equipment = CustomSuitPlugin.copyInven(p, CustomSuitPlugin.inventory, InventoryNames.inventory_name);
 		}
 		if(armorequipment==null){
-			armorequipment = CustomSuitPlugin.copyInv(p, CustomSuitPlugin.armorinventory, InventoryNames.armorinventory_name);
+			armorequipment = CustomSuitPlugin.copyInven(p, CustomSuitPlugin.armorinventory, InventoryNames.armorinventory_name);
 		}
 		if(helmetequipment==null){
-			helmetequipment = CustomSuitPlugin.copyInv(p, CustomSuitPlugin.helmetinventory, InventoryNames.helmetinventory_name);
+			helmetequipment = CustomSuitPlugin.copyInven(p, CustomSuitPlugin.helmetinventory, InventoryNames.helmetinventory_name);
 		}
 		if(chestequipment==null){
-			chestequipment = CustomSuitPlugin.copyInv(p, CustomSuitPlugin.chestinventory, InventoryNames.chestinventory_name);
+			chestequipment = CustomSuitPlugin.copyInven(p, CustomSuitPlugin.chestinventory, InventoryNames.chestinventory_name);
 		}
 		if(leggingsequipment==null){
-			leggingsequipment = CustomSuitPlugin.copyInv(p, CustomSuitPlugin.leggingsinventory, InventoryNames.leggingsinventory_name);
+			leggingsequipment = CustomSuitPlugin.copyInven(p, CustomSuitPlugin.leggingsinventory, InventoryNames.leggingsinventory_name);
 		}
 		if(bootsequipment==null){
-			bootsequipment = CustomSuitPlugin.copyInv(p, CustomSuitPlugin.bootsinventory, InventoryNames.bootsinventory_name);
+			bootsequipment = CustomSuitPlugin.copyInven(p, CustomSuitPlugin.bootsinventory, InventoryNames.bootsinventory_name);
 		}
 		p.updateInventory();
 	}
 	
 	private void resetUInv(){
 		command_equipment = CustomSuitPlugin.copyCommandGUI(p, CustomSuitPlugin.commandInventory);
-		equipment = CustomSuitPlugin.copyInv(p, CustomSuitPlugin.inventory, InventoryNames.inventory_name);
-		armorequipment = CustomSuitPlugin.copyInv(p, CustomSuitPlugin.armorinventory, InventoryNames.armorinventory_name);
-		helmetequipment = CustomSuitPlugin.copyInv(p, CustomSuitPlugin.helmetinventory, InventoryNames.helmetinventory_name);
-		chestequipment = CustomSuitPlugin.copyInv(p, CustomSuitPlugin.chestinventory, InventoryNames.chestinventory_name);
-		leggingsequipment = CustomSuitPlugin.copyInv(p, CustomSuitPlugin.leggingsinventory, InventoryNames.leggingsinventory_name);
-		bootsequipment = CustomSuitPlugin.copyInv(p, CustomSuitPlugin.bootsinventory, InventoryNames.bootsinventory_name);
+		equipment = CustomSuitPlugin.copyInven(p, CustomSuitPlugin.inventory, InventoryNames.inventory_name);
+		armorequipment = CustomSuitPlugin.copyInven(p, CustomSuitPlugin.armorinventory, InventoryNames.armorinventory_name);
+		helmetequipment = CustomSuitPlugin.copyInven(p, CustomSuitPlugin.helmetinventory, InventoryNames.helmetinventory_name);
+		chestequipment = CustomSuitPlugin.copyInven(p, CustomSuitPlugin.chestinventory, InventoryNames.chestinventory_name);
+		leggingsequipment = CustomSuitPlugin.copyInven(p, CustomSuitPlugin.leggingsinventory, InventoryNames.leggingsinventory_name);
+		bootsequipment = CustomSuitPlugin.copyInven(p, CustomSuitPlugin.bootsinventory, InventoryNames.bootsinventory_name);
 	}
 	
 	private void updateColorIcon(int slot, Color color) {

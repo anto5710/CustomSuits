@@ -85,7 +85,7 @@ public class Values {
 	final public static double SniperDamage =25 ;
 	final public static double SniperRadius = 0.75;
 	final public static int SniperEffectRadius =2 ;
-	final public static int SniperEffectAmount =3 ;
+	final public static int SniperEffectAmount =1 ;
 	final public static int SnipeAmmoAmount =8 ;
 	final public static Material SniperAmmo = Material.GHAST_TEAR;
 	final public static Particle SniperEffect = Particle.CRIT;
@@ -137,6 +137,8 @@ public class Values {
 
 	final public static Particle HammerDefaultEffect = Particle.CRIT;
 
+	final public static double ThorForceLightningDamage = 6;
+	
 		
 	
 }

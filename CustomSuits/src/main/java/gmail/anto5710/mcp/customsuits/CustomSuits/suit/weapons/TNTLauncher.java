@@ -24,9 +24,9 @@ import gmail.anto5710.mcp.customsuits.Utils.ItemUtil;
 import gmail.anto5710.mcp.customsuits.Utils.MathUtil;
 import gmail.anto5710.mcp.customsuits.Utils.ParticleUtil;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
-import gmail.anto5710.mcp.customsuits.Utils.encompassor.MapEncompassor;
+import gmail.anto5710.mcp.customsuits.Utils.encompassor.standardized.DispenseEncompassor;
 
-public class TNTLauncher extends MapEncompassor<Item, Long>{
+public class TNTLauncher extends DispenseEncompassor<Item, Long>{
 	private Set<Player> TNT_cooldowns = new HashSet<>();
 	
 	public TNTLauncher(CustomSuitPlugin plugin, long period) {
@@ -82,11 +82,6 @@ public class TNTLauncher extends MapEncompassor<Item, Long>{
 		if (itemStack.getType() == Material.TNT && ItemUtil.checkName(itemStack, ChatColor.AQUA + "[Bomb]")) {
 			impact(item.getLocation());
 		}
-	}
-	
-	@Override
-	public boolean toRemove(Item tnt) {
-		return tnt.isDead() || tnt.isOnGround();
 	}
 
 	@Override

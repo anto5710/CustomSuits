@@ -23,8 +23,9 @@ import gmail.anto5710.mcp.customsuits.Utils.ItemUtil;
 import gmail.anto5710.mcp.customsuits.Utils.MathUtil;
 import gmail.anto5710.mcp.customsuits.Utils.CustomEffects;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
-import gmail.anto5710.mcp.customsuits.Utils.WeaponUtils;
-
+import gmail.anto5710.mcp.customsuits.Utils.damagiom.DamageControl;
+import gmail.anto5710.mcp.customsuits.Utils.damagiom.DamageUtil;
+import gmail.anto5710.mcp.customsuits.Utils.metadative.Metadative;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -62,7 +63,7 @@ import org.bukkit.util.Vector;
  */
 public class CustomSuitPlugin extends JavaPlugin {
 	SuitUtils suitl = new SuitUtils(this);
-	WeaponUtils wuitl = new WeaponUtils();
+	DamageUtil wuitl = new DamageUtil();
 
 	public static Logger logger;
 	static JavaPlugin plugin;
@@ -125,6 +126,7 @@ public class CustomSuitPlugin extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
+		new Metadative(this);
 		suitEffecter = new SuitEffecter(this, 1);
 		plugin = this;
 		Glow.registerGlow();
@@ -339,7 +341,6 @@ public class CustomSuitPlugin extends JavaPlugin {
 		manager.registerEvents(new PlayerEffect(this), this);
 		manager.registerEvents(new SuitWeapons(this), this);
 		manager.registerEvents(SuitWeapons.tnter, this);
-		manager.registerEvents(SuitWeapons.reffecter, this);
 		manager.registerEvents(new SuitInventoryGUI(this), this);
 		manager.registerEvents(new HammerWeapons(this), this);
 		manager.registerEvents(new CancelAirClick(this), this);
@@ -348,9 +349,8 @@ public class CustomSuitPlugin extends JavaPlugin {
 		manager.registerEvents(new ForceLightning(this, 10), this);
 		manager.registerEvents(new AutoTarget(this), this);
 		manager.registerEvents(new MachineGun(this), this);
-		manager.registerEvents(MachineGun.effecter, this);
+		manager.registerEvents(new DamageControl(this), this);
 	
-
 		Recipe.addRecipe(getServer());
 		
 		dao = new SpawningDao(this);
@@ -359,7 +359,6 @@ public class CustomSuitPlugin extends JavaPlugin {
 		dao.init();
 
 		new CustomEffects(this);
-
 		initTypeMap();
 
 		HelmetColorInventory.setContents(ItemUtil.dyeSpectrum(new ItemStack(Material.LEATHER_HELMET)));
@@ -678,19 +677,18 @@ public class CustomSuitPlugin extends JavaPlugin {
 		}
 	}
 
-	public static Inventory copyCommandGUI(Player spnSender, Inventory commandInventory) {
-		Inventory NewcommandInventory = Bukkit.createInventory(null, commandInventory.getSize(), InventoryNames.CommandInventory_name + ":" + spnSender.getDisplayName());
-		NewcommandInventory.setContents(commandInventory.getContents());
-		ItemStack Head = ItemUtil.decapitate(spnSender.getName());
-		ItemUtil.name(Head, ItemUtil.getName(commandInventory.getItem(14)));
-		NewcommandInventory.setItem(14, Head);
-		return NewcommandInventory;
+	public static Inventory copyCommandGUI(Player player, Inventory cmdInven) {
+		Inventory newInven = copyInven(player, cmdInven, InventoryNames.CommandInventory_name + ":" + player.getDisplayName());
+		ItemStack Head = ItemUtil.decapitate(player.getName());
+		ItemUtil.name(Head, ItemUtil.getName(cmdInven.getItem(14)));
+		newInven.setItem(14, Head);
+		return newInven;
 	}
 
-	public static Inventory copyInv(Player player, Inventory inventory, String title){
-		Inventory newInventory = Bukkit.createInventory(player, inventory.getSize(), title);
-		newInventory.setContents(inventory.getContents());
-		return newInventory;
+	public static Inventory copyInven(Player player, Inventory inven, String title){
+		Inventory newInven = Bukkit.createInventory(player, inven.getSize(), title);
+		newInven.setContents(inven.getContents());
+		return newInven;
 	}
 
 	public static int getSuitLevel(Player p) {

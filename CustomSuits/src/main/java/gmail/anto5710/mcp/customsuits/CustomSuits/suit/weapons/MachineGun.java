@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Snowball;
@@ -22,7 +23,12 @@ import gmail.anto5710.mcp.customsuits.Setting.Values;
 import gmail.anto5710.mcp.customsuits.Utils.CustomEffects;
 import gmail.anto5710.mcp.customsuits.Utils.ItemUtil;
 import gmail.anto5710.mcp.customsuits.Utils.MathUtil;
+import gmail.anto5710.mcp.customsuits.Utils.ParticleUtil;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
+import gmail.anto5710.mcp.customsuits.Utils.damagiom.DamageAttribute;
+import gmail.anto5710.mcp.customsuits.Utils.damagiom.DamageControl;
+import gmail.anto5710.mcp.customsuits.Utils.damagiom.DamageUtil;
+import gmail.anto5710.mcp.customsuits.Utils.metadative.Metadative;
 
 public class MachineGun implements Listener{
 	public static String gun_regex = Values.gun_regex;
@@ -128,7 +134,9 @@ public class MachineGun implements Listener{
 		v.add(MathUtil.randomVector(spread));
 
 		snowball.setVelocity(v);
-
+		Metadative.imprint(snowball, Values.MachineGunDamage);
+		Metadative.imprint(snowball, DamageControl.BLOCKSHOT, 60D); //60% 확률로 blockshot
+		
 		effecter.register(snowball);
 
 		CustomEffects.play_Gun_Shot_Effect(player);
@@ -198,9 +206,11 @@ public class MachineGun implements Listener{
 						SuitUtils.playSound(player, Sound.ENTITY_IRON_GOLEM_HURT, 4.0F, 4.0F);
 
 						CustomEffects.play_Gun_Shot_Effect(player);
-						SuitUtils.lineParticle(target, location, player, Values.SniperEffect, 1, 0, Values.SniperDamage,
-								0.5, true, false, false, 20);
 
+						SuitUtils.lineParticle(target, location, player, loc -> {
+							ParticleUtil.playEffect(Values.SniperEffect, loc, Values.SniperEffectAmount);
+							DamageUtil.areaDamage(loc, Values.SniperDamage, player, 0.5, DamageAttribute.X_TEN_FIREWORK);
+						}, 20);
 						cooldown(2, player);
 						ItemUtil.name(copy,
 								values[0] + gun_regex + (Integer.parseInt(values[1].replace("»", "")) - 1) + "»");

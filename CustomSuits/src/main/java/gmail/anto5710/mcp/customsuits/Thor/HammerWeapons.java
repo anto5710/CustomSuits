@@ -3,6 +3,7 @@ package gmail.anto5710.mcp.customsuits.Thor;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
 
 import gmail.anto5710.mcp.customsuits.Utils.CustomEffects;
+import gmail.anto5710.mcp.customsuits.Utils.ItemUtil;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 import gmail.anto5710.mcp.customsuits.Utils.ThorUtils;
 
@@ -28,12 +29,9 @@ public class HammerWeapons implements Listener{
 	 * @param event PlayerInteractEvent
 	 */
 	@EventHandler
-	public void throwHammer(PlayerInteractEvent event) {
+	public void onRightClick(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
-		if(player.isSneaking()){
-			return;
-		}
-		if (SuitUtils.isRightClick(event)) {
+		if (!player.isSneaking() && SuitUtils.isRightClick(event)) {
 			if (ThorUtils.isHammerinHand(player)) {
 				if(Hammer.isPractiallyThor(player)){
 					event.setCancelled(true);
@@ -60,7 +58,7 @@ public class HammerWeapons implements Listener{
 		Item dropped = player.getWorld().dropItem(location, ItemInHand);
 		dropped.setFallDistance(0);
 		
-		ThorUtils.removeItemInHand(player);
+		ItemUtil.removeItemInHand(player);
 
 //		double gravity = 0.0165959600149011612D;
 		Vector v = player.getLocation().getDirection().normalize().multiply(2);

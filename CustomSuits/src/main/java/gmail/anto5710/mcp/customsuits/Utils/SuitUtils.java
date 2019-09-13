@@ -3,9 +3,12 @@ package gmail.anto5710.mcp.customsuits.Utils;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.weapons.SuitWeapons;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
+import gmail.anto5710.mcp.customsuits.Utils.damagiom.DamageAttribute;
+import gmail.anto5710.mcp.customsuits.Utils.damagiom.DamageUtil;
 
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -53,48 +56,28 @@ public class SuitUtils {
 		player.playSound(player.getLocation(), sound, volume, pitch);
 	}
 	
-	public static void lineParticle(final Location target,final Location location,
-			final Entity shooter, final Particle effect, final int amount, final double speed,
-			 final double damage, final double radius,final boolean isSuitProjectile, 
-			 final boolean isMissile ,final boolean isSneaking, final int Effect_Count_Second) {
-		Vector vectorStart = location.toVector();
-
-		Vector vectorEnd = target.toVector();
-
-		Vector difference = vectorEnd.subtract(vectorStart);
-
-		final double distance = difference.length();
-		final Vector v = location.getDirection().normalize().multiply(0.5);
-		if (distance < 0) {
-			return;
-		}
-
+	public static void lineParticle(Location target, Location loc, Entity shooter, Consumer<Location>effect, long Effect_Count_Second) {
+		double distance = loc.distance(target);
+		if (distance <= 0) return;
+			
+		Vector v = loc.getDirection().normalize().multiply(0.5);
 		new BukkitRunnable() {
-			Location currentLoc = location.clone();
-			double count = 0;
-
+			Location curLoc = loc.clone();
+			int count = 0;
+			double max = 2*distance;
+			
 			@Override
 			public void run() {
-
+				System.out.println(max);
 				for (int c = 0; c < Effect_Count_Second; c++) {
-					if (count >= distance) {
-						if (isMissile) {
-							float power = Values.BimExplosionPower;
-							SuitUtils.createExplosion(currentLoc, power, false, true);
-
-						} else {
-							SuitWeapons.breakblock(target.getBlock());
-						}
-						this.cancel();
-						break;
+					if (count >= max) {
+						SuitWeapons.breakblock(target.getBlock());
+						this.cancel(); break;
 					}
-					currentLoc.add(v);
-
-					CustomEffects.play_Suit_Missile_Effect(currentLoc, effect, amount, speed, isSneaking, (isMissile && isSuitProjectile));
-					WeaponUtils.damageAdjacent(currentLoc, damage, shooter, radius, isSuitProjectile);
-					count += 1;
+					curLoc.add(v);
+					effect.accept(curLoc);
+					count ++;
 				}
-
 			}
 		}.runTaskTimer(plugin, 0, 2);
 	}
@@ -201,16 +184,18 @@ public class SuitUtils {
 			});
 		}
 	}
+	
 	private static Set<EntityType> armables = Sets.newHashSet(EntityType.ARMOR_STAND, EntityType.ZOMBIE, EntityType.SKELETON, EntityType.WITHER_SKELETON, EntityType.HUSK, EntityType.PIG_ZOMBIE);
 	public static boolean isArmable(LivingEntity lentity) {
 		return armables.contains(lentity.getType());
 	}
 
 	public static boolean inWater(Player player){	
+		if(player.isSwimming()) return true;
+		
 		Block eye = player.getEyeLocation().getBlock();
 		Block foot = player.getLocation().getBlock();
 		Block waist = player.getLocation().add(0, 1, 0).getBlock();
-		
 		return SuitUtils.isWater(eye) && SuitUtils.isWater(waist) && SuitUtils.isWater(foot);
 	}
 

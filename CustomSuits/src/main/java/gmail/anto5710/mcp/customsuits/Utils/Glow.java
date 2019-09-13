@@ -8,7 +8,7 @@ import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.inventory.ItemStack;
 
 public class Glow extends Enchantment {
-	static NamespacedKey id = NamespacedKey.minecraft("mending");// 70
+	static NamespacedKey id = NamespacedKey.minecraft("illum");
 
 	public Glow() {
 		// super(new NamespacedKey(CustomSuitPlugin.plugin, "mending"));

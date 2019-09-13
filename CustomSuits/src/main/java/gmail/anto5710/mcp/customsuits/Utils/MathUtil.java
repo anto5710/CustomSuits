@@ -3,6 +3,7 @@ package gmail.anto5710.mcp.customsuits.Utils;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_13_R2.entity.CraftEntity;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 public class MathUtil {
@@ -146,6 +147,19 @@ public class MathUtil {
 		newloc.setPitch(90 - distance_between);
 		Vector v = newloc.getDirection(); v.setY(0);
 		return v;
+	}
+
+	public static Vector determinePosition(Player player, boolean dualWield, boolean leftClick) {
+		int leftOrRight = 90;
+		if ((dualWield) && (leftClick)) {
+			leftOrRight = -90;
+		}
+		double pYaw = (player.getLocation().getYaw() + 90F + leftOrRight) * Math.PI / 180D;
+		double x = Math.cos(pYaw);
+		double y = Math.sin(pYaw);
+		Vector dHand = new Vector(x, 0, y);
+	
+		return dHand;
 	}
 
 

@@ -13,7 +13,6 @@ public class SuitEffecter extends LinearEncompassor<Player>{
 
 	public SuitEffecter(CustomSuitPlugin plugin, long period) {
 		super(plugin, period);
-		
 	}
 
 	@Override
@@ -37,20 +36,17 @@ public class SuitEffecter extends LinearEncompassor<Player>{
 	}
 	
 	public static void playStateEffect(Player player){
-		if(player.isFlying()){
-			if(SuitUtils.inWater(player)){
-				CustomEffects.playSuit_Move_Under_Water_Effect(player);
-			}else{
-				CustomEffects.playSuit_Move_Fly_Effect(player);
-			}			
-		}else{
-			if(SuitUtils.inWater(player)){
-				CustomEffects.playSuit_Move_Under_Water_Effect(player);
-			}else if(player.isGliding()){
-				CustomEffects.playSuit_Glide_Effect(player);
-			}else{
-				CustomEffects.playSuit_Move_Effect(player);
-			}			
+		if (SuitUtils.inWater(player)) {
+			CustomEffects.playSuit_Move_Under_Water_Effect(player);
+			
+		} else if (player.isFlying()) {
+			CustomEffects.playSuit_Move_Fly_Effect(player);
+			
+		} else if (player.isGliding()) {
+			CustomEffects.playSuit_Glide_Effect(player);
+			
+		} else {
+			CustomEffects.playSuit_Move_Effect(player);
 		}
 	}
 	
@@ -71,15 +67,16 @@ public class SuitEffecter extends LinearEncompassor<Player>{
 		player.setAllowFlight(player.getGameMode()==GameMode.CREATIVE);
 		player.setFlySpeed(0.5F);
 		
-		player.removePotionEffect(PotionEffectType.FIRE_RESISTANCE);
-		player.removePotionEffect(PotionEffectType.ABSORPTION);
-		player.removePotionEffect(PotionEffectType.HEALTH_BOOST);
-		player.removePotionEffect(PotionEffectType.INCREASE_DAMAGE);
-		player.removePotionEffect(PotionEffectType.JUMP);
-		player.removePotionEffect(PotionEffectType.SPEED);
-		player.removePotionEffect(PotionEffectType.REGENERATION);
-		player.removePotionEffect(PotionEffectType.WATER_BREATHING);
-		player.removePotionEffect(PotionEffectType.NIGHT_VISION);
-		player.removePotionEffect(PotionEffectType.SLOW);
+		PotionBrewer.removePotionEffecstByType(player, 
+			PotionEffectType.FIRE_RESISTANCE,
+			PotionEffectType.ABSORPTION,
+			PotionEffectType.HEALTH_BOOST,
+			PotionEffectType.INCREASE_DAMAGE,
+			PotionEffectType.JUMP,
+			PotionEffectType.SPEED,
+			PotionEffectType.REGENERATION,
+			PotionEffectType.WATER_BREATHING,
+			PotionEffectType.NIGHT_VISION,
+			PotionEffectType.SLOW);
 	}
 }
