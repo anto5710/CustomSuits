@@ -9,8 +9,6 @@ import gmail.anto5710.mcp.customsuits.Utils.ItemUtil;
 import gmail.anto5710.mcp.customsuits.Utils.PacketUtil;
 import gmail.anto5710.mcp.customsuits.Utils.ParticleUtil;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
-import gmail.anto5710.mcp.customsuits.Utils.damagiom.DamageControl;
-import gmail.anto5710.mcp.customsuits.Utils.damagiom.DamageUtil;
 import gmail.anto5710.mcp.customsuits.Utils.metadative.Metadative;
 
 import org.bukkit.ChatColor;
@@ -38,7 +36,6 @@ import org.bukkit.event.player.PlayerToggleSprintEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BlockStateMeta;
-import org.bukkit.metadata.FixedMetadataValue;
 
 public class SuitWeapons implements Listener {
 

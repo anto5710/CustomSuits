@@ -4,8 +4,6 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.craftbukkit.v1_13_R2.entity.CraftBat;
-import org.bukkit.entity.Bat;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -15,14 +13,10 @@ import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
 import gmail.anto5710.mcp.customsuits.Utils.CustomEffects;
 import gmail.anto5710.mcp.customsuits.Utils.MathUtil;
-import gmail.anto5710.mcp.customsuits.Utils.PacketUtil;
 import gmail.anto5710.mcp.customsuits.Utils.ParticleUtil;
-import gmail.anto5710.mcp.customsuits.Utils.PotionBrewer;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
-import gmail.anto5710.mcp.customsuits.Utils.ThorUtils;
 import gmail.anto5710.mcp.customsuits.Utils.damagiom.DamageAttribute;
 import gmail.anto5710.mcp.customsuits.Utils.damagiom.DamageUtil;
-import gmail.anto5710.mcp.customsuits.Utils.encompassor.MapEncompassor;
 import gmail.anto5710.mcp.customsuits.Utils.encompassor.standardized.DispenseEncompassor;
 
 public class HammerThrowEffect extends DispenseEncompassor<Item, Player>{

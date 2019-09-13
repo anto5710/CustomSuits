@@ -116,6 +116,7 @@ public class CustomSuitPlugin extends JavaPlugin {
 	public static ItemStack Chestplate_Man = new ItemStack(Material.LEATHER_CHESTPLATE);
 	public static ItemStack Leggings_Man = new ItemStack(Material.LEATHER_LEGGINGS);
 	public static ItemStack Boots_Man = new ItemStack(Material.IRON_BOOTS);
+	@SuppressWarnings("deprecation")
 	public static ItemStack Sword_Man = new ItemStack(Material.GOLDEN_SWORD, 1, (short) Values.ManDeafultDamage);
 
 	/**

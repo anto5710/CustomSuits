@@ -19,6 +19,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 public class HammerWeapons implements Listener{
+	@SuppressWarnings("unused")
 	private CustomSuitPlugin plugin;
 	
 	public HammerWeapons(CustomSuitPlugin plugin){

@@ -59,6 +59,7 @@ public class SuitSettings {
 		p.updateInventory();
 	}
 	
+	@SuppressWarnings("unused")
 	private void resetUInv(){
 		command_equipment = CustomSuitPlugin.copyCommandGUI(p, CustomSuitPlugin.commandInventory);
 		equipment = CustomSuitPlugin.copyInven(p, CustomSuitPlugin.inventory, InventoryNames.inventory_name);
