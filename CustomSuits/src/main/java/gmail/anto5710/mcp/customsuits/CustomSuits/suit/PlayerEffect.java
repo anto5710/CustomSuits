@@ -1,9 +1,6 @@
 package gmail.anto5710.mcp.customsuits.CustomSuits.suit;
 
-import gmail.anto5710.mcp.customsuits.CustomSuits.FireworkProccesor;
-
-
-
+import gmail.anto5710.mcp.customsuits.CustomSuits.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.CustomSuits.dao.SpawningDao;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.weapons.MachineGun;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
@@ -13,6 +10,7 @@ import gmail.anto5710.mcp.customsuits.Utils.InventoryUtil;
 import gmail.anto5710.mcp.customsuits.Utils.ItemUtil;
 import gmail.anto5710.mcp.customsuits.Utils.PotionBrewer;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
+import gmail.anto5710.mcp.customsuits.Utils.fireworks.FireworkProccesor;
 
 import java.util.HashSet;
 import java.util.List;

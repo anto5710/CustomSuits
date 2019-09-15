@@ -8,7 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.scheduler.BukkitTask;
 
-import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
+import gmail.anto5710.mcp.customsuits.CustomSuits.CustomSuitPlugin;
 
 public abstract class AbstractEncompassor<E extends Entity> implements IEncompassor<E>{
 	protected CustomSuitPlugin plugin;

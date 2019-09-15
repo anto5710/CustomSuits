@@ -1,4 +1,4 @@
-package gmail.anto5710.mcp.customsuits.CustomSuits;
+package gmail.anto5710.mcp.customsuits.Utils.fireworks;
 
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;

@@ -2,7 +2,7 @@ package gmail.anto5710.mcp.customsuits.Utils.encompassor.standardized;
 
 import org.bukkit.entity.Entity;
 
-import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
+import gmail.anto5710.mcp.customsuits.CustomSuits.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.Utils.encompassor.LinearEncompassor;
 
 public abstract class StandardEncompassor <E extends Entity> extends LinearEncompassor<E>{

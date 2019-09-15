@@ -15,10 +15,10 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.inventory.meta.FireworkMeta;
 
-import gmail.anto5710.mcp.customsuits.CustomSuits.FireworkProccesor;
-import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
+import gmail.anto5710.mcp.customsuits.CustomSuits.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.Utils.MathUtil;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
+import gmail.anto5710.mcp.customsuits.Utils.fireworks.FireworkProccesor;
 import gmail.anto5710.mcp.customsuits.Utils.metadative.Metadative;
 
 public class DamageControl implements Listener{

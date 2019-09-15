@@ -1,6 +1,6 @@
 package gmail.anto5710.mcp.customsuits.Utils;
 
-import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
+import gmail.anto5710.mcp.customsuits.CustomSuits.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
 import java.util.List;
 import java.util.Set;

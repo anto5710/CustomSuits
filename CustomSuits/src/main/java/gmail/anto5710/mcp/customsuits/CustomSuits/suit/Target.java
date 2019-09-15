@@ -2,6 +2,7 @@ package gmail.anto5710.mcp.customsuits.CustomSuits.suit;
 
 import java.util.Collection;
 
+import gmail.anto5710.mcp.customsuits.CustomSuits.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.CustomSuits.dao.SpawningDao;
 
 import org.bukkit.Bukkit;

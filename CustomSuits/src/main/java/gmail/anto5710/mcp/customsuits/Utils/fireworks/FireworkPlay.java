@@ -1,4 +1,4 @@
-package gmail.anto5710.mcp.customsuits.CustomSuits;
+package gmail.anto5710.mcp.customsuits.Utils.fireworks;
 
 import net.minecraft.server.v1_13_R2.EntityFireworks;
 

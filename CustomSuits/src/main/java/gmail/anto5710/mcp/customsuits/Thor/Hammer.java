@@ -6,9 +6,7 @@ import java.util.HashSet;
 
 import java.util.Set;
 
-import gmail.anto5710.mcp.customsuits.CustomSuits.FireworkPlay;
-import gmail.anto5710.mcp.customsuits.CustomSuits.FireworkProccesor;
-import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
+import gmail.anto5710.mcp.customsuits.CustomSuits.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.Setting.PotionEffects;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
 import gmail.anto5710.mcp.customsuits.Utils.InventoryUtil;
@@ -16,6 +14,8 @@ import gmail.anto5710.mcp.customsuits.Utils.ItemUtil;
 import gmail.anto5710.mcp.customsuits.Utils.ParticleUtil;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 import gmail.anto5710.mcp.customsuits.Utils.ThorUtils;
+import gmail.anto5710.mcp.customsuits.Utils.fireworks.FireworkPlay;
+import gmail.anto5710.mcp.customsuits.Utils.fireworks.FireworkProccesor;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Color;

@@ -1,7 +1,6 @@
 package gmail.anto5710.mcp.customsuits.CustomSuits.suit.weapons;
 
-import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
-
+import gmail.anto5710.mcp.customsuits.CustomSuits.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.HungerScheduler;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.weapons.repulsor.ArcCompressor;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.weapons.repulsor.ArcReffecter;

@@ -1,4 +1,4 @@
-package gmail.anto5710.mcp.customsuits.CustomSuits.suit;
+package gmail.anto5710.mcp.customsuits.CustomSuits;
 
 
 import java.util.Arrays;
@@ -33,6 +33,14 @@ import gmail.anto5710.mcp.customsuits.CustomSuits.InvetoryGUI.CancelAirClick;
 import gmail.anto5710.mcp.customsuits.CustomSuits.InvetoryGUI.Inventories;
 import gmail.anto5710.mcp.customsuits.CustomSuits.InvetoryGUI.SuitInventoryGUI;
 import gmail.anto5710.mcp.customsuits.CustomSuits.dao.SpawningDao;
+import gmail.anto5710.mcp.customsuits.CustomSuits.suit.AutoTarget;
+import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomEntities;
+import gmail.anto5710.mcp.customsuits.CustomSuits.suit.HungerScheduler;
+import gmail.anto5710.mcp.customsuits.CustomSuits.suit.PlayerEffect;
+import gmail.anto5710.mcp.customsuits.CustomSuits.suit.SuitEffecter;
+import gmail.anto5710.mcp.customsuits.CustomSuits.suit.SuitManufactory;
+import gmail.anto5710.mcp.customsuits.CustomSuits.suit.SuitSettings;
+import gmail.anto5710.mcp.customsuits.CustomSuits.suit.Target;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.weapons.MachineGun;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.weapons.SuitWeapons;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.weapons.repulsor.ArcCompressor;
@@ -62,8 +70,8 @@ import gmail.anto5710.mcp.customsuits.Utils.metadative.Metadative;
 public class CustomSuitPlugin extends JavaPlugin {
 	public static Logger logger;
 	private static JavaPlugin plugin;
-	Target targetting;
-	HungerScheduler hscheduler;
+	public Target targetting;
+	public HungerScheduler hscheduler;
 	public static SuitEffecter suitEffecter; 
 	public static SpawningDao dao;
 	

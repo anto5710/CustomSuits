@@ -1,11 +1,11 @@
 package gmail.anto5710.mcp.customsuits.Utils;
 
-import gmail.anto5710.mcp.customsuits.CustomSuits.FireworkPlay;
-import gmail.anto5710.mcp.customsuits.CustomSuits.FireworkProccesor;
-import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
-
+import gmail.anto5710.mcp.customsuits.CustomSuits.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
 import gmail.anto5710.mcp.customsuits.Thor.Hammer;
+import gmail.anto5710.mcp.customsuits.Utils.fireworks.FireworkPlay;
+import gmail.anto5710.mcp.customsuits.Utils.fireworks.FireworkProccesor;
+
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.FireworkEffect.Type;

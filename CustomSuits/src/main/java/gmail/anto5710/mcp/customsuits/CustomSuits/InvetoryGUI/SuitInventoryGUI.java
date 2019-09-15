@@ -1,9 +1,8 @@
 package gmail.anto5710.mcp.customsuits.CustomSuits.InvetoryGUI;
 
 
+import gmail.anto5710.mcp.customsuits.CustomSuits.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomEntities;
-
-import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.PlayerEffect;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.SuitSettings;
 import gmail.anto5710.mcp.customsuits.Setting.Values;

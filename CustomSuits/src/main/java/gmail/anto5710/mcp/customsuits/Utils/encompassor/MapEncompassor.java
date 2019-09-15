@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.bukkit.entity.Entity;
 
-import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
+import gmail.anto5710.mcp.customsuits.CustomSuits.CustomSuitPlugin;
 
 public abstract class MapEncompassor<E extends Entity, V> extends AbstractEncompassor<E>{
 	protected Map<E, V> maptia = new HashMap<>();
