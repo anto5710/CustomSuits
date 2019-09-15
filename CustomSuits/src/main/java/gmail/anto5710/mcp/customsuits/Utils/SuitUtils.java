@@ -1,7 +1,6 @@
 package gmail.anto5710.mcp.customsuits.Utils;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
-import gmail.anto5710.mcp.customsuits.CustomSuits.suit.weapons.SuitWeapons;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
 import java.util.List;
 import java.util.Set;
@@ -13,6 +12,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
@@ -54,7 +54,7 @@ public class SuitUtils {
 		player.playSound(player.getLocation(), sound, volume, pitch);
 	}
 	
-	public static void lineParticle(Location target, Location loc, Entity shooter, Consumer<Location>effect, long Effect_Count_Second) {
+	public static void lineParticle(Location target, Location loc, Entity shooter, Consumer<Location> effect, long effectsPerTick) {
 		double distance = loc.distance(target);
 		if (distance <= 0) return;
 			
@@ -66,10 +66,9 @@ public class SuitUtils {
 			
 			@Override
 			public void run() {
-				System.out.println(max);
-				for (int c = 0; c < Effect_Count_Second; c++) {
+				for (int c = 0; c < effectsPerTick; c++) {
 					if (count >= max) {
-						SuitWeapons.breakblock(target.getBlock());
+						SuitUtils.breakblock(target.getBlock());
 						this.cancel(); break;
 					}
 					curLoc.add(v);
@@ -80,13 +79,8 @@ public class SuitUtils {
 		}.runTaskTimer(plugin, 0, 2);
 	}
 
-	public static void createExplosion(Location location, float power , boolean setFire , boolean BlockBreak ){
-		
-		double x = location.getX();
-		double y = location.getY();
-		double z = location.getZ();
-		
-		location.getWorld().createExplosion(x, y, z, power, setFire, BlockBreak);
+	public static void createExplosion(Location loc, float power, boolean setFire , boolean breakBlock){
+		loc.getWorld().createExplosion(loc.getX(), loc.getY(), loc.getZ(), power, setFire, breakBlock);
 	}
 	
 	public static void sleep(long msec) {
@@ -156,7 +150,7 @@ public class SuitUtils {
 	}
 	
 	public static void teleportWithPassengers(Location to, Entity vehicle){
-		if(vehicle==null || to == null) return;
+		if(anyNull(to, vehicle)) return;
 			
 		List<Entity> passengers = vehicle.getPassengers();
 		vehicle.eject();
@@ -170,7 +164,7 @@ public class SuitUtils {
 		}
 	}
 	
-	private static Set<EntityType> armables = Sets.newHashSet(EntityType.ARMOR_STAND, EntityType.ZOMBIE, EntityType.SKELETON, EntityType.WITHER_SKELETON, EntityType.HUSK, EntityType.PIG_ZOMBIE);
+	private static Set<EntityType> armables = Sets.newHashSet(EntityType.ARMOR_STAND, EntityType.ZOMBIE, EntityType.DROWNED, EntityType.SKELETON, EntityType.WITHER_SKELETON, EntityType.HUSK, EntityType.PIG_ZOMBIE);
 	public static boolean isArmable(LivingEntity lentity) {
 		return armables.contains(lentity.getType());
 	}
@@ -192,5 +186,12 @@ public class SuitUtils {
 
 	public static boolean isUnbreakable(Block hitblock) {
 		return Values.unbreakable.contains(hitblock);
+	}
+
+	public static void breakblock(Block block) {
+		if (!isUnbreakable(block)) {
+			ParticleUtil.playBlockEffect(Particle.BLOCK_CRACK, block.getLocation(), 10, 5D, block.getBlockData());
+			block.breakNaturally();
+		}
 	}
 }

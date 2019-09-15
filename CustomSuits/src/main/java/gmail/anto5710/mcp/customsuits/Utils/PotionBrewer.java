@@ -65,7 +65,15 @@ public class PotionBrewer {
 	 * @param PotionEffectType PotionEffectType
 	 * @param lentity LivingEntity to remove PotionEfffect
 	 */
-	public static void removePotionEffecstByType(@Nonnull LivingEntity lentity, @Nonnull PotionEffectType...PotionEffectTypes) {
+	public static void removePotionEffectsByType(@Nonnull LivingEntity lentity, @Nonnull PotionEffectType...PotionEffectTypes) {
 		Arrays.stream(PotionEffectTypes).forEach(type->removePotionEffectByType(lentity, type));
+	}
+	
+	public static void zoom(LivingEntity lentity, int degree){
+		addPotion(lentity, PotionEffectType.SLOW, Integer.MAX_VALUE, degree);
+	}
+	
+	public static void dezoom(LivingEntity lentity){
+		removePotionEffectByType(lentity, PotionEffectType.SLOW);
 	}
 }

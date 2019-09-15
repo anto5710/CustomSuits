@@ -77,7 +77,6 @@ public class SuitEffecter extends LinearEncompassor<Player>{
 			SuitUtils.playSound(player, Sound.BLOCK_METAL_PLACE, 4F, 14F);
 			SuitUtils.runAfter(()->SuitUtils.playSound(player, Sound.BLOCK_STONE_BUTTON_CLICK_OFF, 4F, 14F), 4);
 			SuitUtils.runAfter(()->SuitUtils.playSound(player, Sound.BLOCK_STONE_BUTTON_CLICK_OFF, 4F, 14F), 7);
-			
 		}
 		InventoryUtil.replete(player, Material.ARROW);
 	}
@@ -87,7 +86,7 @@ public class SuitEffecter extends LinearEncompassor<Player>{
 		player.setAllowFlight(player.getGameMode()==GameMode.CREATIVE);
 		player.setFlySpeed(0.5F);
 		
-		PotionBrewer.removePotionEffecstByType(player, 
+		PotionBrewer.removePotionEffectsByType(player, 
 			PotionEffectType.FIRE_RESISTANCE,
 			PotionEffectType.ABSORPTION,
 			PotionEffectType.HEALTH_BOOST,

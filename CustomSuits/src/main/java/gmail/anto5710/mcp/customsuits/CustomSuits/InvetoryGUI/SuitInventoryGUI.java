@@ -28,7 +28,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 
-public class SuitInventoryGUI extends InventoryNames implements Listener {
+public class SuitInventoryGUI extends Inventories implements Listener {
 
 	CustomSuitPlugin plugin;
 
@@ -38,7 +38,7 @@ public class SuitInventoryGUI extends InventoryNames implements Listener {
 	
 	@EventHandler
 	public void clickExpOnInventory(InventoryClickEvent e) {
-		if (authenticateAccess(e, inventory_name)) {
+		if (authenticateAccess(e, maininventory_name)) {
 			Inventory i = e.getInventory();
 			ItemStack icon = i.getItem(8);
 
@@ -88,7 +88,7 @@ public class SuitInventoryGUI extends InventoryNames implements Listener {
 
 	@EventHandler
 	public void ClickCommand(InventoryClickEvent e) {
-		if(authenticateAccess(e, CommandInventory_name)) {
+		if(authenticateAccess(e, commandinventory_name)) {
 			Player p = (Player) e.getWhoClicked();
 			if (e.getSlot() == 10) {
 				CustomSuitPlugin.summonNearestSuit(p);;
@@ -175,21 +175,21 @@ public class SuitInventoryGUI extends InventoryNames implements Listener {
 			boolean toCancel = true;
 		
 			if (slot == 22) {
-				player.openInventory(CustomSuitPlugin.handle(player).helmetequipment);
+				player.openInventory(CustomSuitPlugin.handle(player).helmetEnchants);
 			} else if (slot == 25) {
-				player.openInventory(CustomSuitPlugin.HelmetColorInventory);
+				player.openInventory(Inventories.HelmetColorInventory);
 			} else if (slot == 31) {
-				player.openInventory(CustomSuitPlugin.handle(player).chestequipment);
+				player.openInventory(CustomSuitPlugin.handle(player).chestEnchants);
 			} else if (slot == 34) {
-				player.openInventory(CustomSuitPlugin.ChestplateColorInventory);
+				player.openInventory(Inventories.ChestplateColorInventory);
 			} else if (slot == 40) {
-				player.openInventory(CustomSuitPlugin.handle(player).leggingsequipment);
+				player.openInventory(CustomSuitPlugin.handle(player).leggingsEnchants);
 			} else if (slot == 43) {
-				player.openInventory(CustomSuitPlugin.LeggingsColorInventory);
+				player.openInventory(Inventories.LeggingsColorInventory);
 			} else if (slot == 49) {
-				player.openInventory(CustomSuitPlugin.handle(player).bootsequipment);
+				player.openInventory(CustomSuitPlugin.handle(player).bootsEnchants);
 			} else if (slot == 52) {
-				player.openInventory(CustomSuitPlugin.BootsColorInventory);				
+				player.openInventory(Inventories.BootsColorInventory);				
 			} else {
 				toCancel = false;
 			}
@@ -208,7 +208,7 @@ public class SuitInventoryGUI extends InventoryNames implements Listener {
 			if (ItemUtil.checkItem(CustomSuitPlugin.suitremote, InventoryUtil.getMainItem(player))) {
 				CustomSuitPlugin.refreshInventory((Player) e.getPlayer());
 
-				e.getPlayer().openInventory(CustomSuitPlugin.handle(player).equipment);
+				e.getPlayer().openInventory(CustomSuitPlugin.handle(player).main);
 				e.setCancelled(true);
 			}
 		}
@@ -226,17 +226,17 @@ public class SuitInventoryGUI extends InventoryNames implements Listener {
 			} else if (slot == 4) {
 				CustomSuitPlugin.refreshInventory(player);
 
-				player.openInventory(CustomSuitPlugin.handle(player).armorequipment);
+				player.openInventory(CustomSuitPlugin.handle(player).armor);
 				e.setCancelled(true);
 			}else if(slot==18){
 				CustomSuitPlugin.refreshInventory(player);
 
-				player.openInventory(CustomSuitPlugin.type_inventory);
+				player.openInventory(Inventories.type_inventory);
 				e.setCancelled(true);
 			}else if(slot == 22){
 				CustomSuitPlugin.refreshInventory(player);
 
-				player.openInventory(CustomSuitPlugin.vehicle_inventory);
+				player.openInventory(Inventories.vehicle_inventory);
 				e.setCancelled(true);
 			}
 			

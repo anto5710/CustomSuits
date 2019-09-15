@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -49,22 +50,9 @@ public class Values {
 	final public static Sound ManSmokeSound = Sound.ENTITY_GENERIC_EXTINGUISH_FIRE;
 	final public static long ManSmoke_Time = 20;
 
-
-	final public static double HammerDamage = 10;
-	final public static double HammerArmor = 2;
-	final public static double HammerPrompt = 1.10;
-	final public static double LightningMissile = 10D ;
-	final public static int LightningMissileHunger = -1;
-	final public static Sound LightningMissileSound = Sound.ENTITY_LIGHTNING_BOLT_THUNDER;
+	final public static Color Chestplate_Man_Color = Color.fromRGB(217, 206, 206);
+	final public static Color Leggings_Man_Color = Color.fromRGB(31, 28, 28);
 	
-	
-	final public static Sound ThorChangeSound = Sound.ENTITY_LIGHTNING_BOLT_THUNDER;
-
-	final public static Sound HammerTeleportSound = Sound.ENTITY_ENDERMAN_TELEPORT;
-	final public static int Thunder_Creeper_Hunger = -15;
-	
-
-	final public static Sound Thunder_Creeper_Start_Sound = Sound.ENTITY_ENDERMAN_STARE;
 	
 	
 	final public static int SuitMaxLevel = 64;
@@ -133,6 +121,23 @@ public class Values {
 	
 	final public static int Explode_Falling_Block_Count_Divider = 3;
 
+	
+	
+	final public static double HammerDamage = 10;
+	final public static double HammerArmor = 2;
+	final public static double HammerPrompt = 1.10;
+	final public static double LightningMissile = 10D ;
+	final public static int LightningMissileHunger = -1;
+	final public static Sound LightningMissileSound = Sound.ENTITY_LIGHTNING_BOLT_THUNDER;
+	
+	
+	final public static Sound ThorChangeSound = Sound.ENTITY_LIGHTNING_BOLT_THUNDER;
+
+	final public static Sound HammerTeleportSound = Sound.ENTITY_ENDERMAN_TELEPORT;
+	final public static int Thunder_Creeper_Hunger = -15;
+
+	final public static Sound Thunder_Creeper_Start_Sound = Sound.ENTITY_ENDERMAN_STARE;
+	
 	final public static double HammerExplosionDamageRadius = 2;
 
 	final public static Particle HammerReturnEffect = Particle.NAUTILUS;
@@ -142,7 +147,9 @@ public class Values {
 	final public static Particle HammerDefaultEffect = Particle.CRIT;
 
 	final public static double ThorForceLightningDamage = 6;
-	
+		
+	final public static Color ThorChestplateColor = Color.fromRGB(35, 35, 35); 
+	final public static Color ThorLeggingsColor = Color.fromRGB(0, 0, 65);
 		
 	
 }

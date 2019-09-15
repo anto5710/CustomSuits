@@ -3,7 +3,6 @@ package gmail.anto5710.mcp.customsuits.CustomSuits.suit.weapons;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -36,11 +35,9 @@ public class MachineGun implements Listener{
 	public static Set<Player> charging = new HashSet<>();
 	public static Set<Player> sniper_cooldowns = new HashSet<>();
 
-	private static CustomSuitPlugin plugin;
 	public static GunEffecter effecter;
 
 	public MachineGun(CustomSuitPlugin plugin) {
-		MachineGun.plugin = plugin;
 		effecter = new GunEffecter(plugin, 1);
 	}
 
@@ -53,20 +50,15 @@ public class MachineGun implements Listener{
 		return ItemUtil.checkName(itemInHand, gun_regex) && sample.getType() == itemInHand.getType();
 	}
 
-	private double spread = 0.3;
-	public void shotMachineGun(Player player) {
+	private static double unaimed_spread = 0.3;
+	public static void shotMachineGun(Player player) {
+		final double spread = PlayerEffect.isZooming(player) ? MathUtil.randomRadius(0.025) : unaimed_spread;
 		shoot(player, spread);
-		recoil(player, 0.5);
+		recoil(player, 0.2);
 	
-		if (PlayerEffect.zooms.containsKey(player) && PlayerEffect.zooms.get(player)) {
-			spread = MathUtil.randomRadius(0.025);
-		}
-	
-		final double Spread = spread;
-		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> MachineGun.shoot(player, Spread), 3L);
-		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> MachineGun.shoot(player, Spread), 3L);
+		SuitUtils.runAfter(()->MachineGun.shoot(player, spread), 3);
+		SuitUtils.runAfter(()->MachineGun.shoot(player, spread), 3);
 	}
-
 	
 	private static int chargeToExtent(Player player, Material ammo, int full_amount) {
 		int charged_ammo = 0;
@@ -80,7 +72,7 @@ public class MachineGun implements Listener{
 			player.updateInventory();
 			SuitUtils.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 4.0F, 1.0F);
 
-			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+			SuitUtils.runAfter(() -> {
 				Location loc = player.getLocation();
 				SuitUtils.playSound(loc, Sound.BLOCK_ANVIL_LAND, 4.0F, 4.0F);
 				SuitUtils.playSound(loc, Sound.ENTITY_GENERIC_EXPLODE, 4.0F, 4.0F);
@@ -88,7 +80,7 @@ public class MachineGun implements Listener{
 				SuitUtils.playSound(loc, Sound.UI_BUTTON_CLICK, 4.0F, 4.0F);
 				SuitUtils.playSound(loc, Sound.ENTITY_CREEPER_PRIMED, 4.0F, 4.0F);
 			}, 40);
-			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+			SuitUtils.runAfter(() -> {
 				Location loc = player.getLocation();
 				SuitUtils.playSound(loc, Sound.ENTITY_IRON_GOLEM_HURT, 4.0F, 4.0F);
 				SuitUtils.playSound(loc, Sound.ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR, 15.0F, 3.5F);
@@ -96,7 +88,6 @@ public class MachineGun implements Listener{
 				SuitUtils.playSound(loc, Sound.BLOCK_IRON_DOOR_OPEN, 4.0F, 4.0F);
 				charging.remove(player);
 			}, 65);
-
 		} else {
 			SuitUtils.lack(player, "Ammo");
 			player.playSound(player.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 6.0F, 6.0F);
@@ -107,10 +98,10 @@ public class MachineGun implements Listener{
 	public static void cooldown(double msec, Player player) {
 		// 1 tick = 0.05 sec
 		// 1 sec = 20 tick
-		long tick = (long) msec * 20;
+		long tick = (long)(msec*20);
 
 		sniper_cooldowns.add(player);
-		Bukkit.getScheduler().runTaskLater(plugin, () -> {
+		SuitUtils.runAfter(()->{
 			Location loc = player.getLocation();
 			SuitUtils.playSound(loc, Sound.ENTITY_IRON_GOLEM_HURT, 4.0F, 4.0F);
 			SuitUtils.playSound(loc, Sound.ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR, 15.0F, 3.5F);
@@ -129,9 +120,7 @@ public class MachineGun implements Listener{
 
 		Snowball snowball = player.launchProjectile(Snowball.class);
 		// enshroud(snowball);;
-		Vector v = player.getLocation().getDirection();
-		v.multiply(3.0);
-		v.add(MathUtil.randomVector(spread));
+		Vector v = player.getLocation().getDirection().multiply(3.0).add(MathUtil.randomVector(spread));
 
 		snowball.setVelocity(v);
 		Metadative.imprint(snowball, Values.MachineGunDamage);
@@ -145,7 +134,7 @@ public class MachineGun implements Listener{
 	@EventHandler
 	public void gun(PlayerInteractEvent clickevent) throws InterruptedException {
 		Player player = clickevent.getPlayer();
-		ItemStack Gun = CustomSuitPlugin.getGun();
+		ItemStack Gun = CustomSuitPlugin.gunitem;
 
 		if (SuitUtils.isRightClick(clickevent) && CustomSuitPlugin.isMarkEntity(player)
 				&& MachineGun.checkGun(player, Gun)) {
@@ -194,9 +183,8 @@ public class MachineGun implements Listener{
 					if (!inSniperCooldown(player)) {
 						Location location = player.getEyeLocation();
 						Vector direction = location.getDirection();
-						location.setDirection(
-								MathUtil.randomLoc(target.clone().subtract(location), 5).toVector().normalize());
-						if (PlayerEffect.zooms.containsKey(player) && PlayerEffect.zooms.get(player)) {
+						location.setDirection(MathUtil.randomLoc(target.clone().subtract(location), 5).toVector().normalize());
+						if (PlayerEffect.isZooming(player)) {
 							location.setDirection(direction);
 						}
 

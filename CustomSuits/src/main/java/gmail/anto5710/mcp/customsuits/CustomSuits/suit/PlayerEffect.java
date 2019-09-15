@@ -3,6 +3,7 @@ package gmail.anto5710.mcp.customsuits.CustomSuits.suit;
 import gmail.anto5710.mcp.customsuits.CustomSuits.FireworkProccesor;
 
 
+
 import gmail.anto5710.mcp.customsuits.CustomSuits.dao.SpawningDao;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.weapons.MachineGun;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
@@ -13,8 +14,10 @@ import gmail.anto5710.mcp.customsuits.Utils.ItemUtil;
 import gmail.anto5710.mcp.customsuits.Utils.PotionBrewer;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.FireworkEffect;
@@ -35,7 +38,6 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 /**
@@ -46,14 +48,14 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class PlayerEffect implements Listener {
 	private static CustomSuitPlugin mainPlugin;
-	static HungerScheduler hungerscheduler;
+	static HungerScheduler hscheduler;
 	String regex = Values.gun_regex;
-	public static HashMap<Player, Boolean>zooms = new HashMap<>();
+	public static Set<Player> zoomed = new HashSet<>();
 
 	public PlayerEffect(CustomSuitPlugin main) {
 		PlayerEffect.mainPlugin = main;
 		mainPlugin.getLogger();
-		hungerscheduler = main.hscheduler;
+		hscheduler = main.hscheduler;
 	}
 
 	public static void spawnFireworks(final Player whoClicked) {
@@ -97,7 +99,7 @@ public class PlayerEffect implements Listener {
 		LivingEntity lentity = (LivingEntity) entity;
 
 		if (entity.getType() != EntityType.PLAYER
-				&& PlayerEffect.hasArmor(lentity)
+				&& InventoryUtil.hasArmor(lentity)
 				&& SuitUtils.isArmable(lentity)
 				&& CustomSuitPlugin.isMarkEntity(lentity)
 				&& CustomSuitPlugin.dao.isCreatedBy(lentity, player) 
@@ -156,17 +158,15 @@ public class PlayerEffect implements Listener {
 	@EventHandler
 	public void clickToSpawnSuit(PlayerInteractEvent event){
 		Player player = event.getPlayer();
-		if(!ItemUtil.checkItem(CustomSuitPlugin.suitremote, InventoryUtil.getMainItem(player)) || !SuitUtils.isLeftClick(event)){
-			return;
-		}
-		
-		if(player.isSneaking()){
-			CustomSuitPlugin.summonNearestSuit(player);
-		}else{
-			Location location_entity =SuitUtils.getTargetLoc(player, Values.spawnSuit_max_target_distance);
-			location_entity.add(0, 1.5, 0);
-			
-			CustomSuitPlugin.spawnSuit(player, location_entity);			
+		if (ItemUtil.checkItem(CustomSuitPlugin.suitremote, InventoryUtil.getMainItem(player))
+				&& SuitUtils.isLeftClick(event)) {
+
+			if (player.isSneaking()) {
+				CustomSuitPlugin.summonNearestSuit(player);
+			} else {
+				Location spawnLoc = SuitUtils.getTargetLoc(player, Values.spawnSuit_max_target_distance).add(0, 1.5, 0);
+				CustomSuitPlugin.spawnSuit(player, spawnLoc);
+			}
 		}
 	}
 
@@ -177,8 +177,8 @@ public class PlayerEffect implements Listener {
 		if (CustomSuitPlugin.isMarkEntity(player) && !CustomSuitPlugin.suitEffecter.isRegistered(player)) {
 			
 			CustomSuitPlugin.suitEffecter.register(player);
-			if (!hungerscheduler.isRegistered(player) && player.getFoodLevel() >= Values.SuitFlyHunger) {
-				hungerscheduler.register(player);
+			if (!hscheduler.isRegistered(player) && player.getFoodLevel() >= Values.SuitFlyHunger) {
+				hscheduler.register(player);
 			}
 		}
 	}
@@ -187,8 +187,7 @@ public class PlayerEffect implements Listener {
 	public void onEntityDeath(EntityDeathEvent event) {
 		Entity deadEntity = event.getEntity();
 		if (SpawningDao.spawnMap.containsKey(deadEntity.getEntityId()) && !(deadEntity instanceof Player)) {
-			SpawningDao dao = PlayerEffect.mainPlugin.getDao();
-			dao.remove(deadEntity);
+			CustomSuitPlugin.dao.remove(deadEntity);
 		}
 	}
 
@@ -202,30 +201,20 @@ public class PlayerEffect implements Listener {
 		Player player = event.getPlayer();
 		Entity entity = event.getRightClicked();
 		
-		SpawningDao dao = PlayerEffect.mainPlugin.getDao();
-		if(!(entity instanceof LivingEntity) || !dao.isCreatedBy(entity, player)) return;
+		SpawningDao dao = CustomSuitPlugin.dao;
+		if (entity instanceof LivingEntity && dao.isCreatedBy(entity, player)) {
+			LivingEntity lentity = (LivingEntity) entity;
+			if (InventoryUtil.hasArmor(lentity)) {
+				// 실오라기라도 하나 걸치고 있음
+				player.getEquipment().setArmorContents(lentity.getEquipment().getArmorContents());
+				lentity.damage(100000000D);
+				player.updateInventory();
+				CustomEffects.play_Suit_Get(player.getLocation(), player);
 
-		LivingEntity lentity = (LivingEntity) entity;
-		if(hasArmor(lentity)){
-			// 4개를 다 가지고 있음!
-			player.getEquipment().setArmorContents(lentity.getEquipment().getArmorContents());
-			lentity.damage(10000000D);
-			player.updateInventory();
-			CustomEffects.play_Suit_Get(player.getLocation(), player);
-
-			SuitUtils.playSound(player, Values.SuitSound, 9.0F, 9.0F);
-			dao.remove(lentity);
+				SuitUtils.playSound(player, Values.SuitSound, 9.0F, 9.0F);
+				dao.remove(lentity);
+			}
 		}
-	}
-
-	public static boolean hasArmor(LivingEntity lentity) {
-		ItemStack[]armorContents = lentity.getEquipment().getArmorContents();
-		int checkCount = 0;
-		for (int index = 0; index < armorContents.length; index++) {
-			ItemStack arm = armorContents[index]; 
-			if (ItemUtil.isAir(arm)) checkCount++; 
-		}
-		return checkCount < armorContents.length;
 	}
 
 	@EventHandler
@@ -233,25 +222,24 @@ public class PlayerEffect implements Listener {
 		Player player = event.getPlayer();
 
 		if (SuitUtils.isLeftClick(event) && CustomSuitPlugin.isMarkEntity(player)
-         && MachineGun.checkGun(player, CustomSuitPlugin.getGun()) && zooms != null) {
-			if (zooms.containsKey(player)) {
-				boolean isZoomed = zooms.get(player);
-				if (isZoomed) {
-					player.removePotionEffect(PotionEffectType.SLOW); //de-zoom
-				} else {
-					zoom(player);
-				}
-				
-				zooms.put(player, !isZoomed);
-			} else {
-				zooms.put(player, true);
-				zoom(player);
-			}
+         && MachineGun.checkGun(player, CustomSuitPlugin.gunitem)) {
+			toggleZoom(player);
 		}
 	}
 	
-	private void zoom(Player p){
-		PotionBrewer.addPotion(p, PotionEffectType.SLOW, 999999999, 10);
+	private void toggleZoom(Player player){
+		boolean toZoom = !isZooming(player);
+		if(toZoom){
+			PotionBrewer.zoom(player, 10);
+			zoomed.add(player);
+		}else{
+			PotionBrewer.dezoom(player);
+			zoomed.remove(player);
+		}
+	}
+	
+	public static boolean isZooming(Player player){
+		return zoomed.contains(player);
 	}
 	
 	@EventHandler
@@ -263,7 +251,7 @@ public class PlayerEffect implements Listener {
 				SuitUtils.lack(player, "Energy");
 				return;
 			}
-			if (player.isFlying() && hungerscheduler.isRegistered(player)) {
+			if (player.isFlying() && hscheduler.isRegistered(player)) {
 				return;
 			}
 
@@ -273,7 +261,7 @@ public class PlayerEffect implements Listener {
 			player.setAllowFlight(true);
 			player.setFlying(true);
 
-			hungerscheduler.register(player);
+			hscheduler.register(player);
 		}
 	}
 }

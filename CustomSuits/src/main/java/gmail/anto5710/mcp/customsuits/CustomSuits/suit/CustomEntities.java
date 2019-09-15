@@ -18,6 +18,7 @@ import org.bukkit.entity.IronGolem;
 import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Shulker;
 import org.bukkit.entity.Silverfish;
+import org.bukkit.entity.SkeletonHorse;
 import org.bukkit.entity.Snowman;
 import org.bukkit.entity.WitherSkeleton;
 import org.bukkit.entity.Wolf;
@@ -43,7 +44,7 @@ public enum CustomEntities {
 	SILVERFISH(Silverfish.class, "silverfish", ItemUtil.createWithName(Material.STONE, ChatColor.WHITE + "Silveralge")),
 	HORSE(Horse.class, "horse", ItemUtil.createWithName(Material.IRON_HORSE_ARMOR, ChatColor.GRAY + "Horse")),
 	ZOMBIE_HORSE(ZombieHorse.class, "zombie_horse", ItemUtil.createWithName(Material.GOLDEN_HORSE_ARMOR, ChatColor.DARK_GREEN + "Zombie Horse")),
-	SKELETON_HORSE(Horse.class, "skeleton_horse", ItemUtil.createWithName(Material.DIAMOND_HORSE_ARMOR, ChatColor.BLACK + "The Undead Horse")),
+	SKELETON_HORSE(SkeletonHorse.class, "skeleton_horse", ItemUtil.createWithName(Material.DIAMOND_HORSE_ARMOR, ChatColor.BLACK + "The Undead Horse")),
 	GUARDIAN(Guardian.class, "guardian", ItemUtil.createWithName(Material.PRISMARINE_CRYSTALS, ChatColor.AQUA + "Guardians of the Galaxy")),
 	WARRIOR(PigZombie.class, "warrior", ItemUtil.createWithName(Material.GOLDEN_SWORD, ChatColor.GOLD + "Spartan")),
 	VARCHER(WitherSkeleton.class, "varcher", ItemUtil.createWithName(Material.WITHER_SKELETON_SKULL, ChatColor.WHITE + "V-archer")),

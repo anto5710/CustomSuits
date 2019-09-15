@@ -47,9 +47,6 @@ public class PacketUtil {
 		if(e==null) return null;
 			
 		int id = ((CraftEntity)e).getHandle().getId();
-		
 		return new PacketPlayOutEntityEquipment(id, slot, CraftItemStack.asNMSCopy(item));
 	}
-	
-	
 }

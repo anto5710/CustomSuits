@@ -31,7 +31,7 @@ public class Metadative {
 					Metadative.imprint(prj, DamageControl.FIRE, fire);
 				}
 				if (!destroy) {
-					Metadative.imprint(prj, DamageControl.NODESTROY, destroy);
+					Metadative.imprint(prj, DamageControl.DESTROY, destroy);
 				}
 			}
 		}

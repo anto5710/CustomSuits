@@ -9,27 +9,21 @@ import gmail.anto5710.mcp.customsuits.Setting.Values;
 import gmail.anto5710.mcp.customsuits.Utils.Enchant;
 import gmail.anto5710.mcp.customsuits.Utils.InventoryUtil;
 import gmail.anto5710.mcp.customsuits.Utils.ItemUtil;
-import gmail.anto5710.mcp.customsuits.Utils.PacketUtil;
-import gmail.anto5710.mcp.customsuits.Utils.ParticleUtil;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
-import gmail.anto5710.mcp.customsuits.Utils.metadative.Metadative;
 
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier.Operation;
 import org.bukkit.block.Banner;
-import org.bukkit.block.Block;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.banner.PatternType;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Snowball;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityToggleGlideEvent;
@@ -152,56 +146,19 @@ public class SuitWeapons implements Listener {
 	public void onPlayerLeftClick(PlayerInteractEvent e) {
 		if (SuitUtils.isLeftClick(e)) {
 			Player player = e.getPlayer();
-			if (CustomSuitPlugin.isMarkEntity(player) 
-					&& InventoryUtil.getMainItem(player).getType() == suitlauncher) {
+			if (CustomSuitPlugin.isMarkEntity(player) && 
+					(InventoryUtil.inAnyHand(player, ArcCompressor.bow) || 
+					(InventoryUtil.inAnyHand(player, ArcCompressor.star))) ) {
 				if(!player.isSneaking()){
-//					if (HungerScheduler.sufficeHunger(player, energy)) {
-//						repulseBim(player, message);
-//					} else {
-//						SuitUtils.lack(player, "Energy");
-//					}
 				} else if (!tnter.inTNTcooldown(player)) {
-
 					if (InventoryUtil.sufficeMaterial(player, ammo)) {
 						tnter.throwTNT(player, 5);
+						compressor.update(player, true, 3);
 					} else {
 						SuitUtils.lack(player, ammo.name());
 					}
 				}
 			}
-		}
-	}
-	/**
-	 * 
-	 * @param player
-	 * @param power 0 ~ 1F (bow가 당겨진 정도)
-	 * @return snowball
-	 */
-	public static Snowball repulseBim(Player player, float power) {
-		Snowball ball = player.launchProjectile(Snowball.class, player.getLocation().getDirection().multiply(2));
-		PacketUtil.castDestroyPacket(ball);
-		ball.setGravity(false);
-		ball.setInvulnerable(true);
-		
-		int level = CustomSuitPlugin.getSuitLevel(player);
-		double levelSq = Math.sqrt(level);
-		power *= level/20F;
-	
-		double damage = power * Values.Bim * (levelSq)/8 + 1;
-		float yield = (float)(power * Values.BimExplosionPower * levelSq/10 + 1);
-		Metadative.imprint(ball, damage, yield, false, true);
-		reffecter.register(ball);
-		
-		SuitUtils.playSound(player, Sound.ENTITY_WITHER_SHOOT, 1F, 5F);
-		SuitUtils.playSound(player, Sound.ENTITY_GENERIC_EXPLODE, 1F, 0F);
-		SuitUtils.playSound(player, Sound.ENTITY_BLAZE_AMBIENT, 1F, -1F);
-		return ball;
-	}
-
-	public static void breakblock(Block block) {
-		if (!SuitUtils.isUnbreakable(block)) {
-			ParticleUtil.playBlockEffect(Particle.BLOCK_CRACK, block.getLocation(), 10, 5D, block.getBlockData());
-			block.breakNaturally();
 		}
 	}
 }

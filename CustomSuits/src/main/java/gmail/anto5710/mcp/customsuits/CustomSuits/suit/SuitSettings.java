@@ -9,71 +9,73 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import gmail.anto5710.mcp.customsuits.CustomSuits.InvetoryGUI.InventoryNames;
+import gmail.anto5710.mcp.customsuits.CustomSuits.InvetoryGUI.Inventories;
 import gmail.anto5710.mcp.customsuits.Utils.ItemUtil;
 
 public class SuitSettings {	
 	final Player p;
-	private CustomEntities sentity = CustomEntities.WARRIOR;
-	private CustomEntities vehicle = null;
+	private CustomEntities sentity;
+	private CustomEntities vehicle;
 	
 	private Queue<LivingEntity> targets = new ArrayBlockingQueue<>(20);
 	private int summonAmount = 1;
 	
-	public Inventory command_equipment, handequipment;
-	public Inventory helmetequipment;
-	public Inventory chestequipment;
-	public Inventory leggingsequipment;
-	public Inventory bootsequipment;
-	public Inventory equipment;
-	public Inventory armorequipment;
+	public Inventory command_equipment;
+	public Inventory helmetEnchants;
+	public Inventory chestEnchants;
+	public Inventory leggingsEnchants;
+	public Inventory bootsEnchants;
+	public Inventory main;
+	public Inventory armor;
 	private Color helmetColor = Color.MAROON, chestColor = Color.MAROON, leggingsColor = Color.MAROON, bootsColor = Color.MAROON;
 
 	public SuitSettings(Player p) {
 		this.p = p;
 		reinitUInven();
+		setSentityType(CustomEntities.WARRIOR);
+		setVehicleType(CustomEntities.NONE);
 	}
 	
 	public void reinitUInven(){
 		if(command_equipment==null){
-			command_equipment = CustomSuitPlugin.copyCommandGUI(p, CustomSuitPlugin.commandInventory);
+			command_equipment = CustomSuitPlugin.copyCommandGUI(p, Inventories.commandCenter);
 		}
-		if(equipment==null){
-			equipment = CustomSuitPlugin.copyInven(p, CustomSuitPlugin.inventory, InventoryNames.inventory_name);
+		if(main==null){
+			main = CustomSuitPlugin.copyInven(p, Inventories.main, Inventories.maininventory_name);
 		}
-		if(armorequipment==null){
-			armorequipment = CustomSuitPlugin.copyInven(p, CustomSuitPlugin.armorinventory, InventoryNames.armorinventory_name);
+		if(armor==null){
+			armor = CustomSuitPlugin.copyInven(p, Inventories.armorinventory, Inventories.armorinventory_name);
 		}
-		if(helmetequipment==null){
-			helmetequipment = CustomSuitPlugin.copyInven(p, CustomSuitPlugin.helmetinventory, InventoryNames.helmetinventory_name);
+		if(helmetEnchants==null){
+			helmetEnchants = CustomSuitPlugin.copyInven(p, Inventories.helmetinventory, Inventories.helmetinventory_name);
 		}
-		if(chestequipment==null){
-			chestequipment = CustomSuitPlugin.copyInven(p, CustomSuitPlugin.chestinventory, InventoryNames.chestinventory_name);
+		if(chestEnchants==null){
+			chestEnchants = CustomSuitPlugin.copyInven(p, Inventories.chestinventory, Inventories.chestinventory_name);
 		}
-		if(leggingsequipment==null){
-			leggingsequipment = CustomSuitPlugin.copyInven(p, CustomSuitPlugin.leggingsinventory, InventoryNames.leggingsinventory_name);
+		if(leggingsEnchants==null){
+			leggingsEnchants = CustomSuitPlugin.copyInven(p, Inventories.leggingsinventory, Inventories.leggingsinventory_name);
 		}
-		if(bootsequipment==null){
-			bootsequipment = CustomSuitPlugin.copyInven(p, CustomSuitPlugin.bootsinventory, InventoryNames.bootsinventory_name);
+		if(bootsEnchants==null){
+			bootsEnchants = CustomSuitPlugin.copyInven(p, Inventories.bootsinventory, Inventories.bootsinventory_name);
 		}
 		p.updateInventory();
 	}
 	
 	@SuppressWarnings("unused")
 	private void resetUInven(){
-		command_equipment = CustomSuitPlugin.copyCommandGUI(p, CustomSuitPlugin.commandInventory);
-		equipment = CustomSuitPlugin.copyInven(p, CustomSuitPlugin.inventory, InventoryNames.inventory_name);
-		armorequipment = CustomSuitPlugin.copyInven(p, CustomSuitPlugin.armorinventory, InventoryNames.armorinventory_name);
-		helmetequipment = CustomSuitPlugin.copyInven(p, CustomSuitPlugin.helmetinventory, InventoryNames.helmetinventory_name);
-		chestequipment = CustomSuitPlugin.copyInven(p, CustomSuitPlugin.chestinventory, InventoryNames.chestinventory_name);
-		leggingsequipment = CustomSuitPlugin.copyInven(p, CustomSuitPlugin.leggingsinventory, InventoryNames.leggingsinventory_name);
-		bootsequipment = CustomSuitPlugin.copyInven(p, CustomSuitPlugin.bootsinventory, InventoryNames.bootsinventory_name);
+		command_equipment = CustomSuitPlugin.copyCommandGUI(p, Inventories.commandCenter);
+		main = CustomSuitPlugin.copyInven(p, Inventories.main, Inventories.maininventory_name);
+		armor = CustomSuitPlugin.copyInven(p, Inventories.armorinventory, Inventories.armorinventory_name);
+		helmetEnchants = CustomSuitPlugin.copyInven(p, Inventories.helmetinventory, Inventories.helmetinventory_name);
+		chestEnchants = CustomSuitPlugin.copyInven(p, Inventories.chestinventory, Inventories.chestinventory_name);
+		leggingsEnchants = CustomSuitPlugin.copyInven(p, Inventories.leggingsinventory, Inventories.leggingsinventory_name);
+		bootsEnchants = CustomSuitPlugin.copyInven(p, Inventories.bootsinventory, Inventories.bootsinventory_name);
 	}
 	
 	private void updateColorIcon(int slot, Color color) {
-		ItemStack itemstack = armorequipment.getItem(slot);
+		ItemStack itemstack = armor.getItem(slot);
 		ItemUtil.dye(itemstack, color);
-		armorequipment.setItem(slot, itemstack);
+		armor.setItem(slot, itemstack);
 		p.updateInventory();
 	}
 	
@@ -85,7 +87,7 @@ public class SuitSettings {
 	}
 	
 	public int level(){
-		return Math.max(1, equipment.getItem(8).getAmount());
+		return Math.max(1, main.getItem(8).getAmount());
 	}
 	
 	public LivingEntity getCurrentTarget(){
@@ -107,16 +109,16 @@ public class SuitSettings {
 	}
 
 	public void setSentityType(CustomEntities type) {
-		if (type != null) {
+		if (type != null && type != CustomEntities.NONE) {
 			sentity = type;
-			equipment.setItem(18, type.getIcon());
+			main.setItem(18, type.getIcon());
 			p.updateInventory();
 		}
 	}
 	
 	public void setVehicleType(CustomEntities type) {
 		vehicle = type;
-		equipment.setItem(22, type.getIcon());
+		main.setItem(22, type.getIcon());
 		p.updateInventory();
 	}
 	

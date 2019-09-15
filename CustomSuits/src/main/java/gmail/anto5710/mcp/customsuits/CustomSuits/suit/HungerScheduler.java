@@ -17,6 +17,7 @@ public class HungerScheduler extends LinearEncompassor<Player> {
 	public HungerScheduler(CustomSuitPlugin plugin, long period) {
 		super(plugin, period);
 		setMaxTick(300);	
+		CustomSuitPlugin.logger.info("starting Hunger Thread");
 	}
 
 	@Override

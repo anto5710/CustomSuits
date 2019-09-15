@@ -63,7 +63,7 @@ public class InventoryUtil {
 		replete(player, type, 1);
 	}
 	
-	public static void removeAll(Player player, ItemStack item){
+	public static void removeAll(@Nonnull Player player, @Nonnull ItemStack item){
 		PlayerInventory inven = player.getInventory();
 		while(inven.contains(item)){
 			inven.remove(item);
@@ -94,19 +94,19 @@ public class InventoryUtil {
 		return 45;
 	}
 	
-	public static boolean holdingMain(Player player, ItemStack sample) {
+	public static boolean inMainHand(Player player, ItemStack sample) {
 		return !SuitUtils.anyNull(player, sample) && ItemUtil.checkItem(sample, InventoryUtil.getMainItem(player));
 	}
 	
-	public static boolean holdingOff(Player player, ItemStack sample){
+	public static boolean inOffHand(Player player, ItemStack sample){
 		return !SuitUtils.anyNull(player, sample) && ItemUtil.checkItem(sample, InventoryUtil.getOffItem(player));
 	}
 
-	public static boolean holdingInAny(Player player, ItemStack sample) {
-		return holdingMain(player, sample) || InventoryUtil.holdingOff(player, sample);
+	public static boolean inAnyHand(Player player, ItemStack sample) {
+		return inMainHand(player, sample) || InventoryUtil.inOffHand(player, sample);
 	}
 
-	public static boolean holdingNone(Player player){
+	public static boolean emptyHand(Player player){
 		ItemStack item = InventoryUtil.getMainItem(player);
 		return ItemUtil.isAir(item);
 	}
@@ -127,4 +127,13 @@ public class InventoryUtil {
 		player.getInventory().setItemInOffHand(item);	
 	}
 
+	public static boolean hasArmor(LivingEntity lentity) {
+		ItemStack[]armorContents = lentity.getEquipment().getArmorContents();
+		int emptySlots = 0;
+		for (int index = 0; index < armorContents.length; index++) {
+			ItemStack arm = armorContents[index]; 
+			if (ItemUtil.isAir(arm)) emptySlots++; 
+		}
+		return emptySlots < armorContents.length;
+	}
 }

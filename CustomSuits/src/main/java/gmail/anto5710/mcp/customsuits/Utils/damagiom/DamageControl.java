@@ -17,18 +17,18 @@ import org.bukkit.inventory.meta.FireworkMeta;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.FireworkProccesor;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
-import gmail.anto5710.mcp.customsuits.CustomSuits.suit.weapons.SuitWeapons;
 import gmail.anto5710.mcp.customsuits.Utils.MathUtil;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 import gmail.anto5710.mcp.customsuits.Utils.metadative.Metadative;
 
 public class DamageControl implements Listener{
+	
 	public static final String 
-						DAMAGE = "g.projectiler.HIT_DAMAGE",  // double damage
-						EXPLOSIVE = "g.projectiler.EXPLOSION",
-						FIRE = "g.projectiler.EXPLOSION.fire",
-						NODESTROY = "g.projectiler.EXPLOSION.nodestroy",
-						BLOCKSHOT = "g.projectiler.BLOCKSHOT"; 
+						DAMAGE = "g.projectiler.HIT_DAMAGE", //double damage  
+						EXPLOSIVE = "g.projectiler.EXPLOSION", // float yield
+						FIRE = "g.projectiler.EXPLOSION.fire", // boolean incendiary
+						DESTROY = "g.projectiler.EXPLOSION.destroy", // boolean breakBlock
+						BLOCKSHOT = "g.projectiler.BLOCKSHOT"; // double block break probability
 	
 	@SuppressWarnings("unused")
 	private CustomSuitPlugin plugin;
@@ -58,7 +58,7 @@ public class DamageControl implements Listener{
 			if(prj instanceof Explosive){
 				Metadative.setExplosive((Explosive)prj, yield, fire);
 			}else{
-				boolean destroy = !Metadative.excavatruth(prj, NODESTROY);
+				boolean destroy = !Metadative.excavatruth(prj, DESTROY);
 				SuitUtils.createExplosion(prj.getLocation(), yield, fire, destroy);
 			}
 		}
@@ -69,7 +69,7 @@ public class DamageControl implements Listener{
 		Block hit = e.getHitBlock();
 		Projectile prj = e.getEntity();
 		if(hit != null && prj.hasMetadata(BLOCKSHOT) && MathUtil.gacha(Metadative.excavate(prj, BLOCKSHOT))){
-			SuitWeapons.breakblock(hit);
+			SuitUtils.breakblock(hit);
 		}
 	}
 

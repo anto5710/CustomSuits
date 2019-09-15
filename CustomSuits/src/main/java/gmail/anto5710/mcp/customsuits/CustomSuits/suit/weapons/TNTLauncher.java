@@ -1,7 +1,6 @@
 package gmail.anto5710.mcp.customsuits.CustomSuits.suit.weapons;
 
 import java.util.HashSet;
-
 import java.util.Set;
 
 import org.bukkit.ChatColor;
@@ -19,7 +18,6 @@ import org.bukkit.util.Vector;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.Utils.Enchant;
-import gmail.anto5710.mcp.customsuits.Utils.Glow;
 import gmail.anto5710.mcp.customsuits.Utils.ItemUtil;
 import gmail.anto5710.mcp.customsuits.Utils.MathUtil;
 import gmail.anto5710.mcp.customsuits.Utils.ParticleUtil;
@@ -28,9 +26,12 @@ import gmail.anto5710.mcp.customsuits.Utils.encompassor.standardized.DispenseEnc
 
 public class TNTLauncher extends DispenseEncompassor<Item, Long>{
 	private Set<Player> TNT_cooldowns = new HashSet<>();
+	private static ItemStack tntStack;
 	
 	public TNTLauncher(CustomSuitPlugin plugin, long period) {
 		super(plugin, period);
+		tntStack = ItemUtil.createWithName(Material.TNT, ChatColor.AQUA + "[Bomb]");
+		Enchant.englow(tntStack);
 	}
 
 	private final float TNT_strength = 3;
@@ -48,7 +49,7 @@ public class TNTLauncher extends DispenseEncompassor<Item, Long>{
 				if (count >= amount) {
 					TNT_cooldowns.remove(player);
 					SuitUtils.playSound(player, Sound.BLOCK_PISTON_CONTRACT, 10F, 0F);
-					this.cancel();
+					this.cancel(); return;
 				}
 				shootTNT(player, player.getEyeLocation());
 				SuitUtils.playSound(player, Sound.BLOCK_DISPENSER_FAIL, 7F, 1F);
@@ -58,21 +59,18 @@ public class TNTLauncher extends DispenseEncompassor<Item, Long>{
 		}.runTaskTimer(plugin, 0, 4);
 	}
 	
-	private void shootTNT(Player player, Location location){
+	private void shootTNT(Player player, Location loc){
 		Vector v = player.getLocation().getDirection().multiply(TNT_strength).add(MathUtil.randomVector(0.5));
-		ItemStack itemStack = new ItemStack(Material.TNT);
-		ItemUtil.name(itemStack, ChatColor.AQUA + "[Bomb]");
-		Enchant.enchantment(itemStack, new Glow(), 1, true);
-		Item tnt = player.getWorld().dropItem(location, itemStack);
-
+	
+		Item tnt = player.getWorld().dropItem(loc, tntStack);
 		tnt.setFallDistance(0);
 		tnt.setVelocity(v);
 		tnt.setPickupDelay(20);
 		register(tnt);
 	}
 	
-	private void impact(Location location){
-		SuitUtils.createExplosion(location, 6F, true, true);
+	private void impact(Location loc){
+		SuitUtils.createExplosion(loc, 6F, true, true);
 	}
 	
 	@EventHandler

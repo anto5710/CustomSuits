@@ -15,12 +15,14 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Snowball;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryInteractEvent;
+import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
@@ -40,6 +42,7 @@ import gmail.anto5710.mcp.customsuits.Utils.PacketUtil;
 import gmail.anto5710.mcp.customsuits.Utils.PotionBrewer;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 import gmail.anto5710.mcp.customsuits.Utils.encompassor.MapEncompassor;
+import gmail.anto5710.mcp.customsuits.Utils.metadative.Metadative;
 import net.minecraft.server.v1_13_R2.EnumItemSlot;
 
 public class ArcCompressor extends MapEncompassor<Player, Set<Integer>>{
@@ -50,7 +53,8 @@ public class ArcCompressor extends MapEncompassor<Player, Set<Integer>>{
 		
 	public ArcCompressor(CustomSuitPlugin plugin, long period) {
 		super(plugin, period);
-		bow.addUnsafeEnchantments(new EnchantBuilder().enchant(Enchantment.ARROW_DAMAGE, 50).enchant(Enchantment.ARROW_FIRE, 20).enchant(Enchantment.ARROW_KNOCKBACK, 100).
+		bow.addUnsafeEnchantments(new EnchantBuilder().enchant(Enchantment.ARROW_DAMAGE, 50)
+														.enchant(Enchantment.ARROW_FIRE, 20).enchant(Enchantment.ARROW_KNOCKBACK, 100).
 		enchant(Enchantment.ARROW_INFINITE, 1).serialize());
 		ItemUtil.setLore(star, 
 				ChatColor.YELLOW + "RIGHT Click" + ChatColor.WHITE +" and"+ChatColor.YELLOW + " HOLD"+ ChatColor.WHITE +" to Compress Repulse Energy",
@@ -67,7 +71,7 @@ public class ArcCompressor extends MapEncompassor<Player, Set<Integer>>{
 			float force = e.getForce();
 			
 			if(HungerScheduler.sufficeHunger(p, (int)(force*2*Values.BimHunger))){
-				SuitWeapons.repulseBim(p, e.getForce());
+				repulseBim(p, e.getForce());
 				
 				PotionBrewer.removePotionEffectByType(p, PotionEffectType.SLOW);
 				p.sendMessage(Values.BimMessage);
@@ -77,20 +81,27 @@ public class ArcCompressor extends MapEncompassor<Player, Set<Integer>>{
 		}
 	}
 	
+	@EventHandler
+	public void onMoveItem(InventoryMoveItemEvent e){
+		if(e.getItem() != null && ItemUtil.checkItem(bow, e.getItem())){
+			e.setItem(star);
+		}
+	}
+	
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
 	public void press(PlayerInteractEvent e) {
 		Player p = e.getPlayer();
 		if (CustomSuitPlugin.isMarkEntity(p) && SuitUtils.isRightClick(e)) {
 			boolean change = true;
 
-			if (InventoryUtil.holdingInAny(p, star)) {
-				if(InventoryUtil.holdingMain(p, star)){					
+			if (InventoryUtil.inAnyHand(p, star)) {
+				if(InventoryUtil.inMainHand(p, star)){					
 					InventoryUtil.setMainItem(p, bow);
 				}
-				if(InventoryUtil.holdingOff(p, star)){
+				if(InventoryUtil.inOffHand(p, star)){
 					InventoryUtil.setOffItem(p, bow);
 				}				
-			} else if (InventoryUtil.holdingInAny(p, bow)) {
+			} else if (InventoryUtil.inAnyHand(p, bow)) {
 				PotionBrewer.addPotion(p, PotionEffectType.SLOW, 999999999, 1);
 				SuitUtils.playSound(p, Sound.BLOCK_BEACON_ACTIVATE, 10F, 12F);
 				SuitUtils.playSound(p, Sound.BLOCK_BEACON_POWER_SELECT, 7F, 32F);
@@ -98,9 +109,7 @@ public class ArcCompressor extends MapEncompassor<Player, Set<Integer>>{
 				SuitUtils.playSound(p, Sound.BLOCK_TRIPWIRE_CLICK_OFF, 2F, 12F);
 			}else change = false;
 			
-			if(change){
-				update(p, false, 2);
-			}
+			if(change) update(p, false, 2);
 		}
 	}
 	
@@ -113,18 +122,18 @@ public class ArcCompressor extends MapEncompassor<Player, Set<Integer>>{
 		}
 	}
 	
-	private void update(Player p, boolean disclose, long delay){
+	public void update(Player p, boolean disclose, long delay){
 		if(disclose){
 			disclose(p);
 		}
 		
-		if(InventoryUtil.holdingMain(p, bow) && !isItemInHandDisguised(p)){
+		if(InventoryUtil.inMainHand(p, bow) && !isItemInHandDisguised(p)){
 			System.out.println("ItemInHand NOT Disguised");
 			SuitUtils.runAfter(()->{
 				disguiseMainHand(p);
 			}, delay);	
 		}
-		if(InventoryUtil.holdingOff(p, bow) && !isItemInOffHandDisguised(p)){
+		if(InventoryUtil.inOffHand(p, bow) && !isItemInOffHandDisguised(p)){
 			System.out.println("ItemInOFfHand NOT Disguised");
 			SuitUtils.runAfter(()->{
 				disguiseOffHand(p);
@@ -133,18 +142,18 @@ public class ArcCompressor extends MapEncompassor<Player, Set<Integer>>{
 	}
 	
 	private void disguiseMainHand(Player p){
-		if(InventoryUtil.holdingMain(p, bow)){
+		if(InventoryUtil.inMainHand(p, bow)){
 			PacketUtil.castEquipmentPacket(p, EnumItemSlot.MAINHAND, star);
 			int mainHand = InventoryUtil.mainSlot(p);
-			disguisedSlots(p).add(mainHand);
+			get(p).add(mainHand);
 			System.out.printf("slot %d item is disguised\n",mainHand);
 		}		
 	}
 	
 	private void disguiseOffHand(Player p){
-		if(InventoryUtil.holdingOff(p, bow)){
+		if(InventoryUtil.inOffHand(p, bow)){
 			PacketUtil.castEquipmentPacket(p, EnumItemSlot.OFFHAND, star);
-			disguisedSlots(p).add(InventoryUtil.offSlot());
+			get(p).add(InventoryUtil.offSlot());
 			System.out.printf("slot %d item is disguised\n",InventoryUtil.offSlot());
 		}
 	}
@@ -174,7 +183,7 @@ public class ArcCompressor extends MapEncompassor<Player, Set<Integer>>{
 	}
 	
 	public boolean isCharging(Player p){
-		return InventoryUtil.holdingInAny(p, bow) && p.isHandRaised();
+		return InventoryUtil.inAnyHand(p, bow) && p.isHandRaised();
 	}
 	
 	@EventHandler
@@ -214,13 +223,9 @@ public class ArcCompressor extends MapEncompassor<Player, Set<Integer>>{
 	}
 	
 	public void disclose(Player p){
-		if(isRegistered(p)) disguisedSlots(p).clear();
+		if(isRegistered(p)) get(p).clear();
 	}
-	
-	private Set<Integer> disguisedSlots(Player p){
-		return get(p);
-	}
-	
+
 	@Override
 	public boolean toRemove(Player p) {
 		return p.isDead() || !p.isOnline();
@@ -228,7 +233,7 @@ public class ArcCompressor extends MapEncompassor<Player, Set<Integer>>{
 	
 	@Override
 	public void particulate(Player p, Set<Integer> v) {
-		if(t%6==0 && isCharging(p))SuitUtils.playSound(p, Sound.BLOCK_DISPENSER_FAIL, 7F, 9);
+		if(t%6==0 && isCharging(p)) SuitUtils.playSound(p, Sound.BLOCK_DISPENSER_FAIL, 7F, 9);
 		
 		tick();
 	}
@@ -236,5 +241,32 @@ public class ArcCompressor extends MapEncompassor<Player, Set<Integer>>{
 	@Override
 	public Set<Integer> defaultVal(Player p) {
 		return new HashSet<>();	
+	}
+
+	/**
+	 * 
+	 * @param player
+	 * @param power 0 ~ 1.0F (bow가 당겨진 정도)
+	 * @return snowball
+	 */
+	public static Snowball repulseBim(Player player, float power) {
+		Snowball ball = player.launchProjectile(Snowball.class, player.getLocation().getDirection().multiply(2));
+		PacketUtil.castDestroyPacket(ball);
+		ball.setGravity(false);
+		ball.setInvulnerable(true);
+		
+		int level = CustomSuitPlugin.getSuitLevel(player);
+		double levelSq = Math.sqrt(level);
+		power *= level/20F;
+	
+		double damage = power * Values.Bim * (levelSq)/8 + 1;
+		float yield = (float)(power * Values.BimExplosionPower * levelSq/10 + 1);
+		Metadative.imprint(ball, damage, yield, false, true);
+		SuitWeapons.reffecter.register(ball);
+		
+		SuitUtils.playSound(player, Sound.ENTITY_WITHER_SHOOT, 1F, 5F);
+		SuitUtils.playSound(player, Sound.ENTITY_GENERIC_EXPLODE, 1F, 0F);
+		SuitUtils.playSound(player, Sound.ENTITY_BLAZE_AMBIENT, 1F, -1F);
+		return ball;
 	}
 }

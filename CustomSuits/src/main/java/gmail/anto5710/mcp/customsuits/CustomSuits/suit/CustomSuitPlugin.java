@@ -1,36 +1,6 @@
 package gmail.anto5710.mcp.customsuits.CustomSuits.suit;
 
 
-import gmail.anto5710.mcp.customsuits.CustomSuits.InvetoryGUI.CancelAirClick;
-
-
-
-
-import gmail.anto5710.mcp.customsuits.CustomSuits.InvetoryGUI.InventoryNames;
-import gmail.anto5710.mcp.customsuits.CustomSuits.InvetoryGUI.SuitInventoryGUI;
-import gmail.anto5710.mcp.customsuits.CustomSuits.dao.SpawningDao;
-import gmail.anto5710.mcp.customsuits.CustomSuits.suit.weapons.MachineGun;
-import gmail.anto5710.mcp.customsuits.CustomSuits.suit.weapons.SuitWeapons;
-import gmail.anto5710.mcp.customsuits.CustomSuits.suit.weapons.repulsor.ArcCompressor;
-import gmail.anto5710.mcp.customsuits.Setting.Recipe;
-import gmail.anto5710.mcp.customsuits.Setting.Values;
-import gmail.anto5710.mcp.customsuits.Thor.CreeperDicer;
-import gmail.anto5710.mcp.customsuits.Thor.ForceLightning;
-import gmail.anto5710.mcp.customsuits.Thor.Hammer;
-import gmail.anto5710.mcp.customsuits.Thor.HammerWeapons;
-import gmail.anto5710.mcp.customsuits.Utils.ColorUtil;
-import gmail.anto5710.mcp.customsuits.Utils.EnchantBuilder;
-import gmail.anto5710.mcp.customsuits.Utils.Glow;
-import gmail.anto5710.mcp.customsuits.Utils.InventoryUtil;
-import gmail.anto5710.mcp.customsuits.Utils.ItemUtil;
-import gmail.anto5710.mcp.customsuits.Utils.MathUtil;
-import gmail.anto5710.mcp.customsuits.Utils.CustomEffects;
-import gmail.anto5710.mcp.customsuits.Utils.Enchant;
-import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
-import gmail.anto5710.mcp.customsuits.Utils.damagiom.DamageControl;
-import gmail.anto5710.mcp.customsuits.Utils.damagiom.DamageUtil;
-import gmail.anto5710.mcp.customsuits.Utils.metadative.Metadative;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -43,7 +13,6 @@ import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Server;
-import org.bukkit.Sound;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier.Operation;
 import org.bukkit.command.Command;
@@ -55,58 +24,59 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
+
+import gmail.anto5710.mcp.customsuits.CustomSuits.InvetoryGUI.CancelAirClick;
+import gmail.anto5710.mcp.customsuits.CustomSuits.InvetoryGUI.Inventories;
+import gmail.anto5710.mcp.customsuits.CustomSuits.InvetoryGUI.SuitInventoryGUI;
+import gmail.anto5710.mcp.customsuits.CustomSuits.dao.SpawningDao;
+import gmail.anto5710.mcp.customsuits.CustomSuits.suit.weapons.MachineGun;
+import gmail.anto5710.mcp.customsuits.CustomSuits.suit.weapons.SuitWeapons;
+import gmail.anto5710.mcp.customsuits.CustomSuits.suit.weapons.repulsor.ArcCompressor;
+import gmail.anto5710.mcp.customsuits.Setting.Recipe;
+import gmail.anto5710.mcp.customsuits.Setting.Values;
+import gmail.anto5710.mcp.customsuits.Thor.CreeperDicer;
+import gmail.anto5710.mcp.customsuits.Thor.ForceLightning;
+import gmail.anto5710.mcp.customsuits.Thor.Hammer;
+import gmail.anto5710.mcp.customsuits.Thor.HammerWeapons;
+import gmail.anto5710.mcp.customsuits.Utils.ColorUtil;
+import gmail.anto5710.mcp.customsuits.Utils.CustomEffects;
+import gmail.anto5710.mcp.customsuits.Utils.Enchant;
+import gmail.anto5710.mcp.customsuits.Utils.EnchantBuilder;
+import gmail.anto5710.mcp.customsuits.Utils.Glow;
+import gmail.anto5710.mcp.customsuits.Utils.InventoryUtil;
+import gmail.anto5710.mcp.customsuits.Utils.ItemUtil;
+import gmail.anto5710.mcp.customsuits.Utils.MathUtil;
+import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
+import gmail.anto5710.mcp.customsuits.Utils.damagiom.DamageControl;
+import gmail.anto5710.mcp.customsuits.Utils.damagiom.DamageUtil;
+import gmail.anto5710.mcp.customsuits.Utils.metadative.Metadative;
 
 /**
  * Hello world!
  *
  */
 public class CustomSuitPlugin extends JavaPlugin {
-	SuitUtils suitl = new SuitUtils(this);
-	DamageUtil wuitl = new DamageUtil();
-
 	public static Logger logger;
-	static JavaPlugin plugin;
+	private static JavaPlugin plugin;
 	Target targetting;
 	HungerScheduler hscheduler;
-	static SuitEffecter suitEffecter; 
+	public static SuitEffecter suitEffecter; 
 	public static SpawningDao dao;
 	
-	
-	public static Map<Player, SuitSettings> settings = new HashMap<>();
+	private static Map<Player, SuitSettings> settings = new HashMap<>();
 
-	public static ItemStack Bomb = new ItemStack(Material.FIREWORK_STAR);
-	public static ItemStack Smoke = new ItemStack(Material.CLAY_BALL);
+	public static ItemStack Bomb = ItemUtil.createWithName(Material.FIREWORK_STAR, ChatColor.YELLOW + "[Bomb]");
+	public static ItemStack Smoke = ItemUtil.createWithName(Material.CLAY_BALL, ChatColor.GRAY + "[Smoke]");
 
 	public static HashMap<Player, Inventory> command_equipment = new HashMap<>();
 
 	public static ItemStack suitremote = new ItemStack(Material.COMPARATOR);
 
 	public static ItemStack gunitem = new ItemStack(Material.IRON_HORSE_ARMOR);
-
-	static ItemStack AmmoForSniper = new ItemStack(Material.GOLD_NUGGET);
-	static ItemStack AmmoForMachineGun = new ItemStack(Material.FLINT);
-
-	public static Inventory inventory = Bukkit.createInventory(null, 27, InventoryNames.inventory_name);
-	public static Inventory armorinventory = Bukkit.createInventory(null, 54, InventoryNames.armorinventory_name);
-	static Inventory chestinventory = Bukkit.createInventory(null, 27, InventoryNames.chestinventory_name);
-	static Inventory bootsinventory = Bukkit.createInventory(null, 27, InventoryNames.bootsinventory_name);
-	static Inventory helmetinventory = Bukkit.createInventory(null, 27, InventoryNames.helmetinventory_name);
-	static Inventory leggingsinventory = Bukkit.createInventory(null, 27, InventoryNames.leggingsinventory_name);
-
-	public static Inventory type_inventory = Bukkit.createInventory(null, 27, InventoryNames.type_inventory_name);
-	public static Inventory vehicle_inventory = Bukkit.createInventory(null, 27, InventoryNames.vehicle_inventory_name);
-
-
-	public static Inventory HelmetColorInventory = Bukkit.createInventory(null, 45, InventoryNames.HelmetColorInventory_name);
-	public static Inventory ChestplateColorInventory = Bukkit.createInventory(null, 45, InventoryNames.ChestPlateColorInventory_name);
-	public static Inventory LeggingsColorInventory = Bukkit.createInventory(null, 45, InventoryNames.LeggingsColorInventory_name);
-	public static Inventory BootsColorInventory = Bukkit.createInventory(null, 45, InventoryNames.BootsColorInventory_name);
-	public static Inventory commandInventory = Bukkit.createInventory(null, 27, InventoryNames.CommandInventory_name);
 
 	public static ItemStack missileLauncher = new ItemStack(Material.GOLDEN_HORSE_ARMOR);
 
@@ -120,53 +90,39 @@ public class CustomSuitPlugin extends JavaPlugin {
 	public static ItemStack Chestplate_Man = new ItemStack(Material.LEATHER_CHESTPLATE);
 	public static ItemStack Leggings_Man = new ItemStack(Material.LEATHER_LEGGINGS);
 	public static ItemStack Boots_Man = new ItemStack(Material.IRON_BOOTS);
-	@SuppressWarnings("deprecation")
-	public static ItemStack Sword_Man = new ItemStack(Material.GOLDEN_SWORD, 1, (short) Values.ManDeafultDamage);
+	public static ItemStack Sword_Man = new ItemStack(Material.GOLDEN_SWORD);
 
 	/**
 	 * entityType 이름과 대응하는 EntityClass 모음
 	 */	
-//	static Map<String, Class<? extends Entity>> entityMap = new HashMap<>();
-//	public static HashMap<String, ItemStack> entity_Icon_Map = new HashMap<>(), vehicle_Icon_Map = new HashMap<>();
 
-	
 	@Override
 	public void onEnable() {
-		suitEffecter = new SuitEffecter(this, 1);
 		plugin = this;
+		logger = getLogger();
+		suitEffecter = new SuitEffecter(this, 1);
+		
 		Glow.registerGlow();
 		new Metadative(this);
 		new Enchant();
-
-		ItemUtil.name(Bomb, ChatColor.YELLOW + "[Bomb]");
-
-		ItemUtil.name(Smoke, ChatColor.GRAY + "[Smoke]");
-		ItemMeta meta = Smoke.getItemMeta();
-		ArrayList<String> lore = new ArrayList<>();
-		lore.add(ChatColor.GOLD + "Smoke for " + Values.ManSmoke_Time + " Seconds");
-		meta.setLore(lore);
-		Smoke.setItemMeta(meta);
+		new SuitUtils(this);
+		new DamageUtil();
 
 		Enchant.enchantBooks();
-		
 		ColorUtil.initColorMap();
+		Inventories.init();
 
-		ItemStack levelitem = ItemUtil.createWithName(Material.EXPERIENCE_BOTTLE, ChatColor.GREEN + "[Level]");
-		ItemStack armorset =ItemUtil.createWithName(Material.DIAMOND_CHESTPLATE, ChatColor.GOLD + "[Armor]");
-		ItemStack command = ItemUtil.createWithName(Material.COMPARATOR, ChatColor.RED + "[Command]");
-		
 		ItemUtil.suffix(hammer, Attribute.GENERIC_ATTACK_DAMAGE, Values.HammerDamage, EquipmentSlot.HAND);
 		ItemUtil.suffix(hammer, Attribute.GENERIC_ATTACK_DAMAGE, Values.HammerDamage, EquipmentSlot.OFF_HAND);
+		
 		ItemUtil.suffix(hammer, Attribute.GENERIC_ARMOR_TOUGHNESS, ChatColor.GOLD + "Kudos for Asgard", Values.HammerArmor, Operation.ADD_SCALAR,  EquipmentSlot.HAND);
 		ItemUtil.suffix(hammer, Attribute.GENERIC_ARMOR_TOUGHNESS, ChatColor.GOLD + "Kudos for Asgard", Values.HammerArmor,  Operation.ADD_SCALAR, EquipmentSlot.OFF_HAND);
 		ItemUtil.suffix(hammer, Attribute.GENERIC_ARMOR, ChatColor.GOLD + "Kudos for Asgard", Values.HammerArmor, Operation.ADD_SCALAR,  EquipmentSlot.HAND);
 		ItemUtil.suffix(hammer, Attribute.GENERIC_ARMOR, ChatColor.GOLD + "Kudos for Asgard", Values.HammerArmor,  Operation.ADD_SCALAR, EquipmentSlot.OFF_HAND);
 		
-		
 		ItemUtil.suffix(hammer, Attribute.GENERIC_MOVEMENT_SPEED, ChatColor.GOLD + "Odin's Bless",Values.HammerPrompt, Operation.ADD_SCALAR, EquipmentSlot.HAND);
 		ItemUtil.suffix(hammer, Attribute.GENERIC_MOVEMENT_SPEED, ChatColor.GOLD + "Odin's Bless",Values.HammerPrompt, Operation.ADD_SCALAR, EquipmentSlot.OFF_HAND);
-		
-		
+	
 		hammer.addUnsafeEnchantments(new EnchantBuilder().enchant(Enchantment.DAMAGE_ALL, 10)
 				.enchant(Enchantment.DURABILITY, 10).enchant(Enchantment.FIRE_ASPECT, 10)
 				.enchant(Enchantment.LOOT_BONUS_MOBS, 10).enchant(Enchantment.KNOCKBACK, 10).serialize());
@@ -195,152 +151,43 @@ public class CustomSuitPlugin extends JavaPlugin {
 				.enchant(Enchantment.PROTECTION_ENVIRONMENTAL, 8).enchant(Enchantment.DURABILITY, 30).serialize());
 		Boots_Man.addUnsafeEnchantments(new EnchantBuilder().enchant(Enchantment.THORNS, 8)
 				.enchant(Enchantment.PROTECTION_FALL, 8).enchant(Enchantment.DURABILITY, 30).serialize());
-
 		Sword_Man.addUnsafeEnchantments(new EnchantBuilder().enchant(Enchantment.DAMAGE_ALL, 10)
 				.enchant(Enchantment.FIRE_ASPECT, 10).enchant(Enchantment.LOOT_BONUS_MOBS, 10)
 				.enchant(Enchantment.KNOCKBACK, 10).enchant(Enchantment.DURABILITY, 20).serialize());
 
 		ItemUtil.name(Sword_Man, ChatColor.YELLOW + "Sword Of Killer");
 
-		Color Chestplate_Man_Color = Color.fromRGB(217, 206, 206);
-		Color Leggings_Man_Color = Color.fromRGB(31, 28, 28);
+		ItemUtil.dye(Chestplate_Man, Values.Chestplate_Man_Color);
+		ItemUtil.dye(Leggings_Man, Values.Leggings_Man_Color);
 
-		ItemUtil.dye(Chestplate_Man, Chestplate_Man_Color);
-		ItemUtil.dye(Leggings_Man, Leggings_Man_Color);
-
-		ItemUtil.dye(Chestplate_Thor, Color.fromRGB(35, 35, 35));
-		ItemUtil.dye(Leggings_Thor, Color.fromRGB(0, 0, 65));
-
-		inventory.setItem(0, new ItemStack(command));
-		inventory.setItem(4, new ItemStack(armorset));
-		inventory.setItem(8, new ItemStack(levelitem));
-
-		ItemStack ArmorIcon = new ItemStack(Material.ARMOR_STAND);
-		ItemStack enchantIcon = new ItemStack(Material.ENCHANTING_TABLE);
-		ItemStack ColorIcon = new ItemStack(Material.SUNFLOWER);
-		
-		Enchant.englow(ArmorIcon);
-		Enchant.englow(enchantIcon);
-		Enchant.englow(ColorIcon);
-
-		ItemStack helmetEnchantIcon = ItemUtil.createWithName(Material.ENCHANTED_BOOK, ChatColor.AQUA + "[Helmet]");
-		ItemStack chestplateEnchantIcon = ItemUtil.createWithName(Material.ENCHANTED_BOOK, ChatColor.AQUA + "[ChestPlate]");
-		ItemStack leggingsEnchantIcon = ItemUtil.createWithName(Material.ENCHANTED_BOOK, ChatColor.AQUA + "[Leggings]");
-		ItemStack bootsEnchantIcon = ItemUtil.createWithName(Material.ENCHANTED_BOOK, ChatColor.AQUA + "[Boots]");
-
-		Enchant.englow(helmetEnchantIcon);
-		Enchant.englow(chestplateEnchantIcon);
-		Enchant.englow(leggingsEnchantIcon);
-		Enchant.englow(bootsEnchantIcon);
-
-		armorinventory.setItem(19, new ItemStack(Material.GOLDEN_HELMET));
-		armorinventory.setItem(28, new ItemStack(Material.LEATHER_CHESTPLATE));
-		armorinventory.setItem(29, new ItemStack(Material.IRON_HORSE_ARMOR));
-		armorinventory.setItem(37, new ItemStack(Material.GOLDEN_LEGGINGS));
-		armorinventory.setItem(46, new ItemStack(Material.LEATHER_BOOTS));
-
-		ItemUtil.name(ArmorIcon, ChatColor.YELLOW + "[Set Armor]");
-
-		ItemUtil.name(enchantIcon, ChatColor.AQUA + "[Enchant]");
-
-		ItemUtil.name(ColorIcon, ChatColor.GOLD + "[Set Color]");
-
-		armorinventory.setItem(1, ArmorIcon);
-		armorinventory.setItem(4, enchantIcon);
-		armorinventory.setItem(7, ColorIcon);
-
-		armorinventory.setItem(22, helmetEnchantIcon);
-		armorinventory.setItem(31, chestplateEnchantIcon);
-		armorinventory.setItem(40, leggingsEnchantIcon);
-		armorinventory.setItem(49, bootsEnchantIcon);
-
-		leggingsinventory.setItem(0, Enchant.Protection);
-		leggingsinventory.setItem(1, Enchant.Unbreaking);
-		leggingsinventory.setItem(2, Enchant.Thorns);
-		leggingsinventory.setItem(3, Enchant.Aqua_Affinity);
-
-		chestinventory.setItem(0, Enchant.Protection);
-		chestinventory.setItem(1, Enchant.Unbreaking);
-		chestinventory.setItem(2, Enchant.Thorns);
-
-		bootsinventory.setItem(0, Enchant.Fire_Protection);
-		bootsinventory.setItem(1, Enchant.Unbreaking);
-		bootsinventory.setItem(2, Enchant.Thorns);
-		bootsinventory.setItem(3, Enchant.Feather_Falling);
-
-		helmetinventory.setItem(0, Enchant.Respiration);
-		helmetinventory.setItem(1, Enchant.Blast_Protection);
-		helmetinventory.setItem(2, Enchant.Thorns);
-		helmetinventory.setItem(3, Enchant.Aqua_Affinity);
-		helmetinventory.setItem(4, Enchant.Unbreaking);
-
-		ItemStack skull = ItemUtil.createWithName(Material.PLAYER_HEAD, ChatColor.AQUA + "[Party Protocol]");
-		ItemStack helmetM = ItemUtil.createWithName(Material.DIAMOND_HELMET, ChatColor.AQUA + "[Suit Summon]");
-		ItemStack Targetitem = ItemUtil.createWithName(Material.SKELETON_SKULL, ChatColor.BLUE + "[Target]");
-		ItemStack firework = ItemUtil.createWithName(Material.FIREWORK_ROCKET, ChatColor.DARK_RED + "[Fireworks]");
+		ItemUtil.dye(Chestplate_Thor, Values.ThorChestplateColor);
+		ItemUtil.dye(Leggings_Thor, Values.ThorLeggingsColor);
 
 		ItemUtil.name(Leggings_Man, ChatColor.GRAY + "Leggings");
 		ItemUtil.name(Chestplate_Man, ChatColor.GRAY + "ChestPlate");
 		ItemUtil.name(Boots_Man, ChatColor.GRAY + "Boots");
 
-		ItemStack ColorHelmet = new ItemStack(Material.LEATHER_HELMET);
-		Enchant.englow(ColorHelmet);
-		ItemUtil.name(ColorHelmet, ChatColor.GOLD + "[Helmet Color]");
-		
-		ItemStack ColorChestplate = new ItemStack(Material.LEATHER_CHESTPLATE);
-		Enchant.englow(ColorChestplate);
-		ItemUtil.name(ColorChestplate, ChatColor.GOLD + "[Chestplate Color]");
-		
-		ItemStack ColorLeggings = new ItemStack(Material.LEATHER_LEGGINGS);
-		Enchant.englow(ColorLeggings);
-		ItemUtil.name(ColorLeggings, ChatColor.GOLD + "[Leggings Color]");
-		
-		ItemStack ColorBoots = new ItemStack(Material.LEATHER_BOOTS);
-		Enchant.englow(ColorBoots);
-		ItemUtil.name(ColorBoots, ChatColor.GOLD + "[Boots Color]");
-
-		armorinventory.setItem(25, ColorHelmet);
-		armorinventory.setItem(34, ColorChestplate);
-		armorinventory.setItem(43, ColorLeggings);
-		armorinventory.setItem(52, ColorBoots);
-
-		commandInventory.setItem(10, helmetM);
-		commandInventory.setItem(12, Targetitem);
-		commandInventory.setItem(14, skull);
-		commandInventory.setItem(16, firework);
-
-		// key 에 대응하는 Entity 종류를 맵에 담아둡니다.
-		logger = getLogger();
+		ItemUtil.setLore(Smoke, ChatColor.GOLD + "Smoke for " + Values.ManSmoke_Time + " Seconds");
 
 		ItemUtil.name(suitremote, ChatColor.RED + "[Suit Commander]");
 		ItemUtil.name(gunitem, ChatColor.YELLOW + "Knif-1220 " + "«" + Values.MachineGunAmmoAmount + Values.gun_regex + Values.SnipeAmmoAmount + "»");
 
-		List<String> GunLore = new ArrayList<>();
-		GunLore.add(ChatColor.WHITE + "Machine Gun Ammo: " + ChatColor.YELLOW + Values.MachineGunAmmoAmount);
-		GunLore.add(ChatColor.WHITE + "Sniper Ammo: " + ChatColor.YELLOW + Values.SnipeAmmoAmount);
-		GunLore.add(ChatColor.WHITE + "Machine Gun Bullet Spread: " + ChatColor.YELLOW + 0.3 + ChatColor.WHITE + " | "+ ChatColor.YELLOW + 0.05 + "(Zoom)");
-		GunLore.add(ChatColor.WHITE + "Sniper Bullet Spread: " + ChatColor.YELLOW + 5.0 + ChatColor.WHITE + " | " + ChatColor.YELLOW + 0 + "(Zoom)");
-		GunLore.add(ChatColor.WHITE + "Machine Gun Damage: " + ChatColor.YELLOW + Values.MachineGunDamage);
-		GunLore.add(ChatColor.WHITE + "Sniper Damage: " + ChatColor.YELLOW + Values.SniperDamage);
-		GunLore.add(ChatColor.WHITE + "Machine Gun Bullet Velocity: " + ChatColor.YELLOW + 50.0 + " Block/Second");
-		GunLore.add(ChatColor.WHITE + "Sniper Bullet Velocity: " + ChatColor.YELLOW + 119 + " Block/Second");
-
-		ItemMeta gunMeta = gunitem.getItemMeta();
-		gunMeta.setLore(GunLore);
-		gunitem.setItemMeta(gunMeta);
+		ItemUtil.addLore(gunitem,
+				ChatColor.WHITE + "Machine Gun Ammo: " + ChatColor.YELLOW + Values.MachineGunAmmoAmount,
+				ChatColor.WHITE + "Sniper Ammo: " + ChatColor.YELLOW + Values.SnipeAmmoAmount,
+				ChatColor.WHITE + "Machine Gun Bullet Spread: " + ChatColor.YELLOW + 0.3 + ChatColor.WHITE + " | " + ChatColor.YELLOW + 0.05 + "(Zoom)",
+				ChatColor.WHITE + "Sniper Bullet Spread: " + ChatColor.YELLOW + 5.0 + ChatColor.WHITE + " | " + ChatColor.YELLOW + 0 + "(Zoom)",
+				ChatColor.WHITE + "Machine Gun Damage: " + ChatColor.YELLOW + Values.MachineGunDamage,
+				ChatColor.WHITE + "Sniper Damage: " + ChatColor.YELLOW + Values.SniperDamage,
+				ChatColor.WHITE + "Machine Gun Bullet Velocity: " + ChatColor.YELLOW + 50.0 + " Block/Second",
+				ChatColor.WHITE + "Sniper Bullet Velocity: " + ChatColor.YELLOW + 119 + " Block/Second");
 		ItemUtil.name(missileLauncher, ChatColor.DARK_RED + "[Launcher]");
-
 		
-		
-		
-		PluginManager manager = getServer().getPluginManager();
-
 		this.targetting = new Target(this);
 		this.targetting.awaken();
 		this.hscheduler = new HungerScheduler(this, 1);
 				
-		CustomSuitPlugin.logger.info("starting Hunger Thread");
-		
+		PluginManager manager = getServer().getPluginManager();
 		manager.registerEvents(new PlayerEffect(this), this);
 		manager.registerEvents(new SuitWeapons(this), this);
 		manager.registerEvents(SuitWeapons.tnter, this);
@@ -355,20 +202,12 @@ public class CustomSuitPlugin extends JavaPlugin {
 		manager.registerEvents(new MachineGun(this), this);
 		manager.registerEvents(new DamageControl(this), this);
 		
-		Recipe.addRecipe(getServer());
-		
+		Recipe.addRecipes(getServer());
+
 		dao = new SpawningDao(this);
-		inventory.setItem(18, CustomEntities.WARRIOR.getIcon());
-		inventory.setItem(22, CustomEntities.SPIDER.getIcon());
 		dao.init();
 
 		new CustomEffects(this);
-		initTypeMap();
-
-		HelmetColorInventory.setContents(ItemUtil.dyeSpectrum(new ItemStack(Material.LEATHER_HELMET)));
-		ChestplateColorInventory.setContents(ItemUtil.dyeSpectrum(new ItemStack(Material.LEATHER_CHESTPLATE)));
-		LeggingsColorInventory.setContents(ItemUtil.dyeSpectrum(new ItemStack(Material.LEATHER_LEGGINGS)));
-		BootsColorInventory.setContents(ItemUtil.dyeSpectrum(new ItemStack(Material.LEATHER_BOOTS)));	
 	}
 
 	@Override
@@ -405,36 +244,33 @@ public class CustomSuitPlugin extends JavaPlugin {
 			if (args.length == 0) {
 				SuitUtils.wrongCommand(spnSender, command);
 			} else {
-				String option = args[0];
+				String option = args[0].toLowerCase();
 
 				if (option.endsWith("commander")) {
-
-					spnSender.getInventory().addItem(suitremote);
+					InventoryUtil.give(spnSender, suitremote);
+					
 				} else if (option.endsWith("gun")) {
-					spnSender.getInventory().addItem(gunitem);
+					InventoryUtil.give(spnSender, gunitem);
+					
 				} else if (option.endsWith("launcher")) {
-					spnSender.getInventory().addItem(missileLauncher);
+					InventoryUtil.give(spnSender, missileLauncher);
+					
 				} else if (option.endsWith("hammer")) {
-					spnSender.getInventory().addItem(hammer);
-					// }else if(option.endsWith("man")){
-					// player.getInventory().addItem(Chestplate_Man);
-					// player.getInventory().addItem(Leggings_Man);
-					// player.getInventory().addItem(Boots_Man);
-					// player.getInventory().addItem(Sword_Man);
+					InventoryUtil.give(spnSender, hammer);
+					
 				} else if (option.endsWith("smoke")) {
-					spnSender.getInventory().addItem(Smoke);
+					InventoryUtil.give(spnSender, Smoke);
+					
 				} else if (option.endsWith("bomb")) {
-					spnSender.getInventory().addItem(Bomb);
+					InventoryUtil.give(spnSender, Bomb);
+					
+				} else if(option.endsWith("star")){
+					InventoryUtil.give(spnSender, ArcCompressor.star);
+					
 				} 
-				else if(option.endsWith("star")){
-					spnSender.getInventory().addItem(ArcCompressor.star);
-				}
-				
-				
 				else {
 					SuitUtils.wrongCommand(spnSender, command);
 				}
-
 			}
 			spnSender.updateInventory();
 		}
@@ -458,13 +294,12 @@ public class CustomSuitPlugin extends JavaPlugin {
 		if (command.getName().equals("head")) {
 			if (args.length == 0) {
 				ItemStack head = ItemUtil.decapitate(spnSender.getName());
-				spnSender.getInventory().addItem(head);
+				InventoryUtil.give(spnSender, head);
 				spnSender.updateInventory();
 			} else {
-
 				if (args[0] != null) {
 					ItemStack head = ItemUtil.decapitate(args[0]);
-					spnSender.getInventory().addItem(head);
+					InventoryUtil.give(spnSender, head);
 					spnSender.updateInventory();
 				} else if (args[0] == null) {
 					SuitUtils.warn(spnSender, "Can't Find That Player");
@@ -514,11 +349,11 @@ public class CustomSuitPlugin extends JavaPlugin {
 				
 				if(!handle(spnSender).assessVehicleType(entityName)){
 					SuitUtils.wrongCommand(spnSender, command);
-					SuitUtils.playerSound(spnSender, Sound.BLOCK_DISPENSER_FAIL, 6.0F, 6.0F);
+					SuitUtils.tick(spnSender);
 				}
 			} else {
 				SuitUtils.wrongCommand(spnSender, command);
-				SuitUtils.playerSound(spnSender, Sound.BLOCK_DISPENSER_FAIL, 6.0F, 6.0F);
+				SuitUtils.tick(spnSender);
 			}
 		}
 
@@ -526,7 +361,7 @@ public class CustomSuitPlugin extends JavaPlugin {
 			if (ItemUtil.checkItem(suitremote, InventoryUtil.getMainItem(spnSender))) {
 				if (args.length < 2) {
 					SuitUtils.wrongCommand(spnSender, command);
-					SuitUtils.playerSound(spnSender, Sound.BLOCK_DISPENSER_FAIL, 6.0F, 6.0F);
+					SuitUtils.tick(spnSender);
 
 				} else if (args.length >= 2) {				
 					try {
@@ -534,7 +369,7 @@ public class CustomSuitPlugin extends JavaPlugin {
 						handle(spnSender).setCount(creatureCnt);
 					} catch (NumberFormatException e) {
 						SuitUtils.wrongCommand(spnSender, command);
-						SuitUtils.playerSound(spnSender, Sound.BLOCK_DISPENSER_FAIL, 6.0F, 6.0F);
+						SuitUtils.tick(spnSender);
 					}
 					if(!handle(spnSender).asessSentityType(args[0])){
 						SuitUtils.warn(spnSender, Values.CantFindEntityType);
@@ -559,8 +394,6 @@ public class CustomSuitPlugin extends JavaPlugin {
 	public static boolean isCreatedBy(Entity entity, Player player) {
 		return dao.isCreatedBy(entity, player);
 	}
-	
-	
 
 	public static void summonAll(Player player) {
 		boolean isPlayed = false;
@@ -574,12 +407,12 @@ public class CustomSuitPlugin extends JavaPlugin {
 		}
 		if (!isPlayed) {
 			player.sendMessage(ChatColor.BLUE + "[Info]: " + ChatColor.AQUA + "No such entity");
-			SuitUtils.playerSound(player, Sound.BLOCK_DISPENSER_FAIL, 6.0F, 6.0F);
+			SuitUtils.tick(player);
 		}
 	}
 
 	public static void summonNearestSuit(Player player) {
-		if (InventoryUtil.holdingMain(player, CustomSuitPlugin.suitremote)){
+		if (InventoryUtil.inMainHand(player, CustomSuitPlugin.suitremote)){
 			List<LivingEntity> near = player.getWorld().getLivingEntities();
 
 			LivingEntity nearest = nearestArmedLentity(near, player, 1000);
@@ -594,7 +427,7 @@ public class CustomSuitPlugin extends JavaPlugin {
 	}
 
 	public static void spawnSuit(Player player, Location loc) {
-		if (InventoryUtil.holdingMain(player, CustomSuitPlugin.suitremote)){
+		if (InventoryUtil.inMainHand(player, CustomSuitPlugin.suitremote)){
 			SuitSettings sett = handle(player);
 			SuitManufactory.manufacture(sett.getSentity(), sett.getVehicle(), sett.getCount(), sett.getCurrentTarget(), player, loc);
 		} else {
@@ -621,7 +454,7 @@ public class CustomSuitPlugin extends JavaPlugin {
 					cancel();
 				}
 				currentLoc.add(dV);
-				SuitUtils.teleportWithPassengers(currentLoc, lentity);
+				SuitUtils.teleportWithPassengers(currentLoc.add(MathUtil.randomVector(3).setY(0)), lentity);
 				i++;
 			}
 		}.runTaskTimer(plugin, 0, 30);
@@ -647,30 +480,8 @@ public class CustomSuitPlugin extends JavaPlugin {
 		return nearest;
 	}
 
-	public SpawningDao getDao() {
-		return CustomSuitPlugin.dao;
-	}
-
-	public static ItemStack getGun() {
-		return gunitem;
-	}
-
-	private static void initTypeMap() {
-		int eslot = 0, vslot = 0;
-		
-		for(CustomEntities e : CustomEntities.values()){
-			ItemStack icon = e.getIcon();
-			if(e!=CustomEntities.NONE){
-				type_inventory.setItem(eslot, icon);
-				eslot++;
-			}
-			vehicle_inventory.setItem(vslot, icon);
-			vslot++;
-		}
-	}
-
 	public static Inventory copyCommandGUI(Player player, Inventory cmdInven) {
-		Inventory newInven = copyInven(player, cmdInven, InventoryNames.CommandInventory_name + ":" + player.getDisplayName());
+		Inventory newInven = copyInven(player, cmdInven, Inventories.commandinventory_name + ":" + player.getDisplayName());
 		ItemStack Head = ItemUtil.decapitate(player.getName());
 		ItemUtil.name(Head, ItemUtil.getName(cmdInven.getItem(14)));
 		newInven.setItem(14, Head);
