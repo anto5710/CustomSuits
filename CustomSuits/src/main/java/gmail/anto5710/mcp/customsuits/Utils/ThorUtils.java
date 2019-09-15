@@ -23,7 +23,7 @@ public class ThorUtils {
 	 * @return is player holding Hammer
 	 */
 	public static boolean isHammerinHand(Player player){
-		return SuitUtils.holding(player, CustomSuitPlugin.hammer);
+		return InventoryUtil.holdingMain(player, CustomSuitPlugin.hammer);
 	}
 
 	

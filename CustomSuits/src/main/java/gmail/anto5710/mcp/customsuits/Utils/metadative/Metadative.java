@@ -27,11 +27,11 @@ public class Metadative {
 			if(prj instanceof Explosive){
 				setExplosive((Explosive)prj, yield, fire);
 			}else{
-				if (!fire) {
-					Metadative.imprint(prj, DamageControl.NONFIRE, fire);
+				if (fire) {
+					Metadative.imprint(prj, DamageControl.FIRE, fire);
 				}
 				if (!destroy) {
-					Metadative.imprint(prj, DamageControl.NONDESTROY, destroy);
+					Metadative.imprint(prj, DamageControl.NODESTROY, destroy);
 				}
 			}
 		}

@@ -26,8 +26,8 @@ public class DamageControl implements Listener{
 	public static final String 
 						DAMAGE = "g.projectiler.HIT_DAMAGE",  // double damage
 						EXPLOSIVE = "g.projectiler.EXPLOSION",
-						NONFIRE = "g.projectiler.EXPLOSION.nonfire",
-						NONDESTROY = "g.projectiler.EXPLOSION.nondestroy",
+						FIRE = "g.projectiler.EXPLOSION.fire",
+						NODESTROY = "g.projectiler.EXPLOSION.nodestroy",
 						BLOCKSHOT = "g.projectiler.BLOCKSHOT"; 
 	
 	@SuppressWarnings("unused")
@@ -43,7 +43,7 @@ public class DamageControl implements Listener{
 
 			if (prj.hasMetadata(DAMAGE)) {
 				double damage = Metadative.excavate(prj, DAMAGE);
-				DamageUtil.damagevent(e, damage, prj, DamageAttribute.retrieve(prj));
+				DamageUtil.damagevent(e, damage, prj, DamageMeta.retrieve(prj));
 			}
 		}
 	}
@@ -53,12 +53,12 @@ public class DamageControl implements Listener{
 		Projectile prj = (Projectile) e.getEntity();
 		if(prj.hasMetadata(EXPLOSIVE)){
 			float yield = Metadative.excafate(prj, EXPLOSIVE);
-			boolean fire = !Metadative.excavatruth(prj, NONFIRE);
+			boolean fire = Metadative.excavatruth(prj, FIRE);
 			
 			if(prj instanceof Explosive){
 				Metadative.setExplosive((Explosive)prj, yield, fire);
 			}else{
-				boolean destroy = !Metadative.excavatruth(prj, NONDESTROY);
+				boolean destroy = !Metadative.excavatruth(prj, NODESTROY);
 				SuitUtils.createExplosion(prj.getLocation(), yield, fire, destroy);
 			}
 		}

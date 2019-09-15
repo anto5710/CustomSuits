@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import javax.annotation.Nonnull;
+
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -19,7 +22,6 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
@@ -95,23 +97,6 @@ public class SuitUtils {
 		}
 	}
 	
-	public static boolean holding(Player player, ItemStack sample) {
-		return !anyNull(player, sample) && ItemUtil.checkItem(sample, getHoldingItem(player));
-	}
-
-	public static boolean holdingNone(Player player){
-		ItemStack item = getHoldingItem(player);
-		return ItemUtil.isAir(item);
-	}
-	
-	public static ItemStack getHoldingItem(Player player){
-		return player.getInventory().getItemInMainHand();
-	}
-	
-	public static void setHoldingItem(Player player, ItemStack item){
-		player.getInventory().setItemInMainHand(item);
-	}
-	
 	public static Entity getFirstPassenger(Entity vehicle){
 		List<Entity> passengers = vehicle.getPassengers();
 		return (passengers == null||passengers.isEmpty()) ? null : passengers.get(0);
@@ -164,6 +149,10 @@ public class SuitUtils {
 		
 		Action action = e.getAction();
 		return action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK;
+	}
+	
+	public static void runAfter(@Nonnull Runnable task, long ticks){
+		Bukkit.getScheduler().runTaskLater(plugin, task, ticks);
 	}
 	
 	public static void teleportWithPassengers(Location to, Entity vehicle){

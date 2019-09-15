@@ -1,5 +1,6 @@
 package gmail.anto5710.mcp.customsuits.Thor;
 
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
@@ -20,14 +21,13 @@ public class ThorEffecter extends MapEncompassor<Player, VorticalMeta>{
 
 	@Override
 	public void register(Player player) {
-		addThorPotion_Effects(player);
-		player.setAllowFlight(true);
 		super.register(player);
 	}
 	
 	@Override
 	public void remove(Player player) {
-		removeMovingEffect(player);
+		removeThorPotionEffects(player);
+		player.setAllowFlight(player.getGameMode()==GameMode.CREATIVE);
 		super.remove(player);
 	}
 	
@@ -39,23 +39,30 @@ public class ThorEffecter extends MapEncompassor<Player, VorticalMeta>{
 	@Override
 	public void particulate(Player player, VorticalMeta v) {
 		if(!toRemove(player)){
-			Location origin = player.getLocation();
-			Location loci = origin.clone();
-			double y = loci.getY() + v.getY_Offset();
-			v.addTheta(0.2);
-
-			Vector dv = v.dLinear();
-			loci.add(dv);
-			loci.setY(y);
-			ParticleUtil.playEffect(Particle.FLAME, loci, 5);
-
-			// invert
-			Location locii = origin.clone();
-			locii.subtract(dv);
-			locii.setY(y);
-			ParticleUtil.playEffect(Particle.FLAME, locii, 5);
-			v.addY_Offset(0.1);
+			addThorPotionEffects(player);
+			player.setAllowFlight(true);
+			
+			vorticalize(player, v);
 		}
+	}
+	
+	private void vorticalize(Player player, VorticalMeta v){
+		Location origin = player.getLocation();
+		Location loci = origin.clone();
+		double y = loci.getY() + v.getY_Offset();
+		v.addTheta(0.2);
+
+		Vector dv = v.dLinear();
+		loci.add(dv);
+		loci.setY(y);
+		ParticleUtil.playEffect(Particle.FLAME, loci, 5);
+
+		// invert
+		Location locii = origin.clone();
+		locii.subtract(dv);
+		locii.setY(y);
+		ParticleUtil.playEffect(Particle.FLAME, locii, 5);
+		v.addY_Offset(0.1);
 	}
 
 	@Override
@@ -63,18 +70,13 @@ public class ThorEffecter extends MapEncompassor<Player, VorticalMeta>{
 		return new VorticalMeta(radius);
 	}
 
-	public void removeMovingEffect(Player player){
-		removeThorPotion_Effects(player);
-		player.setAllowFlight(false);
-	}
-
-	private void addThorPotion_Effects(Player player) {
+	private void addThorPotionEffects(Player player) {
 		PotionBrewer.addPotions(player, PotionEffects.Thor_FAST_DIGGING, PotionEffects.Thor_FIRE_RESISTANCE,
 				PotionEffects.Thor_HEALTH_BOOST, PotionEffects.Thor_INCREASE_DAMAGE, PotionEffects.Thor_JUMP,
 				PotionEffects.Thor_REGENERATION, PotionEffects.Thor_SPEED, PotionEffects.Thor_WATER_BREATHING, PotionEffects.Thor_ANTIDAMAGE);
 	}
 
-	private void removeThorPotion_Effects(Player player) {
+	private void removeThorPotionEffects(Player player) {
 		PotionBrewer.removePotionEffects(player, PotionEffects.Thor_FAST_DIGGING, PotionEffects.Thor_FIRE_RESISTANCE,
 				PotionEffects.Thor_HEALTH_BOOST, PotionEffects.Thor_INCREASE_DAMAGE, PotionEffects.Thor_JUMP,
 				PotionEffects.Thor_REGENERATION, PotionEffects.Thor_SPEED, PotionEffects.Thor_WATER_BREATHING, PotionEffects.Thor_ANTIDAMAGE);

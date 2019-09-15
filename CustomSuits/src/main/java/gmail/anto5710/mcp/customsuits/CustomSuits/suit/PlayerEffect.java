@@ -8,6 +8,7 @@ import gmail.anto5710.mcp.customsuits.CustomSuits.suit.weapons.MachineGun;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
 import gmail.anto5710.mcp.customsuits.Utils.MathUtil;
 import gmail.anto5710.mcp.customsuits.Utils.CustomEffects;
+import gmail.anto5710.mcp.customsuits.Utils.InventoryUtil;
 import gmail.anto5710.mcp.customsuits.Utils.ItemUtil;
 import gmail.anto5710.mcp.customsuits.Utils.PotionBrewer;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
@@ -155,7 +156,7 @@ public class PlayerEffect implements Listener {
 	@EventHandler
 	public void clickToSpawnSuit(PlayerInteractEvent event){
 		Player player = event.getPlayer();
-		if(!ItemUtil.checkItem(CustomSuitPlugin.suitremote, SuitUtils.getHoldingItem(player)) || !SuitUtils.isLeftClick(event)){
+		if(!ItemUtil.checkItem(CustomSuitPlugin.suitremote, InventoryUtil.getMainItem(player)) || !SuitUtils.isLeftClick(event)){
 			return;
 		}
 		

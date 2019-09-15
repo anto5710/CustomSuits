@@ -1,8 +1,12 @@
 package gmail.anto5710.mcp.customsuits.Utils;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
+
+import javax.annotation.Nonnull;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
@@ -10,39 +14,14 @@ import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.attribute.AttributeModifier.Operation;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
 public class ItemUtil {
-
-	public static boolean sufficeItem(Player player, ItemStack itemStack){
-		return sufficeItem(player, itemStack, 1);
-	}
-	
-	public static boolean sufficeMaterial(Player player, Material material) {
-		return sufficeMaterial(player, material, 1);
-	}
-	
-	public static boolean sufficeItem(Player player, ItemStack itemStack, int amount) {
-		Inventory inventory = player.getInventory();
-		boolean suffice = inventory.containsAtLeast(itemStack, amount); 
-		if (suffice){
-			inventory.removeItem(itemStack);
-			player.updateInventory();
-		}
-		return suffice;
-	}
-	
-	public static boolean sufficeMaterial(Player player, Material material, int amount){
-		return sufficeItem(player, new ItemStack(material, amount), 1);
-	}
 
 	public static boolean isHorseArmor(ItemStack item){
 		if(item==null) return false;
@@ -58,22 +37,29 @@ public class ItemUtil {
 		return type == Material.LEATHER_HELMET || type == Material.LEATHER_CHESTPLATE || type == Material.LEATHER_LEGGINGS || type == Material.LEATHER_BOOTS;
 	}
 
-	public static void equip(LivingEntity lentity, ItemStack helemt, ItemStack chestplate, ItemStack leggings, ItemStack boots){
-		if(lentity==null) return;
-	
-		lentity.getEquipment().setHelmet(helemt);
-		lentity.getEquipment().setChestplate(chestplate);
-		lentity.getEquipment().setLeggings(leggings);
-		lentity.getEquipment().setBoots(boots);
-		if(lentity.getType()==EntityType.PLAYER) ((Player)lentity).updateInventory();
-	}
-	
 	public static void name(ItemStack item, String name) {
 		ItemMeta meta = item.getItemMeta();
 		meta.setDisplayName(name);
 		item.setItemMeta(meta);
 	}
 
+	private static void setLore(ItemStack item, List<String>base, @Nonnull String...lines){
+		if(base==null) base = new ArrayList<>();
+		
+		base.addAll(Arrays.asList(lines));
+		ItemMeta meta = item.getItemMeta();
+		meta.setLore(base);
+		item.setItemMeta(meta);
+	}
+	
+	public static void setLore(ItemStack item, String...lines){
+		setLore(item, null, lines);
+	}
+	
+	public static void addLore(ItemStack item, String... lines){
+		setLore(item, item.getItemMeta().getLore(), lines);
+	}
+	
 	public static void dye(ItemStack item, Color color) {
 		if(dyeable(item)){
 			LeatherArmorMeta meta = (LeatherArmorMeta) item.getItemMeta();
@@ -206,13 +192,6 @@ public class ItemUtil {
 
 	public static boolean isAir(ItemStack item){
 		return item==null || item.getType() == Material.AIR;
-	}
-
-	public static void removeItemInHand(Player player){
-		ItemStack ItemInHand = SuitUtils.getHoldingItem(player);
-		ItemInHand.setAmount(ItemInHand.getAmount()-1);
-		player.getInventory().setItemInMainHand(ItemInHand);
-		player.updateInventory();
 	}
 	
 }

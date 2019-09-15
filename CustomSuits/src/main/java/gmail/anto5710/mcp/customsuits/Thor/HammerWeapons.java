@@ -3,7 +3,7 @@ package gmail.anto5710.mcp.customsuits.Thor;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
 
 import gmail.anto5710.mcp.customsuits.Utils.CustomEffects;
-import gmail.anto5710.mcp.customsuits.Utils.ItemUtil;
+import gmail.anto5710.mcp.customsuits.Utils.InventoryUtil;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 import gmail.anto5710.mcp.customsuits.Utils.ThorUtils;
 
@@ -59,7 +59,7 @@ public class HammerWeapons implements Listener{
 		Item dropped = player.getWorld().dropItem(location, ItemInHand);
 		dropped.setFallDistance(0);
 		
-		ItemUtil.removeItemInHand(player);
+		InventoryUtil.removeMainItem(player);
 
 //		double gravity = 0.0165959600149011612D;
 		Vector v = player.getLocation().getDirection().normalize().multiply(2);

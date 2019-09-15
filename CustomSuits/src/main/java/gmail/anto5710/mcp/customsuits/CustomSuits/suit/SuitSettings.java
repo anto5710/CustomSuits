@@ -31,10 +31,10 @@ public class SuitSettings {
 
 	public SuitSettings(Player p) {
 		this.p = p;
-		reinitUInv();
+		reinitUInven();
 	}
 	
-	public void reinitUInv(){
+	public void reinitUInven(){
 		if(command_equipment==null){
 			command_equipment = CustomSuitPlugin.copyCommandGUI(p, CustomSuitPlugin.commandInventory);
 		}
@@ -60,7 +60,7 @@ public class SuitSettings {
 	}
 	
 	@SuppressWarnings("unused")
-	private void resetUInv(){
+	private void resetUInven(){
 		command_equipment = CustomSuitPlugin.copyCommandGUI(p, CustomSuitPlugin.commandInventory);
 		equipment = CustomSuitPlugin.copyInven(p, CustomSuitPlugin.inventory, InventoryNames.inventory_name);
 		armorequipment = CustomSuitPlugin.copyInven(p, CustomSuitPlugin.armorinventory, InventoryNames.armorinventory_name);
@@ -105,7 +105,6 @@ public class SuitSettings {
 	public void removeDeadTargets() {
 		targets.removeIf(e->e.isDead());
 	}
-	
 
 	public void setSentityType(CustomEntities type) {
 		if (type != null) {

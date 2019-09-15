@@ -17,6 +17,4 @@ public class InventoryNames {
 	public static final String CommandInventory_name = "[Command]";
 	
 	public static final String list_name = "[Online Players]";
-	
-	
 }

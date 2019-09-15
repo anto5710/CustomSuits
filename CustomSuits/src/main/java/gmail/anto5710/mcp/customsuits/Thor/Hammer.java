@@ -11,6 +11,7 @@ import gmail.anto5710.mcp.customsuits.CustomSuits.FireworkProccesor;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.Setting.PotionEffects;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
+import gmail.anto5710.mcp.customsuits.Utils.InventoryUtil;
 import gmail.anto5710.mcp.customsuits.Utils.ItemUtil;
 import gmail.anto5710.mcp.customsuits.Utils.ParticleUtil;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
@@ -209,7 +210,7 @@ public class Hammer implements Listener {
 			FireworkEffect effect = FireworkProccesor.getEffect(Color.RED, Type.STAR);
 			FireworkPlay.spawn(player.getLocation().add(0, 3, 0), effect);
 			player.getWorld().strikeLightningEffect(player.getLocation());
-			ItemUtil.equip(player, CustomSuitPlugin.Helemt_Thor, CustomSuitPlugin.Chestplate_Thor, 
+			InventoryUtil.equip(player, CustomSuitPlugin.Helemt_Thor, CustomSuitPlugin.Chestplate_Thor, 
 								   CustomSuitPlugin.Leggings_Thor, CustomSuitPlugin.Boots_Thor);
 			SuitUtils.playSound(player, Values.ThorChangeSound, 7.0F, 7.0F);
 			thorize(player);

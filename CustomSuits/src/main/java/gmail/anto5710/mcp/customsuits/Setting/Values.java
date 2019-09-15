@@ -50,7 +50,9 @@ public class Values {
 	final public static long ManSmoke_Time = 20;
 
 
-	final public static double HammerDamage = 8;
+	final public static double HammerDamage = 10;
+	final public static double HammerArmor = 2;
+	final public static double HammerPrompt = 1.10;
 	final public static double LightningMissile = 10D ;
 	final public static int LightningMissileHunger = -1;
 	final public static Sound LightningMissileSound = Sound.ENTITY_LIGHTNING_BOLT_THUNDER;
@@ -64,6 +66,8 @@ public class Values {
 
 	final public static Sound Thunder_Creeper_Start_Sound = Sound.ENTITY_ENDERMAN_STARE;
 	
+	
+	final public static int SuitMaxLevel = 64;
 	final public static Material Suit_Spawn_Material = Material.IRON_INGOT;
 	final public static Material SuitLauncher = Material.AIR;
 	

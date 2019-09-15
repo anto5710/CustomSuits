@@ -14,7 +14,7 @@ public abstract class AbstractEncompassor<E extends Entity> implements IEncompas
 	protected CustomSuitPlugin plugin;
 	private final long period;
 	private BukkitTask task;
-	private long max_tick;
+	private long max_tick = 1000;
 	
 	protected long t=0;
 	private Set<E> toRemove = new HashSet<>();	
@@ -36,7 +36,7 @@ public abstract class AbstractEncompassor<E extends Entity> implements IEncompas
 	
 	protected void tick(){
 		t++; //tick
-		if(t>max_tick) t=0;
+		if(t>max_tick) t%=max_tick;
 	}
 	
 	protected void setMaxTick(long max){

@@ -37,7 +37,6 @@ public class CancelAirClick extends InventoryNames implements Listener{
 	public void onClickAir_in_Inventorys(InventoryClickEvent event) {	
 		if(SuitInventoryGUI.authenticateAccess(event, true, 
 			inventory_name, list_name, type_inventory_name, vehicle_inventory_name, CommandInventory_name)){
-			System.out.println(event.getSlot());
 			if (ItemUtil.isAir(event.getCurrentItem()) && withinUpperInv(event, CustomSuitPlugin.type_inventory)) {
 				event.setCancelled(true);
 			}
@@ -49,9 +48,7 @@ public class CancelAirClick extends InventoryNames implements Listener{
 	 */
 	@EventHandler
 	public void onDragSettingInventory(InventoryDragEvent event) {
-		
 		if(SuitInventoryGUI.authenticateAccess(event, inventory_name) && anyWithinUpperInv(event, CustomSuitPlugin.inventory)){
-			System.out.println(event.getInventorySlots());
 			event.setCancelled(true);
 		}
 	}
@@ -61,9 +58,7 @@ public class CancelAirClick extends InventoryNames implements Listener{
 	 */
 	@EventHandler
 	public void onDragPlayerList(InventoryDragEvent event) {
-		
 		if(SuitInventoryGUI.authenticateAccess(event, list_name) && event.getInventorySlots().stream().anyMatch(s->s<36)){
-			System.out.println(event.getInventorySlots());
 			event.setCancelled(true);
 		}
 	}

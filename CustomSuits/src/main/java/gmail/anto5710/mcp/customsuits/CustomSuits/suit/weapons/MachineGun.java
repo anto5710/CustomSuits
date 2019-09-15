@@ -20,11 +20,12 @@ import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.PlayerEffect;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
 import gmail.anto5710.mcp.customsuits.Utils.CustomEffects;
+import gmail.anto5710.mcp.customsuits.Utils.InventoryUtil;
 import gmail.anto5710.mcp.customsuits.Utils.ItemUtil;
 import gmail.anto5710.mcp.customsuits.Utils.MathUtil;
 import gmail.anto5710.mcp.customsuits.Utils.ParticleUtil;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
-import gmail.anto5710.mcp.customsuits.Utils.damagiom.DamageAttribute;
+import gmail.anto5710.mcp.customsuits.Utils.damagiom.DamageMeta;
 import gmail.anto5710.mcp.customsuits.Utils.damagiom.DamageControl;
 import gmail.anto5710.mcp.customsuits.Utils.damagiom.DamageUtil;
 import gmail.anto5710.mcp.customsuits.Utils.metadative.Metadative;
@@ -48,7 +49,7 @@ public class MachineGun implements Listener{
 	}
 
 	public static boolean checkGun(Player player, ItemStack sample) {
-		ItemStack itemInHand = SuitUtils.getHoldingItem(player);
+		ItemStack itemInHand = InventoryUtil.getMainItem(player);
 		return ItemUtil.checkName(itemInHand, gun_regex) && sample.getType() == itemInHand.getType();
 	}
 
@@ -72,7 +73,7 @@ public class MachineGun implements Listener{
 		if (player.getInventory().contains(ammo)) {
 			charging.add(player);
 			for (int i = 0; i < full_amount; i++) {
-				if (ItemUtil.sufficeMaterial(player, ammo)) {
+				if (InventoryUtil.sufficeMaterial(player, ammo)) {
 					charged_ammo++;
 				}
 			}
@@ -148,7 +149,7 @@ public class MachineGun implements Listener{
 
 		if (SuitUtils.isRightClick(clickevent) && CustomSuitPlugin.isMarkEntity(player)
 				&& MachineGun.checkGun(player, Gun)) {
-			ItemStack gun = SuitUtils.getHoldingItem(player);
+			ItemStack gun = InventoryUtil.getMainItem(player);
 			String name = ItemUtil.getName(gun);
 			String[] values = name.split(gun_regex);
 			values[0] = values[0].replace(ChatColor.YELLOW + Values.MachineGunName + "«", "");
@@ -165,7 +166,7 @@ public class MachineGun implements Listener{
 					} else if (!isCharging(player)) {
 						int amount = chargeToExtent(player, Material.FLINT, Values.MachineGunAmmoAmount);
 						ItemUtil.name(copy, gunfirstName + amount + gun_regex + values[1].replace("»", "") + "»");
-						SuitUtils.setHoldingItem(player, copy);
+						InventoryUtil.setMainItem(player, copy);
 					}
 				}
 
@@ -174,7 +175,7 @@ public class MachineGun implements Listener{
 					shotMachineGun(player);
 					ItemUtil.name(copy, gunfirstName + (Integer.parseInt(values[0].replace(gunfirstName, "")) - 1) + 
 									gun_regex + values[1].replace("»", "") + "»");
-					SuitUtils.setHoldingItem(player, copy);
+					InventoryUtil.setMainItem(player, copy);
 				}
 			} else {
 				int sniperAmmo = Integer.parseInt(values[1].replace("»", ""));
@@ -185,7 +186,7 @@ public class MachineGun implements Listener{
 					} else if (!isCharging(player)) {
 						int amount = MachineGun.chargeToExtent(player, Values.SniperAmmo, Values.SnipeAmmoAmount);
 						ItemUtil.name(copy, values[0] + gun_regex + amount + "»");
-						SuitUtils.setHoldingItem(player, copy);
+						InventoryUtil.setMainItem(player, copy);
 					}
 				}
 				if (!isCharging(player)) {
@@ -208,12 +209,12 @@ public class MachineGun implements Listener{
 
 						SuitUtils.lineParticle(target, location, player, loc -> {
 							ParticleUtil.playEffect(Values.SniperEffect, loc, Values.SniperEffectAmount);
-							DamageUtil.areaDamage(loc, Values.SniperDamage, player, 0.5, DamageAttribute.X_TEN_FIREWORK);
+							DamageUtil.areaDamage(loc, Values.SniperDamage, player, 0.5, DamageMeta.X_TEN_FIREWORK);
 						}, 20);
 						cooldown(2, player);
 						ItemUtil.name(copy,
 								values[0] + gun_regex + (Integer.parseInt(values[1].replace("»", "")) - 1) + "»");
-						SuitUtils.setHoldingItem(player, copy);
+						InventoryUtil.setMainItem(player, copy);
 					}
 				}
 			}

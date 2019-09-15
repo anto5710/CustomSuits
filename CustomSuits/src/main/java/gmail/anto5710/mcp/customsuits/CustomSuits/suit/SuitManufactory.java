@@ -23,8 +23,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import gmail.anto5710.mcp.customsuits.Setting.Enchant;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
+import gmail.anto5710.mcp.customsuits.Utils.Enchant;
 import gmail.anto5710.mcp.customsuits.Utils.Glow;
 import gmail.anto5710.mcp.customsuits.Utils.ItemUtil;
 import gmail.anto5710.mcp.customsuits.Utils.PotionBrewer;
@@ -39,7 +39,7 @@ public class SuitManufactory {
 		SuitSettings hdle = CustomSuitPlugin.handle(spnSender);
 		int level = hdle.level();
 		int amount = useVehicle ? level * 2 : level;
-		hdle.reinitUInv();
+		hdle.reinitUInven();
 		Material type = Values.Suit_Spawn_Material;
 
 		for (int cnt = 0; cnt < creatureCnt; cnt++) {

@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.function.Predicate;
 
+import javax.annotation.Nonnull;
+
 import org.bukkit.Location;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
@@ -22,43 +24,43 @@ public class DamageUtil {
 		return entity instanceof LivingEntity && MathUtil.distance(shotLoc, ((LivingEntity) entity).getEyeLocation(), 0.35*entity.getWidth()/1.4D);
 	}
 
-	public static void areaDamage(Location origin, double damage, Entity shooter, double radius, DamageAttribute adj) {
+	public static void areaDamage(Location origin, double damage, Entity shooter, double radius, DamageMeta meta) {
 		for (Damageable e : DamageUtil.search(origin, radius, e->MathUtil.distanceBody(origin, e, radius), shooter)) {
-			damage(e, damage, origin, shooter, adj);
+			damage(e, damage, origin, shooter, meta);
 		}
 	}
 	
-	public static void areaDamageBounded(Location origin, double damage, Entity shooter, double radius, DamageAttribute adj) {
+	public static void areaDamageBounded(Location origin, double damage, Entity shooter, double radius, DamageMeta meta) {
 		Vector vorigin = origin.toVector();
 		for (Damageable e : DamageUtil.search(origin, radius, e->e.getBoundingBox().contains(vorigin), shooter)) {
-			damage(e, damage, origin, shooter, adj);
+			damage(e, damage, origin, shooter, meta);
 		}
 	}
 	
-	public static void damagevent(EntityDamageEvent event, double damage, Projectile prj, DamageAttribute adj) {
+	public static void damagevent(EntityDamageEvent event, double damage, Projectile prj, DamageMeta meta) {
 		Entity e = event.getEntity();
-		if(adj!=null && adj.allowHeadshot){
-			damage = applyAttribute(e, damage, prj.getLocation(), getShooter(prj), adj);
+		if(meta!=null && meta.allowHeadshot){
+			damage = applyAttribute(e, damage, prj.getLocation(), getShooter(prj), meta);
 		}
 		event.setDamage(damage);
 	}
 	
-	public static void damage(Damageable e, double damage, Location origin, Entity damager, DamageAttribute adj){
-		if (adj != null && adj.allowHeadshot) {
-			damage = applyAttribute(e, damage, origin, damager, adj);
+	public static void damage(Damageable e, double damage, Location origin, Entity damager, DamageMeta meta){
+		if (meta != null && meta.allowHeadshot) {
+			damage = applyAttribute(e, damage, origin, damager, meta);
 		}
 		e.damage(damage, damager);
 	}
 	
-	private static double applyAttribute(Entity e, double damage, Location origin, Entity damager, DamageAttribute adj){
+	private static double applyAttribute(Entity e, double damage, Location origin, Entity damager, DamageMeta meta){
 		if(isHeadshot(origin, e)){
-			damage *= adj.headshot_multiplier;
-			if(adj.firework) DamageControl.firework(origin, damager);
+			damage *= meta.headshot_multiplier;
+			if(meta.firework) DamageControl.firework(origin, damager);
 		}
 		return damage;
 	}
 	
-	public static Entity getShooter(Projectile prj){
+	public static Entity getShooter(@Nonnull Projectile prj){
 		ProjectileSource shooter = prj.getShooter();
 		return shooter instanceof Entity ? (Entity) shooter : null;
 	}

@@ -7,10 +7,13 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
@@ -20,7 +23,7 @@ import org.bukkit.entity.Player;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
 
 /**
- * This class saves the Suit Entities spawned by player
+ * This class saves the Suit Entities spawned by Player
  * 
  * @author anto5710
  *
@@ -73,7 +76,7 @@ public class SpawningDao {
 	}
 
 	public void saveEntity(Entity spawnedEntity, Player spawner) {	
-		spawnMap.put( spawnedEntity.getUniqueId().toString(),   spawner.getName());
+		spawnMap.put(spawnedEntity.getUniqueId().toString(), spawner.getName());
 		
 		String line = String.format("%s:%s", spawnedEntity.getUniqueId(), spawner.getName());
 
@@ -155,5 +158,14 @@ public class SpawningDao {
 		}
 		String pname = spawnMap.get(entity.getUniqueId()+"");
 		return pname == null ? null : Bukkit.getPlayer(pname);
+	}
+
+	public Collection<Player> getPlayers() {
+		Set<Player> set = new HashSet<>();
+		spawnMap.values().forEach(name->{
+			Player player = Bukkit.getServer().getPlayer(name);
+			if(player!=null) set.add(player);
+		});
+		return set;
 	}
 }

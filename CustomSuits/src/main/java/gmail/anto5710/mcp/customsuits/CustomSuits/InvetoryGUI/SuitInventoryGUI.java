@@ -7,7 +7,9 @@ import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.PlayerEffect;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.SuitSettings;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
+import gmail.anto5710.mcp.customsuits.Utils.InventoryUtil;
 import gmail.anto5710.mcp.customsuits.Utils.ItemUtil;
+import gmail.anto5710.mcp.customsuits.Utils.MathUtil;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 
 import org.bukkit.Bukkit;
@@ -26,7 +28,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 
-
 public class SuitInventoryGUI extends InventoryNames implements Listener {
 
 	CustomSuitPlugin plugin;
@@ -34,7 +35,7 @@ public class SuitInventoryGUI extends InventoryNames implements Listener {
 	public SuitInventoryGUI(CustomSuitPlugin plugin) {
 		this.plugin = plugin;
 	}
-
+	
 	@EventHandler
 	public void clickExpOnInventory(InventoryClickEvent e) {
 		if (authenticateAccess(e, inventory_name)) {
@@ -43,15 +44,10 @@ public class SuitInventoryGUI extends InventoryNames implements Listener {
 
 			if (icon != null && icon.getType() == Material.EXPERIENCE_BOTTLE && e.getSlot() == 8) {
 				int amount = icon.getAmount();
-				if (e.isLeftClick()) {
-					if (amount >= 64) {
-						amount = 1;
-					} else {
-						amount ++;
-					}
-				} else if (e.isRightClick() && amount > 1) {
-					amount--;
-				}
+				int a = e.isLeftClick()? 1:-1;
+				if (e.isShiftClick()) a *= Values.SuitMaxLevel;
+
+				amount = (int) MathUtil.bound(1, amount+a, Values.SuitMaxLevel);
 				icon.setAmount(amount);
 				e.setCancelled(true);
 			}
@@ -209,7 +205,7 @@ public class SuitInventoryGUI extends InventoryNames implements Listener {
 	public void clickGUI(PlayerInteractEvent e) {
 		Player player = (Player) e.getPlayer();
 		if (SuitUtils.isRightClick(e)) {
-			if (ItemUtil.checkItem(CustomSuitPlugin.suitremote, SuitUtils.getHoldingItem(player))) {
+			if (ItemUtil.checkItem(CustomSuitPlugin.suitremote, InventoryUtil.getMainItem(player))) {
 				CustomSuitPlugin.refreshInventory((Player) e.getPlayer());
 
 				e.getPlayer().openInventory(CustomSuitPlugin.handle(player).equipment);
@@ -263,7 +259,6 @@ public class SuitInventoryGUI extends InventoryNames implements Listener {
 			
 			if(e instanceof InventoryDragEvent && !(((InventoryDragEvent) e).getWhoClicked() instanceof Player)) return false;
 		}
-		
 		String title = e.getView().getTitle();
 		for(String token: tokens){
 			if(title.contains(token)) return true;

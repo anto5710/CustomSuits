@@ -1,10 +1,13 @@
 package gmail.anto5710.mcp.customsuits.CustomSuits.suit.weapons;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
+
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.HungerScheduler;
-import gmail.anto5710.mcp.customsuits.Setting.Enchant;
+import gmail.anto5710.mcp.customsuits.CustomSuits.suit.weapons.repulsor.ArcCompressor;
+import gmail.anto5710.mcp.customsuits.CustomSuits.suit.weapons.repulsor.ArcReffecter;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
-import gmail.anto5710.mcp.customsuits.Utils.Glow;
+import gmail.anto5710.mcp.customsuits.Utils.Enchant;
+import gmail.anto5710.mcp.customsuits.Utils.InventoryUtil;
 import gmail.anto5710.mcp.customsuits.Utils.ItemUtil;
 import gmail.anto5710.mcp.customsuits.Utils.PacketUtil;
 import gmail.anto5710.mcp.customsuits.Utils.ParticleUtil;
@@ -32,7 +35,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityToggleGlideEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
-import org.bukkit.event.player.PlayerToggleSprintEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BlockStateMeta;
@@ -41,7 +43,7 @@ public class SuitWeapons implements Listener {
 
 	public static TNTLauncher tnter; 	
 	public static ArcReffecter reffecter;
-	
+	public static ArcCompressor compressor;
 	
 	public static CustomSuitPlugin plugin;
 	private static Material suitlauncher = Values.SuitLauncher;
@@ -51,13 +53,14 @@ public class SuitWeapons implements Listener {
 		SuitWeapons.plugin = plugin;
 		tnter = new TNTLauncher(plugin, 1);
 		reffecter = new ArcReffecter(plugin, 1);
+		compressor = new ArcCompressor(plugin, 3);
 	}
 
 	@EventHandler
 	public void interectShield(PlayerInteractEvent event) {
 		final Player player = event.getPlayer();
 		if (SuitUtils.isRightClick(event) && player.isSneaking() && CustomSuitPlugin.isMarkEntity(player)
-				&& SuitUtils.getHoldingItem(player).getType() == suitlauncher) {
+				&& InventoryUtil.getMainItem(player).getType() == suitlauncher) {
 			if (HungerScheduler.sufficeHunger(player, Values.SuitShieldHunger)) {
 				final int sec = (CustomSuitPlugin.getSuitLevel(player)) / 20 + 3;
 				player.setNoDamageTicks(sec * 20);
@@ -73,7 +76,7 @@ public class SuitWeapons implements Listener {
 				
 				shieldMeta.setBlockState(ban);
 				shield.setItemMeta(shieldMeta);
-				Enchant.enchantment(shield, new Glow(), 1, true);
+				Enchant.englow(shield);
 				
 				ItemUtil.name(shield, ChatColor.AQUA+"S.H.I.E.L.D.");
 				ItemUtil.suffix(shield, Attribute.GENERIC_KNOCKBACK_RESISTANCE, "KNOCKARMOR", 1.1, Operation.ADD_SCALAR, EquipmentSlot.OFF_HAND);
@@ -86,11 +89,6 @@ public class SuitWeapons implements Listener {
 				SuitUtils.lack(player, "Energy");
 			}
 		}
-	}
-	
-	@EventHandler
-	public void toggleC(PlayerToggleSprintEvent e){
-		System.out.println("toggle RUn! "+e.isSprinting());
 	}
 	
 	@EventHandler
@@ -131,9 +129,9 @@ public class SuitWeapons implements Listener {
 	public void launchFireball(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
 		if (SuitUtils.isRightClick(event)
-				&& ItemUtil.checkItem(CustomSuitPlugin.missileLauncher, SuitUtils.getHoldingItem(player))) {
+				&& ItemUtil.checkItem(CustomSuitPlugin.missileLauncher, InventoryUtil.getMainItem(player))) {
 
-			if (ItemUtil.sufficeMaterial(player, Values.LauncherAmmo)) {
+			if (InventoryUtil.sufficeMaterial(player, Values.LauncherAmmo)) {
 				SuitUtils.playSound(player, Values.LauncherSound, 5.0F, 5.0F);
 				fireball(player);
 			} else {
@@ -154,22 +152,17 @@ public class SuitWeapons implements Listener {
 	public void onPlayerLeftClick(PlayerInteractEvent e) {
 		if (SuitUtils.isLeftClick(e)) {
 			Player player = e.getPlayer();
-			String message = Values.BimMessage;
-
-			int energy = Values.BimHunger;
-
 			if (CustomSuitPlugin.isMarkEntity(player) 
-					&& SuitUtils.getHoldingItem(player).getType() == suitlauncher) {
-
+					&& InventoryUtil.getMainItem(player).getType() == suitlauncher) {
 				if(!player.isSneaking()){
-					if (HungerScheduler.sufficeHunger(player, energy)) {
-						repulseBim(player, message);
-					} else {
-						SuitUtils.lack(player, "Energy");
-					}
+//					if (HungerScheduler.sufficeHunger(player, energy)) {
+//						repulseBim(player, message);
+//					} else {
+//						SuitUtils.lack(player, "Energy");
+//					}
 				} else if (!tnter.inTNTcooldown(player)) {
 
-					if (ItemUtil.sufficeMaterial(player, ammo)) {
+					if (InventoryUtil.sufficeMaterial(player, ammo)) {
 						tnter.throwTNT(player, 5);
 					} else {
 						SuitUtils.lack(player, ammo.name());
@@ -178,25 +171,31 @@ public class SuitWeapons implements Listener {
 			}
 		}
 	}
-
-	private void repulseBim(Player player, String message) {
-		Snowball bim = player.launchProjectile(Snowball.class, player.getLocation().getDirection().multiply(2));
-		bim.setGravity(false);
-		bim.setInvulnerable(true);
+	/**
+	 * 
+	 * @param player
+	 * @param power 0 ~ 1F (bow가 당겨진 정도)
+	 * @return snowball
+	 */
+	public static Snowball repulseBim(Player player, float power) {
+		Snowball ball = player.launchProjectile(Snowball.class, player.getLocation().getDirection().multiply(2));
+		PacketUtil.castDestroyPacket(ball);
+		ball.setGravity(false);
+		ball.setInvulnerable(true);
 		
-		double damage = Values.Bim * ((Math.sqrt(CustomSuitPlugin.getSuitLevel(player))/8) + 1);
-		float power = (float) (Values.BimExplosionPower * ((Math.sqrt(CustomSuitPlugin.getSuitLevel(player))/10) + 1));
-		
-		Metadative.imprint(bim, damage, power, false, true);
-		
-		PacketUtil.castDestroyPacket(bim);
-		reffecter.register(bim);
+		int level = CustomSuitPlugin.getSuitLevel(player);
+		double levelSq = Math.sqrt(level);
+		power *= level/20F;
+	
+		double damage = power * Values.Bim * (levelSq)/8 + 1;
+		float yield = (float)(power * Values.BimExplosionPower * levelSq/10 + 1);
+		Metadative.imprint(ball, damage, yield, false, true);
+		reffecter.register(ball);
 		
 		SuitUtils.playSound(player, Sound.ENTITY_WITHER_SHOOT, 1F, 5F);
 		SuitUtils.playSound(player, Sound.ENTITY_GENERIC_EXPLODE, 1F, 0F);
 		SuitUtils.playSound(player, Sound.ENTITY_BLAZE_AMBIENT, 1F, -1F);
-		
-		player.sendMessage(message);
+		return ball;
 	}
 
 	public static void breakblock(Block block) {

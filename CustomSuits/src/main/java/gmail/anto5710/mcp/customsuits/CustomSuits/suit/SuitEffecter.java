@@ -1,10 +1,15 @@
 package gmail.anto5710.mcp.customsuits.CustomSuits.suit;
 
 import org.bukkit.GameMode;
+import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 
+import gmail.anto5710.mcp.customsuits.CustomSuits.suit.weapons.SuitWeapons;
+import gmail.anto5710.mcp.customsuits.CustomSuits.suit.weapons.repulsor.ArcCompressor;
 import gmail.anto5710.mcp.customsuits.Utils.CustomEffects;
+import gmail.anto5710.mcp.customsuits.Utils.InventoryUtil;
 import gmail.anto5710.mcp.customsuits.Utils.PotionBrewer;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 import gmail.anto5710.mcp.customsuits.Utils.encompassor.LinearEncompassor;
@@ -25,8 +30,10 @@ public class SuitEffecter extends LinearEncompassor<Player>{
 		if (!player.getAllowFlight()) {
 			player.setAllowFlight(true);
 		}
-		addSuitEffects(player);
 		playStateEffect(player);
+		if(t%10==0) addSuitEffects(player);
+		
+		tick();
 	}
 
 	@Override
@@ -60,6 +67,19 @@ public class SuitEffecter extends LinearEncompassor<Player>{
 		PotionBrewer.addPotion(player, PotionEffectType.WATER_BREATHING, 99999999, 1);
 		PotionBrewer.addPotion(player, PotionEffectType.JUMP, 99999999, 2);
 		PotionBrewer.addPotion(player, PotionEffectType.REGENERATION, 99999999, (int)(level/16D) + 1);
+		equipRepulsor(player);
+	}
+	
+	private static void equipRepulsor(Player player){
+		if(!player.getInventory().contains(ArcCompressor.bow) && !player.getInventory().contains(ArcCompressor.star)) {
+			InventoryUtil.give(player, ArcCompressor.star);
+			SuitUtils.playSound(player, Sound.BLOCK_LEVER_CLICK, 4F, 14F);
+			SuitUtils.playSound(player, Sound.BLOCK_METAL_PLACE, 4F, 14F);
+			SuitUtils.runAfter(()->SuitUtils.playSound(player, Sound.BLOCK_STONE_BUTTON_CLICK_OFF, 4F, 14F), 4);
+			SuitUtils.runAfter(()->SuitUtils.playSound(player, Sound.BLOCK_STONE_BUTTON_CLICK_OFF, 4F, 14F), 7);
+			
+		}
+		InventoryUtil.replete(player, Material.ARROW);
 	}
 	
 	public static void removeSuitEffects(Player player) {
@@ -78,5 +98,8 @@ public class SuitEffecter extends LinearEncompassor<Player>{
 			PotionEffectType.WATER_BREATHING,
 			PotionEffectType.NIGHT_VISION,
 			PotionEffectType.SLOW);
+		InventoryUtil.removeAll(player, ArcCompressor.star);
+		InventoryUtil.removeAll(player, ArcCompressor.bow);
+		SuitWeapons.compressor.disclose(player);
 	}
 }

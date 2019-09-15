@@ -29,7 +29,7 @@ public class Target implements Runnable{
 		if (SpawningDao.spawnMap.isEmpty()) {
 			stop();		
 		} else {
-			for(Player player : plugin.getSuitedPlayers(SpawningDao.spawnMap)){
+			for(Player player : CustomSuitPlugin.dao.getPlayers()){
 				SuitSettings hdle = CustomSuitPlugin.handle(player);
 				hdle.removeDeadTargets();
 				target(player, hdle.getCurrentTarget(), false);

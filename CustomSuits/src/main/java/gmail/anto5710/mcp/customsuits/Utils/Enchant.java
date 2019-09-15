@@ -1,7 +1,4 @@
-package gmail.anto5710.mcp.customsuits.Setting;
-
-import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomSuitPlugin;
-import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
+package gmail.anto5710.mcp.customsuits.Utils;
 
 import java.util.Map;
 
@@ -12,47 +9,48 @@ import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class Enchant {
-	CustomSuitPlugin plugin;
-	
+
 	public static ItemStack
-	Protection = new ItemStack(Material.ENCHANTED_BOOK),
-	Blast_Protection = new ItemStack(Material.ENCHANTED_BOOK),
-	Fire_Protection = new ItemStack(Material.ENCHANTED_BOOK),
-	Feather_Falling = new ItemStack(Material.ENCHANTED_BOOK),
-	Projectile_Protection = new ItemStack(Material.ENCHANTED_BOOK),
-	Respiration = new ItemStack(Material.ENCHANTED_BOOK),
-	Aqua_Affinity = new ItemStack(Material.ENCHANTED_BOOK),
-	Thorns = new ItemStack(Material.ENCHANTED_BOOK),
-	Depth_Strider = new ItemStack(Material.ENCHANTED_BOOK),
-	Frost_Walker = new ItemStack(Material.ENCHANTED_BOOK),
+		Protection = new ItemStack(Material.ENCHANTED_BOOK),
+		Blast_Protection = new ItemStack(Material.ENCHANTED_BOOK),
+		Fire_Protection = new ItemStack(Material.ENCHANTED_BOOK),
+		Feather_Falling = new ItemStack(Material.ENCHANTED_BOOK),
+		Projectile_Protection = new ItemStack(Material.ENCHANTED_BOOK),
+		Respiration = new ItemStack(Material.ENCHANTED_BOOK),
+		Aqua_Affinity = new ItemStack(Material.ENCHANTED_BOOK),
+		Thorns = new ItemStack(Material.ENCHANTED_BOOK),
+		Depth_Strider = new ItemStack(Material.ENCHANTED_BOOK),
+		Frost_Walker = new ItemStack(Material.ENCHANTED_BOOK),
+		
+		Sharpness = new ItemStack(Material.ENCHANTED_BOOK),
+		Smite = new ItemStack(Material.ENCHANTED_BOOK),
+		Bane_of_Arthropods = new ItemStack(Material.ENCHANTED_BOOK),
+		KnockBack = new ItemStack(Material.ENCHANTED_BOOK),
+		Fire_Aspect = new ItemStack(Material.ENCHANTED_BOOK),
+		Looting = new ItemStack(Material.ENCHANTED_BOOK),
+		Sweeping_Edge = new ItemStack(Material.ENCHANTED_BOOK),
 	
-	Sharpness = new ItemStack(Material.ENCHANTED_BOOK),
-	Smite = new ItemStack(Material.ENCHANTED_BOOK),
-	Bane_of_Arthropods = new ItemStack(Material.ENCHANTED_BOOK),
-	KnockBack = new ItemStack(Material.ENCHANTED_BOOK),
-	Fire_Aspect = new ItemStack(Material.ENCHANTED_BOOK),
-	Looting = new ItemStack(Material.ENCHANTED_BOOK),
-	Sweeping_Edge = new ItemStack(Material.ENCHANTED_BOOK),
-
-	Power = new ItemStack(Material.ENCHANTED_BOOK),
-	Punch = new ItemStack(Material.ENCHANTED_BOOK),
-	Flame = new ItemStack(Material.ENCHANTED_BOOK),
-	Infinity = new ItemStack(Material.ENCHANTED_BOOK),
+		Power = new ItemStack(Material.ENCHANTED_BOOK),
+		Punch = new ItemStack(Material.ENCHANTED_BOOK),
+		Flame = new ItemStack(Material.ENCHANTED_BOOK),
+		Infinity = new ItemStack(Material.ENCHANTED_BOOK),
+		
+		Unbreaking = new ItemStack(Material.ENCHANTED_BOOK),
+		Mending = new ItemStack(Material.ENCHANTED_BOOK),
 	
-	Unbreaking = new ItemStack(Material.ENCHANTED_BOOK),
-	Mending = new ItemStack(Material.ENCHANTED_BOOK),
+		Impalling = new ItemStack(Material.ENCHANTED_BOOK),
+		Loyalty = new ItemStack(Material.ENCHANTED_BOOK),
+		Riptide = new ItemStack(Material.ENCHANTED_BOOK);
 
-	Impalling = new ItemStack(Material.ENCHANTED_BOOK),
-	Loyalty = new ItemStack(Material.ENCHANTED_BOOK),
-	Riptide = new ItemStack(Material.ENCHANTED_BOOK);
-
-	public Enchant(CustomSuitPlugin plugin) {
-		this.plugin = plugin;
+	
+	private static Enchantment glow;
+	public Enchant(){
+		glow = new Glow();
 	}
 
 	public static void enchantBook(ItemStack item, Enchantment enchantment, int level, boolean IgnoreLevelLimit) {
 		EnchantmentStorageMeta Meta = (EnchantmentStorageMeta) item.getItemMeta();
-
+		
 		Meta.addStoredEnchant(enchantment, level, IgnoreLevelLimit);
 		item.setItemMeta(Meta);
 	}
@@ -74,7 +72,10 @@ public class Enchant {
 		}
 	}
 	
-
+	
+	public static void englow(ItemStack item){
+		item.addUnsafeEnchantment(glow, 1);
+	}
 	
 	public static void enchantment(ItemStack item, Enchantment enchantment, int level, boolean IgnoreLevelLimit) {
 		item.addUnsafeEnchantment(enchantment, level);

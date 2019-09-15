@@ -10,9 +10,12 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
-import org.bukkit.projectiles.ProjectileSource;
+
+
+import gmail.anto5710.mcp.customsuits.Utils.damagiom.DamageUtil;
 
 public class AutoTarget implements Listener{
+	@SuppressWarnings("unused")
 	private CustomSuitPlugin plugin;
 	public AutoTarget(CustomSuitPlugin plugin) {
 		this.plugin = plugin;
@@ -94,22 +97,28 @@ public class AutoTarget implements Listener{
 		Entity damager = event.getDamager(), victim = event.getEntity();
 		if(event.getDamager() instanceof Projectile){
 			Projectile proj = (Projectile) damager;
-			ProjectileSource shooter = proj.getShooter();
-			if(shooter!=null && shooter instanceof Entity) targetMutual((Entity) shooter, victim);
+			Entity shooter = DamageUtil.getShooter(proj);
+			if(shooter!=null) targetMutual(shooter, victim);
 		}else{
 			targetMutual(damager, victim);
 		}
 	}
 	
+	private Player equestLord(Entity wouldBeLord){
+		return wouldBeLord instanceof Player ? (Player) wouldBeLord : CustomSuitPlugin.dao.getOwner(wouldBeLord);
+	}
+	
 	public void targetMutual(Entity damager, Entity victim){
-		Player pd = damager instanceof Player? (Player) damager : CustomSuitPlugin.dao.getOwner(damager);
-		Player pv = victim instanceof Player ? (Player) victim : CustomSuitPlugin.dao.getOwner(victim);
-		if(pd==pv) return; //friendlyfire
+		Player ultDamager = equestLord(damager);
+		Player ultVictim = equestLord(victim);
+		if(ultDamager==ultVictim) return; //friendlyfire
 		
-		
-		//TODO player 가 슈ㅡㅌ 있는 지 없는지 체크 하고 없으면 oytTarget X X
-		if(pd!=null && victim instanceof LivingEntity && victim != pd) CustomSuitPlugin.handle(pd).putTarget((LivingEntity) victim);
-		
-		if(pv!=null && damager instanceof LivingEntity && damager != pv) CustomSuitPlugin.handle(pv).putTarget((LivingEntity) damager);
+		//TODO player 가 슈트 있는 지 없는지 체크 하고 없으면 oytTarget X X
+		if(ultDamager!=null && victim instanceof LivingEntity && victim != ultDamager){
+			CustomSuitPlugin.handle(ultDamager).putTarget((LivingEntity) victim);
+		}
+		if(ultVictim!=null && damager instanceof LivingEntity && damager != ultVictim){
+			CustomSuitPlugin.handle(ultVictim).putTarget((LivingEntity) damager);
+		}
 	}
 }
