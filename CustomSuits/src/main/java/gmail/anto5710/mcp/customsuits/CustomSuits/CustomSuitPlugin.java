@@ -58,6 +58,7 @@ import gmail.anto5710.mcp.customsuits.Utils.Glow;
 import gmail.anto5710.mcp.customsuits.Utils.InventoryUtil;
 import gmail.anto5710.mcp.customsuits.Utils.ItemUtil;
 import gmail.anto5710.mcp.customsuits.Utils.MathUtil;
+import gmail.anto5710.mcp.customsuits.Utils.ParticleModeller;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 import gmail.anto5710.mcp.customsuits.Utils.damagiom.DamageControl;
 import gmail.anto5710.mcp.customsuits.Utils.damagiom.DamageUtil;
@@ -115,6 +116,7 @@ public class CustomSuitPlugin extends JavaPlugin {
 		new Enchant();
 		new SuitUtils(this);
 		new DamageUtil();
+		new ParticleModeller(this);
 
 		Enchant.enchantBooks();
 		ColorUtil.initColorMap();

@@ -4,24 +4,20 @@ import java.util.HashSet;
 
 
 
+
 import java.util.Set;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.Setting.PotionEffects;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
+import gmail.anto5710.mcp.customsuits.Utils.CustomEffects;
 import gmail.anto5710.mcp.customsuits.Utils.InventoryUtil;
 import gmail.anto5710.mcp.customsuits.Utils.ItemUtil;
 import gmail.anto5710.mcp.customsuits.Utils.ParticleUtil;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 import gmail.anto5710.mcp.customsuits.Utils.ThorUtils;
-import gmail.anto5710.mcp.customsuits.Utils.fireworks.FireworkPlay;
-import gmail.anto5710.mcp.customsuits.Utils.fireworks.FireworkProccesor;
-
 import org.bukkit.Bukkit;
-import org.bukkit.Color;
-import org.bukkit.FireworkEffect;
 import org.bukkit.GameMode;
-import org.bukkit.FireworkEffect.Type;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -207,9 +203,7 @@ public class Hammer implements Listener {
 	 */
 	public static void thormorphosize(Player player) {
 		Bukkit.getScheduler().runTaskLater(plugin, () -> {
-			FireworkEffect effect = FireworkProccesor.getEffect(Color.RED, Type.STAR);
-			FireworkPlay.spawn(player.getLocation().add(0, 3, 0), effect);
-			player.getWorld().strikeLightningEffect(player.getLocation());
+			CustomEffects.play_Thor_FormationFin(player);
 			InventoryUtil.equip(player, CustomSuitPlugin.Helemt_Thor, CustomSuitPlugin.Chestplate_Thor, 
 								   CustomSuitPlugin.Leggings_Thor, CustomSuitPlugin.Boots_Thor);
 			SuitUtils.playSound(player, Values.ThorChangeSound, 7.0F, 7.0F);

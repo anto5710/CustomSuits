@@ -128,7 +128,7 @@ public class MachineGun implements Listener{
 		
 		effecter.register(snowball);
 
-		CustomEffects.play_Gun_Shot_Effect(player);
+		CustomEffects.play_GunShotEffect(player);
 	}
 
 	@EventHandler
@@ -160,7 +160,7 @@ public class MachineGun implements Listener{
 				}
 
 				if (!isCharging(player)) {					
-					CustomEffects.play_Gun_Shot_Effect(player);
+					CustomEffects.play_GunShotEffect(player);
 					shotMachineGun(player);
 					ItemUtil.name(copy, gunfirstName + (Integer.parseInt(values[0].replace(gunfirstName, "")) - 1) + 
 									gun_regex + values[1].replace("»", "") + "»");
@@ -193,7 +193,7 @@ public class MachineGun implements Listener{
 						SuitUtils.playSound(player, Sound.ENTITY_GENERIC_EXPLODE, 23.0F, 21.0F);
 						SuitUtils.playSound(player, Sound.ENTITY_IRON_GOLEM_HURT, 4.0F, 4.0F);
 
-						CustomEffects.play_Gun_Shot_Effect(player);
+						CustomEffects.play_GunShotEffect(player);
 
 						SuitUtils.lineParticle(target, location, player, loc -> {
 							ParticleUtil.playEffect(Values.SniperEffect, loc, Values.SniperEffectAmount);

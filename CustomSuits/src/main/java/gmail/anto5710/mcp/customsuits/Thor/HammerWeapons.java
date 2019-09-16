@@ -47,7 +47,7 @@ public class HammerWeapons implements Listener{
 	}
 	
 	public void awakenThor(Player player){
-		CustomEffects.playThorChangeEffect(player);
+		CustomEffects.play_Thor_Change(player);
 		Hammer.thor = player;
 	}
 	

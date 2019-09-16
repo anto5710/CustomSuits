@@ -40,7 +40,7 @@ public class HammerThrowEffect extends DispenseEncompassor<Item, Player>{
 	private void impact(Item item){
 		Player player = get(item);
 		Location loc = item.getLocation();
-		CustomEffects.playHammerHitGround(item);
+		CustomEffects.play_Thor_HammerHitGround(item);
 		item.getWorld().strikeLightning(loc);
 		player.getInventory().addItem(item.getItemStack());
 		item.remove();

@@ -13,6 +13,6 @@ public class ArcReffecter extends StandardEncompassor<Snowball>{
 
 	@Override
 	public void particulate(Snowball e) {
-		CustomEffects.playArcReactor(e.getLocation());
+		CustomEffects.play_Suit_ARC(e.getLocation());
 	}
 }
