@@ -123,18 +123,17 @@ public class SuitSettings {
 	public boolean asessSentityType(String name){
 		CustomEntities type = CustomEntities.get(name);
 		boolean legit = type != null && type != CustomEntities.NONE;
-		if(legit){
-			setSentityType(type);
-		}
+		if(legit) setSentityType(type);
+		
 		return legit;
 	}
 	
 	public boolean assessVehicleType(String name){
 		CustomEntities type = CustomEntities.get(name);
-		if (type != null) {
-			setVehicleType(type);
-		}
-		return type != null;
+		boolean legit = type != null;
+		if (legit) setVehicleType(type);
+		
+		return legit;
 	}
 
 	public int getCount() {

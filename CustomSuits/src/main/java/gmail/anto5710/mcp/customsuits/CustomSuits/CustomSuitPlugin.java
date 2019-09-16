@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import javax.annotation.Nonnull;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -469,7 +471,7 @@ public class CustomSuitPlugin extends JavaPlugin {
 		}.runTaskTimer(plugin, 0, 30);
 	}
 
-	public static boolean isMarkEntity(LivingEntity lentity) {
+	public static boolean isMarkEntity(@Nonnull LivingEntity lentity) {
 		ItemStack [] armors = lentity.getEquipment().getArmorContents();
 		return armors != null && Arrays.stream(armors).anyMatch(
 				armor->ItemUtil.checkName(armor, Values.SuitName + Values.SuitInforegex));
@@ -488,15 +490,7 @@ public class CustomSuitPlugin extends JavaPlugin {
 		}
 		return nearest;
 	}
-
-	public static Inventory copyCommandGUI(Player player, Inventory cmdInven) {
-		Inventory newInven = InventoryUtil.copy(cmdInven, player, Inventories.commandinventory_name + ":" + player.getDisplayName());
-		ItemStack Head = ItemUtil.decapitate(player.getName());
-		ItemUtil.name(Head, ItemUtil.getName(cmdInven.getItem(14)));
-		newInven.setItem(14, Head);
-		return newInven;
-	}
-
+	
 	public static int getSuitLevel(Player p) {
 		for(ItemStack armor : p.getEquipment().getArmorContents()){
 			if(ItemUtil.checkName(armor, Values.SuitName + Values.SuitInforegex)){				
