@@ -8,6 +8,7 @@ import org.bukkit.inventory.ItemStack;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomEntities;
 import gmail.anto5710.mcp.customsuits.Utils.Enchant;
+import gmail.anto5710.mcp.customsuits.Utils.Glow;
 import gmail.anto5710.mcp.customsuits.Utils.ItemUtil;
 
 public class Inventories {
@@ -58,19 +59,19 @@ public class Inventories {
 		ItemStack EnchantIcon = new ItemStack(Material.ENCHANTING_TABLE);
 		ItemStack ColorIcon = new ItemStack(Material.SUNFLOWER);
 		
-		Enchant.englow(ArmorIcon);
-		Enchant.englow(EnchantIcon);
-		Enchant.englow(ColorIcon);
+		Glow.englow(ArmorIcon);
+		Glow.englow(EnchantIcon);
+		Glow.englow(ColorIcon);
 
 		ItemStack helmetEnchantIcon = ItemUtil.createWithName(Material.ENCHANTED_BOOK, ChatColor.AQUA + "[Helmet]");
 		ItemStack chestplateEnchantIcon = ItemUtil.createWithName(Material.ENCHANTED_BOOK, ChatColor.AQUA + "[ChestPlate]");
 		ItemStack leggingsEnchantIcon = ItemUtil.createWithName(Material.ENCHANTED_BOOK, ChatColor.AQUA + "[Leggings]");
 		ItemStack bootsEnchantIcon = ItemUtil.createWithName(Material.ENCHANTED_BOOK, ChatColor.AQUA + "[Boots]");
 
-		Enchant.englow(helmetEnchantIcon);
-		Enchant.englow(chestplateEnchantIcon);
-		Enchant.englow(leggingsEnchantIcon);
-		Enchant.englow(bootsEnchantIcon);
+		Glow.englow(helmetEnchantIcon);
+		Glow.englow(chestplateEnchantIcon);
+		Glow.englow(leggingsEnchantIcon);
+		Glow.englow(bootsEnchantIcon);
 
 		armorinventory.setItem(19, new ItemStack(Material.GOLDEN_HELMET));
 		armorinventory.setItem(28, new ItemStack(Material.LEATHER_CHESTPLATE));
@@ -106,10 +107,10 @@ public class Inventories {
 		ItemStack LeggingsColorIcon = ItemUtil.createWithName(Material.LEATHER_LEGGINGS, ChatColor.GOLD + "[Leggings Color]");		
 		ItemStack BootsColorIcon = ItemUtil.createWithName(Material.LEATHER_BOOTS, ChatColor.GOLD + "[Boots Color]");
 		
-		Enchant.englow(HelmetColorIcon);
-		Enchant.englow(ChestColorIcon);
-		Enchant.englow(LeggingsColorIcon);
-		Enchant.englow(BootsColorIcon);
+		Glow.englow(HelmetColorIcon);
+		Glow.englow(ChestColorIcon);
+		Glow.englow(LeggingsColorIcon);
+		Glow.englow(BootsColorIcon);
 
 		armorinventory.setItem(25, HelmetColorIcon);
 		armorinventory.setItem(34, ChestColorIcon);

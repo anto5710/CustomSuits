@@ -17,7 +17,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.CustomSuitPlugin;
-import gmail.anto5710.mcp.customsuits.Utils.Enchant;
+import gmail.anto5710.mcp.customsuits.Utils.Glow;
 import gmail.anto5710.mcp.customsuits.Utils.ItemUtil;
 import gmail.anto5710.mcp.customsuits.Utils.MathUtil;
 import gmail.anto5710.mcp.customsuits.Utils.ParticleUtil;
@@ -31,7 +31,7 @@ public class TNTLauncher extends DispenseEncompassor<Item, Long>{
 	public TNTLauncher(CustomSuitPlugin plugin, long period) {
 		super(plugin, period);
 		tntStack = ItemUtil.createWithName(Material.TNT, ChatColor.AQUA + "[Bomb]");
-		Enchant.englow(tntStack);
+		Glow.englow(tntStack);
 	}
 
 	private final float TNT_strength = 3;

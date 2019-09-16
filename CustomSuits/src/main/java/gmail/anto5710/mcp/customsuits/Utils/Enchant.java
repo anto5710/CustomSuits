@@ -43,9 +43,7 @@ public class Enchant {
 		Riptide = new ItemStack(Material.ENCHANTED_BOOK);
 
 	
-	private static Enchantment glow;
 	public Enchant(){
-		glow = new Glow();
 	}
 
 	public static void enchantBook(ItemStack item, Enchantment enchantment, int level, boolean IgnoreLevelLimit) {
@@ -70,11 +68,6 @@ public class Enchant {
 			}
 			item.setItemMeta(meta);
 		}
-	}
-	
-	
-	public static void englow(ItemStack item){
-		item.addUnsafeEnchantment(glow, 1);
 	}
 	
 	public static void enchantment(ItemStack item, Enchantment enchantment, int level, boolean IgnoreLevelLimit) {

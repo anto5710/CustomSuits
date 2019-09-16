@@ -8,13 +8,35 @@ import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.inventory.ItemStack;
 
 public class Glow extends Enchantment {
-	static NamespacedKey id = NamespacedKey.minecraft("illum");
-
+	private static NamespacedKey id = NamespacedKey.minecraft("illum");
+	private static Enchantment glow;
+	
 	public Glow() {
-		// super(new NamespacedKey(CustomSuitPlugin.plugin, "mending"));
 		super(id);
 	}
 
+	public static void registerGlow() {
+		try {
+			Field f = Enchantment.class.getDeclaredField("acceptingNew");
+			f.setAccessible(true);
+			f.set(null, true);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		try {
+			Glow glow = new Glow();
+			Enchantment.registerEnchantment(glow);
+			Glow.glow = glow;
+		} catch (IllegalArgumentException e) {
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void englow(ItemStack item){
+		item.addUnsafeEnchantment(glow, 1);
+	}
+	
 	@Override
 	public boolean canEnchantItem(ItemStack arg0) {
 		return false;
@@ -45,22 +67,6 @@ public class Glow extends Enchantment {
 		return 0;
 	}
 
-	public static void registerGlow() {
-		try {
-			Field f = Enchantment.class.getDeclaredField("acceptingNew");
-			f.setAccessible(true);
-			f.set(null, true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		try {
-			Glow glow = new Glow();
-			Enchantment.registerEnchantment(glow);
-		} catch (IllegalArgumentException e) {
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 
 	@Override
 	public boolean isCursed() {
@@ -71,5 +77,4 @@ public class Glow extends Enchantment {
 	public boolean isTreasure() {
 		return false;
 	}
-
 }
