@@ -10,8 +10,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import gmail.anto5710.mcp.customsuits.CustomSuits.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.CustomSuits.InvetoryGUI.Inventories;
+import gmail.anto5710.mcp.customsuits.Utils.InventoryUtil;
 import gmail.anto5710.mcp.customsuits.Utils.ItemUtil;
 
 public class SuitSettings {	
@@ -33,45 +33,35 @@ public class SuitSettings {
 
 	public SuitSettings(Player p) {
 		this.p = p;
-		reinitUInven();
+		reinitUInven(true);
 		setSentityType(CustomEntities.WARRIOR);
 		setVehicleType(CustomEntities.NONE);
 	}
 	
-	public void reinitUInven(){
-		if(command_equipment==null){
-			command_equipment = CustomSuitPlugin.copyCommandGUI(p, Inventories.commandCenter);
+	public void reinitUInven(boolean forced){
+		if(command_equipment==null || forced){
+			command_equipment = InventoryUtil.copy(Inventories.commandCenter, p, Inventories.commandinventory_name + ":" + p.getDisplayName());
+			updatePlayerIcon();
 		}
-		if(main==null){
-			main = CustomSuitPlugin.copyInven(p, Inventories.main, Inventories.maininventory_name);
+		if(main==null || forced){
+			main = InventoryUtil.copy(Inventories.main, p, Inventories.maininventory_name);
 		}
-		if(armor==null){
-			armor = CustomSuitPlugin.copyInven(p, Inventories.armorinventory, Inventories.armorinventory_name);
+		if(armor==null || forced){
+			armor = InventoryUtil.copy(Inventories.armorinventory, p, Inventories.armorinventory_name);
 		}
-		if(helmetEnchants==null){
-			helmetEnchants = CustomSuitPlugin.copyInven(p, Inventories.helmetinventory, Inventories.helmetinventory_name);
+		if(helmetEnchants==null || forced){
+			helmetEnchants = InventoryUtil.copy(Inventories.helmetinventory, p, Inventories.helmetinventory_name);
 		}
-		if(chestEnchants==null){
-			chestEnchants = CustomSuitPlugin.copyInven(p, Inventories.chestinventory, Inventories.chestinventory_name);
+		if(chestEnchants==null || forced){
+			chestEnchants = InventoryUtil.copy(Inventories.chestinventory, p, Inventories.chestinventory_name);
 		}
-		if(leggingsEnchants==null){
-			leggingsEnchants = CustomSuitPlugin.copyInven(p, Inventories.leggingsinventory, Inventories.leggingsinventory_name);
+		if(leggingsEnchants==null || forced){
+			leggingsEnchants = InventoryUtil.copy(Inventories.leggingsinventory, p, Inventories.leggingsinventory_name);
 		}
-		if(bootsEnchants==null){
-			bootsEnchants = CustomSuitPlugin.copyInven(p, Inventories.bootsinventory, Inventories.bootsinventory_name);
+		if(bootsEnchants==null || forced){
+			bootsEnchants = InventoryUtil.copy(Inventories.bootsinventory, p, Inventories.bootsinventory_name);
 		}
 		p.updateInventory();
-	}
-	
-	@SuppressWarnings("unused")
-	private void resetUInven(){
-		command_equipment = CustomSuitPlugin.copyCommandGUI(p, Inventories.commandCenter);
-		main = CustomSuitPlugin.copyInven(p, Inventories.main, Inventories.maininventory_name);
-		armor = CustomSuitPlugin.copyInven(p, Inventories.armorinventory, Inventories.armorinventory_name);
-		helmetEnchants = CustomSuitPlugin.copyInven(p, Inventories.helmetinventory, Inventories.helmetinventory_name);
-		chestEnchants = CustomSuitPlugin.copyInven(p, Inventories.chestinventory, Inventories.chestinventory_name);
-		leggingsEnchants = CustomSuitPlugin.copyInven(p, Inventories.leggingsinventory, Inventories.leggingsinventory_name);
-		bootsEnchants = CustomSuitPlugin.copyInven(p, Inventories.bootsinventory, Inventories.bootsinventory_name);
 	}
 	
 	private void updateColorIcon(int slot, Color color) {
@@ -86,6 +76,12 @@ public class SuitSettings {
 		updateColorIcon(34, chestColor);
 		updateColorIcon(43, leggingsColor);
 		updateColorIcon(52, bootsColor);
+	}
+	
+	private void updatePlayerIcon(){ // for Party Protocol
+		ItemStack head = ItemUtil.decapitate(p.getName());
+		ItemUtil.name(head, ItemUtil.getName(command_equipment.getItem(14)));
+		command_equipment.setItem(14, head);
 	}
 	
 	public int level(){

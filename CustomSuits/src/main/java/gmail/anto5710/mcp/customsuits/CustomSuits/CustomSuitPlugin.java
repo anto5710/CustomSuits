@@ -117,6 +117,7 @@ public class CustomSuitPlugin extends JavaPlugin {
 		new SuitUtils(this);
 		new DamageUtil();
 		new ParticleModeller(this);
+		new CustomEffects(this);
 
 		Enchant.enchantBooks();
 		ColorUtil.initColorMap();
@@ -216,8 +217,6 @@ public class CustomSuitPlugin extends JavaPlugin {
 
 		dao = new SpawningDao(this);
 		dao.init();
-
-		new CustomEffects(this);
 	}
 
 	@Override
@@ -491,16 +490,10 @@ public class CustomSuitPlugin extends JavaPlugin {
 	}
 
 	public static Inventory copyCommandGUI(Player player, Inventory cmdInven) {
-		Inventory newInven = copyInven(player, cmdInven, Inventories.commandinventory_name + ":" + player.getDisplayName());
+		Inventory newInven = InventoryUtil.copy(cmdInven, player, Inventories.commandinventory_name + ":" + player.getDisplayName());
 		ItemStack Head = ItemUtil.decapitate(player.getName());
 		ItemUtil.name(Head, ItemUtil.getName(cmdInven.getItem(14)));
 		newInven.setItem(14, Head);
-		return newInven;
-	}
-
-	public static Inventory copyInven(Player player, Inventory inven, String title){
-		Inventory newInven = Bukkit.createInventory(player, inven.getSize(), title);
-		newInven.setContents(inven.getContents());
 		return newInven;
 	}
 
@@ -516,6 +509,6 @@ public class CustomSuitPlugin extends JavaPlugin {
 	}
 
 	public static void refreshInventory(Player player) {
-		handle(player).reinitUInven();
+		handle(player).reinitUInven(false);
 	}
 }

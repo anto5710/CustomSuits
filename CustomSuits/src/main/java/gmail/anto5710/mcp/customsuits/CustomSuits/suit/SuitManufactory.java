@@ -40,7 +40,7 @@ public class SuitManufactory {
 		SuitSettings hdle = CustomSuitPlugin.handle(spnSender);
 		int level = hdle.level();
 		int amount = useVehicle ? level * 2 : level;
-		hdle.reinitUInven();
+		hdle.reinitUInven(false);
 		Material type = Values.Suit_Spawn_Material;
 
 		for (int cnt = 0; cnt < creatureCnt; cnt++) {

@@ -204,10 +204,10 @@ public class SuitInventoryGUI extends Inventories implements Listener {
 	public void clickGUI(PlayerInteractEvent e) {
 		Player player = (Player) e.getPlayer();
 		if (SuitUtils.isRightClick(e)) {
-			if (ItemUtil.checkItem(CustomSuitPlugin.suitremote, InventoryUtil.getMainItem(player))) {
-				CustomSuitPlugin.refreshInventory((Player) e.getPlayer());
+			if (InventoryUtil.inAnyHand(player, CustomSuitPlugin.suitremote)) {
+				CustomSuitPlugin.refreshInventory(player);
 
-				e.getPlayer().openInventory(CustomSuitPlugin.handle(player).main);
+				player.openInventory(CustomSuitPlugin.handle(player).main);
 				e.setCancelled(true);
 			}
 		}

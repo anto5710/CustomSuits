@@ -2,11 +2,13 @@ package gmail.anto5710.mcp.customsuits.Utils;
 
 import javax.annotation.Nonnull;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
@@ -135,5 +137,11 @@ public class InventoryUtil {
 			if (ItemUtil.isAir(arm)) emptySlots++; 
 		}
 		return emptySlots < armorContents.length;
+	}
+
+	public static Inventory copy(Inventory inven, InventoryHolder owner, String title){
+		Inventory newInven = Bukkit.createInventory(owner, inven.getSize(), title);
+		newInven.setContents(inven.getContents());
+		return newInven;
 	}
 }
