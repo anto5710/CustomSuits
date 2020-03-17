@@ -204,7 +204,7 @@ public class PlayerEffect implements Listener {
 			LivingEntity lentity = (LivingEntity) entity;
 			if (InventoryUtil.hasArmor(lentity)) {
 				// 실오라기라도 하나 걸치고 있음
-				player.getEquipment().setArmorContents(lentity.getEquipment().getArmorContents());
+				InventoryUtil.equip(player, lentity.getEquipment().getArmorContents());
 				lentity.damage(100000000D);
 				player.updateInventory();
 				CustomEffects.play_Suit_Get(player.getLocation(), player);
@@ -241,7 +241,7 @@ public class PlayerEffect implements Listener {
 	}
 	
 	@EventHandler
-	public void onPlayerFli(PlayerToggleFlightEvent e) {
+	public void onPlayerFly(PlayerToggleFlightEvent e) {
 		Player player = e.getPlayer();
 
 		if (CustomSuitPlugin.isMarkEntity(player)) {
@@ -255,7 +255,7 @@ public class PlayerEffect implements Listener {
 
 			SuitUtils.playSound(player, Values.SuitSneakSound, 1F, 1.0F);
 
-			player.setFlySpeed(1F);
+			player.setFlySpeed(CustomSuitPlugin.handle(player).flyingSpeed());
 			player.setAllowFlight(true);
 			player.setFlying(true);
 

@@ -4,7 +4,6 @@ import javax.annotation.Nonnull;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -21,7 +20,14 @@ public class InventoryUtil {
 		lentity.getEquipment().setChestplate(chestplate);
 		lentity.getEquipment().setLeggings(leggings);
 		lentity.getEquipment().setBoots(boots);
-		if(lentity.getType()==EntityType.PLAYER) ((Player)lentity).updateInventory();
+		if(lentity instanceof Player) ((Player)lentity).updateInventory();
+	}
+	
+	public static void equip(LivingEntity lentity, ItemStack[] armors) {
+		if(lentity==null || armors == null || armors.length != 4) return;
+		
+		lentity.getEquipment().setArmorContents(armors);
+		if(lentity instanceof Player) ((Player)lentity).updateInventory();
 	}
 	
 	public static void give(Player player, ItemStack item){
@@ -144,4 +150,6 @@ public class InventoryUtil {
 		newInven.setContents(inven.getContents());
 		return newInven;
 	}
+
+
 }

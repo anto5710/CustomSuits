@@ -1,48 +1,63 @@
 package gmail.anto5710.mcp.customsuits.Utils.fireworks;
 
-import net.minecraft.server.v1_13_R2.EntityFireworks;
+import java.util.List;
 
-
-import net.minecraft.server.v1_13_R2.World;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
-
-import org.bukkit.craftbukkit.v1_13_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_15_R1.CraftServer;
+import org.bukkit.craftbukkit.v1_15_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
 import org.bukkit.entity.Firework;
 import org.bukkit.inventory.meta.FireworkMeta;
 
+import gmail.anto5710.mcp.customsuits.Utils.PacketUtil;
+import net.minecraft.server.v1_15_R1.EntityFireworks;
+import net.minecraft.server.v1_15_R1.EntityTypes;
+import net.minecraft.server.v1_15_R1.PacketPlayOutEntityStatus;
+import net.minecraft.server.v1_15_R1.World;
+
 public class FireworkPlay extends EntityFireworks {
 	public FireworkPlay(World world) {
-		super(world);
+		super(EntityTypes.FIREWORK_ROCKET, world);
 		this.a(0.25F, 0.25F);
 	}
-
+	
 	boolean gone = false;
 
-	@Override
-	public boolean t(net.minecraft.server.v1_13_R2.Entity entity) {
-		if (gone) {
-			return false;
-		}
-		gone = true;
-		world.broadcastEntityEffect(this, (byte) 17);
-		world.removeEntity(this);
-		return true;
-	}
-
-	public static void spawn(Location location, FireworkEffect effect) {
+	public static void spawn(Location loc, FireworkEffect effect) {
 		try {
-			FireworkPlay firework = new FireworkPlay(((CraftWorld) location.getWorld()).getHandle());
-			FireworkMeta meta = ((Firework) firework.getBukkitEntity()).getFireworkMeta();
+			World world = ((CraftWorld) loc.getWorld()).getHandle();
+			FireworkPlay firework = new FireworkPlay(world);
+			Firework bfire = (Firework) firework.getBukkitEntity();
+			
+			FireworkMeta meta = bfire.getFireworkMeta();
 			meta.addEffect(effect);
-			((Firework) firework.getBukkitEntity()).setFireworkMeta(meta);
-			firework.setPosition(location.getX(), location.getY(), location.getZ());
+			bfire.setFireworkMeta(meta);
+			firework.setPosition(loc.getX(), loc.getY(), loc.getZ());
 
-			if ((((CraftWorld) location.getWorld()).getHandle()).addEntity(firework)) {
-				firework.setInvisible(true);
-			}
+			if (world.addEntity(firework)) firework.setInvisible(true);
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+	
+	@Override
+	public void tick() {
+		if (gone) {
+			return;
+		}
+
+		if (!world.isClientSide) {
+			gone = true;
+
+			CraftServer server = world.getServer();
+			List<CraftPlayer>players = server.getOnlinePlayers();
+
+			if(players!=null && players.size()>0){
+				PacketUtil.broadcastPacket(new PacketPlayOutEntityStatus(this, (byte) 17), server);	
+			}else world.broadcastEntityEffect(this, ((byte) 17));
+			
+			this.die();
 		}
 	}
 }

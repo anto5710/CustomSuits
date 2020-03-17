@@ -5,12 +5,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Entity;
 import org.bukkit.scheduler.BukkitTask;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.CustomSuitPlugin;
 
-public abstract class AbstractEncompassor<E extends Entity> implements IEncompassor<E>{
+public abstract class AbstractEncompassor<E> implements IEncompassor<E>{
 	protected CustomSuitPlugin plugin;
 	private final long period;
 	private BukkitTask task;

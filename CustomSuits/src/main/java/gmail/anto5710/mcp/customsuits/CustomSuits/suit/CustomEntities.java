@@ -32,7 +32,7 @@ import gmail.anto5710.mcp.customsuits.Utils.ItemUtil;
 public enum CustomEntities {
 	NONE(Zombie.class, "none", ItemUtil.createWithName(Material.GLASS_PANE, ChatColor.RED + "NONE")),
 	ARCHER(Zombie.class, "archer", ItemUtil.createWithName(Material.BOW, ChatColor.WHITE + "archer")),
-	GOLEM(IronGolem.class, "golem", ItemUtil.createWithName(Material.ROSE_RED, ChatColor.WHITE + "Golem")),
+	GOLEM(IronGolem.class, "golem", ItemUtil.createWithName(Material.ROSE_BUSH, ChatColor.WHITE + "Golem")),
 	SPIDER(CaveSpider.class, "spider", ItemUtil.createWithName(Material.SPIDER_EYE, ChatColor.RED + "Spider")),
 	BOMB(Creeper.class, "bomb", ItemUtil.createWithName(Material.GUNPOWDER, ChatColor.GRAY + "BOMB")),
 	TITAN(Giant.class, "titan", ItemUtil.createWithName(Material.ZOMBIE_HEAD, ChatColor.DARK_GREEN + "Titan")),

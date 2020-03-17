@@ -35,8 +35,8 @@ public class SuitEffecter extends LinearEncompassor<Player>{
 		if(t%10==0) addSuitEffects(player);
 		
 		tick();
-	}
-
+	}	
+	
 	@Override
 	public void remove(Player player) {
 		removeSuitEffects(player);

@@ -1,7 +1,9 @@
 package gmail.anto5710.mcp.customsuits.Utils;
 
+import javax.annotation.Nonnull;
+
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_13_R2.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_15_R1.entity.CraftEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -38,7 +40,7 @@ public class MathUtil {
 	public static Vector calculateVelocity(Vector from, Vector to, double gravity, int heightGain){
 	    // Block locations
 	    int endGain = to.getBlockY() - from.getBlockY();
-	    double horizDist = Math.sqrt(MathUtil.distanceSqrd(from, to));
+	    double horizDist = Math.sqrt(MathUtil.distanceSqrdHorizontal(from, to));
 	    // Height gain
 	    int gain = heightGain;
 	    double maxGain = gain > (endGain + gain) ? gain : (endGain + gain);
@@ -63,7 +65,7 @@ public class MathUtil {
 	    return new Vector(vx, vy, vz);
 	}
 
-	static double distanceSqrd(Vector from, Vector to){
+	static double distanceSqrdHorizontal(Vector from, Vector to){
 	    double dx = to.getBlockX() - from.getBlockX();
 	    double dz = to.getBlockZ() - from.getBlockZ();
 	    return dx * dx + dz * dz;
@@ -162,5 +164,11 @@ public class MathUtil {
 		return dHand;
 	}
 
-
+	public static Vector disposition(@Nonnull Entity e_f, Location loc_i){
+		return e_f.getLocation().subtract(loc_i).toVector();
+	}
+	
+	public static Vector disposition(@Nonnull Entity e_f, @Nonnull Entity e_i){
+		return e_f.getLocation().subtract(e_i.getLocation()).toVector();
+	}
 }

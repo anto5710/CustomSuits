@@ -24,7 +24,7 @@ import gmail.anto5710.mcp.customsuits.Utils.ItemUtil;
 import gmail.anto5710.mcp.customsuits.Utils.MathUtil;
 import gmail.anto5710.mcp.customsuits.Utils.ParticleUtil;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
-import gmail.anto5710.mcp.customsuits.Utils.damagiom.DamageMeta;
+import gmail.anto5710.mcp.customsuits.Utils.damagiom.DamageMode;
 import gmail.anto5710.mcp.customsuits.Utils.damagiom.DamageControl;
 import gmail.anto5710.mcp.customsuits.Utils.damagiom.DamageUtil;
 import gmail.anto5710.mcp.customsuits.Utils.metadative.Metadative;
@@ -197,7 +197,7 @@ public class MachineGun implements Listener{
 
 						SuitUtils.lineParticle(target, location, player, loc -> {
 							ParticleUtil.playEffect(Values.SniperEffect, loc, Values.SniperEffectAmount);
-							DamageUtil.areaDamage(loc, Values.SniperDamage, player, 0.5, DamageMeta.X_TEN_FIREWORK);
+							DamageUtil.areaDamage(loc, Values.SniperDamage, player, 0.5, DamageMode.X_TEN_FIREWORK);
 						}, 20);
 						cooldown(2, player);
 						ItemUtil.name(copy,

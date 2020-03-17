@@ -33,7 +33,7 @@ import org.bukkit.util.Vector;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.InvetoryGUI.CancelAirClick;
 import gmail.anto5710.mcp.customsuits.CustomSuits.InvetoryGUI.Inventories;
-import gmail.anto5710.mcp.customsuits.CustomSuits.InvetoryGUI.SuitInventoryGUI;
+import gmail.anto5710.mcp.customsuits.CustomSuits.InvetoryGUI.SuitIUI;
 import gmail.anto5710.mcp.customsuits.CustomSuits.dao.SpawningDao;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.AutoTarget;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomEntities;
@@ -41,8 +41,8 @@ import gmail.anto5710.mcp.customsuits.CustomSuits.suit.HungerScheduler;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.PlayerEffect;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.SuitEffecter;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.SuitManufactory;
-import gmail.anto5710.mcp.customsuits.CustomSuits.suit.SuitSettings;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.Target;
+import gmail.anto5710.mcp.customsuits.CustomSuits.suit.settings.SuitIUISetting;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.weapons.MachineGun;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.weapons.SuitWeapons;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.weapons.repulsor.ArcCompressor;
@@ -65,6 +65,7 @@ import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 import gmail.anto5710.mcp.customsuits.Utils.damagiom.DamageControl;
 import gmail.anto5710.mcp.customsuits.Utils.damagiom.DamageUtil;
 import gmail.anto5710.mcp.customsuits.Utils.metadative.Metadative;
+import mgear.MainGear;
 
 /**
  * Hello world!
@@ -78,7 +79,7 @@ public class CustomSuitPlugin extends JavaPlugin {
 	public static SuitEffecter suitEffecter; 
 	public static SpawningDao dao;
 	
-	private static Map<Player, SuitSettings> settings = new HashMap<>();
+	private static Map<Player, SuitIUISetting> settings = new HashMap<>();
 
 	public static ItemStack Bomb = ItemUtil.createWithName(Material.FIREWORK_STAR, ChatColor.YELLOW + "[Bomb]");
 	public static ItemStack Smoke = ItemUtil.createWithName(Material.CLAY_BALL, ChatColor.GRAY + "[Smoke]");
@@ -113,7 +114,7 @@ public class CustomSuitPlugin extends JavaPlugin {
 		logger = getLogger();
 		suitEffecter = new SuitEffecter(this, 1);
 		
-		Glow.registerGlow();
+		Glow.register();
 		new Metadative(this);
 		new Enchant();
 		new SuitUtils(this);
@@ -121,7 +122,6 @@ public class CustomSuitPlugin extends JavaPlugin {
 		new ParticleModeller(this);
 		new CustomEffects(this);
 
-		Enchant.enchantBooks();
 		ColorUtil.initColorMap();
 		Inventories.init();
 
@@ -205,7 +205,7 @@ public class CustomSuitPlugin extends JavaPlugin {
 		manager.registerEvents(new SuitWeapons(this), this);
 		manager.registerEvents(SuitWeapons.tnter, this);
 		manager.registerEvents(SuitWeapons.compressor, this);
-		manager.registerEvents(new SuitInventoryGUI(this), this);
+		manager.registerEvents(new SuitIUI(this), this);
 		manager.registerEvents(new HammerWeapons(this), this);
 		manager.registerEvents(new CancelAirClick(this), this);
 		manager.registerEvents(new CreeperDicer(this), this);
@@ -215,12 +215,21 @@ public class CustomSuitPlugin extends JavaPlugin {
 		manager.registerEvents(new MachineGun(this), this);
 		manager.registerEvents(new DamageControl(this), this);
 		
+		manager.registerEvents(new MainGear(this,2), this);
+		manager.registerEvents(MainGear.spindler, this);
+		
 		Recipe.addRecipes(getServer());
 
 		dao = new SpawningDao(this);
 		dao.init();
 	}
 
+	@Override
+	public void onDisable() {
+		Bukkit.getScheduler().cancelTasks(plugin);
+		super.onDisable();
+	}
+	
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
@@ -256,7 +265,7 @@ public class CustomSuitPlugin extends JavaPlugin {
 				SuitUtils.wrongCommand(spnSender, command);
 			} else {
 				String option = args[0].toLowerCase();
-
+				
 				if (option.endsWith("commander")) {
 					InventoryUtil.give(spnSender, suitremote);
 					
@@ -277,9 +286,10 @@ public class CustomSuitPlugin extends JavaPlugin {
 					
 				} else if(option.endsWith("star")){
 					InventoryUtil.give(spnSender, ArcCompressor.star);
-					
-				} 
-				else {
+				
+				} else if(option.endsWith("trigger")){
+					InventoryUtil.give(spnSender, MainGear.trigger);
+				} else {
 					SuitUtils.wrongCommand(spnSender, command);
 				}
 			}
@@ -335,19 +345,15 @@ public class CustomSuitPlugin extends JavaPlugin {
 				color.toLowerCase();
 				if (!isWrong) {
 					Color Color = ColorUtil.colorMap.get(color);
-					SuitSettings hdle = handle(spnSender);
+					SuitIUISetting hdle = handle(spnSender);
 					if (armor.equals("HELMET")) {
-						hdle.setHelmetColor(Color);
-						
+						hdle.dyeHelmet(Color);
 					} else if (armor.equals("CHESTPLATE")) {
-						hdle.setChestColor(Color);
-
+						hdle.dyeChestplate(Color);
 					} else if (armor.equals("LEGGINGS")) {
-						hdle.setLeggingsColor(Color);
-
+						hdle.dyeLeggings(Color);
 					} else if (armor.equals("BOOTS")) {
-						hdle.setBootsColor(Color);
-
+						hdle.dyeBoots(Color);
 					}
 					spnSender.sendMessage(ChatColor.BLUE + "[Info]: " + ChatColor.AQUA + "Changed " + armor
 							+ "'s Color to " + color.toUpperCase());
@@ -395,9 +401,9 @@ public class CustomSuitPlugin extends JavaPlugin {
 		return true;
 	}
 
-	public static SuitSettings handle(Player p){
+	public static SuitIUISetting handle(Player p){
 		if(!settings.containsKey(p)){
-			settings.put(p, new SuitSettings(p));
+			settings.put(p, new SuitIUISetting(p));
 		}
 		return settings.get(p);
 	}
@@ -423,7 +429,7 @@ public class CustomSuitPlugin extends JavaPlugin {
 	}
 
 	public static void summonNearestSuit(Player player) {
-		if (InventoryUtil.inMainHand(player, CustomSuitPlugin.suitremote)){
+		if (InventoryUtil.inAnyHand(player, suitremote)){
 			List<LivingEntity> near = player.getWorld().getLivingEntities();
 
 			LivingEntity nearest = nearestArmedLentity(near, player, 1000);
@@ -438,8 +444,8 @@ public class CustomSuitPlugin extends JavaPlugin {
 	}
 
 	public static void spawnSuit(Player player, Location loc) {
-		if (InventoryUtil.inMainHand(player, CustomSuitPlugin.suitremote)){
-			SuitSettings sett = handle(player);
+		if (InventoryUtil.inAnyHand(player, suitremote)){
+			SuitIUISetting sett = handle(player);
 			SuitManufactory.manufacture(sett.getSentity(), sett.getVehicle(), sett.getCount(), sett.getCurrentTarget(), player, loc);
 		} else {
 			SuitUtils.warn(player, "Plese Hold Your " + suitremote.getItemMeta().getDisplayName());
@@ -503,6 +509,6 @@ public class CustomSuitPlugin extends JavaPlugin {
 	}
 
 	public static void refreshInventory(Player player) {
-		handle(player).reinitUInven(false);
+		handle(player).reinitIUI(false);
 	}
 }

@@ -4,7 +4,7 @@
 
 	<groupId>gmail.anto5710.mcp.customsuits</groupId>
 	<artifactId>CustomSuits</artifactId>
-	<version>0.6.0</version>
+	<version>0.6.5</version>
 	<packaging>jar</packaging>
 
 	<name>CustomSuits</name>
@@ -13,7 +13,6 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<JAR_DEST_DIR>/Users/anto5710/게임/spg/plugins/</JAR_DEST_DIR>
-		
 	</properties>
 
 
@@ -48,7 +47,11 @@
 
 
 	<dependencies>
-
+		<dependency>
+    		<groupId>com.google.code.findbugs</groupId>
+    		<artifactId>jsr305</artifactId>
+    		<version>3.0.0</version>
+		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -60,12 +63,12 @@
 		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot-api</artifactId>
-			<version>1.13.2-R0.1-SNAPSHOT</version>
+			<version>1.15.2-R0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.bukkit</groupId>
 			<artifactId>craftbukkit</artifactId>
-			<version>1.13.2-R0.1-SNAPSHOT</version>
+			<version>1.15.2-R0.1-SNAPSHOT</version>
 		</dependency>
 		
 

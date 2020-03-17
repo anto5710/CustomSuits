@@ -2,7 +2,6 @@ package gmail.anto5710.mcp.customsuits.Thor;
 
 import org.bukkit.Color;
 import org.bukkit.Location;
-import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
@@ -48,7 +47,7 @@ public class Thorformation extends MapEncompassor<Player, Double>{
 	             dy = 0.5*t;
 	             dz = 0.4*(2*Math.PI-t)*0.5*Math.sin(t + phi + i*Math.PI);
 	             loc.add(dx, dy, dz);
-	             ParticleUtil.playDust(Particle.REDSTONE, loc, 0D, 0D, 0D, 1, 0D, Color.RED, 0.8F);
+	             ParticleUtil.playDust(loc, 1, Color.RED, 0.8F);
 	             loc.subtract(dx,dy,dz);
 			}
 		}              		

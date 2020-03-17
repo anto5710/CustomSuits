@@ -25,7 +25,7 @@ public class Metadative {
 			Metadative.imprint(prj, DamageControl.EXPLOSIVE, yield);
 			
 			if(prj instanceof Explosive){
-				setExplosive((Explosive)prj, yield, fire);
+				setExplosive((Explosive) prj, yield, fire);
 			}else{
 				if (fire) {
 					Metadative.imprint(prj, DamageControl.FIRE, fire);
@@ -44,15 +44,15 @@ public class Metadative {
 	public static void imprint(Metadatable e, String key, Object val){
 		if(SuitUtils.anyNull(e, key)) return;
 		
-		e.setMetadata(key, new FixedMetadataValue(plugin, val));
+		e.setMetadata(key.toString(), new FixedMetadataValue(plugin, val));
 	}
 	
 	public static String excavatext(Metadatable e, String key) {
 		return e.getMetadata(key).get(0).asString();
 	}
 	
-	public static double excavate(Metadatable e, String key) {
-		return e.getMetadata(key).get(0).asDouble();
+	public static double excavate(Metadatable e, String explosive) {
+		return e.getMetadata(explosive).get(0).asDouble();
 	}
 	
 	public static float excafate(Metadatable e, String key) {

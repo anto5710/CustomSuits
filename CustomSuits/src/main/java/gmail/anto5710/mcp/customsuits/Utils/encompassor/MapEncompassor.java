@@ -1,13 +1,13 @@
 package gmail.anto5710.mcp.customsuits.Utils.encompassor;
 
+import java.util.Collection;
 import java.util.HashMap;
-
 import java.util.Map;
-import org.bukkit.entity.Entity;
+import java.util.Set;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.CustomSuitPlugin;
 
-public abstract class MapEncompassor<E extends Entity, V> extends AbstractEncompassor<E>{
+public abstract class MapEncompassor<E, V> extends AbstractEncompassor<E>{
 	protected Map<E, V> maptia = new HashMap<>();
 	
 	
@@ -73,5 +73,13 @@ public abstract class MapEncompassor<E extends Entity, V> extends AbstractEncomp
 	@Override
 	public void particulate(E e) {
 		particulate(e, maptia.get(e));
+	}
+	
+	public Set<E> keys(){
+		return maptia.keySet();
+	}
+	
+	public Collection<V> values(){
+		return maptia.values();
 	}
 }

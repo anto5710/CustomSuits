@@ -1,11 +1,9 @@
 package gmail.anto5710.mcp.customsuits.Utils.encompassor;
 
-import org.bukkit.entity.Entity;
-
 import org.bukkit.event.Listener;
 
 
-public interface IEncompassor <E extends Entity> extends Listener, Runnable{
+public interface IEncompassor <E> extends Listener, Runnable{
 	public boolean isRegistered(E e);
 	public void register(E e);
 	public void remove(E e);

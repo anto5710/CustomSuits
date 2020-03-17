@@ -8,14 +8,18 @@ import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.inventory.ItemStack;
 
 public class Glow extends Enchantment {
-	private static NamespacedKey id = NamespacedKey.minecraft("illum");
+	public static NamespacedKey id = NamespacedKey.minecraft("illum");
 	private static Enchantment glow;
 	
 	public Glow() {
 		super(id);
 	}
+	
+	public static Enchantment getInstance(){
+		return glow;
+	}
 
-	public static void registerGlow() {
+	public static void register() {
 		try {
 			Field f = Enchantment.class.getDeclaredField("acceptingNew");
 			f.setAccessible(true);
@@ -25,16 +29,13 @@ public class Glow extends Enchantment {
 		}
 		try {
 			Glow glow = new Glow();
-			Enchantment.registerEnchantment(glow);
+			if(Enchantment.getByKey(id)==null){
+				Enchantment.registerEnchantment(glow);
+			}
 			Glow.glow = glow;
-		} catch (IllegalArgumentException e) {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
-	
-	public static void englow(ItemStack item){
-		item.addUnsafeEnchantment(glow, 1);
 	}
 	
 	@Override
@@ -66,7 +67,6 @@ public class Glow extends Enchantment {
 	public int getStartLevel() {
 		return 0;
 	}
-
 
 	@Override
 	public boolean isCursed() {

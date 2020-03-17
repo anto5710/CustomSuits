@@ -3,17 +3,15 @@ package gmail.anto5710.mcp.customsuits.Utils.encompassor;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.bukkit.entity.Entity;
-
 import gmail.anto5710.mcp.customsuits.CustomSuits.CustomSuitPlugin;
 
-public abstract class LinearEncompassor<E extends Entity> extends AbstractEncompassor<E>{
+public abstract class LinearEncompassor<E> extends AbstractEncompassor<E>{
 	protected Set<E> entia = new HashSet<>();
 	
 	protected LinearEncompassor(CustomSuitPlugin plugin, long period) {
 		super(plugin, period);
-		
 	}
+	
 
 	@Override
 	public boolean isRegistered(E e) {

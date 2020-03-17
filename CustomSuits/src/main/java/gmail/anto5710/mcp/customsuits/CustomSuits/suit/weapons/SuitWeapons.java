@@ -5,7 +5,7 @@ import gmail.anto5710.mcp.customsuits.CustomSuits.suit.HungerScheduler;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.weapons.repulsor.ArcCompressor;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.weapons.repulsor.ArcReffecter;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
-import gmail.anto5710.mcp.customsuits.Utils.Glow;
+import gmail.anto5710.mcp.customsuits.Utils.Enchant;
 import gmail.anto5710.mcp.customsuits.Utils.InventoryUtil;
 import gmail.anto5710.mcp.customsuits.Utils.ItemUtil;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
@@ -69,7 +69,7 @@ public class SuitWeapons implements Listener {
 				
 				shieldMeta.setBlockState(ban);
 				shield.setItemMeta(shieldMeta);
-				Glow.englow(shield);
+				Enchant.englow(shield);
 				
 				ItemUtil.name(shield, ChatColor.AQUA+"S.H.I.E.L.D.");
 				ItemUtil.suffix(shield, Attribute.GENERIC_KNOCKBACK_RESISTANCE, "KNOCKARMOR", 1.1, Operation.ADD_SCALAR, EquipmentSlot.OFF_HAND);

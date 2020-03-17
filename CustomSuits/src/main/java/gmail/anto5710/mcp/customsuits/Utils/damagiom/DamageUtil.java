@@ -24,20 +24,20 @@ public class DamageUtil {
 		return entity instanceof LivingEntity && MathUtil.distance(shotLoc, ((LivingEntity) entity).getEyeLocation(), 0.35*entity.getWidth()/1.4D);
 	}
 
-	public static void areaDamage(Location origin, double damage, Entity shooter, double radius, DamageMeta meta) {
+	public static void areaDamage(Location origin, double damage, Entity shooter, double radius, DamageMode meta) {
 		for (Damageable e : DamageUtil.search(origin, radius, e->MathUtil.distanceBody(origin, e, radius), shooter)) {
 			damage(e, damage, origin, shooter, meta);
 		}
 	}
 	
-	public static void areaDamageBounded(Location origin, double damage, Entity shooter, double radius, DamageMeta meta) {
+	public static void areaDamageBounded(Location origin, double damage, Entity shooter, double radius, DamageMode meta) {
 		Vector vorigin = origin.toVector();
 		for (Damageable e : DamageUtil.search(origin, radius, e->e.getBoundingBox().contains(vorigin), shooter)) {
 			damage(e, damage, origin, shooter, meta);
 		}
 	}
 	
-	public static void damagevent(EntityDamageEvent event, double damage, Projectile prj, DamageMeta meta) {
+	public static void damagevent(EntityDamageEvent event, double damage, Projectile prj, DamageMode meta) {
 		Entity e = event.getEntity();
 		if(meta!=null && meta.allowHeadshot){
 			damage = applyAttribute(e, damage, prj.getLocation(), getShooter(prj), meta);
@@ -45,14 +45,14 @@ public class DamageUtil {
 		event.setDamage(damage);
 	}
 	
-	public static void damage(Damageable e, double damage, Location origin, Entity damager, DamageMeta meta){
+	public static void damage(Damageable e, double damage, Location origin, Entity damager, DamageMode meta){
 		if (meta != null && meta.allowHeadshot) {
 			damage = applyAttribute(e, damage, origin, damager, meta);
 		}
 		e.damage(damage, damager);
 	}
 	
-	private static double applyAttribute(Entity e, double damage, Location origin, Entity damager, DamageMeta meta){
+	private static double applyAttribute(Entity e, double damage, Location origin, Entity damager, DamageMode meta){
 		if(isHeadshot(origin, e)){
 			damage *= meta.headshot_multiplier;
 			if(meta.firework) DamageControl.firework(origin, damager);

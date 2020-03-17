@@ -30,11 +30,19 @@ public class ItemUtil {
 		return type == Material.IRON_HORSE_ARMOR || type == Material.GOLDEN_HORSE_ARMOR || type == Material.DIAMOND_HORSE_ARMOR;
 	}
 
+	public static Color extractColor(ItemStack item){
+		if(item != null && dyeable(item)){
+			return ((LeatherArmorMeta)item.getItemMeta()).getColor();
+		}
+		return null;
+	}
+	
 	public static boolean dyeable(ItemStack item){
 		if(item==null) return false;
 		
 		Material type = item.getType();
-		return type == Material.LEATHER_HELMET || type == Material.LEATHER_CHESTPLATE || type == Material.LEATHER_LEGGINGS || type == Material.LEATHER_BOOTS;
+		return type == Material.LEATHER_HELMET || type == Material.LEATHER_CHESTPLATE || type == Material.LEATHER_LEGGINGS || 
+				type == Material.LEATHER_BOOTS;
 	}
 
 	public static void name(ItemStack item, String name) {
@@ -61,11 +69,9 @@ public class ItemUtil {
 	}
 	
 	public static void dye(ItemStack item, Color color) {
-		if(dyeable(item)){
-			LeatherArmorMeta meta = (LeatherArmorMeta) item.getItemMeta();
-			meta.setColor(color);
-			item.setItemMeta(meta);
-		}
+		LeatherArmorMeta meta = (LeatherArmorMeta) item.getItemMeta();
+		meta.setColor(color);
+		item.setItemMeta(meta);
 	}
 
 	public static ItemStack createWithName(Material material, String name) {
@@ -83,10 +89,10 @@ public class ItemUtil {
 		return skull;
 	}
 	
+	@SuppressWarnings("deprecation")
 	public static Player capitate(ItemStack skull){
 		if(skull.getType() == Material.PLAYER_HEAD){
 			SkullMeta meta = (SkullMeta) skull.getItemMeta();
-			@SuppressWarnings("deprecation")
 			String name = meta.getOwner();
 			return Bukkit.getPlayer(name);
 		}

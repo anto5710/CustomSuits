@@ -15,7 +15,7 @@ import gmail.anto5710.mcp.customsuits.Utils.CustomEffects;
 import gmail.anto5710.mcp.customsuits.Utils.MathUtil;
 import gmail.anto5710.mcp.customsuits.Utils.ParticleUtil;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
-import gmail.anto5710.mcp.customsuits.Utils.damagiom.DamageMeta;
+import gmail.anto5710.mcp.customsuits.Utils.damagiom.DamageMode;
 import gmail.anto5710.mcp.customsuits.Utils.damagiom.DamageUtil;
 import gmail.anto5710.mcp.customsuits.Utils.encompassor.standardized.DispenseEncompassor;
 
@@ -32,7 +32,7 @@ public class HammerThrowEffect extends DispenseEncompassor<Item, Player>{
 		Location loc = item.getLocation();
 
 		ParticleUtil.playEffect(Values.HammerDefaultEffect, loc, 5, 0.1);
-		DamageUtil.areaDamage(loc, Hammer.HammerDeafultDamage, player, 1, DamageMeta.X_TEN);
+		DamageUtil.areaDamage(loc, Hammer.HammerDeafultDamage, player, 1, DamageMode.X_TEN);
 		
 		if(toRemove(item)) impact(item);
 	}

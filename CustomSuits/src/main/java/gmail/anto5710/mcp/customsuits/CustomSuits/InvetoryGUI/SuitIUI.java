@@ -4,7 +4,7 @@ package gmail.anto5710.mcp.customsuits.CustomSuits.InvetoryGUI;
 import gmail.anto5710.mcp.customsuits.CustomSuits.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomEntities;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.PlayerEffect;
-import gmail.anto5710.mcp.customsuits.CustomSuits.suit.SuitSettings;
+import gmail.anto5710.mcp.customsuits.CustomSuits.suit.settings.SuitIUISetting;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
 import gmail.anto5710.mcp.customsuits.Utils.InventoryUtil;
 import gmail.anto5710.mcp.customsuits.Utils.ItemUtil;
@@ -27,11 +27,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 
-public class SuitInventoryGUI extends Inventories implements Listener {
+public class SuitIUI extends Inventories implements Listener {
 
 	CustomSuitPlugin plugin;
 
-	public SuitInventoryGUI(CustomSuitPlugin plugin) {
+	public SuitIUI(CustomSuitPlugin plugin) {
 		this.plugin = plugin;
 	}
 	
@@ -119,22 +119,21 @@ public class SuitInventoryGUI extends Inventories implements Listener {
 			if (ItemUtil.dyeable(item)) {
 				Color color = ((LeatherArmorMeta) item.getItemMeta()).getColor();
 				Player player = (Player) e.getWhoClicked();
-				SuitSettings hdle = CustomSuitPlugin.handle(player);
+				SuitIUISetting hdle = CustomSuitPlugin.handle(player);
 
 				if (name.equals(HelmetColorInventory_name)) {
-					hdle.setHelmetColor(color);
+					hdle.dyeHelmet(color);
 				} else if (name.equals(ChestPlateColorInventory_name)) {
-					hdle.setChestColor(color);
+					hdle.dyeChestplate(color);
 				} else if (name.equals(LeggingsColorInventory_name)) {
-					hdle.setLeggingsColor(color);
+					hdle.dyeLeggings(color);
 				} else if (name.equals(BootsColorInventory_name)) {
-					hdle.setBootsColor(color);
+					hdle.dyeBoots(color);
 				}
 				e.setCancelled(true);
 			}
 		}
 	}
-
 
 	private void openTargetPlayerList(InventoryClickEvent e, Player whoClicked) {
 		Inventory list = Bukkit.createInventory(null, 36, list_name);
@@ -165,7 +164,7 @@ public class SuitInventoryGUI extends Inventories implements Listener {
 
 	@EventHandler
 	public void clickArmorGUI(InventoryClickEvent e) {
-		if (authenticateAccess(e, true, "[Armor]")) {
+		if (authenticateAccess(e, true, Inventories.armorinventory_name)) {
 			Player player = (Player) e.getWhoClicked();
 			
 			int slot = e.getSlot();
@@ -213,9 +212,9 @@ public class SuitInventoryGUI extends Inventories implements Listener {
 
 	@EventHandler
 	public void clickMenu(InventoryClickEvent e) {
-		if (authenticateAccess(e, "[Settings]")) {
+		if (authenticateAccess(e, Inventories.maininventory_name)) {
 			Player player = (Player) e.getWhoClicked();
-
+			System.out.println(e.getInventory() == CustomSuitPlugin.handle(player).main);
 			int slot = e.getSlot();
 			if (slot == 0) {
 				player.openInventory(CustomSuitPlugin.handle(player).command_equipment);
@@ -237,15 +236,13 @@ public class SuitInventoryGUI extends Inventories implements Listener {
 	}
 	
 	public static boolean authenticateAccess(InventoryEvent e, String token){
-		return token != null && e!=null && e.getInventory() != null &&
-			   e.getView().getTitle() !=null && e.getView().getTitle().contains(token);
-		
+		return ! SuitUtils.anyNull(token, e, e.getInventory(), e.getView().getTitle()) && 
+				e.getView().getTitle().contains(token);
 	}
 	
 	public static boolean authenticateAccess(InventoryEvent e, boolean mustBePlayer, String...tokens){
-		if (tokens == null || e==null || e.getInventory() == null){
-			return false;
-		}
+		if(SuitUtils.anyNull(tokens, e, e.getInventory())) return false;
+		
 		if(mustBePlayer){
 			if(e instanceof InventoryClickEvent && !(((InventoryClickEvent) e).getWhoClicked() instanceof Player)) return false;
 			
@@ -258,5 +255,3 @@ public class SuitInventoryGUI extends Inventories implements Listener {
 		return false;				  
 	}
 }
-
-

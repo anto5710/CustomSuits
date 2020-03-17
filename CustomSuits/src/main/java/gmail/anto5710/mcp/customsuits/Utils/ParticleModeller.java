@@ -51,7 +51,7 @@ public class ParticleModeller {
 		}
 	}
 	
-	public static void playUnderFoot(Entity e, Consumer<Location>effect){
+	public static void footstep(Entity e, Consumer<Location>effect){
 		Location loc = e.getLocation();
 		loc.add(0, -0.2, 0);
 
@@ -65,7 +65,7 @@ public class ParticleModeller {
 		effect.accept(loc);		
 	}
 
-	public static void drawSphere(Location loc, double r, Consumer<Location> effect) {
+	public static void sphere(Location loc, double r, Consumer<Location> effect) {
 		new BukkitRunnable() {
 			double y_theta = 0;
 			@Override

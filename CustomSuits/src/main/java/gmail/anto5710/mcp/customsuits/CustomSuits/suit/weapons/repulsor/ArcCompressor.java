@@ -2,6 +2,9 @@
 
 package gmail.anto5710.mcp.customsuits.CustomSuits.suit.weapons.repulsor;
 
+import java.lang.reflect.Field;
+
+
 import java.util.HashSet
 ;
 import java.util.Set;
@@ -11,6 +14,7 @@ import javax.annotation.Nonnull;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
@@ -43,7 +47,13 @@ import gmail.anto5710.mcp.customsuits.Utils.PotionBrewer;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 import gmail.anto5710.mcp.customsuits.Utils.encompassor.MapEncompassor;
 import gmail.anto5710.mcp.customsuits.Utils.metadative.Metadative;
-import net.minecraft.server.v1_13_R2.EnumItemSlot;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelDuplexHandler;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelPromise;
+import net.minecraft.server.v1_15_R1.EnumItemSlot;
+import net.minecraft.server.v1_15_R1.PacketPlayOutSetSlot;
+import net.minecraft.server.v1_15_R1.PlayerConnection;
 
 public class ArcCompressor extends MapEncompassor<Player, Set<Integer>>{
 	public static final ItemStack bow = ItemUtil.createWithName(Material.BOW, 
@@ -65,7 +75,7 @@ public class ArcCompressor extends MapEncompassor<Player, Set<Integer>>{
 	
 	@EventHandler
 	public void onRelease(EntityShootBowEvent e){
-		if(ItemUtil.checkItem(bow, e.getBow()) && e.getEntityType() == EntityType.PLAYER){
+		if(ItemUtil.checkItem(bow, e.getBow()) && e.getEntityType() == EntityType.PLAYER && CustomSuitPlugin.isMarkEntity(e.getEntity())){
 			e.setCancelled(true);
 			Player p = (Player)e.getEntity();
 			float force = e.getForce();
@@ -231,6 +241,75 @@ public class ArcCompressor extends MapEncompassor<Player, Set<Integer>>{
 		return p.isDead() || !p.isOnline();
 	}
 	
+	
+	//
+	private class ILi extends ChannelDuplexHandler{
+//		@Override
+//		public void channelRead(ChannelHandlerContext ctx, Object packet) throws Exception {
+//			System.out.println("received obj: "+ packet);
+//			if(packet instanceof PacketPlayOutEntityEquipment){
+//				PacketPlayOutEntityEquipment peq = (PacketPlayOutEntityEquipment) packet;
+//				Field f= peq.getClass().getDeclaredField("c");
+//				f.setAccessible(true);
+//				System.out.println((f.get(peq) instanceof net.minecraft.server.v1_15_R1.ItemStack) + "  "+f.get(peq));
+//			}
+//			super.channelRead(ctx, packet);
+//		}
+		
+		@Override
+		public void write(ChannelHandlerContext ctx, Object packet, ChannelPromise promise) throws Exception {
+//			if(packet instanceof PacketPlayOutRelEntityMove || packet instanceof PacketPlayOutWorldParticles || 
+//					packet instanceof PacketPlayOutEntityHeadRotation || packet instanceof PacketPlayOutEntityStatus || packet instanceof PacketPlayOutEntityVelocity 
+//					|| packet instanceof PacketPlayOutUpdateAttributes || packet instanceof PacketPlayOutEntityMetadata) {
+//				
+//			}else{
+//				System.out.println("sending obj: "+ packet);
+//			}
+//			
+			
+			if(packet instanceof PacketPlayOutSetSlot){
+				PacketPlayOutSetSlot peq = (PacketPlayOutSetSlot) packet;
+				Field fitem= peq.getClass().getDeclaredField("c");
+				fitem.setAccessible(true);
+				
+				Field fslot = peq.getClass().getDeclaredField("a");
+				fslot.setAccessible(true);
+
+				Field fUID = peq.getClass().getDeclaredField("b");
+				fUID.setAccessible(true);
+				
+				System.out.println("UID: "+ fUID.get(peq));
+				System.out.println("slot: "+ fslot.get(peq));
+				System.out.println("item "+fitem.get(peq));
+				if(fitem.get(peq) instanceof net.minecraft.server.v1_15_R1.ItemStack){
+					net.minecraft.server.v1_15_R1.ItemStack nitem = (net.minecraft.server.v1_15_R1.ItemStack) fitem.get(peq);
+					ItemStack item = CraftItemStack.asBukkitCopy(nitem);
+					if(ItemUtil.checkItem(item, bow)){
+						System.out.println("changed "+fitem.get(peq));
+						fitem.set(peq, CraftItemStack.asNMSCopy(star));
+					}
+				}
+			}
+			super.write(ctx, packet, promise);
+		}
+	}
+		
+	public void addListener(Player p){
+		try{
+			if(!p.isOnline()) return;
+			
+			PlayerConnection cp = PacketUtil.connect(p);
+			Channel ch = cp.networkManager.channel;
+			if(ch.pipeline().get("Packet_Injector")==null){
+				
+				ch.pipeline().addBefore("packet_handler", "Packet_Injector", new ILi());
+				System.out.println("added Packet Handler");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+		
 	@Override
 	public void particulate(Player p, Set<Integer> v) {
 		if(t%6==0 && isCharging(p)) SuitUtils.playSound(p, Sound.BLOCK_DISPENSER_FAIL, 7F, 9);
@@ -240,6 +319,7 @@ public class ArcCompressor extends MapEncompassor<Player, Set<Integer>>{
 
 	@Override
 	public Set<Integer> defaultVal(Player p) {
+		addListener(p);
 		return new HashSet<>();	
 	}
 

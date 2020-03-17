@@ -77,26 +77,26 @@ public class CustomEffects {
 	 * 
 	 */
 	public static void play_Suit_Move_Fly(Player player) {
-		ParticleModeller.playUnderFoot(player, loc-> play_Suit_ARC(loc));				
+		ParticleModeller.footstep(player, loc-> play_Suit_ARC(loc));				
 	}
 
 	public static void play_Suit_Move_UnderWater(Player player) {
-		ParticleModeller.playUnderFoot(player, loc-> ParticleUtil.playEffect(Particle.WATER_BUBBLE, loc, 2));		
+		ParticleModeller.footstep(player, loc-> ParticleUtil.playEffect(Particle.WATER_BUBBLE, loc, 2));		
 	}
 	
 	public static void play_Suit_Move_Move(Entity entity) {
-		ParticleModeller.playUnderFoot(entity, loc-> play_Suit_ARC(loc));
+		ParticleModeller.footstep(entity, loc-> play_Suit_ARC(loc));
 	}
 	
 	public static void play_Suit_Move_Glide(Player player) {
-		ParticleModeller.playUnderFoot(player, loc-> ParticleUtil.playEffect(Particle.EXPLOSION_NORMAL, loc, 2));
+		ParticleModeller.footstep(player, loc-> ParticleUtil.playEffect(Particle.EXPLOSION_NORMAL, loc, 2));
 	}
 	private static final DustOptions MAIN_ARC_COLOR =  new DustOptions(Color.fromRGB(102, 255, 255), 1);
 	private static final DustOptions SUB_ARC_COLOR =  new DustOptions(Color.fromRGB(0, 153, 204), 0.6F);
 	
 	public static void play_Suit_ARC(Location location) {
-		ParticleUtil.playDust(Particle.REDSTONE, location, 0, 0, 0, 2, 0, MAIN_ARC_COLOR, 1);
-		ParticleUtil.playDust(Particle.REDSTONE, location, 0, 0, 0, 2, 0, SUB_ARC_COLOR, 0.6F);
+		ParticleUtil.playDust(location, 0, 0, 0, 2, 0, MAIN_ARC_COLOR);
+		ParticleUtil.playDust(location, 0, 0, 0, 2, 0, SUB_ARC_COLOR);
 	}
 	
 	public static void play_Thor_Change(Player player) {

@@ -9,7 +9,7 @@ public class EnchantBuilder {
 	private Map<Enchantment, Integer> enchants = new HashMap<>();
 	
 	public EnchantBuilder enchant(Enchantment type, int level){
-		if(type!=null && level >= 0 ) enchants.put(type, level);
+		if(type!=null && level >= 0) enchants.put(type, level);
 		
 		return this;
 	}

@@ -34,6 +34,10 @@ public class PotionBrewer {
 		addPotion(livingEntity, new PotionEffect(type, duration, amplifier));
 	}
 	
+	public static void permaPotion(@Nonnull LivingEntity livingEntity, PotionEffectType type, int amplifier) {
+		addPotion(livingEntity, new PotionEffect(type, Integer.MAX_VALUE, amplifier));
+	}
+	
 	/**
 	 * Remove PotionEffect
 	 * @param PotionEffect PotionEffect

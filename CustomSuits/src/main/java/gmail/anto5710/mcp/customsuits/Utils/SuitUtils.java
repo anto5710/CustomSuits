@@ -115,8 +115,10 @@ public class SuitUtils {
 	@SuppressWarnings("deprecation")
 	private static Set<Material> transparents = 
 	Sets.newHashSet(Material.WATER, Material.LAVA, Material.AIR, Material.COBWEB, 
-					Material.LEGACY_SAPLING, Material.DEAD_BUSH, Material.GRASS, 
-					Material.FERN, Material.WHEAT);
+					Material.LEGACY_SAPLING, Material.DEAD_BUSH, Material.GRASS, Material.TALL_GRASS, Material.TALL_SEAGRASS, 
+					Material.SPRUCE_SAPLING, Material.BAMBOO_SAPLING, Material.BIRCH_SAPLING, Material.DARK_OAK_SAPLING,
+					Material.JUNGLE_SAPLING, Material.OAK_SAPLING, Material.ROSE_BUSH,
+					Material.FERN, Material.WHEAT,Material.LARGE_FERN);
 	public static Block getTargetBlock(Player player , int maxDistance){
 		return player.getTargetBlock(transparents, maxDistance);
 	}

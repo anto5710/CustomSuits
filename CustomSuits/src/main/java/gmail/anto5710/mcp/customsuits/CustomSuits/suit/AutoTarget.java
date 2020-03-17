@@ -1,7 +1,6 @@
 package gmail.anto5710.mcp.customsuits.CustomSuits.suit;
 
 import org.bukkit.entity.Entity;
-
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
@@ -12,6 +11,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.CustomSuitPlugin;
+import gmail.anto5710.mcp.customsuits.CustomSuits.suit.settings.SuitIUISetting;
 import gmail.anto5710.mcp.customsuits.Utils.damagiom.DamageUtil;
 
 public class AutoTarget implements Listener{
@@ -38,7 +38,7 @@ public class AutoTarget implements Listener{
 			Player player = (Player) event.getEntity();
 			if (CustomSuitPlugin.isCreatedBy(entity, player)) {
 				
-				SuitSettings hdle = CustomSuitPlugin.handle(player);
+				SuitIUISetting hdle = CustomSuitPlugin.handle(player);
 				if (hdle.isTargetting(entity)) {
 					LivingEntity target = hdle.getCurrentTarget();
 					((Mob)entity).setTarget(target);

@@ -2,9 +2,6 @@ package gmail.anto5710.mcp.customsuits.CustomSuits.suit;
 
 import java.util.Collection;
 
-import gmail.anto5710.mcp.customsuits.CustomSuits.CustomSuitPlugin;
-import gmail.anto5710.mcp.customsuits.CustomSuits.dao.SpawningDao;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
@@ -13,6 +10,10 @@ import org.bukkit.entity.Mob;
 import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
+
+import gmail.anto5710.mcp.customsuits.CustomSuits.CustomSuitPlugin;
+import gmail.anto5710.mcp.customsuits.CustomSuits.dao.SpawningDao;
+import gmail.anto5710.mcp.customsuits.CustomSuits.suit.settings.SuitIUISetting;
 
 public class Target implements Runnable{
 	CustomSuitPlugin plugin;
@@ -31,7 +32,7 @@ public class Target implements Runnable{
 			stop();		
 		} else {
 			for(Player player : CustomSuitPlugin.dao.getPlayers()){
-				SuitSettings hdle = CustomSuitPlugin.handle(player);
+				SuitIUISetting hdle = CustomSuitPlugin.handle(player);
 				hdle.removeDeadTargets();
 				target(player, hdle.getCurrentTarget(), false);
 			}

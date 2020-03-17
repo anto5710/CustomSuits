@@ -13,7 +13,7 @@ import gmail.anto5710.mcp.customsuits.CustomSuits.suit.HungerScheduler;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 import gmail.anto5710.mcp.customsuits.Utils.ThorUtils;
-import gmail.anto5710.mcp.customsuits.Utils.damagiom.DamageMeta;
+import gmail.anto5710.mcp.customsuits.Utils.damagiom.DamageMode;
 import gmail.anto5710.mcp.customsuits.Utils.damagiom.DamageUtil;
 import gmail.anto5710.mcp.customsuits.Utils.encompassor.MapEncompassor;
 
@@ -47,7 +47,7 @@ public class ForceLightning extends MapEncompassor<Player, EnderCrystal>{
 			
 			new BlockIterator(p.getWorld(), p.getEyeLocation().toVector(), ploc.getDirection(), 0, 100).forEachRemaining(b->{
 				Location curloc = b.getLocation();
-				DamageUtil.areaDamage(curloc, Values.ThorForceLightningDamage, p, 1, DamageMeta.X_TEN);
+				DamageUtil.areaDamage(curloc, Values.ThorForceLightningDamage, p, 1, DamageMode.X_TEN);
 			});
 			ThorUtils.strikeLightnings(SuitUtils.getTargetLoc(p, 100), p, 2);
 		}
