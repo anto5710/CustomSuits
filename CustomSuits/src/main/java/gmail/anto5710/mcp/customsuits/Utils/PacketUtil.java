@@ -19,6 +19,10 @@ import net.minecraft.server.v1_15_R1.PlayerConnection;
 
 public class PacketUtil {
 	
+	public static net.minecraft.server.v1_15_R1.Entity nmsEntiy(@Nonnull Entity e){
+		return ((CraftEntity)e).getHandle();
+	}
+	
 	public static PlayerConnection connect(@Nonnull Player p){
 		return ((CraftPlayer)p).getHandle().playerConnection;
 	}

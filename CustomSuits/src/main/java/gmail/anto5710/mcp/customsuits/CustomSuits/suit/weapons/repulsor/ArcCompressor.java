@@ -278,9 +278,9 @@ public class ArcCompressor extends MapEncompassor<Player, Set<Integer>>{
 				Field fUID = peq.getClass().getDeclaredField("b");
 				fUID.setAccessible(true);
 				
-				System.out.println("UID: "+ fUID.get(peq));
-				System.out.println("slot: "+ fslot.get(peq));
-				System.out.println("item "+fitem.get(peq));
+//				System.out.println("UID: "+ fUID.get(peq));
+//				System.out.println("slot: "+ fslot.get(peq));
+//				System.out.println("item "+fitem.get(peq));
 				if(fitem.get(peq) instanceof net.minecraft.server.v1_15_R1.ItemStack){
 					net.minecraft.server.v1_15_R1.ItemStack nitem = (net.minecraft.server.v1_15_R1.ItemStack) fitem.get(peq);
 					ItemStack item = CraftItemStack.asBukkitCopy(nitem);

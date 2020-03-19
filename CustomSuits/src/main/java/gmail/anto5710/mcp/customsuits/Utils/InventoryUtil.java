@@ -150,6 +150,4 @@ public class InventoryUtil {
 		newInven.setContents(inven.getContents());
 		return newInven;
 	}
-
-
 }

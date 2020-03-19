@@ -171,4 +171,19 @@ public class MathUtil {
 	public static Vector disposition(@Nonnull Entity e_f, @Nonnull Entity e_i){
 		return e_f.getLocation().subtract(e_i.getLocation()).toVector();
 	}
+	
+	public static double invSqrt(double x){
+//	    double x = number;
+	    double xhalf = 0.5d*x;
+	    long i = Double.doubleToLongBits(x);
+	    i = 0x5fe6ec85e7de30daL - (i>>1);
+	    x = Double.longBitsToDouble(i);
+//	    for(int it = 0; it < 4; it++){
+	    x*=(1.5d - xhalf*x*x);
+//	    }
+//	    x *= number;
+	    return x;
+	}
+	
+
 }

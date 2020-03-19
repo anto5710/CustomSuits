@@ -196,6 +196,10 @@ public class CustomSuitPlugin extends JavaPlugin {
 				ChatColor.WHITE + "Sniper Bullet Velocity: " + ChatColor.YELLOW + 119 + " Block/Second");
 		ItemUtil.name(missileLauncher, ChatColor.DARK_RED + "[Launcher]");
 		
+		ItemUtil.addLore(MainGear.trigger, "Press 《Q》 to catapult the left anchor", 
+								  "Press 《E》 to catapult the right anchor");
+		
+		
 		this.targetting = new Target(this);
 		this.targetting.awaken();
 		this.hscheduler = new HungerScheduler(this, 1);
@@ -266,34 +270,39 @@ public class CustomSuitPlugin extends JavaPlugin {
 			} else {
 				String option = args[0].toLowerCase();
 				
+				ItemStack toGet = null; 
 				if (option.endsWith("commander")) {
-					InventoryUtil.give(spnSender, suitremote);
+					toGet = suitremote;
 					
 				} else if (option.endsWith("gun")) {
-					InventoryUtil.give(spnSender, gunitem);
+					toGet = gunitem;
 					
 				} else if (option.endsWith("launcher")) {
-					InventoryUtil.give(spnSender, missileLauncher);
+					toGet = missileLauncher;
 					
 				} else if (option.endsWith("hammer")) {
-					InventoryUtil.give(spnSender, hammer);
+					toGet = hammer;
 					
 				} else if (option.endsWith("smoke")) {
-					InventoryUtil.give(spnSender, Smoke);
+					toGet = Smoke;
 					
 				} else if (option.endsWith("bomb")) {
-					InventoryUtil.give(spnSender, Bomb);
+					toGet = Bomb;
 					
 				} else if(option.endsWith("star")){
-					InventoryUtil.give(spnSender, ArcCompressor.star);
+					toGet = ArcCompressor.star;
 				
 				} else if(option.endsWith("trigger")){
-					InventoryUtil.give(spnSender, MainGear.trigger);
+					toGet = MainGear.trigger;
+					
 				} else {
 					SuitUtils.wrongCommand(spnSender, command);
 				}
+				if(toGet!=null){ 
+					InventoryUtil.give(spnSender, toGet);
+					spnSender.updateInventory();
+				}
 			}
-			spnSender.updateInventory();
 		}
 		if (command.getName().equals("command")) {
 			if (args.length == 0) {

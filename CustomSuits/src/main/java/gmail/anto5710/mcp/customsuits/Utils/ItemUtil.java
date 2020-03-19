@@ -124,7 +124,7 @@ public class ItemUtil {
 		
 		if(sampleName == null && checkName == null) return true;
 		
-		return sampleName != null && checkName != null && sampleName.endsWith(checkName);
+		return sampleName != null && checkName != null && (checkName.endsWith(sampleName)||checkName.startsWith(sampleName));
 	}
 
 	public static boolean checkName(ItemStack item, String token){
