@@ -16,16 +16,12 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
-import com.mojang.datafixers.functions.PointFreeRule.CataFuseSame;
-
 import gmail.anto5710.mcp.customsuits.Utils.InventoryUtil;
 import gmail.anto5710.mcp.customsuits.Utils.ItemUtil;
 import gmail.anto5710.mcp.customsuits.Utils.MathUtil;
-import gmail.anto5710.mcp.customsuits.Utils.PacketUtil;
 import gmail.anto5710.mcp.customsuits.Utils.PotionBrewer;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 import gmail.anto5710.mcp.customsuits.Utils.metadative.Metadative;
-import net.minecraft.server.v1_15_R1.AxisAlignedBB;
 
 public class Spindle {
 	protected final Player p;
@@ -49,11 +45,12 @@ public class Spindle {
 		Location target = SuitUtils.getTargetLoc(p, 100);
 		float d = (float) target.distance(loc);
 		
-		
+//		catapult = p.launchProjectile(Arrow.class, target.subtract(loc).toVector());
 		catapult = p.getWorld().spawnArrow(loc, target.subtract(loc).toVector(), 0.2f*d, 5f);
+		
 		catapult.setSilent(true);
-		anchor = spawnPseudoAnchor(catapult.getLocation());
-		catapult.addPassenger(anchor);
+//		anchor = spawnPseudoAnchor(catapult.getLocation());
+//		catapult.addPassenger(anchor);
 //		catapult.setBounce(false);
 		
 		Metadative.imprint(catapult, CATAPULT, true);
@@ -77,6 +74,8 @@ public class Spindle {
 			}else{
 				anchor = spawnPseudoAnchor(catapult.getLocation());
 				anchor.setLeashHolder(p);
+				anchor.teleport(catapult);
+//				toAnchorAt.addPassenger(anchor);
 			} 
 			Metadative.imprint(anchor, ANCHOR, true);
 			Metadative.imprint(anchor, SPINDLE, uuid);

@@ -25,6 +25,9 @@ public class ActiveSpindleEffector extends MapEncompassor<String,Spindle>{
 	public void particulate(String uuid, Spindle spindle) {		
 		if(spindle.anchored()){
 			spindle.updateTension();
+			if((!spindle.catapult.isOnGround()||t%5==0) && Spindle.isPseudoAnchor(spindle.anchor)){
+				spindle.anchor.teleport(spindle.catapult);
+			}
 		}
 	}
 	
@@ -70,14 +73,14 @@ public class ActiveSpindleEffector extends MapEncompassor<String,Spindle>{
 		}
 	}
 	
-	@EventHandler
-	public void onDamageToSpindle(EntityDamageEvent e){
-		Spindle spindle = getSpindle(e.getEntity());
-		if(spindle!=null){
-			System.out.println(e.getEntity()+" DAMage cancelled");
-			e.setCancelled(true);
-		}
-	}
+//	@EventHandler
+//	public void onDamageToSpindle(EntityDamageEvent e){
+//		Spindle spindle = getSpindle(e.getEntity());
+//		if(spindle!=null){
+//			System.out.println(e.getEntity()+" DAMage cancelled");
+//			e.setCancelled(true);
+//		}
+//	}
 
 	@Override
 	public Spindle defaultVal(String uuid) {return null;}

@@ -64,7 +64,7 @@ public class MainGear extends MapEncompassor<Player, Spindle[]>{
 						ParticleUtil.playEffect(Particle.CLOUD, p.getLocation().add(0,1,0),3);
 						Vf.add(ploc.getDirection().normalize().multiply(0.1));
 					}
-//					p.setVelocity(Vf);
+					p.setVelocity(Vf);
 				}else{ // on air								
 					ParticleUtil.playDust(aloc, 4, Color.BLACK, 0.5f);
 				}
