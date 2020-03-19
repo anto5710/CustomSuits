@@ -45,14 +45,9 @@ public class Spindle {
 		Location target = SuitUtils.getTargetLoc(p, 100);
 		float d = (float) target.distance(loc);
 		
-//		catapult = p.launchProjectile(Arrow.class, target.subtract(loc).toVector());
 		catapult = p.getWorld().spawnArrow(loc, target.subtract(loc).toVector(), 0.2f*d, 5f);
 		
-		catapult.setSilent(true);
-//		anchor = spawnPseudoAnchor(catapult.getLocation());
-//		catapult.addPassenger(anchor);
-//		catapult.setBounce(false);
-		
+		catapult.setSilent(true);		
 		Metadative.imprint(catapult, CATAPULT, true);
 		Metadative.imprint(catapult, SPINDLE, uuid);
 	}
@@ -107,8 +102,6 @@ public class Spindle {
 		anchor = null;
 		catapult.remove(); catapult = null;
 	}
-	
-//	private static double pmass = 1.5;
 	 
 	public Vector updateTension(){
 		Vector diff = MathUtil.disposition(anchor, p);
@@ -119,7 +112,6 @@ public class Spindle {
 		double centrip = 0.65*Math.sqrt(speed2)/(R2>31.6227766? R2 :31.6227766);
 		
 		tension = diff.multiply(centrip); 
-//		System.out.println("X: "+tension.getX() + " Y:  " + tension.getY() + " Z: " + tension.getZ());
 		if(InventoryUtil.inMainHand(p, MainGear.trigger)){
 			ItemStack trigger = InventoryUtil.getMainItem(p);
 			ItemUtil.name(trigger, MainGear.tname+ (anchor.getVehicle())+
