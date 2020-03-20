@@ -1,7 +1,6 @@
 package mgear;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -47,12 +46,8 @@ public class MainGear extends MapEncompassor<Player, Spindle[]>{
 	public void particulate(Player p, Spindle[]set) {
 		Vector Vf,Vp;
 		for(Spindle spindle : set){
-//			System.out.println("Catapulted: "+spindle.catapult);
-//			System.out.println("Anchored: "+spindle.anchor);
 			
-			if(spindle.catapulted()){
-				Location aloc = spindle.catapult.getLocation();
-				
+			if(spindle.catapulted()){				
 				if(spindle.anchored()){ //pulling 
 					if(spindle.tension==null) spindle.updateTension();
 					
@@ -63,10 +58,14 @@ public class MainGear extends MapEncompassor<Player, Spindle[]>{
 					if(p.isSneaking()){
 						ParticleUtil.playEffect(Particle.CLOUD, p.getLocation().add(0,1,0),3);
 						Vf.add(ploc.getDirection().normalize().multiply(0.1));
+//						SuitUtils.playSound(ploc, Sound.ENTITY_ENDERMAN_AMBIENT, 0.3f, 0.1f);
+						SuitUtils.playSound(ploc, Sound.BLOCK_LAVA_EXTINGUISH, 0.2f, 0.1f);
+						SuitUtils.playSound(ploc, Sound.ENTITY_TNT_PRIMED, 0.2f, 0.1f);
 					}
 					p.setVelocity(Vf);
 				}else{ // on air								
-					ParticleUtil.playDust(aloc, 4, Color.BLACK, 0.5f);
+//					ParticleUtil.playDust(spindle.catapult.getLocation(), 4, Color.BLACK, 0.5f);
+					ParticleUtil.playEffect(Particle.CLOUD, spindle.catapult.getLocation(),1);
 				}
 			}	
 		}
@@ -84,14 +83,15 @@ public class MainGear extends MapEncompassor<Player, Spindle[]>{
 			
 		} else if(s.catapulted()){ // on air
 			if(s.catapult.isDead()){// cooltimed
-				SuitUtils.playSound(s.catapult, Sound.ENTITY_CREEPER_HURT, 1, 1);
+				SuitUtils.playSound(s.catapult, Sound.ENTITY_CREEPER_HURT, 2, 1);
+				SuitUtils.playSound(s.catapult, Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR, 1, 1);
 			}else { // cooltime	
 				s.catapult.remove();
 				SuitUtils.runAfter(()-> s.catapult=null, 20);
 			}
 		} else{
 			s.catapult();
-			spindler.register(s.uuid, s);
+			spindler.register(s);
 		}
 	}
 	

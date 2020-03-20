@@ -7,8 +7,8 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
-import org.bukkit.event.vehicle.VehicleExitEvent;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
@@ -25,8 +25,8 @@ public class ActiveSpindleEffector extends MapEncompassor<String,Spindle>{
 	public void particulate(String uuid, Spindle spindle) {		
 		if(spindle.anchored()){
 			spindle.updateTension();
-			if((!spindle.catapult.isOnGround()||t%5==0) && Spindle.isPseudoAnchor(spindle.anchor)){
-				spindle.anchor.teleport(spindle.catapult);
+			if((!spindle.catapult.isOnGround()||t%6==0) && Spindle.isPseudoAnchor(spindle.anchor)){
+				spindle.integrate();
 			}
 		}
 	}
@@ -47,12 +47,12 @@ public class ActiveSpindleEffector extends MapEncompassor<String,Spindle>{
 		Projectile proj = e.getEntity();
 		if(Spindle.isCatapult(proj)){
 			Spindle spindle = getSpindle(proj);	
-			SuitUtils.playSound(proj, Sound.BLOCK_STONE_PRESSURE_PLATE_CLICK_OFF, 2, 9);
-			SuitUtils.playSound(proj, Sound.BLOCK_IRON_DOOR_OPEN, 4, 9);
-			SuitUtils.playSound(proj, Sound.ENTITY_ARROW_HIT_PLAYER, 5, 9);
-			
-			
 			if(spindle != null && spindle.catapult == proj){
+				SuitUtils.playSound(proj, Sound.BLOCK_STONE_PRESSURE_PLATE_CLICK_OFF, 2, 9);
+				SuitUtils.playSound(proj, Sound.BLOCK_IRON_DOOR_OPEN, 4, 9);
+				SuitUtils.playSound(proj, Sound.ENTITY_ARROW_HIT_PLAYER, 5, 9);
+				SuitUtils.playSound(proj, Sound.BLOCK_PISTON_EXTEND, 1, 11);
+				
 				if(e.getHitEntity()==null){
 					spindle.anchor();
 				}else{
@@ -63,24 +63,26 @@ public class ActiveSpindleEffector extends MapEncompassor<String,Spindle>{
 	}
 	
 	@EventHandler
-	public void onAnchorDiscord(VehicleExitEvent e){
-		Entity passenger =e.getExited(); 
-		if(Spindle.isPseudoAnchor(passenger)){
-			Spindle spindle = getSpindle(passenger);
-			if(spindle!=null && e.getVehicle() == spindle.catapult){
-				e.setCancelled(true);
-			}
+	public void death(EntityDeathEvent e){
+		Spindle spindle = getSpindle(e.getEntity());
+		if(spindle!=null){
+			spindle.rejoice();
 		}
 	}
 	
-//	@EventHandler
-//	public void onDamageToSpindle(EntityDamageEvent e){
-//		Spindle spindle = getSpindle(e.getEntity());
-//		if(spindle!=null){
-//			System.out.println(e.getEntity()+" DAMage cancelled");
-//			e.setCancelled(true);
-//		}
-//	}
+	public void register(@Nonnull Spindle spindle) {
+		register(spindle.uuid, spindle);
+	}
+
+	@EventHandler
+	public void onDamageToSpindle(EntityDamageEvent e){
+		Entity entity = e.getEntity();
+		Spindle spindle = getSpindle(entity);
+		
+		if(spindle!=null && (Spindle.isPseudoAnchor(entity) || Spindle.isCatapult(entity)) && e.getDamage() > 20){
+			spindle.rejoice();
+		}
+	}
 
 	@Override
 	public Spindle defaultVal(String uuid) {return null;}

@@ -2,6 +2,9 @@ package gmail.anto5710.mcp.customsuits.Utils;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
+
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -10,12 +13,14 @@ import javax.annotation.Nonnull;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
+import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -112,13 +117,18 @@ public class SuitUtils {
 		playerSound(player, Sound.BLOCK_DISPENSER_FAIL, 6.0F, 6.0F);
 	}
 	
-	@SuppressWarnings("deprecation")
-	private static Set<Material> transparents = 
-	Sets.newHashSet(Material.WATER, Material.LAVA, Material.AIR, Material.COBWEB, 
-					Material.LEGACY_SAPLING, Material.DEAD_BUSH, Material.GRASS, Material.TALL_GRASS, Material.TALL_SEAGRASS, 
-					Material.SPRUCE_SAPLING, Material.BAMBOO_SAPLING, Material.BIRCH_SAPLING, Material.DARK_OAK_SAPLING,
-					Material.JUNGLE_SAPLING, Material.OAK_SAPLING, Material.ROSE_BUSH,
-					Material.FERN, Material.WHEAT,Material.LARGE_FERN);
+	private static Set<Material> transparents = new HashSet<>(); 
+	
+	{
+		for (Material m : Material.values()) {
+
+			if (m.isAir() || (m.isBlock() && !m.isSolid()) && !m.name().startsWith("LEGACY")) {
+				transparents.add(m);
+				System.out.println(m);
+			}
+		}
+	}
+	
 	public static Block getTargetBlock(Player player , int maxDistance){
 		return player.getTargetBlock(transparents, maxDistance);
 	}
