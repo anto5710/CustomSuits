@@ -78,7 +78,7 @@ public class ItemUtil {
 		ItemStack item = new ItemStack(material, 1);
 		name(item, name);
 		return item;
-	}
+	}	
 
 	@SuppressWarnings("deprecation")
 	public static ItemStack decapitate(String name) {

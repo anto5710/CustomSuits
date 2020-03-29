@@ -76,6 +76,8 @@ public class CustomSuitPlugin extends JavaPlugin {
 	private static JavaPlugin plugin;
 	public Target targetting;
 	public HungerScheduler hscheduler;
+	public static ItemStack ultrasteel = ItemUtil.createWithName(Material.IRON_INGOT, "Ultahard steel");
+	public static ItemStack mg_trigger = ItemUtil.createWithName(Material.IRON_SWORD, MainGear.trigger_name);
 	public static SuitEffecter suitEffecter; 
 	public static SpawningDao dao;
 	
@@ -196,8 +198,10 @@ public class CustomSuitPlugin extends JavaPlugin {
 				ChatColor.WHITE + "Sniper Bullet Velocity: " + ChatColor.YELLOW + 119 + " Block/Second");
 		ItemUtil.name(missileLauncher, ChatColor.DARK_RED + "[Launcher]");
 		
-		ItemUtil.addLore(MainGear.trigger, "Press 《Q》 to catapult the left anchor", 
+		ItemUtil.addLore(CustomSuitPlugin.mg_trigger, "Press 《Q》 to catapult the left anchor", 
 								  "Press 《E》 to catapult the right anchor");
+		
+		
 		
 		
 		this.targetting = new Target(this);
@@ -293,7 +297,7 @@ public class CustomSuitPlugin extends JavaPlugin {
 					toGet = ArcCompressor.star;
 				
 				} else if(option.endsWith("trigger")){
-					toGet = MainGear.trigger;
+					toGet = CustomSuitPlugin.mg_trigger;
 					
 				} else {
 					SuitUtils.wrongCommand(spnSender, command);

@@ -1,11 +1,9 @@
 package gmail.anto5710.mcp.customsuits.Utils;
 
-import gmail.anto5710.mcp.customsuits.CustomSuits.CustomSuitPlugin;
-import gmail.anto5710.mcp.customsuits.Setting.Values;
-
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -13,14 +11,12 @@ import javax.annotation.Nonnull;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
-import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -31,6 +27,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import com.google.common.collect.Sets;
+
+import gmail.anto5710.mcp.customsuits.CustomSuits.CustomSuitPlugin;
+import gmail.anto5710.mcp.customsuits.Setting.Values;
 
 public class SuitUtils {
 	static CustomSuitPlugin plugin;
@@ -73,7 +72,7 @@ public class SuitUtils {
 			public void run() {
 				for (int c = 0; c < effectsPerTick; c++) {
 					if (count >= max) {
-						SuitUtils.breakblock(target.getBlock());
+						SuitUtils.breakBlock(target.getBlock());
 						this.cancel(); break;
 					}
 					curLoc.add(v);
@@ -117,16 +116,23 @@ public class SuitUtils {
 		playerSound(player, Sound.BLOCK_DISPENSER_FAIL, 6.0F, 6.0F);
 	}
 	
-	private static Set<Material> transparents = new HashSet<>(); 
+	public static Set<Material> transparents = new HashSet<>(); 
 	
 	{
 		for (Material m : Material.values()) {
-
-			if (m.isAir() || (m.isBlock() && !m.isSolid()) && !m.name().startsWith("LEGACY")) {
+			String name = m.name();
+			if (m.isAir() || (m.isBlock() && !m.isSolid() && !m.isOccluding()) && 
+					!name.startsWith("LEGACY") &&
+					!name.startsWith("POTTED") &&
+					!name.endsWith("POT") &&
+					!name.startsWith("CHORUS") &&
+					!name.endsWith("HEAD") && 
+					!name.endsWith("SKULL")
+					) {
 				transparents.add(m);
-				System.out.println(m);
 			}
 		}
+		CustomSuitPlugin.logger.info("Added " +transparents.size()+ " transparents materials used for rayTracing");
 	}
 	
 	public static Block getTargetBlock(Player player , int maxDistance){
@@ -138,8 +144,8 @@ public class SuitUtils {
 	}
 	
 	public static void wrongCommand(Player player, Command command) {
-		String message =ChatColor.DARK_RED+ "[Info]: "+ChatColor.RED+"Wrong Command!"+"\n"+
-						ChatColor.DARK_RED+"[Usage]: "+ChatColor.RED+command.getUsage();
+		String message = ChatColor.DARK_RED+"[Info]: "+ChatColor.RED+"Wrong Command!"+"\n"+
+						 ChatColor.DARK_RED+"[Usage]: "+ChatColor.RED+command.getUsage();
 		player.sendMessage(message);
 	}
 	
@@ -190,20 +196,55 @@ public class SuitUtils {
 		return SuitUtils.isWater(eye) && SuitUtils.isWater(waist) && SuitUtils.isWater(foot);
 	}
 
-	@SuppressWarnings("deprecation")
 	public static boolean isWater(Block block){
 		Material m = block.getType();
- 		return m==Material.WATER || m==Material.LEGACY_STATIONARY_WATER;
+ 		return m==Material.WATER;
 	}
 
 	public static boolean isUnbreakable(Block hitblock) {
-		return Values.unbreakable.contains(hitblock);
+		return Values.unbreakable.contains(hitblock.getType());
 	}
 
-	public static void breakblock(Block block) {
+	public static void breakBlock(Block block) {
 		if (!isUnbreakable(block)) {
-			ParticleUtil.playBlockEffect(Particle.BLOCK_CRACK, block.getLocation(), 10, 5D, block.getBlockData());
+			ParticleUtil.playBlockEffect(Particle.BLOCK_CRACK, block.getLocation(), 15, 5D, block.getBlockData());
 			block.breakNaturally();
 		}
 	}
+		
+	private static Map<Material, Material> nextCracks = new HashMap<>();
+	
+	{
+		addCracks(Material.ANVIL, Material.CHIPPED_ANVIL, Material.DAMAGED_ANVIL);
+		addCracks(Material.STONE, Material.COBBLESTONE);
+		addCracks(Material.STONE_BRICKS, Material.CRACKED_STONE_BRICKS);
+	}
+	
+	private static void addCracks(@Nonnull Material...materials) {
+		for(int i = 0; i<materials.length-1; i++) {
+			nextCracks.put(materials[i], materials[i+1]);
+		}
+	}
+	
+	/**
+	 * @param block
+	 * @param damage out of 1.0
+	 */
+	public static boolean damageBlock(Block block, double impact) {
+		Material m = block.getType();
+		float hardness = m.getHardness();
+		boolean toCrack =!MathUtil.gacha(100*hardness/(5*impact)); 
+		if(toCrack) {
+			if(nextCracks.containsKey(m)) {
+				ParticleUtil.playBlockEffect(Particle.BLOCK_CRACK, block.getLocation(), 10, 6.8D, block.getBlockData());
+				block.setType(nextCracks.get(m));
+			}else{
+				breakBlock(block);
+			}
+		}
+		return toCrack;
+	}
+	
+	
+	
 }

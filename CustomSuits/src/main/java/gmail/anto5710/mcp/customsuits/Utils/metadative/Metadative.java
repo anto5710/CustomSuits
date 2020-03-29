@@ -37,6 +37,10 @@ public class Metadative {
 		}
 	}
 	
+	public static void remove(@Nonnull Metadatable e, String key) {
+		if(e.hasMetadata(key)) e.removeMetadata(key, plugin);
+	}
+	
 	public static void imprint(@Nonnull Projectile prj, double damage){
 		imprint(prj, damage, 0, false, false);
 	}

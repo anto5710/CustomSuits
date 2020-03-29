@@ -28,11 +28,15 @@ public abstract class LinearEncompassor<E> extends AbstractEncompassor<E>{
 	public void remove(E e) {
 		entia.remove(e);
 	}
-
+	
+	@Override
+	public boolean toCancel() {
+		return entia.isEmpty();
+	}
 	
 	@Override
 	public void run() {
-		if(entia.isEmpty()){
+		if(toCancel()){
 			cancel();
 			return;
 		}

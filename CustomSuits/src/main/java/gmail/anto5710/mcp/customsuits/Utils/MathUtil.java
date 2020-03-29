@@ -6,6 +6,7 @@ import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_15_R1.entity.CraftEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.util.Vector;
 
 public class MathUtil {
@@ -185,5 +186,8 @@ public class MathUtil {
 	    return x;
 	}
 	
+	public static boolean isMoving(@Nonnull Entity e){
+		return e instanceof Projectile ? e.hasGravity() && !e.isOnGround() : e.getVelocity().lengthSquared()>0;
+	}
 
 }

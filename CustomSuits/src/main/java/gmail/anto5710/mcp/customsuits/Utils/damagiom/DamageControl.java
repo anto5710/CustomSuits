@@ -67,7 +67,7 @@ public class DamageControl implements Listener{
 		Block hit = e.getHitBlock();
 		Projectile prj = e.getEntity();
 		if(hit != null && prj.hasMetadata(BLOCKSHOT) && MathUtil.gacha(Metadative.excavate(prj, BLOCKSHOT))){
-			SuitUtils.breakblock(hit);
+			SuitUtils.breakBlock(hit);
 		}
 	}
 

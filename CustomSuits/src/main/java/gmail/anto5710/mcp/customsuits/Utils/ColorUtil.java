@@ -2,11 +2,10 @@ package gmail.anto5710.mcp.customsuits.Utils;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.bukkit.Color;
 
-public class ColorUtil {
-
+public class ColorUtil{
+	
 	public static Map<String, Color> colorMap = new HashMap<>();
 	
 	public static void initColorMap(){

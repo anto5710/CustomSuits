@@ -46,7 +46,7 @@ public abstract class AbstractEncompassor<E> implements IEncompassor<E>{
 		if(!isRunning()) start();
 	}
 	
-	protected void discard(E e){
+	public void discard(E e){
 		toRemove.add(e);
 	}
 	
@@ -67,5 +67,4 @@ public abstract class AbstractEncompassor<E> implements IEncompassor<E>{
 		task.cancel();
 		task = null;
 	}
-	
 }

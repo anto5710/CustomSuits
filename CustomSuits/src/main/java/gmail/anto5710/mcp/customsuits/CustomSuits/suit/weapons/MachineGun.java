@@ -40,7 +40,8 @@ public class MachineGun implements Listener{
 	public MachineGun(CustomSuitPlugin plugin) {
 		effecter = new GunEffecter(plugin, 1);
 	}
-
+	
+	
 	public static boolean isCharging(Player player) {
 		return charging.contains(player);
 	}

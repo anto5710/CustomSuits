@@ -5,7 +5,6 @@ import java.util.UUID;
 
 import javax.annotation.Nonnull;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.AbstractArrow.PickupStatus;
 import org.bukkit.entity.Arrow;
@@ -14,29 +13,28 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import com.google.common.collect.Sets;
 
-import gmail.anto5710.mcp.customsuits.Utils.InventoryUtil;
-import gmail.anto5710.mcp.customsuits.Utils.ItemUtil;
+import gmail.anto5710.mcp.customsuits.Utils.Coolable;
 import gmail.anto5710.mcp.customsuits.Utils.MathUtil;
 import gmail.anto5710.mcp.customsuits.Utils.PotionBrewer;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 import gmail.anto5710.mcp.customsuits.Utils.metadative.Metadative;
 
-public class Spindle {
-	protected final Player p;
-	protected Arrow catapult;
-	protected LivingEntity anchor;
-	protected Entity dynamic_anchoror;
+public class Spindle extends Coolable{
+	private final Player p;
+	private Arrow catapult;
 	
-	protected Vector anchor_yoffset;
-	protected Vector tension;
-	protected final String uuid;
+	private LivingEntity anchor;
+	private Entity anchor_target;
+	private Vector target_offset;
 	
+	private Vector tension;
+	private final String uuid;
+		
 	public Spindle(Player p){
 		this.p = p;
 		this.uuid = UUID.randomUUID().toString();
@@ -44,57 +42,49 @@ public class Spindle {
 	
 	public static String ANCHOR = "ANCHORE";
 	public static String PSEUDO_ANCHOR = "AFAKE ANCHOR";
+	public static String ANCHOR_TARGET = "ANCHORE_LOC_REFERENCE";
 	public static String CATAPULT = "CATAPULTE";
 	public static String SPINDLE = "SPINDLE WHO";
 	
 	public void catapult(){
-		Location loc = p.getEyeLocation();
+		Location loc = p.getEyeLocation().add(0,-0.5,0);
 		Location target = SuitUtils.getTargetLoc(p, 100);
 		float d = (float) target.distance(loc);
 		
 		catapult = p.getWorld().spawnArrow(loc, target.subtract(loc).toVector(), Math.max(0.2f*d,2f), 5f);
 		catapultize(catapult);
 	}
-	
-	public boolean anchored(){
-		return anchor!=null;
+
+	public static boolean isCatapult(@Nonnull Entity entity) {
+		return entity.getType()==EntityType.ARROW && Metadative.excavatruth(entity, CATAPULT);
 	}
 	
-	public boolean pseudoAnchored(){
-		return anchored() && isPseudoAnchor(anchor);
-	}
-	
-	public boolean catapulted(){
-		return catapult != null || (anchored()&&!isPseudoAnchor(anchor));
-	}
-	
-	private static Set<EntityType>dynamics = Sets.newHashSet(EntityType.ENDER_DRAGON, EntityType.WITHER, EntityType.GIANT, EntityType.GHAST);
+	private static Set<EntityType>offsetsRequired = Sets.newHashSet(EntityType.ENDER_DRAGON, EntityType.WITHER, EntityType.GIANT, EntityType.GHAST);
 	private boolean dynamicAnchorable(@Nonnull Entity e){
-		return dynamics.contains(e.getType());
+		return offsetsRequired.contains(e.getType());
 	}
 	
 	public void anchor(Entity toAnchorAt){
-		Location aloc = toAnchorAt.getLocation();
-		Location cloc = catapult.getLocation();
-		if(catapulted()){
+		Location targetLoc = toAnchorAt.getLocation();
+		Location arrowLoc = catapult.getLocation();
+		if(hasCatapulted()){
 			if(pseudoAnchored()) anchor.remove();
 			
-			boolean dynamic = dynamicAnchorable(toAnchorAt);
-			if(toAnchorAt instanceof LivingEntity && !dynamic && ((LivingEntity)toAnchorAt).setLeashHolder(p)){
+			boolean needsYoffset = dynamicAnchorable(toAnchorAt);
+			if(toAnchorAt instanceof LivingEntity && !needsYoffset && ((LivingEntity)toAnchorAt).setLeashHolder(p)){
 				anchor = (LivingEntity) toAnchorAt;
 			}else{
-				anchor = spawnPseudoAnchor(catapult.getLocation());
+				anchor = spawnPseudoAnchor(arrowLoc);
 				anchor.setLeashHolder(p);
-	
-				if(dynamic){
-					
-					anchor_yoffset = cloc.subtract(aloc).toVector().setX(0).setZ(0);
-					dynamic_anchoror = toAnchorAt;
-					Metadative.imprint(dynamic_anchoror, ANCHOR, true);
-					Metadative.imprint(dynamic_anchoror, SPINDLE, uuid);
+
+				if(needsYoffset){
+					target_offset = new Vector().setY(MathUtil.bound(0,arrowLoc.getY() - targetLoc.getY(),toAnchorAt.getHeight()));
 				}else{
-					anchor_yoffset = null;
+					target_offset = new Vector().setY(-0.5);
 				}
+				anchor_target = toAnchorAt;
+				Metadative.imprint(anchor_target, ANCHOR_TARGET, true);
+				Metadative.imprint(anchor_target, SPINDLE, uuid);
 				integrate();
 			} 
 			Metadative.imprint(anchor, ANCHOR, true);
@@ -104,6 +94,14 @@ public class Spindle {
 	
 	public void anchor(){
 		anchor(catapult);
+	}
+
+	public static boolean isAnchor(@Nonnull Entity entity) {
+		return entity instanceof LivingEntity && Metadative.excavatruth(entity, ANCHOR);
+	}
+		
+	public static boolean isPseudoAnchor(@Nonnull Entity anchor){
+		return anchor.getType()==EntityType.BAT && Metadative.excavatruth(anchor, PSEUDO_ANCHOR);
 	}
 	
 	private static LivingEntity spawnPseudoAnchor(Location loc){
@@ -120,72 +118,84 @@ public class Spindle {
 	private void catapultize(Arrow arrow){
 		arrow.setShooter(p);
 		arrow.setSilent(true);		
+		arrow.setPickupStatus(PickupStatus.DISALLOWED);
 		Metadative.imprint(arrow, CATAPULT, true);
 		Metadative.imprint(arrow, SPINDLE, uuid);
-		arrow.setPickupStatus(PickupStatus.DISALLOWED);
 	}
 	
-	public void retrieve(){
-		if(isPseudoAnchor(anchor)){
-			anchor.remove();
-		}else anchor.setLeashHolder(null);
-		
-		anchor = null;
-		dynamic_anchoror = null;
-		catapult.remove(); catapult = null;
+	public void retrieve(boolean returnToPlayer, long cooltime){
+		if(hasCatapulted()) {
+			if (hasAnchored()) { // removes pseudo-anchors and detach leash. 
+				if (isPseudoAnchor(anchor)) {
+					anchor.remove();
+				} else {
+					anchor.setLeashHolder(null);
+				}
+				anchor = null;
+			}
+			if (anchor_target != null) { // removes spindle metadata from the anchor target (either un-leashable entities or the arrow). 
+				Metadative.remove(anchor_target, ANCHOR_TARGET);
+				Metadative.remove(anchor_target, SPINDLE);
+				anchor_target = null;
+				target_offset = null;
+			}
+			// retrieves the catapult.
+
+			if(returnToPlayer){ // tp to player and removes it afterward
+				catapult.setDamage(0);
+				if(p.isOnline() && !p.isDead()) catapult.teleport(p);
+				
+				Arrow toRemove = catapult;
+				SuitUtils.runAfter(()-> {
+					toRemove.remove();
+					catapult = null;
+				}, Math.min(cooltime/2, 8));
+			}else{ // drops a new copy of arrow. 
+				Location cloc = catapult.getLocation();
+				catapult.remove(); 
+				catapult = p.getWorld().spawn(cloc, Arrow.class);
+				catapultize(catapult);
+			}		
+			cooldown(cooltime);				
+		}
 	}
 	 
 	public Vector updateTension(){
 		Vector diff = MathUtil.disposition(anchor, p);
 		double R2 = Math.pow(diff.lengthSquared(),0.75);
-		double speed2 = Math.max(1, p.getVelocity().lengthSquared());
-		
-//		double centrip = pmass*speed2/(R2>10*10? R2 : 125);
-		double centrip = 0.65*Math.sqrt(speed2)/(R2>31.6227766? R2 :31.6227766);
-		
+		double v2 = p.getVelocity().lengthSquared();
+		if(v2<=1) v2++;
+		// 10^1.5 = 31.6227766
+		double centrip = 0.65*Math.sqrt(v2)/(R2>31.6227766? R2 :31.6227766);		
 		tension = diff.multiply(centrip); 
-		if(InventoryUtil.inMainHand(p, MainGear.trigger)){
-			ItemStack trigger = InventoryUtil.getMainItem(p);
-			ItemUtil.name(trigger, MainGear.tname+ String.format(
-		ChatColor.WHITE+ " (X: "+ChatColor.YELLOW+"%f"+
-		ChatColor.WHITE+" | Y: "+ChatColor.YELLOW+"%f"+
-		ChatColor.WHITE+" | Z: "+ChatColor.YELLOW+"%f"+
-		ChatColor.WHITE+")", tension.getX(),tension.getY(),tension.getZ()));
-		}
 		return tension;
 	}
 		
 	public void integrate(){		
-		if(pseudoAnchored() && dynamic_anchoror!=null){			
-			anchor.teleport(dynamic_anchoror.getLocation().add(anchor_yoffset));
-		}else{
-			Location cloc = catapult.getLocation();
-			anchor.teleport(cloc.add(0, -0.5, 0));
-		}
+		anchor.teleport(anchor_target.getLocation().add(target_offset));
+	}
+			
+	public boolean pseudoAnchored(){
+		return hasAnchored() && isPseudoAnchor(anchor);
 	}
 	
-	public static boolean isAnchor(@Nonnull Entity entity) {
-		return entity instanceof LivingEntity && Metadative.excavatruth(entity, ANCHOR);
+	public boolean hasAnchored(){
+		return anchor!=null;
 	}
 	
-	public static boolean isPseudoAnchor(@Nonnull Entity anchor){
-		return anchor.getType()==EntityType.BAT && Metadative.excavatruth(anchor, PSEUDO_ANCHOR);
-	}
-	
-	public static boolean isCatapult(@Nonnull Entity entity) {
-		return entity.getType()==EntityType.ARROW && Metadative.excavatruth(entity, CATAPULT);
+	public boolean hasCatapulted(){
+		return catapult!=null;
 	}
 
-	public void rejoice() {
-		if(isPseudoAnchor(anchor)){
-			anchor.remove();
-		}else anchor.setLeashHolder(null);
-		
-		anchor = null;
-		dynamic_anchoror = null;
-		Location cloc = catapult.getLocation();
-		catapult.remove(); 
-		catapult = p.getWorld().spawn(cloc, Arrow.class);
-		catapultize(catapult);
-	}
+	public Entity getAnchorTarget() {return anchor_target;}
+
+	public String getUUID() {return uuid;}
+	
+	public Arrow getCatapult() {return catapult;}
+	
+	public LivingEntity getAnchor() {return anchor;}
+	
+	public Vector getTension() {return tension;}
+
+	public Player getPlayer() {return p;}
 }

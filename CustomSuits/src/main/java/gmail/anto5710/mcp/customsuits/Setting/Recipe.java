@@ -3,6 +3,7 @@ package gmail.anto5710.mcp.customsuits.Setting;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Server;
+import org.bukkit.inventory.BlastingRecipe;
 import org.bukkit.inventory.ShapedRecipe;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.CustomSuitPlugin;
@@ -113,5 +114,10 @@ public class Recipe {
 		Man_Sword_recipe.setIngredient('C', Material.GOLDEN_SWORD);
 		
 		server.addRecipe(Man_Sword_recipe);
+		
+		
+		BlastingRecipe Gear_IronBamboo_recipe = new BlastingRecipe(NamespacedKey.minecraft("iron_bamboo"), 
+				CustomSuitPlugin.ultrasteel, Material.IRON_BARS, 6, 60);
+		server.addRecipe(Gear_IronBamboo_recipe);
 	}
 }

@@ -22,6 +22,7 @@ public class ParticleUtil {
 
 	public static void playBlockEffect(Particle effect, Location loc, int amount, double speed, BlockData data) {
 		remoteEffect(loc, p-> p.spawnParticle(effect, loc, amount, 0,0,0, speed, data));
+	
 	}
 
 	public static void playSpell(Particle effect, Location loc, int amount, double R, double G, double B,  double extra){

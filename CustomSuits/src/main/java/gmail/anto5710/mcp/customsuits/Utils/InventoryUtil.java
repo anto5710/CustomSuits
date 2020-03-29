@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
@@ -114,7 +115,7 @@ public class InventoryUtil {
 		return inMainHand(player, sample) || InventoryUtil.inOffHand(player, sample);
 	}
 
-	public static boolean emptyHand(Player player){
+	public static boolean emptyMainHand(Player player){
 		ItemStack item = InventoryUtil.getMainItem(player);
 		return ItemUtil.isAir(item);
 	}
@@ -149,5 +150,10 @@ public class InventoryUtil {
 		Inventory newInven = Bukkit.createInventory(owner, inven.getSize(), title);
 		newInven.setContents(inven.getContents());
 		return newInven;
+	}
+	
+	public static boolean droppedFromMainHand(@Nonnull PlayerDropItemEvent e){
+		Player p = e.getPlayer();
+		return emptyMainHand(p) || InventoryUtil.inMainHand(p, e.getItemDrop().getItemStack());
 	}
 }

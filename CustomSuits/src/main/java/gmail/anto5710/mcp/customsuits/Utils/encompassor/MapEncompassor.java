@@ -53,8 +53,13 @@ public abstract class MapEncompassor<E, V> extends AbstractEncompassor<E>{
 	}
 
 	@Override
+	public boolean toCancel() {
+		return maptia.isEmpty();
+	}
+	
+	@Override
 	public void run() {
-		if(maptia.isEmpty()){
+		if(toCancel()){
 			cancel();
 			return;
 		}

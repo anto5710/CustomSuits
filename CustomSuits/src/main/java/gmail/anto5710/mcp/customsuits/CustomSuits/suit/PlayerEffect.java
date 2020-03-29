@@ -1,17 +1,5 @@
 package gmail.anto5710.mcp.customsuits.CustomSuits.suit;
 
-import gmail.anto5710.mcp.customsuits.CustomSuits.CustomSuitPlugin;
-import gmail.anto5710.mcp.customsuits.CustomSuits.dao.SpawningDao;
-import gmail.anto5710.mcp.customsuits.CustomSuits.suit.weapons.MachineGun;
-import gmail.anto5710.mcp.customsuits.Setting.Values;
-import gmail.anto5710.mcp.customsuits.Utils.MathUtil;
-import gmail.anto5710.mcp.customsuits.Utils.CustomEffects;
-import gmail.anto5710.mcp.customsuits.Utils.InventoryUtil;
-import gmail.anto5710.mcp.customsuits.Utils.ItemUtil;
-import gmail.anto5710.mcp.customsuits.Utils.PotionBrewer;
-import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
-import gmail.anto5710.mcp.customsuits.Utils.fireworks.FireworkProccesor;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -37,6 +25,18 @@ import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import gmail.anto5710.mcp.customsuits.CustomSuits.CustomSuitPlugin;
+import gmail.anto5710.mcp.customsuits.CustomSuits.dao.SpawningDao;
+import gmail.anto5710.mcp.customsuits.CustomSuits.suit.weapons.MachineGun;
+import gmail.anto5710.mcp.customsuits.Setting.Values;
+import gmail.anto5710.mcp.customsuits.Utils.CustomEffects;
+import gmail.anto5710.mcp.customsuits.Utils.InventoryUtil;
+import gmail.anto5710.mcp.customsuits.Utils.ItemUtil;
+import gmail.anto5710.mcp.customsuits.Utils.MathUtil;
+import gmail.anto5710.mcp.customsuits.Utils.PotionBrewer;
+import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
+import gmail.anto5710.mcp.customsuits.Utils.fireworks.FireworkProccesor;
 
 /**
  * 
@@ -184,7 +184,7 @@ public class PlayerEffect implements Listener {
 	@EventHandler
 	public void onEntityDeath(EntityDeathEvent event) {
 		Entity deadEntity = event.getEntity();
-		if (SpawningDao.spawnMap.containsKey(deadEntity.getEntityId()) && !(deadEntity instanceof Player)) {
+		if (SpawningDao.spawnMap.containsKey(deadEntity.getEntityId()+"") && !(deadEntity instanceof Player)) {
 			CustomSuitPlugin.dao.remove(deadEntity);
 		}
 	}

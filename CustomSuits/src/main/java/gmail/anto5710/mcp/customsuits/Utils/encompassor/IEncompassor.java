@@ -13,6 +13,5 @@ public interface IEncompassor <E> extends Listener, Runnable{
 	public long getPeriod();
 	public void start();
 	public void cancel();
-	
-	
+	public boolean toCancel();
 }
