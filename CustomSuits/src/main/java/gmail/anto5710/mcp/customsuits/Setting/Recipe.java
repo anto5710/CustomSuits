@@ -8,12 +8,8 @@ import org.bukkit.inventory.ShapedRecipe;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.CustomSuitPlugin;
 
+
 public class Recipe {
-	CustomSuitPlugin plugin;
-	public Recipe(CustomSuitPlugin plugin){
-		this.plugin = plugin;
-		
-	}
 	
 	public static void addRecipes(Server server) {
 		ShapedRecipe hammerRecipe = new ShapedRecipe(NamespacedKey.minecraft("hammer"), CustomSuitPlugin.hammer);
@@ -115,9 +111,8 @@ public class Recipe {
 		
 		server.addRecipe(Man_Sword_recipe);
 		
-		
 		BlastingRecipe Gear_IronBamboo_recipe = new BlastingRecipe(NamespacedKey.minecraft("iron_bamboo"), 
-				CustomSuitPlugin.ultrasteel, Material.IRON_BARS, 6, 60);
-		server.addRecipe(Gear_IronBamboo_recipe);
+				CustomSuitPlugin.ultrasteel, Material.IRON_BLOCK, 6, 120);
+		FuelRecipe.addFuelRecipe(Gear_IronBamboo_recipe, Material.BAMBOO);
 	}
 }

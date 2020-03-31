@@ -166,7 +166,7 @@ public class Spindle extends Coolable{
 		double v2 = p.getVelocity().lengthSquared();
 		if(v2<=1) v2++;
 		// 10^1.5 = 31.6227766
-		double centrip = 0.65*Math.sqrt(v2)/(R2>31.6227766? R2 :31.6227766);		
+		double centrip = 0.65*Math.sqrt(v2)/Math.max(R2, 31.6227766);		
 		tension = diff.multiply(centrip); 
 		return tension;
 	}

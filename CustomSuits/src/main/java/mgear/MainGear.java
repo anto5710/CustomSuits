@@ -133,7 +133,7 @@ public class MainGear extends SSMapEncompassor<Player, Spindle[]>{
 			e.setCancelled(true);
 		}
 	}
-	
+
 	@EventHandler 
 	public void slay(EntityDamageByEntityEvent e) {
 		if(e.getDamager().getType()==EntityType.PLAYER && isRegistered((Player)e.getDamager())) {

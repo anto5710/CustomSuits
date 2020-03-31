@@ -46,6 +46,7 @@ import gmail.anto5710.mcp.customsuits.CustomSuits.suit.settings.SuitIUISetting;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.weapons.MachineGun;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.weapons.SuitWeapons;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.weapons.repulsor.ArcCompressor;
+import gmail.anto5710.mcp.customsuits.Setting.FuelRecipe;
 import gmail.anto5710.mcp.customsuits.Setting.Recipe;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
 import gmail.anto5710.mcp.customsuits.Thor.CreeperDicer;
@@ -201,6 +202,7 @@ public class CustomSuitPlugin extends JavaPlugin {
 		ItemUtil.addLore(CustomSuitPlugin.mg_trigger, "Press 《Q》 to catapult the left anchor", 
 								  "Press 《E》 to catapult the right anchor");
 		
+		ultrasteel.setAmount(3);
 		
 		
 		
@@ -227,7 +229,8 @@ public class CustomSuitPlugin extends JavaPlugin {
 		manager.registerEvents(MainGear.spindler, this);
 		
 		Recipe.addRecipes(getServer());
-
+		manager.registerEvents(new FuelRecipe(), this);
+		
 		dao = new SpawningDao(this);
 		dao.init();
 	}
