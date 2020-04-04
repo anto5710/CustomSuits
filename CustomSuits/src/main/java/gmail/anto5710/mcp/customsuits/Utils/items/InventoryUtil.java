@@ -1,4 +1,4 @@
-package gmail.anto5710.mcp.customsuits.Utils;
+package gmail.anto5710.mcp.customsuits.Utils.items;
 
 import javax.annotation.Nonnull;
 
@@ -11,6 +11,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+
+import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 
 public class InventoryUtil {
 
@@ -59,7 +61,7 @@ public class InventoryUtil {
 	}
 	
 	public static void replete(@Nonnull Player player, @Nonnull ItemStack item){
-		if(!player.getInventory().contains(item)){
+		if(!contains(player, item)){
 			give(player, item);
 		}
 	}
@@ -104,11 +106,11 @@ public class InventoryUtil {
 	}
 	
 	public static boolean inMainHand(Player player, ItemStack sample) {
-		return !SuitUtils.anyNull(player, sample) && ItemUtil.checkItem(sample, InventoryUtil.getMainItem(player));
+		return !SuitUtils.anyNull(player, sample) && ItemUtil.compare(sample, InventoryUtil.getMainItem(player));
 	}
 	
 	public static boolean inOffHand(Player player, ItemStack sample){
-		return !SuitUtils.anyNull(player, sample) && ItemUtil.checkItem(sample, InventoryUtil.getOffItem(player));
+		return !SuitUtils.anyNull(player, sample) && ItemUtil.compare(sample, InventoryUtil.getOffItem(player));
 	}
 
 	public static boolean inAnyHand(Player player, ItemStack sample) {
@@ -155,5 +157,16 @@ public class InventoryUtil {
 	public static boolean droppedFromMainHand(@Nonnull PlayerDropItemEvent e){
 		Player p = e.getPlayer();
 		return emptyMainHand(p) || InventoryUtil.inMainHand(p, e.getItemDrop().getItemStack());
+	}
+	
+	public static boolean contains(Player p, @Nonnull ItemStack item) {
+		if(p.getInventory().containsAtLeast(item, item.getAmount())) return true;
+		
+		ItemStack cursor = p.getItemOnCursor();
+		return cursor!=null && ItemUtil.compare(p.getItemOnCursor(), item) && item.getAmount() <= cursor.getAmount();  
+	}
+	
+	public static boolean contains(Player p, Material m) {
+		return p.getInventory().contains(m) || p.getItemOnCursor() != null && p.getItemOnCursor().getType() == m;
 	}
 }

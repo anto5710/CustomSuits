@@ -10,10 +10,10 @@ import gmail.anto5710.mcp.customsuits.CustomSuits.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.weapons.SuitWeapons;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.weapons.repulsor.ArcCompressor;
 import gmail.anto5710.mcp.customsuits.Utils.CustomEffects;
-import gmail.anto5710.mcp.customsuits.Utils.InventoryUtil;
 import gmail.anto5710.mcp.customsuits.Utils.PotionBrewer;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 import gmail.anto5710.mcp.customsuits.Utils.encompassor.LinearEncompassor;
+import gmail.anto5710.mcp.customsuits.Utils.items.InventoryUtil;
 
 public class SuitEffecter extends LinearEncompassor<Player>{
 
@@ -72,7 +72,7 @@ public class SuitEffecter extends LinearEncompassor<Player>{
 	}
 	
 	private static void equipRepulsor(Player player){
-		if(!player.getInventory().contains(ArcCompressor.bow) && !player.getInventory().contains(ArcCompressor.star)) {
+		if(!InventoryUtil.contains(player, ArcCompressor.bow) && !InventoryUtil.contains(player, ArcCompressor.star)) {	
 			InventoryUtil.give(player, ArcCompressor.star);
 			SuitUtils.playSound(player, Sound.BLOCK_LEVER_CLICK, 4F, 14F);
 			SuitUtils.playSound(player, Sound.BLOCK_METAL_PLACE, 4F, 14F);

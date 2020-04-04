@@ -10,13 +10,12 @@ import org.bukkit.potion.PotionEffectType;
 
 public class PotionBrewer {
 
-	public static boolean containSamePotionEffect(@Nonnull LivingEntity livingEntity, PotionEffectType type, int level) {
-		for (PotionEffect effect : livingEntity.getActivePotionEffects()) {
-			if (effect.getType().equals(type) && effect.getAmplifier() == level) {
-				return true;
-			}
-		}
-		return false;
+	public static boolean hasExactPotionEffect(@Nonnull LivingEntity lentity, PotionEffect effect) {
+		return lentity.hasPotionEffect(effect.getType()) && lentity.getPotionEffect(effect.getType()).getAmplifier() == effect.getAmplifier();
+	}
+	
+	public static boolean hasSimilarPotionEffect(@Nonnull LivingEntity lentity, PotionEffect effect) {
+		return lentity.hasPotionEffect(effect.getType()) && lentity.getPotionEffect(effect.getType()).getAmplifier() <= effect.getAmplifier();
 	}
 
 	public static void addPotions(@Nonnull LivingEntity lentity, @Nonnull PotionEffect...effects) {
@@ -24,10 +23,10 @@ public class PotionBrewer {
 	}
 	
 	public static void addPotion(@Nonnull LivingEntity lentity, PotionEffect effect){
-		if (!containSamePotionEffect(lentity, effect.getType(), effect.getAmplifier())) {
+		if (!hasSimilarPotionEffect(lentity, effect)) {
 			lentity.removePotionEffect(effect.getType());
+			lentity.addPotionEffect(effect);
 		}
-		lentity.addPotionEffect(effect);
 	}
 
 	public static void addPotion(@Nonnull LivingEntity livingEntity, PotionEffectType type, int duration, int amplifier) {
@@ -40,27 +39,27 @@ public class PotionBrewer {
 	
 	/**
 	 * Remove PotionEffect
-	 * @param PotionEffect PotionEffect
+	 * @param effect PotionEffect
 	 * @param player Player to remove PotionEfffect
 	 */
-	public static void removePotionEffect(@Nonnull LivingEntity lentity, PotionEffect PotionEffect) {
-		if(containSamePotionEffect(lentity, PotionEffect.getType(), PotionEffect.getAmplifier())){
-			lentity.removePotionEffect(PotionEffect.getType());
+	public static void removePotionEffect(@Nonnull LivingEntity lentity, PotionEffect effect) {
+		if(hasExactPotionEffect(lentity, effect)){
+			lentity.removePotionEffect(effect.getType());
 		}
 	}
 	
-	public static void removePotionEffects(@Nonnull LivingEntity lentity, @Nonnull PotionEffect...PotionEffects) {
-		Arrays.stream(PotionEffects).forEach(effect->removePotionEffect(lentity, effect));
+	public static void removePotionEffects(@Nonnull LivingEntity lentity, @Nonnull PotionEffect...effects) {
+		Arrays.stream(effects).forEach(effect->removePotionEffect(lentity, effect));
 	}
 
 	/**
 	 * Remove PotionEffect
 	 * @param lentity Player to remove PotionEfffect
-	 * @param PotionEffectType PotionEffectType
+	 * @param type PotionEffectType
 	 */
-	public static void removePotionEffectByType(@Nonnull LivingEntity lentity, PotionEffectType PotionEffectType) {
-		if(lentity.hasPotionEffect(PotionEffectType)){
-			lentity.removePotionEffect(PotionEffectType);
+	public static void removePotionEffectByType(@Nonnull LivingEntity lentity, PotionEffectType type) {
+		if(lentity.hasPotionEffect(type)){
+			lentity.removePotionEffect(type);
 		}
 	}
 	
@@ -69,12 +68,12 @@ public class PotionBrewer {
 	 * @param PotionEffectType PotionEffectType
 	 * @param lentity LivingEntity to remove PotionEfffect
 	 */
-	public static void removePotionEffectsByType(@Nonnull LivingEntity lentity, @Nonnull PotionEffectType...PotionEffectTypes) {
-		Arrays.stream(PotionEffectTypes).forEach(type->removePotionEffectByType(lentity, type));
+	public static void removePotionEffectsByType(@Nonnull LivingEntity lentity, @Nonnull PotionEffectType...types) {
+		Arrays.stream(types).forEach(type->removePotionEffectByType(lentity, type));
 	}
 	
-	public static void zoom(LivingEntity lentity, int degree){
-		addPotion(lentity, PotionEffectType.SLOW, Integer.MAX_VALUE, degree);
+	public static void zoom(LivingEntity lentity, int magnification){
+		addPotion(lentity, PotionEffectType.SLOW, Integer.MAX_VALUE, magnification);
 	}
 	
 	public static void dezoom(LivingEntity lentity){

@@ -1,4 +1,4 @@
-package gmail.anto5710.mcp.customsuits.Utils;
+package gmail.anto5710.mcp.customsuits.Utils.items;
 
 import java.util.HashMap;
 import java.util.Map;

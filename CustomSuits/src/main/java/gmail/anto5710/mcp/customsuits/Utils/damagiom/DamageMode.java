@@ -23,8 +23,8 @@ public class DamageMode {
 	
 	public static DamageMode retrieve(Projectile prj){
 		boolean allowHeadshot = prj.hasMetadata(HEADSHOT);	
-		double headshot_ratio = allowHeadshot ? Metadative.excavate(prj, HEADSHOT) : 1;
-		boolean firework = Metadative.excavatruth(prj, FIREWORK);
+		double headshot_ratio = allowHeadshot ? Metadative.getDouble(prj, HEADSHOT) : 1;
+		boolean firework = Metadative.getBoolean(prj, FIREWORK);
 		return new DamageMode(allowHeadshot, firework, headshot_ratio);
 	}
 }

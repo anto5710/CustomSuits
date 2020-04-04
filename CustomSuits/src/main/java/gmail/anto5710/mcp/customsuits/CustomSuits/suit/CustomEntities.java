@@ -26,7 +26,7 @@ import org.bukkit.entity.Zombie;
 import org.bukkit.entity.ZombieHorse;
 import org.bukkit.inventory.ItemStack;
 
-import gmail.anto5710.mcp.customsuits.Utils.ItemUtil;
+import gmail.anto5710.mcp.customsuits.Utils.items.ItemUtil;
 
 
 public enum CustomEntities {

@@ -29,9 +29,15 @@ public class MathUtil {
 		return boundMax;
 	}
 	
+	public static float bound(float min, float num, float max){
+		float boundMin = Math.max(min, num);
+		float boundMax = Math.min(max, boundMin);
+		return boundMax;
+	}
+	
 	//inclusive
 	public static boolean within(double min, double num, double max){
-		return bound(min, num, max) == num;
+		return min <= num && num <= max;
 	}
 	
 	public static boolean gacha(double percent){

@@ -2,11 +2,16 @@ package gmail.anto5710.mcp.customsuits.Utils;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.annotation.Nonnull;
+
+import org.bukkit.ChatColor;
 import org.bukkit.Color;
 
 public class ColorUtil{
 	
 	public static Map<String, Color> colorMap = new HashMap<>();
+	private static Map<String, String> chatColorMap = new HashMap<>();
 	
 	public static void initColorMap(){
 		ColorUtil.colorMap.put("red", Color.RED);
@@ -26,8 +31,64 @@ public class ColorUtil{
 		ColorUtil.colorMap.put("maroon", Color.MAROON);
 		ColorUtil.colorMap.put("fuchsia", Color.FUCHSIA);
 		ColorUtil.colorMap.put("teal", Color.TEAL);
+		
+		for(ChatColor ccolor : ChatColor.values()) {
+			chatColorMap.put(ccolor.name(), ccolor.toString());
+		}
+		chatColorMap.put("I", ChatColor.ITALIC.toString());
+		chatColorMap.put("B", ChatColor.BOLD.toString());
+		chatColorMap.put("U", ChatColor.UNDERLINE.toString());
+		chatColorMap.put("DEL", ChatColor.STRIKETHROUGH.toString());
 	}
 	
+	public static String colorf(@Nonnull String text) {
+		return colorf(text, ChatColor.RESET);
+	}
+		
+	/**
+	 * Enables color-coding of the text in HTML-like format: 
+	 * '{@literal <blue>}blue{@literal <//>} white' will result in only the "blue" part colored.     
+	 * 
+	 * @param text text to convert from
+	 * @param defaultColor default color for the text 
+	 * @return text with all HTML color formatting converted into ChatColor equivalents.  
+	 */
+	public static String colorf(@Nonnull String text, ChatColor defaultColor) {
+		String last_color = defaultColor.toString();
+		String copy = defaultColor.toString(), regex, color_code, converted = "";
+		char cur; 
+		int start = -1, end = -1;
+		
+		for(int i =0; i< text.length(); i++) {
+			cur = text.charAt(i);
+			if(cur == '<') {
+				start = i;
+			} else if (cur == '>') {
+				if (start != -1) {
+					regex = text.substring(start + 1, i);
+					color_code = regex.trim().toUpperCase().replace(' ', '_');
+
+					boolean foundMatch = true;
+					
+					if (color_code.startsWith("/")) {
+						converted = color_code.startsWith("//") ? defaultColor.toString() : last_color;
+					} else if (chatColorMap.containsKey(color_code)) {
+						converted = chatColorMap.get(color_code);
+					} else {
+						foundMatch = false;
+						converted = "<"+regex+">"; 
+					}
+					if (foundMatch) last_color = converted;
+					
+					copy += text.substring(end+1, start) + converted;
+					end = i;
+					start = -1;
+				} 
+			}
+		}
+		return copy + text.substring(end+1, text.length());
+	}
+		
 	public static Color[] getColors(Color color){
 		float [] HSB =ColorUtil.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue());
 		float H = HSB[0];

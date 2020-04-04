@@ -2,10 +2,9 @@ package gmail.anto5710.mcp.customsuits.Thor;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.Utils.CustomEffects;
-import gmail.anto5710.mcp.customsuits.Utils.InventoryUtil;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 import gmail.anto5710.mcp.customsuits.Utils.ThorUtils;
-
+import gmail.anto5710.mcp.customsuits.Utils.items.InventoryUtil;
 
 import org.bukkit.Location;
 import org.bukkit.Sound;

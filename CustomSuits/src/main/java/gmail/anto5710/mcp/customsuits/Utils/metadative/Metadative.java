@@ -51,23 +51,23 @@ public class Metadative {
 		e.setMetadata(key.toString(), new FixedMetadataValue(plugin, val));
 	}
 	
-	public static String excavatext(Metadatable e, String key) {
+	public static String getString(Metadatable e, String key) {
 		return e.getMetadata(key).get(0).asString();
 	}
 	
-	public static double excavate(Metadatable e, String explosive) {
+	public static double getDouble(Metadatable e, String explosive) {
 		return e.getMetadata(explosive).get(0).asDouble();
 	}
 	
-	public static float excafate(Metadatable e, String key) {
+	public static float getFloat(Metadatable e, String key) {
 		return e.getMetadata(key).get(0).asFloat();
 	}
 	
-	public static int excavint(Metadatable e, String key) {
+	public static int getInt(Metadatable e, String key) {
 		return e.getMetadata(key).get(0).asInt();
 	}
 	
-	public static boolean excavatruth(Metadatable e, String key) {
+	public static boolean getBoolean(Metadatable e, String key) {
 		return e.hasMetadata(key) && e.getMetadata(key).get(0).asBoolean();
 	}
 

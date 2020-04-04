@@ -1,4 +1,4 @@
-package gmail.anto5710.mcp.customsuits.Utils;
+package gmail.anto5710.mcp.customsuits.Utils.items;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,13 +21,18 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
+import gmail.anto5710.mcp.customsuits.Utils.ColorUtil;
+import gmail.anto5710.mcp.customsuits.Utils.MathUtil;
+import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
+
 public class ItemUtil {
 
 	public static boolean isHorseArmor(ItemStack item){
 		if(item==null) return false;
 		
 		Material type = item.getType();
-		return type == Material.IRON_HORSE_ARMOR || type == Material.GOLDEN_HORSE_ARMOR || type == Material.DIAMOND_HORSE_ARMOR;
+		return type == Material.IRON_HORSE_ARMOR || type == Material.GOLDEN_HORSE_ARMOR 
+			|| type == Material.DIAMOND_HORSE_ARMOR || type == Material.LEATHER_HORSE_ARMOR;
 	}
 
 	public static Color extractColor(ItemStack item){
@@ -116,7 +121,7 @@ public class ItemUtil {
 		return items;
 	}
 
-	public static boolean checkName(ItemStack sample, ItemStack check) {
+	public static boolean compareName(ItemStack sample, ItemStack check) {
 		if(sample == null || check == null) return sample == check;
 		
 		String sampleName = getName(sample);
@@ -127,7 +132,7 @@ public class ItemUtil {
 		return sampleName != null && checkName != null && (checkName.endsWith(sampleName)||checkName.startsWith(sampleName));
 	}
 
-	public static boolean checkName(ItemStack item, String token){
+	public static boolean compareName(ItemStack item, String token){
 		if (item==null || token ==null || token.isEmpty() || !item.hasItemMeta()) return false;
 		
 		String name = getName(item);
@@ -138,7 +143,7 @@ public class ItemUtil {
 		return (item!=null && item.hasItemMeta()) ? item.getItemMeta().getDisplayName() : null;
 	}
 
-	public static boolean checkLore(ItemStack sample, ItemStack check) {
+	public static boolean compareLore(ItemStack sample, ItemStack check) {
 		boolean sampleHasLore = sample.getItemMeta().hasLore();
 		boolean checkHasLore = check.getItemMeta().hasLore();
 		if(!sampleHasLore || !checkHasLore) return sampleHasLore == checkHasLore ; //anyNull -> then if null=null return true
@@ -157,11 +162,11 @@ public class ItemUtil {
 		return true;		
 	}
 
-	public static boolean checkItem(ItemStack sample, ItemStack check){
+	public static boolean compare(ItemStack sample, ItemStack check){
 		if(check==null || sample == null){
 			return check == sample; // 둘 다 null(air)?
 		}
-		return sample.getType()==check.getType () && checkName(sample , check) && checkLore(sample, check);
+		return sample.getType()==check.getType() && compareName(sample , check) && compareLore(sample, check);
 	}
 
 	@SuppressWarnings("deprecation")

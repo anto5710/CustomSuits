@@ -11,11 +11,12 @@ import gmail.anto5710.mcp.customsuits.CustomSuits.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.Setting.PotionEffects;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
 import gmail.anto5710.mcp.customsuits.Utils.CustomEffects;
-import gmail.anto5710.mcp.customsuits.Utils.InventoryUtil;
-import gmail.anto5710.mcp.customsuits.Utils.ItemUtil;
 import gmail.anto5710.mcp.customsuits.Utils.ParticleUtil;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 import gmail.anto5710.mcp.customsuits.Utils.ThorUtils;
+import gmail.anto5710.mcp.customsuits.Utils.items.InventoryUtil;
+import gmail.anto5710.mcp.customsuits.Utils.items.ItemUtil;
+
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -165,16 +166,16 @@ public class Hammer implements Listener {
 	public static boolean isPractiallyThor(Player player) {
 		int count = 0;
 		EntityEquipment equipment = player.getEquipment();
-		if (ItemUtil.checkItem(CustomSuitPlugin.Helemt_Thor, equipment.getHelmet())) {
+		if (ItemUtil.compare(CustomSuitPlugin.Helemt_Thor, equipment.getHelmet())) {
 			count++;
 		}
-		if (ItemUtil.checkItem(CustomSuitPlugin.Chestplate_Thor, equipment.getChestplate())) {
+		if (ItemUtil.compare(CustomSuitPlugin.Chestplate_Thor, equipment.getChestplate())) {
 			count++;
 		}
-		if (ItemUtil.checkItem(CustomSuitPlugin.Leggings_Thor, equipment.getLeggings())) {
+		if (ItemUtil.compare(CustomSuitPlugin.Leggings_Thor, equipment.getLeggings())) {
 			count++;
 		}
-		if (ItemUtil.checkItem(CustomSuitPlugin.Boots_Thor, equipment.getBoots())) {
+		if (ItemUtil.compare(CustomSuitPlugin.Boots_Thor, equipment.getBoots())) {
 			count++;
 		}
 		return count >= 2;
@@ -187,7 +188,7 @@ public class Hammer implements Listener {
 	@EventHandler
 	public void cancelPicking_Up_Hammer(EntityPickupItemEvent event){
 		Item item = event.getItem();
-		if(ItemUtil.checkItem(CustomSuitPlugin.hammer, item.getItemStack())){
+		if(ItemUtil.compare(CustomSuitPlugin.hammer, item.getItemStack())){
 			if(event.getEntityType() == EntityType.PLAYER && event.getEntity() == thor){
 				Hammer.hammerEffecter.remove(item);				
 			} else{

@@ -6,10 +6,10 @@ import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomEntities;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.PlayerEffect;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.settings.SuitIUISetting;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
-import gmail.anto5710.mcp.customsuits.Utils.InventoryUtil;
-import gmail.anto5710.mcp.customsuits.Utils.ItemUtil;
 import gmail.anto5710.mcp.customsuits.Utils.MathUtil;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
+import gmail.anto5710.mcp.customsuits.Utils.items.InventoryUtil;
+import gmail.anto5710.mcp.customsuits.Utils.items.ItemUtil;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Color;

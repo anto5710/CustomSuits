@@ -25,7 +25,8 @@ public class ActiveSpindleEffector extends MapEncompassor<String,Spindle>{
 	@Override
 	public void particulate(String uuid, Spindle spindle) {		
 		if(spindle.hasAnchored()){
-			MainGear.speedometre(spindle.getPlayer(), spindle.updateTension());
+			spindle.updateTension();
+			MainGear.speedometre(spindle.getPlayer(), spindle);
 			if(toIntegrate(spindle)) spindle.integrate();
 		}
 	}
@@ -36,8 +37,7 @@ public class ActiveSpindleEffector extends MapEncompassor<String,Spindle>{
 	}
 	
 	public Spindle getSpindle(@Nonnull Entity a){
-		return a.hasMetadata(Spindle.SPINDLE)? 
-				get(Metadative.excavatext(a, Spindle.SPINDLE)) : null;
+		return a.hasMetadata(Spindle.SPINDLE)? get(Metadative.getString(a, Spindle.SPINDLE)) : null;
 	}
 
 	

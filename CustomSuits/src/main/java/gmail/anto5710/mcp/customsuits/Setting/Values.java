@@ -151,5 +151,8 @@ public class Values {
 	final public static Color ThorChestplateColor = Color.fromRGB(35, 35, 35); 
 	final public static Color ThorLeggingsColor = Color.fromRGB(0, 0, 65);
 		
+	final public static float GearGas_Catapult = -0.05F;
+	final public static float GearGas_Pull = -0.01F;
+	final public static float GearGas_Shift = -0.04F;
 	
 }

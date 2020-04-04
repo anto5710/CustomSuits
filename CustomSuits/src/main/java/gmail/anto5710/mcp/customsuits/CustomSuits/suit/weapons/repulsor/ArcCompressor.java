@@ -39,13 +39,14 @@ import gmail.anto5710.mcp.customsuits.CustomSuits.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.HungerScheduler;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.weapons.SuitWeapons;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
-import gmail.anto5710.mcp.customsuits.Utils.EnchantBuilder;
-import gmail.anto5710.mcp.customsuits.Utils.InventoryUtil;
-import gmail.anto5710.mcp.customsuits.Utils.ItemUtil;
+import gmail.anto5710.mcp.customsuits.Utils.ColorUtil;
 import gmail.anto5710.mcp.customsuits.Utils.PacketUtil;
 import gmail.anto5710.mcp.customsuits.Utils.PotionBrewer;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 import gmail.anto5710.mcp.customsuits.Utils.encompassor.MapEncompassor;
+import gmail.anto5710.mcp.customsuits.Utils.items.EnchantBuilder;
+import gmail.anto5710.mcp.customsuits.Utils.items.InventoryUtil;
+import gmail.anto5710.mcp.customsuits.Utils.items.ItemUtil;
 import gmail.anto5710.mcp.customsuits.Utils.metadative.Metadative;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelDuplexHandler;
@@ -57,25 +58,24 @@ import net.minecraft.server.v1_15_R1.PlayerConnection;
 
 public class ArcCompressor extends MapEncompassor<Player, Set<Integer>>{
 	public static final ItemStack bow = ItemUtil.createWithName(Material.BOW, 
-			ChatColor.DARK_AQUA + "["+ChatColor.AQUA + "Ω"+ChatColor.DARK_AQUA + "]");
+			ColorUtil.colorf("<dark aqua>[<aqua>◘<dark aqua>]"));
 	public static final ItemStack star = ItemUtil.createWithName(Material.END_CRYSTAL, 
-			ChatColor.DARK_AQUA + "["+ChatColor.AQUA +"Ω"+ChatColor.DARK_AQUA + "]");
+			ColorUtil.colorf("<dark aqua>[<aqua>◙<dark aqua>]"));
 		
 	public ArcCompressor(CustomSuitPlugin plugin, long period) {
 		super(plugin, period);
-		bow.addUnsafeEnchantments(new EnchantBuilder().enchant(Enchantment.ARROW_DAMAGE, 50)
-														.enchant(Enchantment.ARROW_FIRE, 20).enchant(Enchantment.ARROW_KNOCKBACK, 100).
-		enchant(Enchantment.ARROW_INFINITE, 1).serialize());
+		bow.addUnsafeEnchantments(new EnchantBuilder().enchant(Enchantment.ARROW_DAMAGE, 50).enchant(Enchantment.ARROW_FIRE, 20)
+													.enchant(Enchantment.ARROW_KNOCKBACK, 100).enchant(Enchantment.ARROW_INFINITE, 1).serialize());
 		ItemUtil.setLore(star, 
-				ChatColor.YELLOW + "RIGHT Click" + ChatColor.WHITE +" and"+ChatColor.YELLOW + " HOLD"+ ChatColor.WHITE +" to Compress Repulse Energy",
+				ColorUtil.colorf("<yellow>RIGHT Click<//> and <yellow>HOLD<//> to Compress Repulse Energy", ChatColor.WHITE),
 				"",
-				ChatColor.YELLOW + "RELEASE Mouse " + ChatColor.WHITE + "to launch" + ChatColor.AQUA +" Repulsor Bim"
-				);
+				ColorUtil.colorf("<yellow>RELEASE Mouse<//> to launch <aqua>Repulsor Bim")
+		);
 	}
 	
 	@EventHandler
 	public void onRelease(EntityShootBowEvent e){
-		if(ItemUtil.checkItem(bow, e.getBow()) && e.getEntityType() == EntityType.PLAYER && CustomSuitPlugin.isMarkEntity(e.getEntity())){
+		if(ItemUtil.compare(bow, e.getBow()) && e.getEntityType() == EntityType.PLAYER && CustomSuitPlugin.isMarkEntity(e.getEntity())){
 			e.setCancelled(true);
 			Player p = (Player)e.getEntity();
 			float force = e.getForce();
@@ -93,7 +93,7 @@ public class ArcCompressor extends MapEncompassor<Player, Set<Integer>>{
 	
 	@EventHandler
 	public void onMoveItem(InventoryMoveItemEvent e){
-		if(e.getItem() != null && ItemUtil.checkItem(bow, e.getItem())){
+		if(e.getItem() != null && ItemUtil.compare(bow, e.getItem())){
 			e.setItem(star);
 		}
 	}
@@ -123,10 +123,10 @@ public class ArcCompressor extends MapEncompassor<Player, Set<Integer>>{
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
 	public void onChangeItemInHand(PlayerItemHeldEvent e){
 		PlayerInventory inven = e.getPlayer().getInventory();
-		if(ItemUtil.checkItem(bow, inven.getItem(e.getNewSlot()))){
+		if(ItemUtil.compare(bow, inven.getItem(e.getNewSlot()))){
 			Player p = e.getPlayer();
 			update(p, false, 3);
 		}
@@ -179,7 +179,7 @@ public class ArcCompressor extends MapEncompassor<Player, Set<Integer>>{
 	@EventHandler
 	public void onClick(InventoryClickEvent e){
 		Player p = getPlayer(e);
-		if(p!=null && ItemUtil.checkItem(bow, e.getCurrentItem())){
+		if(p!=null && ItemUtil.compare(bow, e.getCurrentItem())){
 			disclose(p);
 			e.setCurrentItem(star);
 		}
@@ -214,9 +214,8 @@ public class ArcCompressor extends MapEncompassor<Player, Set<Integer>>{
 	public void drop(PlayerDropItemEvent e){
 		Item item = e.getItemDrop();
 		ItemStack stack = item.getItemStack();
-		if(ItemUtil.checkItem(bow, stack)){
-			item.setItemStack(star);
-			disclose(e.getPlayer());
+		if(ItemUtil.compare(bow, stack) || ItemUtil.compare(star, stack)){
+			item.remove();
 		}	
 	}
 	
@@ -284,7 +283,7 @@ public class ArcCompressor extends MapEncompassor<Player, Set<Integer>>{
 				if(fitem.get(peq) instanceof net.minecraft.server.v1_15_R1.ItemStack){
 					net.minecraft.server.v1_15_R1.ItemStack nitem = (net.minecraft.server.v1_15_R1.ItemStack) fitem.get(peq);
 					ItemStack item = CraftItemStack.asBukkitCopy(nitem);
-					if(ItemUtil.checkItem(item, bow)){
+					if(ItemUtil.compare(item, bow)){
 						System.out.println("changed "+fitem.get(peq));
 						fitem.set(peq, CraftItemStack.asNMSCopy(star));
 					}

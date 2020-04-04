@@ -2,6 +2,7 @@ package gmail.anto5710.mcp.customsuits.Utils;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.Thor.Hammer;
+import gmail.anto5710.mcp.customsuits.Utils.items.InventoryUtil;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Item;

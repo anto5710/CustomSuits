@@ -4,6 +4,8 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Server;
 import org.bukkit.inventory.BlastingRecipe;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapedRecipe;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.CustomSuitPlugin;
@@ -11,6 +13,7 @@ import gmail.anto5710.mcp.customsuits.CustomSuits.CustomSuitPlugin;
 
 public class Recipe {
 	
+	@SuppressWarnings("deprecation")
 	public static void addRecipes(Server server) {
 		ShapedRecipe hammerRecipe = new ShapedRecipe(NamespacedKey.minecraft("hammer"), CustomSuitPlugin.hammer);
 		hammerRecipe.shape("###","%%%","_|_");
@@ -111,8 +114,21 @@ public class Recipe {
 		
 		server.addRecipe(Man_Sword_recipe);
 		
+		ShapedRecipe Gear_Blade_recipe = new ShapedRecipe(NamespacedKey.minecraft("gear_blade"), CustomSuitPlugin.mg_blade);
+		Gear_Blade_recipe.shape("/",
+								"/",
+								":");
+		Gear_Blade_recipe.setIngredient('/', new RecipeChoice.ExactChoice(CustomSuitPlugin.mg_ultrasteel));		
+		Gear_Blade_recipe.setIngredient(':', Material.LEVER);
+		server.addRecipe(Gear_Blade_recipe);
+		
+		
+		
+		
+		ItemStack ultrasteel_triplet = CustomSuitPlugin.mg_ultrasteel.clone();
+		ultrasteel_triplet.setAmount(3);
 		BlastingRecipe Gear_IronBamboo_recipe = new BlastingRecipe(NamespacedKey.minecraft("iron_bamboo"), 
-				CustomSuitPlugin.ultrasteel, Material.IRON_BLOCK, 6, 120);
-		FuelRecipe.addFuelRecipe(Gear_IronBamboo_recipe, Material.BAMBOO);
+				ultrasteel_triplet, Material.IRON_BLOCK, 6, 120);
+		FuelReciper.addFuelRecipe(Gear_IronBamboo_recipe, Material.BAMBOO);
 	}
 }

@@ -10,8 +10,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomEntities;
-import gmail.anto5710.mcp.customsuits.Utils.Enchant;
-import gmail.anto5710.mcp.customsuits.Utils.ItemUtil;
+import gmail.anto5710.mcp.customsuits.Utils.items.Enchant;
+import gmail.anto5710.mcp.customsuits.Utils.items.ItemUtil;
 
 public class Inventories {
 	public static final String maininventory_name = "[Settings]";

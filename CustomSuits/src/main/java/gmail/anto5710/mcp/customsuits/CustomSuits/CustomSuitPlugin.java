@@ -46,7 +46,7 @@ import gmail.anto5710.mcp.customsuits.CustomSuits.suit.settings.SuitIUISetting;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.weapons.MachineGun;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.weapons.SuitWeapons;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.weapons.repulsor.ArcCompressor;
-import gmail.anto5710.mcp.customsuits.Setting.FuelRecipe;
+import gmail.anto5710.mcp.customsuits.Setting.FuelReciper;
 import gmail.anto5710.mcp.customsuits.Setting.Recipe;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
 import gmail.anto5710.mcp.customsuits.Thor.CreeperDicer;
@@ -55,16 +55,16 @@ import gmail.anto5710.mcp.customsuits.Thor.Hammer;
 import gmail.anto5710.mcp.customsuits.Thor.HammerWeapons;
 import gmail.anto5710.mcp.customsuits.Utils.ColorUtil;
 import gmail.anto5710.mcp.customsuits.Utils.CustomEffects;
-import gmail.anto5710.mcp.customsuits.Utils.Enchant;
-import gmail.anto5710.mcp.customsuits.Utils.EnchantBuilder;
-import gmail.anto5710.mcp.customsuits.Utils.Glow;
-import gmail.anto5710.mcp.customsuits.Utils.InventoryUtil;
-import gmail.anto5710.mcp.customsuits.Utils.ItemUtil;
 import gmail.anto5710.mcp.customsuits.Utils.MathUtil;
 import gmail.anto5710.mcp.customsuits.Utils.ParticleModeller;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 import gmail.anto5710.mcp.customsuits.Utils.damagiom.DamageControl;
 import gmail.anto5710.mcp.customsuits.Utils.damagiom.DamageUtil;
+import gmail.anto5710.mcp.customsuits.Utils.items.Enchant;
+import gmail.anto5710.mcp.customsuits.Utils.items.EnchantBuilder;
+import gmail.anto5710.mcp.customsuits.Utils.items.Glow;
+import gmail.anto5710.mcp.customsuits.Utils.items.InventoryUtil;
+import gmail.anto5710.mcp.customsuits.Utils.items.ItemUtil;
 import gmail.anto5710.mcp.customsuits.Utils.metadative.Metadative;
 import mgear.MainGear;
 
@@ -77,8 +77,6 @@ public class CustomSuitPlugin extends JavaPlugin {
 	private static JavaPlugin plugin;
 	public Target targetting;
 	public HungerScheduler hscheduler;
-	public static ItemStack ultrasteel = ItemUtil.createWithName(Material.IRON_INGOT, "Ultahard steel");
-	public static ItemStack mg_trigger = ItemUtil.createWithName(Material.IRON_SWORD, MainGear.trigger_name);
 	public static SuitEffecter suitEffecter; 
 	public static SpawningDao dao;
 	
@@ -107,6 +105,11 @@ public class CustomSuitPlugin extends JavaPlugin {
 	public static ItemStack Boots_Man = new ItemStack(Material.IRON_BOOTS);
 	public static ItemStack Sword_Man = new ItemStack(Material.GOLDEN_SWORD);
 
+	public static ItemStack mg_ultrasteel = ItemUtil.createWithName(Material.IRON_INGOT, "Ultahard steel"),
+							mg_trigger = ItemUtil.createWithName(Material.IRON_SWORD, MainGear.trigger_name),
+							mg_blade = ItemUtil.createWithName(Material.IRON_SWORD, "Ultrahard blade");
+	
+	
 	/**
 	 * entityType 이름과 대응하는 EntityClass 모음
 	 */	
@@ -188,23 +191,25 @@ public class CustomSuitPlugin extends JavaPlugin {
 		ItemUtil.name(suitremote, ChatColor.RED + "[Suit Commander]");
 		ItemUtil.name(gunitem, ChatColor.YELLOW + "Knif-1220 " + "«" + Values.MachineGunAmmoAmount + Values.gun_regex + Values.SnipeAmmoAmount + "»");
 
+		
 		ItemUtil.addLore(gunitem,
-				ChatColor.WHITE + "Machine Gun Ammo: " + ChatColor.YELLOW + Values.MachineGunAmmoAmount,
-				ChatColor.WHITE + "Sniper Ammo: " + ChatColor.YELLOW + Values.SnipeAmmoAmount,
-				ChatColor.WHITE + "Machine Gun Bullet Spread: " + ChatColor.YELLOW + 0.3 + ChatColor.WHITE + " | " + ChatColor.YELLOW + 0.05 + "(Zoom)",
-				ChatColor.WHITE + "Sniper Bullet Spread: " + ChatColor.YELLOW + 5.0 + ChatColor.WHITE + " | " + ChatColor.YELLOW + 0 + "(Zoom)",
-				ChatColor.WHITE + "Machine Gun Damage: " + ChatColor.YELLOW + Values.MachineGunDamage,
-				ChatColor.WHITE + "Sniper Damage: " + ChatColor.YELLOW + Values.SniperDamage,
-				ChatColor.WHITE + "Machine Gun Bullet Velocity: " + ChatColor.YELLOW + 50.0 + " Block/Second",
-				ChatColor.WHITE + "Sniper Bullet Velocity: " + ChatColor.YELLOW + 119 + " Block/Second");
+				ColorUtil.colorf(
+					"Machine Gun Ammo: <yellow>" + Values.MachineGunAmmoAmount+"<//>,"+ 
+					"Sniper Ammo: <yellow>" + Values.SnipeAmmoAmount+"<//>,"+
+					"Machine Gun Bullet Spread: <yellow>0.3<//> | <yellow>0.05 (Zoom)<//>,"+
+					"Sniper Bullet Spread: <yellow>5.0 | <yellow>0 (Zoom)<//>,"+
+					"Machine Gun Damage: <yellow>" + Values.MachineGunDamage + "<//>,"+
+					"Sniper Damage: <yellow>" + Values.SniperDamage+"<//>,"+
+					"Machine Gun Bullet Velocity: <yellow>50.0 Block/Second<//>,"+
+					"Sniper Bullet Velocity: <yellow>119 Block/Second<//>"
+					,ChatColor.WHITE).split(",")
+		);
 		ItemUtil.name(missileLauncher, ChatColor.DARK_RED + "[Launcher]");
 		
 		ItemUtil.addLore(CustomSuitPlugin.mg_trigger, "Press 《Q》 to catapult the left anchor", 
 								  "Press 《E》 to catapult the right anchor");
-		
-		ultrasteel.setAmount(3);
-		
-		
+		ItemUtil.suffix(mg_trigger, Attribute.GENERIC_ATTACK_SPEED, 3);
+				
 		
 		this.targetting = new Target(this);
 		this.targetting.awaken();
@@ -229,7 +234,7 @@ public class CustomSuitPlugin extends JavaPlugin {
 		manager.registerEvents(MainGear.spindler, this);
 		
 		Recipe.addRecipes(getServer());
-		manager.registerEvents(new FuelRecipe(), this);
+		manager.registerEvents(new FuelReciper(), this);
 		
 		dao = new SpawningDao(this);
 		dao.init();
@@ -391,7 +396,7 @@ public class CustomSuitPlugin extends JavaPlugin {
 		}
 
 		if (command.getName().equals("cspn")) {
-			if (ItemUtil.checkItem(suitremote, InventoryUtil.getMainItem(spnSender))) {
+			if (ItemUtil.compare(suitremote, InventoryUtil.getMainItem(spnSender))) {
 				if (args.length < 2) {
 					SuitUtils.wrongCommand(spnSender, command);
 					SuitUtils.tick(spnSender);
@@ -496,7 +501,7 @@ public class CustomSuitPlugin extends JavaPlugin {
 	public static boolean isMarkEntity(@Nonnull LivingEntity lentity) {
 		ItemStack [] armors = lentity.getEquipment().getArmorContents();
 		return armors != null && Arrays.stream(armors).anyMatch(
-				armor->ItemUtil.checkName(armor, Values.SuitName + Values.SuitInforegex));
+				armor->ItemUtil.compareName(armor, Values.SuitName + Values.SuitInforegex));
 	}
 
 	private static LivingEntity nearestArmedLentity(List<LivingEntity> near, Player player, double range) {		
@@ -515,7 +520,7 @@ public class CustomSuitPlugin extends JavaPlugin {
 	
 	public static int getSuitLevel(Player p) {
 		for(ItemStack armor : p.getEquipment().getArmorContents()){
-			if(ItemUtil.checkName(armor, Values.SuitName + Values.SuitInforegex)){				
+			if(ItemUtil.compareName(armor, Values.SuitName + Values.SuitInforegex)){				
 				String name = armor.getItemMeta().getDisplayName();
 				String[] values = name.split(Values.SuitInforegex);
 				return Integer.parseInt(values[1]);

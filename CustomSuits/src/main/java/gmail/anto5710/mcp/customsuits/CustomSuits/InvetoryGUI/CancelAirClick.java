@@ -11,7 +11,7 @@ import org.bukkit.inventory.Inventory;
 import com.google.common.collect.Sets;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.CustomSuitPlugin;
-import gmail.anto5710.mcp.customsuits.Utils.ItemUtil;
+import gmail.anto5710.mcp.customsuits.Utils.items.ItemUtil;
 
 public class CancelAirClick extends Inventories implements Listener{
 	CustomSuitPlugin plugin;

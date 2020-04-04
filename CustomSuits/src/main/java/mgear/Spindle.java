@@ -34,17 +34,19 @@ public class Spindle extends Coolable{
 	
 	private Vector tension;
 	private final String uuid;
-		
+	private float gas;	
+	
 	public Spindle(Player p){
 		this.p = p;
 		this.uuid = UUID.randomUUID().toString();
+		this.gas = 100;
 	}
 	
 	public static String ANCHOR = "ANCHORE";
 	public static String PSEUDO_ANCHOR = "AFAKE ANCHOR";
 	public static String ANCHOR_TARGET = "ANCHORE_LOC_REFERENCE";
 	public static String CATAPULT = "CATAPULTE";
-	public static String SPINDLE = "SPINDLE WHO";
+	public static String SPINDLE = "SPINDLE-WHO";
 	
 	public void catapult(){
 		Location loc = p.getEyeLocation().add(0,-0.5,0);
@@ -56,7 +58,7 @@ public class Spindle extends Coolable{
 	}
 
 	public static boolean isCatapult(@Nonnull Entity entity) {
-		return entity.getType()==EntityType.ARROW && Metadative.excavatruth(entity, CATAPULT);
+		return entity.getType()==EntityType.ARROW && Metadative.getBoolean(entity, CATAPULT);
 	}
 	
 	private static Set<EntityType>offsetsRequired = Sets.newHashSet(EntityType.ENDER_DRAGON, EntityType.WITHER, EntityType.GIANT, EntityType.GHAST);
@@ -97,11 +99,11 @@ public class Spindle extends Coolable{
 	}
 
 	public static boolean isAnchor(@Nonnull Entity entity) {
-		return entity instanceof LivingEntity && Metadative.excavatruth(entity, ANCHOR);
+		return entity instanceof LivingEntity && Metadative.getBoolean(entity, ANCHOR);
 	}
 		
 	public static boolean isPseudoAnchor(@Nonnull Entity anchor){
-		return anchor.getType()==EntityType.BAT && Metadative.excavatruth(anchor, PSEUDO_ANCHOR);
+		return anchor.getType()==EntityType.BAT && Metadative.getBoolean(anchor, PSEUDO_ANCHOR);
 	}
 	
 	private static LivingEntity spawnPseudoAnchor(Location loc){
@@ -198,4 +200,18 @@ public class Spindle extends Coolable{
 	public Vector getTension() {return tension;}
 
 	public Player getPlayer() {return p;}
+
+	public float getGas() {return gas;}
+
+	public void setGas(float gas) {this.gas = MathUtil.bound(0, gas, 100);}
+	
+	public boolean sufficeGas(float delta) {
+		double prev = gas;
+		setGas(gas + delta);
+		return prev == gas;
+	}
+	
+	public boolean outOfGas() {
+		return gas <= 0;
+	}
 }

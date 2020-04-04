@@ -5,10 +5,10 @@ import gmail.anto5710.mcp.customsuits.CustomSuits.suit.HungerScheduler;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.weapons.repulsor.ArcCompressor;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.weapons.repulsor.ArcReffecter;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
-import gmail.anto5710.mcp.customsuits.Utils.Enchant;
-import gmail.anto5710.mcp.customsuits.Utils.InventoryUtil;
-import gmail.anto5710.mcp.customsuits.Utils.ItemUtil;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
+import gmail.anto5710.mcp.customsuits.Utils.items.Enchant;
+import gmail.anto5710.mcp.customsuits.Utils.items.InventoryUtil;
+import gmail.anto5710.mcp.customsuits.Utils.items.ItemUtil;
 
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
@@ -122,7 +122,7 @@ public class SuitWeapons implements Listener {
 	public void launchFireball(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
 		if (SuitUtils.isRightClick(event)
-				&& ItemUtil.checkItem(CustomSuitPlugin.missileLauncher, InventoryUtil.getMainItem(player))) {
+				&& ItemUtil.compare(CustomSuitPlugin.missileLauncher, InventoryUtil.getMainItem(player))) {
 
 			if (InventoryUtil.sufficeMaterial(player, Values.LauncherAmmo)) {
 				SuitUtils.playSound(player, Values.LauncherSound, 5.0F, 5.0F);

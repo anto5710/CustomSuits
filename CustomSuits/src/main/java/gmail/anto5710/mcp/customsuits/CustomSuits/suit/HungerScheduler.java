@@ -6,10 +6,10 @@ import org.bukkit.inventory.ItemStack;
 import gmail.anto5710.mcp.customsuits.CustomSuits.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.CustomSuits.dao.SpawningDao;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
-import gmail.anto5710.mcp.customsuits.Utils.ItemUtil;
 import gmail.anto5710.mcp.customsuits.Utils.MathUtil;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 import gmail.anto5710.mcp.customsuits.Utils.encompassor.LinearEncompassor;
+import gmail.anto5710.mcp.customsuits.Utils.items.ItemUtil;
 
 public class HungerScheduler extends LinearEncompassor<Player> {
 	SpawningDao dao;

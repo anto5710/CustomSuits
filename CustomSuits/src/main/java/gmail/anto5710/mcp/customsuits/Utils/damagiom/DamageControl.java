@@ -40,7 +40,7 @@ public class DamageControl implements Listener{
 			Projectile prj = (Projectile) e.getDamager();
 			
 			if (prj.hasMetadata(DAMAGE)) {
-				double damage = Metadative.excavate(prj, DAMAGE);
+				double damage = Metadative.getDouble(prj, DAMAGE);
 				DamageUtil.damagevent(e, damage, prj, DamageMode.retrieve(prj));
 			}
 		}
@@ -50,13 +50,13 @@ public class DamageControl implements Listener{
 	public void genericExplosion(ProjectileHitEvent e){
 		Projectile prj = (Projectile) e.getEntity();
 		if(prj.hasMetadata(EXPLOSIVE)){
-			float yield = Metadative.excafate(prj, EXPLOSIVE);
-			boolean fire = Metadative.excavatruth(prj, FIRE);
+			float yield = Metadative.getFloat(prj, EXPLOSIVE);
+			boolean fire = Metadative.getBoolean(prj, FIRE);
 			
 			if(prj instanceof Explosive){
 				Metadative.setExplosive((Explosive)prj, yield, fire);
 			}else{
-				boolean destroy = !Metadative.excavatruth(prj, DESTROY);
+				boolean destroy = !Metadative.getBoolean(prj, DESTROY);
 				SuitUtils.createExplosion(prj.getLocation(), yield, fire, destroy);
 			}
 		}
@@ -66,7 +66,7 @@ public class DamageControl implements Listener{
 	public void genericBlockShot(ProjectileHitEvent e){
 		Block hit = e.getHitBlock();
 		Projectile prj = e.getEntity();
-		if(hit != null && prj.hasMetadata(BLOCKSHOT) && MathUtil.gacha(Metadative.excavate(prj, BLOCKSHOT))){
+		if(hit != null && prj.hasMetadata(BLOCKSHOT) && MathUtil.gacha(Metadative.getDouble(prj, BLOCKSHOT))){
 			SuitUtils.breakBlock(hit);
 		}
 	}
