@@ -5,7 +5,7 @@ import org.bukkit.inventory.ItemStack;
 
 import gmail.anto5710.mcp.customsuits.Utils.items.ItemUtil;
 
-class FuelRecipe{
+public class FuelRecipe{
 	private ItemStack source, fuel, failure;
 
 	private boolean materialed;
@@ -25,6 +25,7 @@ class FuelRecipe{
 	public boolean check(ItemStack fuel) {
 		return materialed ? this.fuel.getType() == fuel.getType() : ItemUtil.compare(this.fuel, fuel);
 	}
+	
 	public ItemStack getFuel() {return fuel;}
 	
 	public ItemStack getFailure() {return failure;}

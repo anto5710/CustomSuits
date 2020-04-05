@@ -18,11 +18,11 @@ import org.bukkit.util.Vector;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.Utils.MathUtil;
-import gmail.anto5710.mcp.customsuits.Utils.ParticleUtil;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 import gmail.anto5710.mcp.customsuits.Utils.encompassor.standardized.DispenseEncompassor;
 import gmail.anto5710.mcp.customsuits.Utils.items.Enchant;
 import gmail.anto5710.mcp.customsuits.Utils.items.ItemUtil;
+import gmail.anto5710.mcp.customsuits.Utils.particles.ParticleUtil;
 
 public class TNTLauncher extends DispenseEncompassor<Item, Long>{
 	private Set<Player> TNT_cooldowns = new HashSet<>();

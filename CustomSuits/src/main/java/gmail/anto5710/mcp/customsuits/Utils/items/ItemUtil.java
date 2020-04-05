@@ -181,20 +181,26 @@ public class ItemUtil {
 		item.setDurability(final_durability);
 	}
 	
-	public static void suffix(ItemStack item, Attribute type, String name, double amount, Operation op, EquipmentSlot slot){
+	public static void suffix(ItemStack item, Attribute type, String name, double amount, Operation op, EquipmentSlot...slots){
 		if(SuitUtils.anyNull(item, type, name, op)) return;
 		
-		ItemMeta meta = item.getItemMeta();
-		if(slot!=null){
-			meta.addAttributeModifier(type, new AttributeModifier(UUID.randomUUID(), name, amount, op, slot));
-		}else{ //slot null = apply to all slots
+		ItemMeta meta = item.getItemMeta();		
+		 
+		if(slots==ALL) { //slot null => apply to all slots
 			meta.addAttributeModifier(type, new AttributeModifier(name, amount, op));
+		}else {
+			for(EquipmentSlot slot : slots) {
+				if(slot!=null){
+					meta.addAttributeModifier(type, new AttributeModifier(UUID.randomUUID(), name, amount, op, slot));
+				}
+			}
 		}
 		item.setItemMeta(meta);
 	}
 
+	private static final EquipmentSlot[] ALL = null;
 	public static void suffix(ItemStack item, Attribute type, double amount) {
-		suffix(item, type, type.name(), amount, Operation.ADD_NUMBER, null);
+		suffix(item, type, type.name(), amount, Operation.ADD_NUMBER, ALL);
 	}
 	
 	public static void suffix(ItemStack item, Attribute type, double amount, EquipmentSlot slot) {
@@ -203,6 +209,5 @@ public class ItemUtil {
 
 	public static boolean isAir(ItemStack item){
 		return item==null || item.getType() == Material.AIR;
-	}
-	
+	}	
 }

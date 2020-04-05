@@ -2,60 +2,61 @@ package gmail.anto5710.mcp.customsuits.CustomSuits.InvetoryGUI;
 
 import javax.annotation.Nonnull;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
+import static org.bukkit.Bukkit.*;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import static org.bukkit.enchantments.Enchantment.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomEntities;
 import gmail.anto5710.mcp.customsuits.Utils.items.Enchant;
-import gmail.anto5710.mcp.customsuits.Utils.items.ItemUtil;
+import static gmail.anto5710.mcp.customsuits.Utils.items.ItemUtil.*;
+import static org.bukkit.ChatColor.*;
 
 public class Inventories {
-	public static final String maininventory_name = "[Settings]";
-	public static final String armorinventory_name = "[Armor]";
-	public static final String chestinventory_name = "[Chestplate]";
-	public static final String bootsinventory_name = "[Boots]";
-	public static final String mainIteminventory_name = "[MainHand Item]";
-	public static final String offIteminventory_name = "[OffHand Item]";
-	public static final String leggingsinventory_name = "[Leggings]";
-	public static final String helmetinventory_name = "[Helmet]";
-	public static final String type_inventory_name = "[EntityType]";
-	public static final String vehicle_inventory_name = "[Vehicle_EntityType]";
+	public static final String maininventory_name = "[Settings]",
+							   armorinventory_name = "[Armor]",
+							   chestinventory_name = "[Chestplate]",
+							   bootsinventory_name = "[Boots]",
+							   mainIteminventory_name = "[MainHand Item]",
+							   offIteminventory_name = "[OffHand Item]",
+							   leggingsinventory_name = "[Leggings]",
+							   helmetinventory_name = "[Helmet]",
+							   type_inventory_name = "[EntityType]",
+							   vehicle_inventory_name = "[Vehicle_EntityType]",
+							   
+							   HelmetColorInventory_name = "[HelmetColor]",
+							   ChestPlateColorInventory_name = "[ChestplateColor]",
+							   LeggingsColorInventory_name = "[LeggingsColor]",
+							   BootsColorInventory_name = "[BootsColor]",
+							   commandinventory_name = "[Command]",
+							   list_name = "[Online Players]";
 	
-	public static final String HelmetColorInventory_name = "[HelmetColor]";
-	public static final String ChestPlateColorInventory_name = "[ChestplateColor]";
-	public static final String LeggingsColorInventory_name = "[LeggingsColor]";
-	public static final String BootsColorInventory_name = "[BootsColor]";
-	public static final String commandinventory_name = "[Command]";
+	public static Inventory main = createInventory(null, 27, maininventory_name), 
+							commandCenter = createInventory(null, 27, commandinventory_name),
+							armorinventory = createInventory(null, 54, armorinventory_name),
 	
-	public static final String list_name = "[Online Players]";
-	public static Inventory main = Bukkit.createInventory(null, 27, maininventory_name);
-	public static Inventory commandCenter = Bukkit.createInventory(null, 27, commandinventory_name);
-	public static Inventory armorinventory = Bukkit.createInventory(null, 54, armorinventory_name);
-	
-	public static Inventory helmetinventory = Bukkit.createInventory(null, 27, helmetinventory_name);
-	public static Inventory chestinventory = Bukkit.createInventory(null, 27, chestinventory_name);
-	public static Inventory leggingsinventory = Bukkit.createInventory(null, 27, leggingsinventory_name);
-	public static Inventory bootsinventory = Bukkit.createInventory(null, 27, bootsinventory_name);
-	public static Inventory mainIteminventory = Bukkit.createInventory(null, 27, bootsinventory_name);
-	public static Inventory offIteminventory = Bukkit.createInventory(null, 27, bootsinventory_name);
+							helmetinventory = createInventory(null, 27, helmetinventory_name),
+							chestinventory = createInventory(null, 27, chestinventory_name),
+							leggingsinventory = createInventory(null, 27, leggingsinventory_name),
+							bootsinventory = createInventory(null, 27, bootsinventory_name),
+							mainIteminventory = createInventory(null, 27, bootsinventory_name),
+							offIteminventory = createInventory(null, 27, bootsinventory_name),
 
-	public static Inventory type_inventory = Bukkit.createInventory(null, 27, type_inventory_name);
-	public static Inventory vehicle_inventory = Bukkit.createInventory(null, 27, vehicle_inventory_name);
+							type_inventory = createInventory(null, 27, type_inventory_name),
+							vehicle_inventory = createInventory(null, 27, vehicle_inventory_name),
 	
-	public static Inventory HelmetColorInventory = Bukkit.createInventory(null, 45, HelmetColorInventory_name);
-	public static Inventory ChestplateColorInventory = Bukkit.createInventory(null, 45, ChestPlateColorInventory_name);
-	public static Inventory LeggingsColorInventory = Bukkit.createInventory(null, 45, LeggingsColorInventory_name);
-	public static Inventory BootsColorInventory = Bukkit.createInventory(null, 45, BootsColorInventory_name);
+							HelmetColorInventory = createInventory(null, 45, HelmetColorInventory_name),
+							ChestplateColorInventory = createInventory(null, 45, ChestPlateColorInventory_name),
+							LeggingsColorInventory = createInventory(null, 45, LeggingsColorInventory_name),
+							BootsColorInventory = createInventory(null, 45, BootsColorInventory_name);
 	
 	
 	public static void init(){
-		ItemStack levelitem = ItemUtil.createWithName(Material.EXPERIENCE_BOTTLE, ChatColor.GREEN + "[Level]");
-		ItemStack armorset =ItemUtil.createWithName(Material.DIAMOND_CHESTPLATE, ChatColor.GOLD + "[Armor]");
-		ItemStack command = ItemUtil.createWithName(Material.COMPARATOR, ChatColor.RED + "[Command]");
+		ItemStack levelitem = createWithName(Material.EXPERIENCE_BOTTLE, GREEN + "[Level]");
+		ItemStack armorset = createWithName(Material.DIAMOND_CHESTPLATE, GOLD + "[Armor]");
+		ItemStack command = createWithName(Material.COMPARATOR, RED + "[Command]");
 		
 		main.setItem(0, new ItemStack(command));
 		main.setItem(4, new ItemStack(armorset));
@@ -69,10 +70,10 @@ public class Inventories {
 		Enchant.englow(EnchantIcon);
 		Enchant.englow(ColorIcon);
 
-		ItemStack helmetEnchantIcon = ItemUtil.createWithName(Material.ENCHANTED_BOOK, ChatColor.AQUA + "[Helmet]");
-		ItemStack chestplateEnchantIcon = ItemUtil.createWithName(Material.ENCHANTED_BOOK, ChatColor.AQUA + "[ChestPlate]");
-		ItemStack leggingsEnchantIcon = ItemUtil.createWithName(Material.ENCHANTED_BOOK, ChatColor.AQUA + "[Leggings]");
-		ItemStack bootsEnchantIcon = ItemUtil.createWithName(Material.ENCHANTED_BOOK, ChatColor.AQUA + "[Boots]");
+		ItemStack helmetEnchantIcon = createWithName(Material.ENCHANTED_BOOK, AQUA + "[Helmet]");
+		ItemStack chestplateEnchantIcon = createWithName(Material.ENCHANTED_BOOK, AQUA + "[ChestPlate]");
+		ItemStack leggingsEnchantIcon = createWithName(Material.ENCHANTED_BOOK, AQUA + "[Leggings]");
+		ItemStack bootsEnchantIcon = createWithName(Material.ENCHANTED_BOOK, AQUA + "[Boots]");
 
 		Enchant.englow(helmetEnchantIcon);
 		Enchant.englow(chestplateEnchantIcon);
@@ -85,9 +86,9 @@ public class Inventories {
 		armorinventory.setItem(37, new ItemStack(Material.GOLDEN_LEGGINGS));
 		armorinventory.setItem(46, new ItemStack(Material.LEATHER_BOOTS));
 
-		ItemUtil.name(ArmorIcon, ChatColor.YELLOW + "[Set Armor]");
-		ItemUtil.name(EnchantIcon, ChatColor.AQUA + "[Enchant]");
-		ItemUtil.name(ColorIcon, ChatColor.GOLD + "[Set Color]");
+		name(ArmorIcon, YELLOW + "[Set Armor]");
+		name(EnchantIcon, AQUA + "[Enchant]");
+		name(ColorIcon, GOLD + "[Set Color]");
 
 		armorinventory.setItem(1, ArmorIcon);
 		armorinventory.setItem(4, EnchantIcon);
@@ -98,23 +99,22 @@ public class Inventories {
 		armorinventory.setItem(40, leggingsEnchantIcon);
 		armorinventory.setItem(49, bootsEnchantIcon);
 		
+		librarize(leggingsinventory, PROTECTION_ENVIRONMENTAL, DURABILITY, THORNS, WATER_WORKER);
+		librarize(chestinventory, PROTECTION_ENVIRONMENTAL, DURABILITY, THORNS);
+		librarize(bootsinventory, PROTECTION_FIRE, DURABILITY, THORNS, PROTECTION_FALL);
+		librarize(helmetinventory, PROTECTION_EXPLOSIONS, DURABILITY, THORNS, WATER_WORKER, OXYGEN);
+		librarize(mainIteminventory, DAMAGE_ALL, DAMAGE_ARTHROPODS, DAMAGE_UNDEAD, DURABILITY, MENDING);
+		librarize(offIteminventory, DURABILITY);
 		
-		librarize(leggingsinventory, Enchantment.PROTECTION_ENVIRONMENTAL, Enchantment.DURABILITY, Enchantment.THORNS, Enchantment.WATER_WORKER);
-		librarize(chestinventory, Enchantment.PROTECTION_ENVIRONMENTAL, Enchantment.DURABILITY, Enchantment.THORNS);
-		librarize(bootsinventory, Enchantment.PROTECTION_FIRE, Enchantment.DURABILITY, Enchantment.THORNS, Enchantment.PROTECTION_FALL);
-		librarize(helmetinventory, Enchantment.PROTECTION_EXPLOSIONS, Enchantment.DURABILITY, Enchantment.THORNS, Enchantment.WATER_WORKER, Enchantment.OXYGEN);
-		librarize(mainIteminventory, Enchantment.DAMAGE_ALL, Enchantment.DAMAGE_ARTHROPODS, Enchantment.DAMAGE_UNDEAD, Enchantment.DURABILITY, Enchantment.MENDING);
-		librarize(offIteminventory, Enchantment.DURABILITY);
+		ItemStack PartyPIcon = createWithName(Material.PLAYER_HEAD, AQUA + "[Party Protocol]");
+		ItemStack SuitSummonIcon = createWithName(Material.DIAMOND_HELMET, AQUA + "[Suit Summon]");
+		ItemStack TargetIcon = createWithName(Material.SKELETON_SKULL, BLUE + "[Target]");
+		ItemStack FireworkIcon = createWithName(Material.FIREWORK_ROCKET, DARK_RED + "[Fireworks]");
 		
-		ItemStack PartyPIcon = ItemUtil.createWithName(Material.PLAYER_HEAD, ChatColor.AQUA + "[Party Protocol]");
-		ItemStack SuitSummonIcon = ItemUtil.createWithName(Material.DIAMOND_HELMET, ChatColor.AQUA + "[Suit Summon]");
-		ItemStack TargetIcon = ItemUtil.createWithName(Material.SKELETON_SKULL, ChatColor.BLUE + "[Target]");
-		ItemStack FireworkIcon = ItemUtil.createWithName(Material.FIREWORK_ROCKET, ChatColor.DARK_RED + "[Fireworks]");
-		
-		ItemStack HelmetColorIcon = ItemUtil.createWithName(Material.LEATHER_HELMET, ChatColor.GOLD + "[Helmet Color]");
-		ItemStack ChestColorIcon = ItemUtil.createWithName(Material.LEATHER_CHESTPLATE, ChatColor.GOLD + "[Chestplate Color]");
-		ItemStack LeggingsColorIcon = ItemUtil.createWithName(Material.LEATHER_LEGGINGS, ChatColor.GOLD + "[Leggings Color]");		
-		ItemStack BootsColorIcon = ItemUtil.createWithName(Material.LEATHER_BOOTS, ChatColor.GOLD + "[Boots Color]");
+		ItemStack HelmetColorIcon = createWithName(Material.LEATHER_HELMET, GOLD + "[Helmet Color]");
+		ItemStack ChestColorIcon = createWithName(Material.LEATHER_CHESTPLATE, GOLD + "[Chestplate Color]");
+		ItemStack LeggingsColorIcon = createWithName(Material.LEATHER_LEGGINGS, GOLD + "[Leggings Color]");		
+		ItemStack BootsColorIcon = createWithName(Material.LEATHER_BOOTS, GOLD + "[Boots Color]");
 		
 		Enchant.englow(HelmetColorIcon);
 		Enchant.englow(ChestColorIcon);
@@ -131,10 +131,10 @@ public class Inventories {
 		commandCenter.setItem(14, PartyPIcon);
 		commandCenter.setItem(16, FireworkIcon);
 		
-		HelmetColorInventory.setContents(ItemUtil.dyeSpectrum(new ItemStack(Material.LEATHER_HELMET)));
-		ChestplateColorInventory.setContents(ItemUtil.dyeSpectrum(new ItemStack(Material.LEATHER_CHESTPLATE)));
-		LeggingsColorInventory.setContents(ItemUtil.dyeSpectrum(new ItemStack(Material.LEATHER_LEGGINGS)));
-		BootsColorInventory.setContents(ItemUtil.dyeSpectrum(new ItemStack(Material.LEATHER_BOOTS)));
+		HelmetColorInventory.setContents(dyeSpectrum(new ItemStack(Material.LEATHER_HELMET)));
+		ChestplateColorInventory.setContents(dyeSpectrum(new ItemStack(Material.LEATHER_CHESTPLATE)));
+		LeggingsColorInventory.setContents(dyeSpectrum(new ItemStack(Material.LEATHER_LEGGINGS)));
+		BootsColorInventory.setContents(dyeSpectrum(new ItemStack(Material.LEATHER_BOOTS)));
 		
 		initTypeMap();
 	}

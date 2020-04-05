@@ -6,9 +6,9 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.CustomSuitPlugin;
-import gmail.anto5710.mcp.customsuits.Utils.ParticleUtil;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 import gmail.anto5710.mcp.customsuits.Utils.encompassor.MapEncompassor;
+import gmail.anto5710.mcp.customsuits.Utils.particles.ParticleUtil;
 
 public class Thorformation extends MapEncompassor<Player, Double>{
 

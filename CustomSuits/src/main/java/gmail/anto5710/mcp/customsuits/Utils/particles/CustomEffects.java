@@ -1,9 +1,11 @@
-package gmail.anto5710.mcp.customsuits.Utils;
+package gmail.anto5710.mcp.customsuits.Utils.particles;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.CustomSuitPlugin;
 
 import gmail.anto5710.mcp.customsuits.Setting.Values;
 import gmail.anto5710.mcp.customsuits.Thor.Hammer;
+import gmail.anto5710.mcp.customsuits.Utils.MathUtil;
+import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 import gmail.anto5710.mcp.customsuits.Utils.fireworks.FireworkPlay;
 import gmail.anto5710.mcp.customsuits.Utils.fireworks.FireworkProccesor;
 

@@ -5,8 +5,8 @@ import org.bukkit.Particle;
 import org.bukkit.entity.Snowball;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.CustomSuitPlugin;
-import gmail.anto5710.mcp.customsuits.Utils.ParticleUtil;
 import gmail.anto5710.mcp.customsuits.Utils.encompassor.standardized.StandardEncompassor;
+import gmail.anto5710.mcp.customsuits.Utils.particles.ParticleUtil;
 
 
 public class GunEffecter extends StandardEncompassor<Snowball>{

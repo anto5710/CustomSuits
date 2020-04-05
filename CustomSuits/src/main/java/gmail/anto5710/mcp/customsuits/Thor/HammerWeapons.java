@@ -1,10 +1,9 @@
 package gmail.anto5710.mcp.customsuits.Thor;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.CustomSuitPlugin;
-import gmail.anto5710.mcp.customsuits.Utils.CustomEffects;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
-import gmail.anto5710.mcp.customsuits.Utils.ThorUtils;
 import gmail.anto5710.mcp.customsuits.Utils.items.InventoryUtil;
+import gmail.anto5710.mcp.customsuits.Utils.particles.CustomEffects;
 
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -31,11 +30,11 @@ public class HammerWeapons implements Listener{
 	public void onRightClick(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
 		if (!player.isSneaking() && SuitUtils.isRightClick(event)) {
-			if (ThorUtils.isHammerinHand(player)) {
-				if(Hammer.isPractiallyThor(player)){
+			if (Hammer.isHammerinHand(player)) {
+				if(Hammer.isThorArmored(player)){
 					event.setCancelled(true);
 					throwHammer(player);
-				} else if(Hammer.canBeThor(player)){
+				} else if(Hammer.isWorthy(player)){
 					awakenThor(player);
 				}
 				

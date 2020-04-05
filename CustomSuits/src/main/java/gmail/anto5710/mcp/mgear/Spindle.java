@@ -1,4 +1,4 @@
-package mgear;
+package gmail.anto5710.mcp.mgear;
 
 import java.util.Set;
 import java.util.UUID;

@@ -30,9 +30,10 @@ import com.google.common.collect.Sets;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
+import gmail.anto5710.mcp.customsuits.Utils.particles.ParticleUtil;
 
 public class SuitUtils {
-	static CustomSuitPlugin plugin;
+	private static CustomSuitPlugin plugin;
 	public SuitUtils(CustomSuitPlugin plugin){
 		SuitUtils.plugin = plugin;
 	}
@@ -243,6 +244,18 @@ public class SuitUtils {
 			}
 		}
 		return toCrack;
+	}
+
+	/**
+	 * Strike Lightning
+	 * @param loc Target Location
+	 * @param player player
+	 * @param amount Amount of Striking
+	 */
+	public static void strikeLightnings(Location loc, Player player, int amount) {
+		for (int c = 0; c < amount; c++) {
+			loc.getWorld().strikeLightning(loc);
+		}
 	}
 	
 	

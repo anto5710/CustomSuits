@@ -1,9 +1,10 @@
-package gmail.anto5710.mcp.customsuits.Utils.encompassor;
+package gmail.anto5710.mcp.customsuits.Utils.encompassor.standardized;
 
 import java.util.HashSet;
 import java.util.Set;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.CustomSuitPlugin;
+import gmail.anto5710.mcp.customsuits.Utils.encompassor.MapEncompassor;
 
 public abstract class SSMapEncompassor <E, V> extends MapEncompassor<E, V>{
 	protected Set<E>sleeping = new HashSet<>();

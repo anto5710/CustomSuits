@@ -8,14 +8,14 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapedRecipe;
 
-import gmail.anto5710.mcp.customsuits.CustomSuits.CustomSuitPlugin;
+import static gmail.anto5710.mcp.customsuits.CustomSuits.CustomSuitPlugin.*;
 
 
 public class Recipe {
 	
 	@SuppressWarnings("deprecation")
 	public static void addRecipes(Server server) {
-		ShapedRecipe hammerRecipe = new ShapedRecipe(NamespacedKey.minecraft("hammer"), CustomSuitPlugin.hammer);
+		ShapedRecipe hammerRecipe = new ShapedRecipe(NamespacedKey.minecraft("hammer"), hammer);
 		hammerRecipe.shape("###","%%%","_|_");
 		hammerRecipe.setIngredient('#', Material.IRON_INGOT);
 		hammerRecipe.setIngredient('%', Material.IRON_BLOCK);
@@ -23,7 +23,7 @@ public class Recipe {
 		
 		server.addRecipe(hammerRecipe);
 		
-		ShapedRecipe suitrecipe = new ShapedRecipe(NamespacedKey.minecraft("suit_commander"), CustomSuitPlugin.suitremote);
+		ShapedRecipe suitrecipe = new ShapedRecipe(NamespacedKey.minecraft("suit_commander"), suitremote);
 
 		suitrecipe.shape("*%*", "_!_", "*%*");
 		suitrecipe.setIngredient('*', Material.GOLD_INGOT);
@@ -34,14 +34,14 @@ public class Recipe {
 		
 
 		server.addRecipe(suitrecipe);
-		ShapedRecipe Smoke_recipe = new ShapedRecipe(NamespacedKey.minecraft("smoke_bomb"), CustomSuitPlugin.Smoke);
+		ShapedRecipe Smoke_recipe = new ShapedRecipe(NamespacedKey.minecraft("smoke_bomb"), Smoke);
 		Smoke_recipe.shape("^^^"  ,"^*^" , "^^^");
 		Smoke_recipe.setIngredient('^',Material.GUNPOWDER);
 		Smoke_recipe.setIngredient('*',Material.FIREWORK_STAR);
 		
 		server.addRecipe(Smoke_recipe);
 		
-		ShapedRecipe Bomb_recipe = new ShapedRecipe(NamespacedKey.minecraft("bomb"), CustomSuitPlugin.Bomb);
+		ShapedRecipe Bomb_recipe = new ShapedRecipe(NamespacedKey.minecraft("bomb"), Bomb);
 		Bomb_recipe.shape("^*^"  ,"*&*" , "^*^");
 		Bomb_recipe.setIngredient('^',Material.GUNPOWDER);
 		Bomb_recipe.setIngredient('*',Material.SAND);
@@ -49,7 +49,7 @@ public class Recipe {
 		
 		server.addRecipe(Bomb_recipe);
 		
-		ShapedRecipe gunrecipe = new ShapedRecipe(NamespacedKey.minecraft("machine_gun"), CustomSuitPlugin.gunitem);
+		ShapedRecipe gunrecipe = new ShapedRecipe(NamespacedKey.minecraft("machine_gun"), gunitem);
 
 		gunrecipe.shape("&&*", "^$!", "&&*");
 		gunrecipe.setIngredient('&', Material.IRON_INGOT);
@@ -60,7 +60,7 @@ public class Recipe {
 
 		server.addRecipe(gunrecipe);
 		
-		ShapedRecipe launcherrecipe = new ShapedRecipe(NamespacedKey.minecraft("missile_launcher"), CustomSuitPlugin.missileLauncher);
+		ShapedRecipe launcherrecipe = new ShapedRecipe(NamespacedKey.minecraft("missile_launcher"), missileLauncher);
 
 		launcherrecipe.shape("^@@", "$!%", "^@@");
 		
@@ -70,13 +70,12 @@ public class Recipe {
 		launcherrecipe.setIngredient('!', Material.PISTON);
 		launcherrecipe.setIngredient('^', Material.GUNPOWDER);
 		
-
 		server.addRecipe(launcherrecipe);
 		
 		
 		
 		
-		ShapedRecipe Man_Chestplate_recipe = new ShapedRecipe(NamespacedKey.minecraft("man_chestplate"), CustomSuitPlugin.Chestplate_Man);
+		ShapedRecipe Man_Chestplate_recipe = new ShapedRecipe(NamespacedKey.minecraft("man_chestplate"), Chestplate_Man);
 		Man_Chestplate_recipe.shape("*#*","&C&","*#*");
 		Man_Chestplate_recipe.setIngredient('*', Material.IRON_INGOT);
 		Man_Chestplate_recipe.setIngredient('#', Material.GOLD_INGOT);
@@ -85,7 +84,7 @@ public class Recipe {
 		
 		server.addRecipe(Man_Chestplate_recipe);
 		
-		ShapedRecipe Man_Leggings_recipe = new ShapedRecipe(NamespacedKey.minecraft("man_leggings"), CustomSuitPlugin.Leggings_Man);
+		ShapedRecipe Man_Leggings_recipe = new ShapedRecipe(NamespacedKey.minecraft("man_leggings"), Leggings_Man);
 		Man_Leggings_recipe.shape("*#*","&C&","*#*");
 		Man_Leggings_recipe.setIngredient('*', Material.IRON_INGOT);
 		Man_Leggings_recipe.setIngredient('#', Material.GOLD_INGOT);
@@ -94,7 +93,7 @@ public class Recipe {
 		
 		server.addRecipe(Man_Leggings_recipe);
 		
-		ShapedRecipe Man_Boots_recipe = new ShapedRecipe(NamespacedKey.minecraft("man_boots"), CustomSuitPlugin.Boots_Man);
+		ShapedRecipe Man_Boots_recipe = new ShapedRecipe(NamespacedKey.minecraft("man_boots"), Boots_Man);
 		Man_Boots_recipe.shape("*#*","&C&","*#*");
 		Man_Boots_recipe.setIngredient('*', Material.IRON_INGOT);
 		Man_Boots_recipe.setIngredient('#', Material.GOLD_INGOT);
@@ -104,7 +103,7 @@ public class Recipe {
 		server.addRecipe(Man_Boots_recipe);
 		
 	
-		ShapedRecipe Man_Sword_recipe = new ShapedRecipe(NamespacedKey.minecraft("man_sword"), CustomSuitPlugin.Sword_Man);
+		ShapedRecipe Man_Sword_recipe = new ShapedRecipe(NamespacedKey.minecraft("man_sword"), Sword_Man);
 		Man_Sword_recipe.shape("***","*C*","#|#");
 		Man_Sword_recipe.setIngredient('#', Material.IRON_INGOT);
 		Man_Sword_recipe.setIngredient('*', Material.GOLD_INGOT);
@@ -114,18 +113,16 @@ public class Recipe {
 		
 		server.addRecipe(Man_Sword_recipe);
 		
-		ShapedRecipe Gear_Blade_recipe = new ShapedRecipe(NamespacedKey.minecraft("gear_blade"), CustomSuitPlugin.mg_blade);
+		ShapedRecipe Gear_Blade_recipe = new ShapedRecipe(NamespacedKey.minecraft("gear_blade"), mg_blade);
 		Gear_Blade_recipe.shape("/",
 								"/",
 								":");
-		Gear_Blade_recipe.setIngredient('/', new RecipeChoice.ExactChoice(CustomSuitPlugin.mg_ultrasteel));		
+		Gear_Blade_recipe.setIngredient('/', new RecipeChoice.ExactChoice(mg_ultrasteel));		
 		Gear_Blade_recipe.setIngredient(':', Material.LEVER);
 		server.addRecipe(Gear_Blade_recipe);
 		
 		
-		
-		
-		ItemStack ultrasteel_triplet = CustomSuitPlugin.mg_ultrasteel.clone();
+		ItemStack ultrasteel_triplet = mg_ultrasteel.clone();
 		ultrasteel_triplet.setAmount(3);
 		BlastingRecipe Gear_IronBamboo_recipe = new BlastingRecipe(NamespacedKey.minecraft("iron_bamboo"), 
 				ultrasteel_triplet, Material.IRON_BLOCK, 6, 120);

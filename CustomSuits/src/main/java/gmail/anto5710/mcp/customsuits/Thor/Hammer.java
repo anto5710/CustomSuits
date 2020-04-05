@@ -1,23 +1,5 @@
 package gmail.anto5710.mcp.customsuits.Thor;
 
-import java.util.HashSet;
-
-
-
-
-import java.util.Set;
-
-import gmail.anto5710.mcp.customsuits.CustomSuits.CustomSuitPlugin;
-import gmail.anto5710.mcp.customsuits.Setting.PotionEffects;
-import gmail.anto5710.mcp.customsuits.Setting.Values;
-import gmail.anto5710.mcp.customsuits.Utils.CustomEffects;
-import gmail.anto5710.mcp.customsuits.Utils.ParticleUtil;
-import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
-import gmail.anto5710.mcp.customsuits.Utils.ThorUtils;
-import gmail.anto5710.mcp.customsuits.Utils.items.InventoryUtil;
-import gmail.anto5710.mcp.customsuits.Utils.items.ItemUtil;
-
-import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -37,19 +19,30 @@ import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.util.Vector;
 
+import gmail.anto5710.mcp.customsuits.CustomSuits.CustomSuitPlugin;
+import gmail.anto5710.mcp.customsuits.Setting.PotionEffects;
+import gmail.anto5710.mcp.customsuits.Setting.Values;
+import gmail.anto5710.mcp.customsuits.Utils.Coolable;
+import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
+import gmail.anto5710.mcp.customsuits.Utils.items.InventoryUtil;
+import gmail.anto5710.mcp.customsuits.Utils.items.ItemUtil;
+import gmail.anto5710.mcp.customsuits.Utils.particles.CustomEffects;
+import gmail.anto5710.mcp.customsuits.Utils.particles.ParticleUtil;
 
-public class Hammer implements Listener {
-	static CustomSuitPlugin plugin;
+
+public class Hammer implements Listener{
+//	private static CustomSuitPlugin plugin;
 	
 	static double HammerDeafultDamage = Values.HammerDamage * Math.sqrt(PotionEffects.Thor_INCREASE_DAMAGE.getAmplifier());
-	static Set<Player>Double_Jump_Cooldowns = new HashSet<>();
+//	static Set<Player>Double_Jump_Cooldowns = new HashSet<>();
+	private static Coolable double_jump = new Coolable();
 	public static Player thor = null;
 	public static ThorEffecter thorEffecter; 
 	public static HammerThrowEffect hammerEffecter;
 	public static Thorformation thorform;
 	
 	public Hammer(CustomSuitPlugin plugin) {
-		Hammer.plugin = plugin;
+//		Hammer.plugin = plugin;
 		hammerEffecter = new HammerThrowEffect(plugin, 1);
 		thorform = new Thorformation(plugin, 3);
 		thorEffecter = new ThorEffecter(plugin, 1);
@@ -92,7 +85,7 @@ public class Hammer implements Listener {
 	@EventHandler
 	public void onThorMove(PlayerMoveEvent event) {
 		Player player = event.getPlayer();
-		if (isPractiallyThor(player) && !thorEffecter.isRunning() && canBeThor(player)) {
+		if (isThorArmored(player) && !thorEffecter.isRunning() && isWorthy(player)) {
 			thorize(player);
 		}
 	}
@@ -108,8 +101,8 @@ public class Hammer implements Listener {
 		Entity entity = event.getEntity();
 		if (damager instanceof Player) {
 			Player player = (Player) damager;
-			if (isPractiallyThor(player) && ThorUtils.isHammerinHand(player) && entity instanceof Damageable) {
-				ThorUtils.strikeLightnings(entity.getLocation(), player, 1);
+			if (isThorArmored(player) && Hammer.isHammerinHand(player) && entity instanceof Damageable) {
+				SuitUtils.strikeLightnings(entity.getLocation(), player, 1);
 			}
 		}
 	}
@@ -121,37 +114,44 @@ public class Hammer implements Listener {
 	 */
 	public static void teleportItem(Item entity, Location location) {
 		Vector vectorStart = entity.getLocation().toVector();
-		
 		Vector vectorEnd = location.toVector();
-		
 		Vector difference = vectorEnd.subtract(vectorStart);
 		
 		
 		final double distance = difference.length();
 		final Vector v = difference.normalize().multiply(0.5);
-		if (distance <= 0) {
-			return;
-		}
-		
-		Location hammerLoc  = entity.getLocation().clone();
-		for(double x = 0; x<=distance ; x+=0.5){
-			hammerLoc.add(v);
-			ParticleUtil.playEffect(Values.HammerReturnEffect, hammerLoc, 30);
-			entity.teleport(hammerLoc);
+		if (distance > 0) {
+			Location hammerLoc = entity.getLocation().clone();
+			for (double x = 0; x <= distance; x += 0.5) {
+				hammerLoc.add(v);
+				ParticleUtil.playEffect(Values.HammerReturnEffect, hammerLoc, 30);
+				entity.teleport(hammerLoc);
+			}
 		}
 	}
 	
-	public static boolean canBeThor(Player player){
-		return player == Hammer.thor || Hammer.thor==null;
+	public static boolean isWorthy(Player player){
+		return player == Hammer.thor || Hammer.thor == null;
 	}
 	
 	public static boolean isThor(Player p){
 		return p == thor;
 	}
 	
+
+	/**
+	 * If Player is holding Thor's Hammer , return true;
+	 * 
+	 * @param player Player to Check
+	 * @return is player holding Hammer
+	 */
+	public static boolean isHammerinHand(Player player) {
+		return InventoryUtil.inMainHand(player, CustomSuitPlugin.hammer);
+	}
+	
 	public static void returnHammer(Player player){
 		Location pEyeLoc = player.getEyeLocation();
-		Item hammer =ThorUtils.getDroppedHammer(player);
+		Item hammer =Hammer.getDroppedHammer(player);
 		if (hammer != null) {
 			Hammer.teleportItem(hammer, pEyeLoc);
 			SuitUtils.playSound(pEyeLoc, Values.HammerTeleportSound, 6.0F, 6.0F);
@@ -163,7 +163,7 @@ public class Hammer implements Listener {
 	 * @param player Player to Check
 	 * @return return true if Player is Thor
 	 */
-	public static boolean isPractiallyThor(Player player) {
+	public static boolean isThorArmored(Player player) {
 		int count = 0;
 		EntityEquipment equipment = player.getEquipment();
 		if (ItemUtil.compare(CustomSuitPlugin.Helemt_Thor, equipment.getHelmet())) {
@@ -199,11 +199,22 @@ public class Hammer implements Listener {
 	}
 	
 	/**
+	 * Find Thor's Hammer from World
+	 * 
+	 * @param world  World to Find
+	 * @param player Player
+	 * @return
+	 */
+	public static Item getDroppedHammer(Player player) {
+		return hammerEffecter.getKey(player);
+	}
+
+	/**
 	 * Change that Player to Thor
 	 * @param player Player to set
 	 */
 	public static void thormorphosize(Player player) {
-		Bukkit.getScheduler().runTaskLater(plugin, () -> {
+		SuitUtils.runAfter(()->{
 			CustomEffects.play_Thor_FormationFin(player);
 			InventoryUtil.equip(player, CustomSuitPlugin.Helemt_Thor, CustomSuitPlugin.Chestplate_Thor, 
 								   CustomSuitPlugin.Leggings_Thor, CustomSuitPlugin.Boots_Thor);
@@ -221,10 +232,9 @@ public class Hammer implements Listener {
 	public static void Leap(PlayerToggleFlightEvent event) {
 		Player player = event.getPlayer();
 
-		boolean canspell = player == thor && !player.isDead() && ThorUtils.isHammerinHand(player) && isPractiallyThor(player);
-		boolean isCooldown = Double_Jump_Cooldowns != null && Double_Jump_Cooldowns.contains(player);
-
-		if (canspell && !isCooldown) {
+		boolean canspell = player == thor && !player.isDead() && Hammer.isHammerinHand(player) && isThorArmored(player);
+	
+		if (canspell && !double_jump.inCooldown()) {
 			Location ploc = player.getLocation();
 			Location target = SuitUtils.getTargetLoc(player, 100);
 			double distance = ploc.distance(target);
@@ -236,14 +246,10 @@ public class Hammer implements Listener {
 			player.setVelocity(vector);
 			
 			SuitUtils.playSound(player, Sound.ENTITY_GHAST_SHOOT, 5F, 1F);
-			Double_Jump_Cooldowns.add(player);
-
-			Bukkit.getScheduler().runTaskLater(plugin, () -> {
-				Double_Jump_Cooldowns.remove(player);
-			}, 40);
-			
+			double_jump.cooldown(40);	
 		}
-		if(player==thor && isPractiallyThor(player) && player.getGameMode()!=GameMode.CREATIVE){
+		
+		if(player==thor && isThorArmored(player) && player.getGameMode()!= GameMode.CREATIVE){
 			player.setFlying(false);
 			event.setCancelled(true);
 		}

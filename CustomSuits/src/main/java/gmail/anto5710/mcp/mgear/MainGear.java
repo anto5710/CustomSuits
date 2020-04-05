@@ -1,4 +1,4 @@
-package mgear;
+package gmail.anto5710.mcp.mgear;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -18,11 +18,11 @@ import gmail.anto5710.mcp.customsuits.CustomSuits.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
 import gmail.anto5710.mcp.customsuits.Utils.ColorUtil;
 import gmail.anto5710.mcp.customsuits.Utils.PacketUtil;
-import gmail.anto5710.mcp.customsuits.Utils.ParticleUtil;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
-import gmail.anto5710.mcp.customsuits.Utils.encompassor.SSMapEncompassor;
+import gmail.anto5710.mcp.customsuits.Utils.encompassor.standardized.SSMapEncompassor;
 import gmail.anto5710.mcp.customsuits.Utils.items.InventoryUtil;
 import gmail.anto5710.mcp.customsuits.Utils.items.ItemUtil;
+import gmail.anto5710.mcp.customsuits.Utils.particles.ParticleUtil;
 import net.minecraft.server.v1_15_R1.PacketPlayOutAnimation;
 
 public class MainGear extends SSMapEncompassor<Player, Spindle[]>{

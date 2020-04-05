@@ -12,7 +12,6 @@ import gmail.anto5710.mcp.customsuits.CustomSuits.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.HungerScheduler;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
-import gmail.anto5710.mcp.customsuits.Utils.ThorUtils;
 import gmail.anto5710.mcp.customsuits.Utils.damagiom.DamageMode;
 import gmail.anto5710.mcp.customsuits.Utils.damagiom.DamageUtil;
 import gmail.anto5710.mcp.customsuits.Utils.encompassor.MapEncompassor;
@@ -49,7 +48,7 @@ public class ForceLightning extends MapEncompassor<Player, EnderCrystal>{
 				Location curloc = b.getLocation();
 				DamageUtil.areaDamage(curloc, Values.ThorForceLightningDamage, p, 1, DamageMode.X_TEN);
 			});
-			ThorUtils.strikeLightnings(SuitUtils.getTargetLoc(p, 100), p, 2);
+			SuitUtils.strikeLightnings(SuitUtils.getTargetLoc(p, 100), p, 2);
 		}
 	}
 	
@@ -66,7 +65,7 @@ public class ForceLightning extends MapEncompassor<Player, EnderCrystal>{
 	}
 
 	private boolean canUseLazer(Player p){
-		return Hammer.isThor(p) && Hammer.isPractiallyThor(p) && ThorUtils.isHammerinHand(p);
+		return Hammer.isThor(p) && Hammer.isThorArmored(p) && Hammer.isHammerinHand(p);
 	}
 		
 	private void synchronizeLoc(Player p, EnderCrystal cr){

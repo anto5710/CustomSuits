@@ -8,9 +8,9 @@ import org.bukkit.util.Vector;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.Setting.PotionEffects;
-import gmail.anto5710.mcp.customsuits.Utils.ParticleUtil;
 import gmail.anto5710.mcp.customsuits.Utils.PotionBrewer;
 import gmail.anto5710.mcp.customsuits.Utils.encompassor.MapEncompassor;
+import gmail.anto5710.mcp.customsuits.Utils.particles.ParticleUtil;
 
 
 public class ThorEffecter extends MapEncompassor<Player, VorticalMeta>{	
@@ -33,7 +33,7 @@ public class ThorEffecter extends MapEncompassor<Player, VorticalMeta>{
 	
 	@Override
 	public boolean toRemove(Player player) {
-		return !Hammer.isPractiallyThor(player) || !player.isOnline();
+		return !Hammer.isThorArmored(player) || !player.isOnline();
 	}
 
 	@Override

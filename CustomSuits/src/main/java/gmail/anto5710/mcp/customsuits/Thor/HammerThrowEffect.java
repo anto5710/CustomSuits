@@ -11,13 +11,13 @@ import org.bukkit.util.Vector;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
-import gmail.anto5710.mcp.customsuits.Utils.CustomEffects;
 import gmail.anto5710.mcp.customsuits.Utils.MathUtil;
-import gmail.anto5710.mcp.customsuits.Utils.ParticleUtil;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 import gmail.anto5710.mcp.customsuits.Utils.damagiom.DamageMode;
 import gmail.anto5710.mcp.customsuits.Utils.damagiom.DamageUtil;
 import gmail.anto5710.mcp.customsuits.Utils.encompassor.standardized.DispenseEncompassor;
+import gmail.anto5710.mcp.customsuits.Utils.particles.CustomEffects;
+import gmail.anto5710.mcp.customsuits.Utils.particles.ParticleUtil;
 
 public class HammerThrowEffect extends DispenseEncompassor<Item, Player>{
 	

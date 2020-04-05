@@ -18,9 +18,7 @@ import org.bukkit.util.Vector;
 import gmail.anto5710.mcp.customsuits.CustomSuits.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.PlayerEffect;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
-import gmail.anto5710.mcp.customsuits.Utils.CustomEffects;
 import gmail.anto5710.mcp.customsuits.Utils.MathUtil;
-import gmail.anto5710.mcp.customsuits.Utils.ParticleUtil;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 import gmail.anto5710.mcp.customsuits.Utils.damagiom.DamageMode;
 import gmail.anto5710.mcp.customsuits.Utils.damagiom.DamageControl;
@@ -28,6 +26,8 @@ import gmail.anto5710.mcp.customsuits.Utils.damagiom.DamageUtil;
 import gmail.anto5710.mcp.customsuits.Utils.items.InventoryUtil;
 import gmail.anto5710.mcp.customsuits.Utils.items.ItemUtil;
 import gmail.anto5710.mcp.customsuits.Utils.metadative.Metadative;
+import gmail.anto5710.mcp.customsuits.Utils.particles.CustomEffects;
+import gmail.anto5710.mcp.customsuits.Utils.particles.ParticleUtil;
 
 public class MachineGun implements Listener{
 	public static String gun_regex = Values.gun_regex;

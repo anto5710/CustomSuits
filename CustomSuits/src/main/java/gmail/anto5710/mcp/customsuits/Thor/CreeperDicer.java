@@ -38,7 +38,7 @@ public class CreeperDicer implements Listener{
 	public void thunderCreeper(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
 
-		if (!(Hammer.isThor(player) && Hammer.isPractiallyThor(player) 
+		if (!(Hammer.isThor(player) && Hammer.isThorArmored(player) 
 				&& player.isSneaking() && SuitUtils.isLeftClick(event)
 				&& HungerScheduler.sufficeHunger(player, Values.Thunder_Creeper_Hunger))) {
 			return;
