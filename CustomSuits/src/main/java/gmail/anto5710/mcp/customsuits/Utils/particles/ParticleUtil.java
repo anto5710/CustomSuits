@@ -32,6 +32,10 @@ public class ParticleUtil {
 	public static void playDust(Location loc, int amount, Color color, float size){
 		playDust(loc, 0, 0, 0, 0, 0, color, size);
 	}
+	
+	public static void playDust(Location loc, int amount, DustOptions option){
+		playDust(loc, 0, 0, 0, amount, 0, option);
+	}
 		
 	public static void playDust(Location loc, double x_spread , double y_spread , double z_spread, int amount , double extra , Color color, float size){
 		DustOptions option = new DustOptions(color, size);

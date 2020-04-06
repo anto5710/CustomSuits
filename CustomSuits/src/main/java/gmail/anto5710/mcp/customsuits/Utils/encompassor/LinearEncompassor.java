@@ -11,7 +11,6 @@ public abstract class LinearEncompassor<E> extends AbstractEncompassor<E>{
 	protected LinearEncompassor(CustomSuitPlugin plugin, long period) {
 		super(plugin, period);
 	}
-	
 
 	@Override
 	public boolean isRegistered(E e) {

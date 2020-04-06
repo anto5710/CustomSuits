@@ -44,16 +44,15 @@ public class SpawningDao {
 
 	public void init() {
 		File pluginDir = plugin.getDataFolder();
-		logger.info("[Plugin Directory]: " + pluginDir.getAbsolutePath());
-		pluginDir.mkdir();
-
+//		logger.info("[Plugin Directory]: " + pluginDir.getAbsolutePath());
+//		pluginDir.mkdir();
 		entityFile = new File(pluginDir, SPAWN_FILE_NAME);
 
 		if (!entityFile.exists()) {
 			try {
 				entityFile.createNewFile();
 			} catch (IOException e) {
-				logger.severe("[Warn]: Fail to create Spawning Files");
+				logger.severe("[Warn]: Failed to create Spawning Files");
 			}
 		}
 

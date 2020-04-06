@@ -89,12 +89,6 @@ public class Values {
 	final public static String SuitInforegex = ChatColor.DARK_AQUA+":";
 	final public static String SuitName = "Mark";
 	
-	
-	@SuppressWarnings("deprecation")
-	final public static Set<Material> unbreakable = new HashSet<>(
-			Arrays.asList(Material.AIR, Material.LAVA, Material.LEGACY_STATIONARY_LAVA, Material.WATER,
-					Material.LEGACY_STATIONARY_WATER , Material.OBSIDIAN , Material.BEDROCK , Material.BEACON));
-	
 	final public static String MachineGunName = "Knif-1220";
 	final public static double MachineGunDamage =7 ;
 	final public static double MachineGunDamageRadiues = 1.5;

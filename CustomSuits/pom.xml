@@ -4,7 +4,7 @@
 
 	<groupId>gmail.anto5710.mcp.customsuits</groupId>
 	<artifactId>CustomSuits</artifactId>
-	<version>0.6.5</version>
+	<version>0.6.8</version>
 	<packaging>jar</packaging>
 
 	<name>CustomSuits</name>
@@ -14,8 +14,6 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<JAR_DEST_DIR>/Users/anto5710/게임/spg/plugins/</JAR_DEST_DIR>
 	</properties>
-
-
 
 	<repositories>
 		<repository>
@@ -59,7 +57,6 @@
 			<scope>test</scope>
 		</dependency>
 
-
 		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot-api</artifactId>
@@ -71,6 +68,5 @@
 			<version>1.15.2-R0.1-SNAPSHOT</version>
 		</dependency>
 		
-
 	</dependencies>
 </project>

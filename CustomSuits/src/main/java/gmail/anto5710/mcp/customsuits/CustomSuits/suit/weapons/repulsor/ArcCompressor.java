@@ -240,8 +240,6 @@ public class ArcCompressor extends MapEncompassor<Player, Set<Integer>>{
 		return p.isDead() || !p.isOnline();
 	}
 	
-	
-	//
 	private class ILi extends ChannelDuplexHandler{
 //		@Override
 //		public void channelRead(ChannelHandlerContext ctx, Object packet) throws Exception {

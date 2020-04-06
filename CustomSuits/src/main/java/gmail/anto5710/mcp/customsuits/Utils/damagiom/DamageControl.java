@@ -71,16 +71,10 @@ public class DamageControl implements Listener{
 		}
 	}
 
-	
 	public static void firework(Location loc, Entity shooter) {
 		FireworkEffect effect = FireworkProccesor.getRandomEffect();
 		FireworkPlay.spawn(loc, effect);
 		System.out.println("FIRE");
-//		Firework firework = (Firework) loc.getWorld().spawnEntity(loc, EntityType.FIREWORK);
-//		FireworkMeta meta = firework.getFireworkMeta();
-//		meta.addEffect(effect);
-//		meta.setPower((int) (MathUtil.wholeRandom(3) + 1.5));
-//		firework.setFireworkMeta(meta);
 		if (shooter != null) {
 			SuitUtils.playSound(shooter, Sound.ENTITY_GENERIC_EXPLODE, 14.0F, 14.0F);
 			SuitUtils.playSound(shooter, Sound.ENTITY_WITHER_DEATH, 14.0F, 14.0F);

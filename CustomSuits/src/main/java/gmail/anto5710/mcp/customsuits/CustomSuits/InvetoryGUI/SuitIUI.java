@@ -28,11 +28,10 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 
 public class SuitIUI extends Inventories implements Listener {
-
-	CustomSuitPlugin plugin;
+//	private CustomSuitPlugin plugin;
 
 	public SuitIUI(CustomSuitPlugin plugin) {
-		this.plugin = plugin;
+//		this.plugin = plugin;
 	}
 	
 	@EventHandler

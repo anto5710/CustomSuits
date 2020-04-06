@@ -1,34 +1,34 @@
 name: CustomSuits
 main: gmail.anto5710.mcp.customsuits.CustomSuits.CustomSuitPlugin
 description: The Special Suits.
-version: 0.6.5
-api-version: 1.13
+version: 0.6.8
+api-version: 1.15
 authors: [anto5710 , 02hunnam , sanseong] 
 
 commands:
     cspn:
-        description: §bSpawn a suit.
+        description: §bSpawn a suit.§r
         usage: "/cspn [Type] [Amount]" 
     csuit:
-        description: §bSummon nearest suit.
+        description: §bSummon nearest suit.§r
         usage: "/csuit"
     command:
-        description: §bCommand for your suits.
+        description: §bCommand for your suits.§r
         usage: "/commad [target + <Player> / party / firework]"
     get:
-        description: §bGet This Plugin's Items.
-        usage: "/get [commander / hammer / laucner]"
+        description: §bGet This Plugin's Items.§r
+        usage: "/get [commander / hammer / laucner / gun / trigger]"
     head:
-        description: §bMake that player's head
+        description: §bMake that player's head.§r
         usage: "/head / head <Player>"
     clist:
-        description: §bGet the list about the topic.
+        description: §bGet the list about the topic.§r
         usage: "/clist [Color / Entity]"
     setcolor:
-        description: §bSet the color of the ArmorType.
+        description: §bSet the color of the ArmorType.§r
         usage: "/setcolor [helmet / chestplate / leggings / boots] [Color]"
     setvehicle:
-        description: §bSet the EntityType of Vehicle.
+        description: §bSet the EntityType of Vehicle.§r
         usage: "/setvehicle [Entity]"
     
     

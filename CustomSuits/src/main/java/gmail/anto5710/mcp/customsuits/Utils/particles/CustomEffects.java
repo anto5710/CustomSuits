@@ -9,6 +9,8 @@ import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
 import gmail.anto5710.mcp.customsuits.Utils.fireworks.FireworkPlay;
 import gmail.anto5710.mcp.customsuits.Utils.fireworks.FireworkProccesor;
 
+import java.util.function.Consumer;
+
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.FireworkEffect.Type;
@@ -23,8 +25,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 public class CustomEffects {
-	static CustomEffects playEffect;
-	static CustomSuitPlugin plugin;
+	private static CustomSuitPlugin plugin;
 	
 	public CustomEffects(CustomSuitPlugin plugin){
 		CustomEffects.plugin = plugin;
@@ -97,8 +98,8 @@ public class CustomEffects {
 	private static final DustOptions SUB_ARC_COLOR =  new DustOptions(Color.fromRGB(0, 153, 204), 0.6F);
 	
 	public static void play_Suit_ARC(Location location) {
-		ParticleUtil.playDust(location, 0, 0, 0, 2, 0, MAIN_ARC_COLOR);
-		ParticleUtil.playDust(location, 0, 0, 0, 2, 0, SUB_ARC_COLOR);
+		ParticleUtil.playDust(location, 2, MAIN_ARC_COLOR);
+		ParticleUtil.playDust(location, 2, SUB_ARC_COLOR);
 	}
 	
 	public static void play_Thor_Change(Player player) {
@@ -176,6 +177,31 @@ public class CustomEffects {
 				loc.subtract(vector);
 			}
 		}
+	}
+
+	public static void lineParticle(Location target, Location loc, Entity shooter, Consumer<Location> effect, long effectsPerTick) {
+		double distance = loc.distance(target);
+		if (distance <= 0) return;
+			
+		Vector v = loc.getDirection().multiply(0.5);
+		new BukkitRunnable() {
+			Location curLoc = loc.clone();
+			int count = 0;
+			double max = 2*distance;
+			
+			@Override
+			public void run() {
+				for (int c = 0; c < effectsPerTick; c++) {
+					if (count >= max) {
+						SuitUtils.breakBlock(target.getBlock());
+						this.cancel(); break;
+					}
+					curLoc.add(v);
+					effect.accept(curLoc);
+					count ++;
+				}
+			}
+		}.runTaskTimer(plugin, 0, 2);
 	}
 	
 //	private static void Particletrail( final Location location,Vector direction, int r) {

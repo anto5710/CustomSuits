@@ -1,11 +1,11 @@
 package gmail.anto5710.mcp.customsuits.Utils;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Consumer;
 
 import javax.annotation.Nonnull;
 
@@ -23,8 +23,6 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.Vector;
 
 import com.google.common.collect.Sets;
 
@@ -59,33 +57,20 @@ public class SuitUtils {
 		player.playSound(player.getLocation(), sound, volume, pitch);
 	}
 	
-	public static void lineParticle(Location target, Location loc, Entity shooter, Consumer<Location> effect, long effectsPerTick) {
-		double distance = loc.distance(target);
-		if (distance <= 0) return;
-			
-		Vector v = loc.getDirection().normalize().multiply(0.5);
-		new BukkitRunnable() {
-			Location curLoc = loc.clone();
-			int count = 0;
-			double max = 2*distance;
-			
-			@Override
-			public void run() {
-				for (int c = 0; c < effectsPerTick; c++) {
-					if (count >= max) {
-						SuitUtils.breakBlock(target.getBlock());
-						this.cancel(); break;
-					}
-					curLoc.add(v);
-					effect.accept(curLoc);
-					count ++;
-				}
-			}
-		}.runTaskTimer(plugin, 0, 2);
-	}
-
 	public static void createExplosion(Location loc, float power, boolean setFire , boolean breakBlock){
 		loc.getWorld().createExplosion(loc.getX(), loc.getY(), loc.getZ(), power, setFire, breakBlock);
+	}
+	
+	/**
+	 * Strike Lightning
+	 * @param loc Target Location
+	 * @param player player
+	 * @param amount Amount of Striking
+	 */
+	public static void strikeLightnings(Location loc, Player player, int amount) {
+		for (int c = 0; c < amount; c++) {
+			loc.getWorld().strikeLightning(loc);
+		}
 	}
 	
 	public static void sleep(long msec) {
@@ -101,16 +86,25 @@ public class SuitUtils {
 		return (passengers == null||passengers.isEmpty()) ? null : passengers.get(0);
 	}
 	
-	public static void lack(Player player,String warn){
-		player.sendMessage(ChatColor.DARK_RED
-				+ "[Warn]: "+ChatColor.RED+"You don't have enough "+ ChatColor.GOLD+warn+ChatColor.RED+" !");
+	private static final String LACKf = ColorUtil.colorf("You don't have enough <gold>%s", ChatColor.RED);
+	public static void lack(Player player, @Nonnull String item){
+		warn(player, String.format(LACKf, item));
 		tick(player);
 	}
 	
-	public static void warn(Player player,String warn){
-		player.sendMessage(ChatColor.DARK_RED
-				+ "[Warn]: "+ChatColor.RED+warn+" !");		
+	private static final String WARNf = ColorUtil.colorf("<dark red>[Warn]: <//>%s<//>!", ChatColor.RED);
+	public static void warn(Player player, String subject){
+		sendf(player, WARNf, subject);
 		tick(player);
+	}
+	
+	private static final String WCMDf = ColorUtil.colorf("<dark red>[Info]: <red>Wrong Command!\n</>[Usage]: <red>%s");
+	public static void wrongCommand(Player player, Command command) {
+		sendf(player, WCMDf, command.getUsage());
+	}
+	
+	public static void sendf(@Nonnull Player player, String format, Object...args) {
+		player.sendMessage(String.format(format, args));
 	}
 	
 	public static void tick(Player player){
@@ -142,12 +136,6 @@ public class SuitUtils {
 	
 	public static Location getTargetLoc(Player player, int maxDistance){
 		return getTargetBlock(player, maxDistance).getLocation();
-	}
-	
-	public static void wrongCommand(Player player, Command command) {
-		String message = ChatColor.DARK_RED+"[Info]: "+ChatColor.RED+"Wrong Command!"+"\n"+
-						 ChatColor.DARK_RED+"[Usage]: "+ChatColor.RED+command.getUsage();
-		player.sendMessage(message);
 	}
 	
 	public static boolean isLeftClick(PlayerInteractEvent e){
@@ -188,22 +176,28 @@ public class SuitUtils {
 		return armables.contains(lentity.getType());
 	}
 
-	public static boolean inWater(Player player){	
+	public static boolean underWater(Player player){	
 		if(player.isSwimming()) return true;
 		
-		Block eye = player.getEyeLocation().getBlock();
-		Block foot = player.getLocation().getBlock();
-		Block waist = player.getLocation().add(0, 1, 0).getBlock();
+		Location eye = player.getEyeLocation();
+		Location foot = player.getLocation();
+		Location waist = player.getLocation().add(0, 1, 0);
 		return SuitUtils.isWater(eye) && SuitUtils.isWater(waist) && SuitUtils.isWater(foot);
 	}
 
-	public static boolean isWater(Block block){
-		Material m = block.getType();
- 		return m==Material.WATER;
+	public static boolean isWater(Location loc){
+		return loc.getBlock().getType() == Material.WATER;
 	}
 
-	public static boolean isUnbreakable(Block hitblock) {
-		return Values.unbreakable.contains(hitblock.getType());
+//	final public static Set<Material> unbreakable = new HashSet<>(
+//			Arrays.asList(
+//					Material.AIR, Material.LAVA, Material.WATER, Material.OBSIDIAN , Material.BEDROCK , Material.BEACON, 
+//					Material.BARRIER, Material.VOID_AIR, Material.STRUCTURE_VOID, Material.STRUCTURE_BLOCK	
+//					
+//					));
+	public static boolean isUnbreakable(Block block) {
+		float hardness = block.getType().getHardness();
+		return hardness < 0 || Material.OBSIDIAN.getHardness() <= hardness;				
 	}
 
 	public static void breakBlock(Block block) {
@@ -245,19 +239,9 @@ public class SuitUtils {
 		}
 		return toCrack;
 	}
-
-	/**
-	 * Strike Lightning
-	 * @param loc Target Location
-	 * @param player player
-	 * @param amount Amount of Striking
-	 */
-	public static void strikeLightnings(Location loc, Player player, int amount) {
-		for (int c = 0; c < amount; c++) {
-			loc.getWorld().strikeLightning(loc);
-		}
+	
+	private static Set<Material> towerables = Sets.newHashSet(Material.SUGAR_CANE, Material.BAMBOO, Material.BAMBOO_SAPLING);
+	public static boolean isTowerable(Block block) {
+		return towerables.contains(block.getType());
 	}
-	
-	
-	
 }

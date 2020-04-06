@@ -5,6 +5,7 @@ import static gmail.anto5710.mcp.customsuits.Setting.Values.*;
 import static gmail.anto5710.mcp.customsuits.Utils.items.ItemUtil.*;
 import static org.bukkit.ChatColor.*;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -68,6 +69,7 @@ import gmail.anto5710.mcp.customsuits.Utils.metadative.Metadative;
 import gmail.anto5710.mcp.customsuits.Utils.particles.CustomEffects;
 import gmail.anto5710.mcp.customsuits.Utils.particles.ParticleModeller;
 import gmail.anto5710.mcp.mgear.MainGear;
+import gmail.anto5710.mcp.mgear.ibamboo.IronBamboo;
 
 /**
  * Hello world!
@@ -80,6 +82,7 @@ public class CustomSuitPlugin extends JavaPlugin {
 	public HungerScheduler hscheduler;
 	public static SuitEffecter suitEffecter; 
 	public static SpawningDao dao;
+	public static IronBamboo bamboomer; 
 	
 	private static Map<Player, SuitIUISetting> settings = new HashMap<>();
 
@@ -108,7 +111,8 @@ public class CustomSuitPlugin extends JavaPlugin {
 
 	public static ItemStack mg_ultrasteel = createWithName(Material.IRON_INGOT, "Ultahard steel"),
 							mg_trigger = createWithName(Material.IRON_SWORD, MainGear.trigger_name),
-							mg_blade = createWithName(Material.IRON_SWORD, "Ultrahard blade");
+							mg_blade = createWithName(Material.IRON_SWORD, "Ultrahard blade"),
+							mg_ironbamboo = createWithName(Material.BAMBOO, "Iron bamboo");
 	
 	
 	/**
@@ -121,6 +125,7 @@ public class CustomSuitPlugin extends JavaPlugin {
 		logger = getLogger();
 		suitEffecter = new SuitEffecter(this, 1);
 		
+		ColorUtil.initColorMap();
 		Glow.register();
 		new Metadative(this);
 		new Enchant();
@@ -129,7 +134,6 @@ public class CustomSuitPlugin extends JavaPlugin {
 		new ParticleModeller(this);
 		new CustomEffects(this);
 
-		ColorUtil.initColorMap();
 		Inventories.init();
 
 		suffix(hammer, Attribute.GENERIC_ATTACK_DAMAGE, HammerDamage, EquipmentSlot.HAND);
@@ -203,8 +207,7 @@ public class CustomSuitPlugin extends JavaPlugin {
 					"Machine Gun Damage: <yellow>" + MachineGunDamage + "<//>,"+
 					"Sniper Damage: <yellow>" + SniperDamage+"<//>,"+
 					"Machine Gun Bullet Velocity: <yellow>50.0 Block/Second<//>,"+
-					"Sniper Bullet Velocity: <yellow>119 Block/Second<//>"
-					, WHITE).split(",")
+					"Sniper Bullet Velocity: <yellow>119 Block/Second<//>", WHITE).split(",")
 		);
 		name(missileLauncher, DARK_RED + "[Launcher]");
 		
@@ -212,11 +215,13 @@ public class CustomSuitPlugin extends JavaPlugin {
 								  			"Press 《E》 to catapult the right anchor");
 		suffix(mg_trigger, Attribute.GENERIC_ATTACK_SPEED, 3);
 				
+		Enchant.englow(mg_ironbamboo);
+		addLore(mg_ironbamboo, "A precious strain of bamboo pertrified with steel");
 		
 		this.targetting = new Target(this);
 		this.targetting.awaken();
 		this.hscheduler = new HungerScheduler(this, 1);
-				
+		
 		PluginManager manager = getServer().getPluginManager();
 		manager.registerEvents(new PlayerEffect(this), this);
 		manager.registerEvents(new SuitWeapons(this), this);
@@ -238,13 +243,19 @@ public class CustomSuitPlugin extends JavaPlugin {
 		Recipe.addRecipes(getServer());
 		manager.registerEvents(new FuelReciper(), this);
 		
+		mkdir(this);
 		dao = new SpawningDao(this);
 		dao.init();
+
+		bamboomer = new IronBamboo(this, 10);
+		bamboomer.init();
+		manager.registerEvents(bamboomer, this);
 	}
 
 	@Override
 	public void onDisable() {
 		Bukkit.getScheduler().cancelTasks(plugin);
+		bamboomer.save();
 		super.onDisable();
 	}
 	
@@ -422,6 +433,13 @@ public class CustomSuitPlugin extends JavaPlugin {
 			}
 		}
 		return true;
+	}
+
+	public static File mkdir(JavaPlugin plugin) {
+		File pluginDir = plugin.getDataFolder();
+		plugin.getLogger().info("[Plugin Directory]: "+pluginDir.getAbsolutePath());
+		pluginDir.mkdir();
+		return pluginDir;
 	}
 
 	public static SuitIUISetting handle(Player p){

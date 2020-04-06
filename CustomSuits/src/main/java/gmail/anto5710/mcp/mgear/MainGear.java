@@ -1,5 +1,7 @@
 package gmail.anto5710.mcp.mgear;
 
+import javax.annotation.Nonnull;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -153,9 +155,13 @@ public class MainGear extends SSMapEncompassor<Player, Spindle[]>{
 		}
 	}
 
+	private static boolean isDirectAttack(@Nonnull EntityDamageByEntityEvent e) {
+		return e.getCause() == DamageCause.ENTITY_ATTACK || e.getCause() == DamageCause.ENTITY_SWEEP_ATTACK;
+	}
+	
 	@EventHandler 
 	public void slay(EntityDamageByEntityEvent e) {
-		if(e.getCause()==DamageCause.ENTITY_ATTACK && e.getDamager().getType()==EntityType.PLAYER && isRegistered((Player)e.getDamager())) {
+		if(isDirectAttack(e) && e.getDamager().getType()==EntityType.PLAYER && isRegistered((Player)e.getDamager())) {
 			Player p = (Player) e.getDamager();
 			if(InventoryUtil.inAnyHand(p, CustomSuitPlugin.mg_trigger)) {
 				double v2 = p.getVelocity().lengthSquared();

@@ -196,7 +196,7 @@ public class MachineGun implements Listener{
 
 						CustomEffects.play_GunShotEffect(player);
 
-						SuitUtils.lineParticle(target, location, player, loc -> {
+						CustomEffects.lineParticle(target, location, player, loc -> {
 							ParticleUtil.playEffect(Values.SniperEffect, loc, Values.SniperEffectAmount);
 							DamageUtil.areaDamage(loc, Values.SniperDamage, player, 0.5, DamageMode.X_TEN_FIREWORK);
 						}, 20);
