@@ -1,8 +1,12 @@
 package gmail.anto5710.mcp.mgear.ibamboo;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -20,6 +24,7 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.event.block.BlockFertilizeEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
@@ -29,13 +34,16 @@ import com.google.common.collect.Sets;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.CustomSuitPlugin;
 import gmail.anto5710.mcp.customsuits.CustomSuits.dao.LinearDao;
+import gmail.anto5710.mcp.customsuits.Utils.BinarySearch;
 import gmail.anto5710.mcp.customsuits.Utils.MathUtil;
+import gmail.anto5710.mcp.customsuits.Utils.compressor.ShiftCoordEncoder;
 import gmail.anto5710.mcp.customsuits.Utils.encompassor.LinearEncompassor;
 import gmail.anto5710.mcp.customsuits.Utils.items.ItemUtil;
 import gmail.anto5710.mcp.customsuits.Utils.particles.ParticleUtil;
 
 public class IronBamboo extends LinearEncompassor<Block>{
 	public LinearDao<Set<Block>, Block> bambooDao;
+	private Map<Double, List<Integer>> bamboo_columns = new HashMap<>();
 	private static final String bambooDao_path = "iron_bamboos.txt"; 
 	
 	public IronBamboo(CustomSuitPlugin plugin, long period) {
@@ -43,6 +51,7 @@ public class IronBamboo extends LinearEncompassor<Block>{
 	}
 	
 	public void init() {
+	
 		bambooDao = new LinearDao<Set<Block>, Block>(bambooDao_path, plugin) {
 			
 			@Override
@@ -77,15 +86,38 @@ public class IronBamboo extends LinearEncompassor<Block>{
 				return new HashSet<Block>();
 			}
 		};
-		entia = bambooDao.read();
-		if(!entia.isEmpty()) autostart();
+		
+		for(Block bamboo : bambooDao.read()) {
+			register(bamboo);
+		}
 	}
 	
 	public boolean save() {
 		return bambooDao.save(entia);
 	}
 
-	private static final float IRONIZ_PROBABILITY = 60 /* 25 */;
+	private static ShiftCoordEncoder coorder = new ShiftCoordEncoder();
+	
+	@Override
+	public void register(Block bamboo) {		
+		super.register(bamboo);
+		putHeight(bamboo);
+		
+	}
+	
+	private double encode(Block block) {
+		return coorder.encodeDouble(block.getX(), block.getZ());
+	}
+	
+	private void putHeight(Block block) {
+		double codeXZ = encode(block);
+		List<Integer>heights = this.bamboo_columns.get(codeXZ);
+		if(heights==null) {heights = new ArrayList<>();}
+		heights.add(block.getY());
+		this.bamboo_columns.put(codeXZ, heights);
+	}
+	
+	private static final float IRONIZ_PROBABILITY = 100 /* 25 */;
 	
 	private static Set<BlockFace> square = Sets.newHashSet(BlockFace.EAST, BlockFace.WEST, BlockFace.SOUTH, BlockFace.NORTH, BlockFace.DOWN);
 	
@@ -131,7 +163,7 @@ public class IronBamboo extends LinearEncompassor<Block>{
 	}
 	
 	private boolean ironize(Block shootApex, Block iron_source) {	
-		iron_source.setType(Material.STONE);
+//		iron_source.setType(Material.STONE);
 		if(MathUtil.gacha(IRONIZ_PROBABILITY)) {
 			register(shootApex); 
 			return true;
@@ -139,19 +171,29 @@ public class IronBamboo extends LinearEncompassor<Block>{
 		return false;
 	}
 
+	
+	@EventHandler
+	public void d(BlockBreakEvent e) {
+		Block brokenBlock = e.getBlock();
+		brokenBlock.getRelative(BlockFace.EAST).setType(Material.REDSTONE_BLOCK);
+		
+	}
+	
 	@EventHandler
 	public void onBambooDrop(BlockDropItemEvent e) {		
 		Block brokenBlock = e.getBlock();
+		brokenBlock.getRelative(BlockFace.EAST).setType(Material.REDSTONE_BLOCK);
 		
 		if(isBamboo(e.getBlockState().getType())) {
 			int count = coutFrom(brokenBlock);
-			
+			System.out.println(Arrays.asList(e.getItems().parallelStream().map((i)->i.getItemStack()).toArray()));
 			if(count > 0) {
 				for(Item drop : e.getItems()) {
 					ItemStack item = drop.getItemStack(); 
 					if(isBamboo(item.getType()) && !ItemUtil.compare(CustomSuitPlugin.mg_ironbamboo, item)) { // not yet ironized
 						ItemStack newDrop = CustomSuitPlugin.mg_ironbamboo.clone();
 						newDrop.setAmount(count);
+						Bukkit.getServer().broadcastMessage("Dropped "+count);
 						drop.setItemStack(newDrop); // replace the ItemStack of dropped Item entity with ironized bamboos.
 					}
 				}
@@ -160,14 +202,22 @@ public class IronBamboo extends LinearEncompassor<Block>{
 	}
 	
 	private int coutFrom(@Nonnull Block stem) {
-		int c = 0;
-		for(Block bamboo : entia) {
-			if(bamboo.getWorld() == stem.getWorld() && bamboo.getX() == stem.getX() &&
-					bamboo.getY() >= stem.getY() && bamboo.getZ() == stem.getZ()) {
-				c++;
-			}
-		}
-		return c;
+//		int c = 0;
+//		for(Block bamboo : entia) {
+//			if(bamboo.getWorld() == stem.getWorld() && bamboo.getX() == stem.getX() &&
+//					bamboo.getY() >= stem.getY() && bamboo.getZ() == stem.getZ()) {
+//				c++;
+//			}
+//		}
+//		return c;
+		List<Integer> heights = bamboo_columns.get(encode(stem));
+		if(heights == null || heights.isEmpty()) return 0;
+		
+		System.out.println(heights);
+		int floor = BinarySearch.floorIndex(stem.getY(), heights, true);
+		int height = floor ==-1 &&  Math.abs(heights.get(0)-stem.getY())<1? 1:0;
+		System.out.println(stem.getY()+"stem -> "+height+" above");
+		return height;     
 	}
 		
 	private static boolean isBamboo(@Nonnull Material type) {

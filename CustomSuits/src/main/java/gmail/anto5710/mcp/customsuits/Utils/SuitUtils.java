@@ -1,6 +1,5 @@
 package gmail.anto5710.mcp.customsuits.Utils;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -27,7 +26,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import com.google.common.collect.Sets;
 
 import gmail.anto5710.mcp.customsuits.CustomSuits.CustomSuitPlugin;
-import gmail.anto5710.mcp.customsuits.Setting.Values;
 import gmail.anto5710.mcp.customsuits.Utils.particles.ParticleUtil;
 
 public class SuitUtils {

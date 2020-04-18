@@ -1,9 +1,5 @@
 package gmail.anto5710.mcp.customsuits.Setting;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Effect;
