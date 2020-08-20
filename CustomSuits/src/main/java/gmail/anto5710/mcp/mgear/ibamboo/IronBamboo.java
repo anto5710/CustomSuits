@@ -28,6 +28,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.event.block.BlockFertilizeEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
+import org.bukkit.event.entity.EntityDropItemEvent;
 import org.bukkit.inventory.ItemStack;
 
 import com.google.common.collect.Sets;
@@ -171,14 +172,6 @@ public class IronBamboo extends LinearEncompassor<Block>{
 		return false;
 	}
 
-	
-	@EventHandler
-	public void d(BlockBreakEvent e) {
-		Block brokenBlock = e.getBlock();
-		brokenBlock.getRelative(BlockFace.EAST).setType(Material.REDSTONE_BLOCK);
-		
-	}
-	
 	@EventHandler
 	public void onBambooDrop(BlockDropItemEvent e) {		
 		Block brokenBlock = e.getBlock();
@@ -202,20 +195,12 @@ public class IronBamboo extends LinearEncompassor<Block>{
 	}
 	
 	private int coutFrom(@Nonnull Block stem) {
-//		int c = 0;
-//		for(Block bamboo : entia) {
-//			if(bamboo.getWorld() == stem.getWorld() && bamboo.getX() == stem.getX() &&
-//					bamboo.getY() >= stem.getY() && bamboo.getZ() == stem.getZ()) {
-//				c++;
-//			}
-//		}
-//		return c;
 		List<Integer> heights = bamboo_columns.get(encode(stem));
 		if(heights == null || heights.isEmpty()) return 0;
 		
 		System.out.println(heights);
-		int floor = BinarySearch.floorIndex(stem.getY(), heights, true);
-		int height = floor ==-1 &&  Math.abs(heights.get(0)-stem.getY())<1? 1:0;
+		int tops = BinarySearch.ceilingIndex(stem.getY(), heights, false);
+		int height = Math.max(0, tops);
 		System.out.println(stem.getY()+"stem -> "+height+" above");
 		return height;     
 	}

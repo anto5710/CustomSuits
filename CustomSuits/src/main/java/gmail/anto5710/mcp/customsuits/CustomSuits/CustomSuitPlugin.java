@@ -1,9 +1,51 @@
 package gmail.anto5710.mcp.customsuits.CustomSuits;
 
 
-import static gmail.anto5710.mcp.customsuits.Setting.Values.*;
-import static gmail.anto5710.mcp.customsuits.Utils.items.ItemUtil.*;
-import static org.bukkit.ChatColor.*;
+import static gmail.anto5710.mcp.customsuits.Setting.Values.CantFindEntityType;
+import static gmail.anto5710.mcp.customsuits.Setting.Values.Chestplate_Man_Color;
+import static gmail.anto5710.mcp.customsuits.Setting.Values.HammerArmor;
+import static gmail.anto5710.mcp.customsuits.Setting.Values.HammerDamage;
+import static gmail.anto5710.mcp.customsuits.Setting.Values.HammerPrompt;
+import static gmail.anto5710.mcp.customsuits.Setting.Values.Leggings_Man_Color;
+import static gmail.anto5710.mcp.customsuits.Setting.Values.MachineGunAmmoAmount;
+import static gmail.anto5710.mcp.customsuits.Setting.Values.MachineGunDamage;
+import static gmail.anto5710.mcp.customsuits.Setting.Values.ManSmoke_Time;
+import static gmail.anto5710.mcp.customsuits.Setting.Values.NoSuchEntity;
+import static gmail.anto5710.mcp.customsuits.Setting.Values.SnipeAmmoAmount;
+import static gmail.anto5710.mcp.customsuits.Setting.Values.SniperDamage;
+import static gmail.anto5710.mcp.customsuits.Setting.Values.SuitInforegex;
+import static gmail.anto5710.mcp.customsuits.Setting.Values.SuitName;
+import static gmail.anto5710.mcp.customsuits.Setting.Values.ThorChestplateColor;
+import static gmail.anto5710.mcp.customsuits.Setting.Values.ThorLeggingsColor;
+import static gmail.anto5710.mcp.customsuits.Setting.Values.gun_regex;
+import static gmail.anto5710.mcp.customsuits.Utils.items.ItemUtil.addLore;
+import static gmail.anto5710.mcp.customsuits.Utils.items.ItemUtil.compare;
+import static gmail.anto5710.mcp.customsuits.Utils.items.ItemUtil.compareName;
+import static gmail.anto5710.mcp.customsuits.Utils.items.ItemUtil.createWithName;
+import static gmail.anto5710.mcp.customsuits.Utils.items.ItemUtil.decapitate;
+import static gmail.anto5710.mcp.customsuits.Utils.items.ItemUtil.dye;
+import static gmail.anto5710.mcp.customsuits.Utils.items.ItemUtil.name;
+import static gmail.anto5710.mcp.customsuits.Utils.items.ItemUtil.setLore;
+import static gmail.anto5710.mcp.customsuits.Utils.items.ItemUtil.suffix;
+import static org.bukkit.ChatColor.AQUA;
+import static org.bukkit.ChatColor.BLUE;
+import static org.bukkit.ChatColor.DARK_RED;
+import static org.bukkit.ChatColor.GOLD;
+import static org.bukkit.ChatColor.GRAY;
+import static org.bukkit.ChatColor.RED;
+import static org.bukkit.ChatColor.WHITE;
+import static org.bukkit.ChatColor.YELLOW;
+import static org.bukkit.enchantments.Enchantment.DAMAGE_ALL;
+import static org.bukkit.enchantments.Enchantment.DURABILITY;
+import static org.bukkit.enchantments.Enchantment.FIRE_ASPECT;
+import static org.bukkit.enchantments.Enchantment.KNOCKBACK;
+import static org.bukkit.enchantments.Enchantment.LOOT_BONUS_MOBS;
+import static org.bukkit.enchantments.Enchantment.OXYGEN;
+import static org.bukkit.enchantments.Enchantment.PROTECTION_ENVIRONMENTAL;
+import static org.bukkit.enchantments.Enchantment.PROTECTION_EXPLOSIONS;
+import static org.bukkit.enchantments.Enchantment.PROTECTION_FALL;
+import static org.bukkit.enchantments.Enchantment.PROTECTION_FIRE;
+import static org.bukkit.enchantments.Enchantment.THORNS;
 
 import java.io.File;
 import java.util.Arrays;
@@ -23,7 +65,6 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier.Operation;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import static org.bukkit.enchantments.Enchantment.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -223,6 +264,7 @@ public class CustomSuitPlugin extends JavaPlugin {
 		this.hscheduler = new HungerScheduler(this, 1);
 		
 		PluginManager manager = getServer().getPluginManager();
+		
 		manager.registerEvents(new PlayerEffect(this), this);
 		manager.registerEvents(new SuitWeapons(this), this);
 		manager.registerEvents(SuitWeapons.tnter, this);
@@ -261,7 +303,6 @@ public class CustomSuitPlugin extends JavaPlugin {
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-
 		Server server = getServer();
 		Player spnSender = server.getPlayer(sender.getName());
 		if (command.getName().equals("clist")) {

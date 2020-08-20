@@ -25,7 +25,7 @@ import gmail.anto5710.mcp.customsuits.Utils.encompassor.standardized.SSMapEncomp
 import gmail.anto5710.mcp.customsuits.Utils.items.InventoryUtil;
 import gmail.anto5710.mcp.customsuits.Utils.items.ItemUtil;
 import gmail.anto5710.mcp.customsuits.Utils.particles.ParticleUtil;
-import net.minecraft.server.v1_15_R1.PacketPlayOutAnimation;
+import net.minecraft.server.v1_16_R2.PacketPlayOutAnimation;
 
 public class MainGear extends SSMapEncompassor<Player, Spindle[]>{
 	public static ActiveSpindleEffector spindler;
@@ -169,7 +169,9 @@ public class MainGear extends SSMapEncompassor<Player, Spindle[]>{
 				double damage = e.getDamage()*amplifier;
 				p.sendMessage(String.format(ColorUtil.colorf("Speed²: <yellow>%.1f<//>  |  Damage: <yellow>%.1f<//>"), v2,damage));
 				e.setDamage(e.getDamage()*amplifier);
-				SuitUtils.runAfter(()->PacketUtil.broadcastPacket(new PacketPlayOutAnimation(PacketUtil.nmsEntiy(p), 3), p.getServer()),6);
+				SuitUtils.runAfter(()->{
+					PacketUtil.broadcastPacket(new PacketPlayOutAnimation(PacketUtil.nmsEntiy(p), 3), p.getServer());	
+				}, 6);
 			}
 		}
 	}

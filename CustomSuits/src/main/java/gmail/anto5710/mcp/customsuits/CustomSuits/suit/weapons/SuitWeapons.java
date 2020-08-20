@@ -1,15 +1,5 @@
 package gmail.anto5710.mcp.customsuits.CustomSuits.suit.weapons;
 
-import gmail.anto5710.mcp.customsuits.CustomSuits.CustomSuitPlugin;
-import gmail.anto5710.mcp.customsuits.CustomSuits.suit.HungerScheduler;
-import gmail.anto5710.mcp.customsuits.CustomSuits.suit.weapons.repulsor.ArcCompressor;
-import gmail.anto5710.mcp.customsuits.CustomSuits.suit.weapons.repulsor.ArcReffecter;
-import gmail.anto5710.mcp.customsuits.Setting.Values;
-import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
-import gmail.anto5710.mcp.customsuits.Utils.items.Enchant;
-import gmail.anto5710.mcp.customsuits.Utils.items.InventoryUtil;
-import gmail.anto5710.mcp.customsuits.Utils.items.ItemUtil;
-
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
@@ -31,6 +21,16 @@ import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BlockStateMeta;
+
+import gmail.anto5710.mcp.customsuits.CustomSuits.CustomSuitPlugin;
+import gmail.anto5710.mcp.customsuits.CustomSuits.suit.HungerScheduler;
+import gmail.anto5710.mcp.customsuits.CustomSuits.suit.weapons.repulsor.ArcCompressor;
+import gmail.anto5710.mcp.customsuits.CustomSuits.suit.weapons.repulsor.ArcReffecter;
+import gmail.anto5710.mcp.customsuits.Setting.Values;
+import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
+import gmail.anto5710.mcp.customsuits.Utils.items.Enchant;
+import gmail.anto5710.mcp.customsuits.Utils.items.InventoryUtil;
+import gmail.anto5710.mcp.customsuits.Utils.items.ItemUtil;
 
 public class SuitWeapons implements Listener {
 

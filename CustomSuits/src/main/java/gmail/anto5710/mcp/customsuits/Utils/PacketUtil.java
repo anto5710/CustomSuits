@@ -1,25 +1,28 @@
 package gmail.anto5710.mcp.customsuits.Utils;
 
+import java.util.Arrays;
+
 import javax.annotation.Nonnull;
 
 import org.bukkit.Server;
-import org.bukkit.craftbukkit.v1_15_R1.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_16_R2.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_16_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_16_R2.inventory.CraftItemStack;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import com.mojang.datafixers.util.Pair;
 
-import net.minecraft.server.v1_15_R1.EnumItemSlot;
-import net.minecraft.server.v1_15_R1.Packet;
-import net.minecraft.server.v1_15_R1.PacketPlayOutEntityDestroy;
-import net.minecraft.server.v1_15_R1.PacketPlayOutEntityEquipment;
-import net.minecraft.server.v1_15_R1.PlayerConnection;
+import net.minecraft.server.v1_16_R2.EnumItemSlot;
+import net.minecraft.server.v1_16_R2.Packet;
+import net.minecraft.server.v1_16_R2.PacketPlayOutEntityDestroy;
+import net.minecraft.server.v1_16_R2.PacketPlayOutEntityEquipment;
+import net.minecraft.server.v1_16_R2.PlayerConnection;
 
 public class PacketUtil {
 	
-	public static net.minecraft.server.v1_15_R1.Entity nmsEntiy(@Nonnull Entity e){
+	public static net.minecraft.server.v1_16_R2.Entity nmsEntiy(@Nonnull Entity e){
 		return ((CraftEntity)e).getHandle();
 	}
 	
@@ -58,6 +61,9 @@ public class PacketUtil {
 		if(e==null) return null;
 			
 		int id = ((CraftEntity)e).getHandle().getId();
-		return new PacketPlayOutEntityEquipment(id, slot, CraftItemStack.asNMSCopy(item));
+		Pair<EnumItemSlot, net.minecraft.server.v1_16_R2.ItemStack> pair = new Pair<>(slot, CraftItemStack.asNMSCopy(item));
+		
+		return new PacketPlayOutEntityEquipment(id, Arrays.asList(pair));
+//		return new PacketPlayOutEntityEquipment(id, slot, CraftItemStack.asNMSCopy(item));
 	}
 }

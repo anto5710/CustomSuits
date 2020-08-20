@@ -172,6 +172,17 @@ public class Spindle extends Coolable{
 		tension = diff.multiply(centrip); 
 		return tension;
 	}
+	
+//	public Vector updateTension() {
+//		Vector diff = MathUtil.disposition(anchor, p);
+//		
+//		double R2 = diff.lengthSquared();
+//		double v2 = p.getVelocity().lengthSquared();
+//		double centrip = 1.6*v2/Math.max(1, R2);
+//		
+//		tension =diff.multiply(centrip) ;
+//		return tension;
+//	}
 		
 	public void integrate(){		
 		anchor.teleport(anchor_target.getLocation().add(target_offset));

@@ -1,12 +1,12 @@
 package gmail.anto5710.mcp.customsuits.Utils.compressor;
 
+import static gmail.anto5710.mcp.customsuits.Utils.MathUtil.randomRadius;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
 import com.google.common.collect.Lists;
-
-import static gmail.anto5710.mcp.customsuits.Utils.MathUtil.*;
 
 public class CompressnII {
 

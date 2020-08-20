@@ -169,7 +169,7 @@ public class SuitUtils {
 		}
 	}
 	
-	private static Set<EntityType> armables = Sets.newHashSet(EntityType.ARMOR_STAND, EntityType.ZOMBIE, EntityType.DROWNED, EntityType.SKELETON, EntityType.WITHER_SKELETON, EntityType.HUSK, EntityType.PIG_ZOMBIE);
+	private static Set<EntityType> armables = Sets.newHashSet(EntityType.ARMOR_STAND, EntityType.ZOMBIE, EntityType.DROWNED, EntityType.SKELETON, EntityType.WITHER_SKELETON, EntityType.HUSK, EntityType.ZOMBIFIED_PIGLIN);
 	public static boolean isArmable(LivingEntity lentity) {
 		return armables.contains(lentity.getType());
 	}
