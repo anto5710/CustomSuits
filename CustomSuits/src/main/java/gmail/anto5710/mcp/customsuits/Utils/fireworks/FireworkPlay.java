@@ -26,6 +26,7 @@ public class FireworkPlay extends EntityFireworks {
 
 	public static void spawn(Location loc, FireworkEffect effect) {
 		try {
+			
 			World world = ((CraftWorld) loc.getWorld()).getHandle();
 			FireworkPlay firework = new FireworkPlay(world);
 			Firework bfire = (Firework) firework.getBukkitEntity();
