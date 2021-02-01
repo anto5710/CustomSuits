@@ -121,9 +121,9 @@ public class Values {
 	final public static Sound LightningMissileSound = Sound.ENTITY_LIGHTNING_BOLT_THUNDER;
 	
 	
-	final public static Sound ThorChangeSound = Sound.ENTITY_LIGHTNING_BOLT_THUNDER;
+	final public static Sound Thor_Change_Sound = Sound.ENTITY_LIGHTNING_BOLT_THUNDER;
 
-	final public static Sound HammerTeleportSound = Sound.ENTITY_ENDERMAN_TELEPORT;
+	final public static Sound Hammer_Teleport_Sound = Sound.ENTITY_ENDERMAN_TELEPORT;
 	final public static int Thunder_Creeper_Hunger = -15;
 
 	final public static Sound Thunder_Creeper_Start_Sound = Sound.ENTITY_ENDERMAN_STARE;

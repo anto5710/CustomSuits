@@ -154,7 +154,7 @@ public class Hammer implements Listener{
 		Item hammer =Hammer.getDroppedHammer(player);
 		if (hammer != null) {
 			Hammer.teleportItem(hammer, pEyeLoc);
-			SuitUtils.playSound(pEyeLoc, Values.HammerTeleportSound, 6.0F, 6.0F);
+			SuitUtils.playSound(pEyeLoc, Values.Hammer_Teleport_Sound, 6.0F, 6.0F);
 		}
 	}
 	
@@ -218,7 +218,7 @@ public class Hammer implements Listener{
 			CustomEffects.play_Thor_FormationFin(player);
 			InventoryUtil.equip(player, CustomSuitPlugin.Helemt_Thor, CustomSuitPlugin.Chestplate_Thor, 
 								   CustomSuitPlugin.Leggings_Thor, CustomSuitPlugin.Boots_Thor);
-			SuitUtils.playSound(player, Values.ThorChangeSound, 7.0F, 7.0F);
+			SuitUtils.playSound(player, Values.Thor_Change_Sound, 7.0F, 7.0F);
 			thorize(player);
 		}, 10);
 	}
