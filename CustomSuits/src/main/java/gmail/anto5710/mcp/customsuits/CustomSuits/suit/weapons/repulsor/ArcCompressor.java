@@ -13,7 +13,7 @@ import javax.annotation.Nonnull;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.craftbukkit.v1_16_R2.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
@@ -51,9 +51,9 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
-import net.minecraft.server.v1_16_R2.EnumItemSlot;
-import net.minecraft.server.v1_16_R2.PacketPlayOutSetSlot;
-import net.minecraft.server.v1_16_R2.PlayerConnection;
+import net.minecraft.server.v1_16_R3.EnumItemSlot;
+import net.minecraft.server.v1_16_R3.PacketPlayOutSetSlot;
+import net.minecraft.server.v1_16_R3.PlayerConnection;
 
 
 public class ArcCompressor extends MapEncompassor<Player, Set<Integer>>{
@@ -248,7 +248,7 @@ public class ArcCompressor extends MapEncompassor<Player, Set<Integer>>{
 //				PacketPlayOutEntityEquipment peq = (PacketPlayOutEntityEquipment) packet;
 //				Field f= peq.getClass().getDeclaredField("c");
 //				f.setAccessible(true);
-//				System.out.println((f.get(peq) instanceof net.minecraft.server.v1_16_R2.ItemStack) + "  "+f.get(peq));
+//				System.out.println((f.get(peq) instanceof net.minecraft.server.v1_16_R3.ItemStack) + "  "+f.get(peq));
 //			}
 //			super.channelRead(ctx, packet);
 //		}
@@ -278,8 +278,8 @@ public class ArcCompressor extends MapEncompassor<Player, Set<Integer>>{
 //				System.out.println("UID: "+ fUID.get(peq));
 //				System.out.println("slot: "+ fslot.get(peq));
 //				System.out.println("item "+fitem.get(peq));
-				if(fitem.get(peq) instanceof net.minecraft.server.v1_16_R2.ItemStack){
-					net.minecraft.server.v1_16_R2.ItemStack nitem = (net.minecraft.server.v1_16_R2.ItemStack) fitem.get(peq);
+				if(fitem.get(peq) instanceof net.minecraft.server.v1_16_R3.ItemStack){
+					net.minecraft.server.v1_16_R3.ItemStack nitem = (net.minecraft.server.v1_16_R3.ItemStack) fitem.get(peq);
 					ItemStack item = CraftItemStack.asBukkitCopy(nitem);
 					if(ItemUtil.compare(item, bow)){
 						System.out.println("changed "+fitem.get(peq));

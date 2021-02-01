@@ -9,8 +9,10 @@ import java.util.TreeMap;
 import com.google.common.collect.Lists;
 
 public class CompressnII {
-
+	
+	@SuppressWarnings("unused")
 	private static int ss = 0;
+	@SuppressWarnings("unused")
 	private static String res1= "현재 진행도 (총 1000 세션 × 60000개 항목맵): \n" + 
 				"========================================================================================================================================================================================================\n" + 
 				"검색속도 기준: \n" + 
@@ -50,6 +52,7 @@ public class CompressnII {
 				"		평균 검색속도: 초당 3779개\n" + 
 				"————————————————————————————————————————";
 	
+	@SuppressWarnings("unused")
 	public static void main(String[] args) {
 		class Loco{
 			public final int x, y, z;

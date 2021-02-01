@@ -5,8 +5,6 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import com.google.common.collect.Lists;
-
 public class BinarySearch {
 	
 	/**

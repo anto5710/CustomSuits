@@ -4,17 +4,17 @@ import java.util.List;
 
 import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_16_R2.CraftServer;
-import org.bukkit.craftbukkit.v1_16_R2.CraftWorld;
-import org.bukkit.craftbukkit.v1_16_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_16_R3.CraftServer;
+import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
 import org.bukkit.entity.Firework;
 import org.bukkit.inventory.meta.FireworkMeta;
 
 import gmail.anto5710.mcp.customsuits.Utils.PacketUtil;
-import net.minecraft.server.v1_16_R2.EntityFireworks;
-import net.minecraft.server.v1_16_R2.EntityTypes;
-import net.minecraft.server.v1_16_R2.PacketPlayOutEntityStatus;
-import net.minecraft.server.v1_16_R2.World;
+import net.minecraft.server.v1_16_R3.EntityFireworks;
+import net.minecraft.server.v1_16_R3.EntityTypes;
+import net.minecraft.server.v1_16_R3.PacketPlayOutEntityStatus;
+import net.minecraft.server.v1_16_R3.World;
 
 public class FireworkPlay extends EntityFireworks {
 	public FireworkPlay(World world) {

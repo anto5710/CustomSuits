@@ -113,7 +113,8 @@ public class Recipe {
 		
 		server.addRecipe(Man_Sword_recipe);
 		
-		ShapedRecipe Gear_Blade_recipe = new ShapedRecipe(NamespacedKey.minecraft("gear_blade"), mg_blade);
+		ShapedRecipe Gear_Blade_recipe = new ShapedRecipe(NamespacedKey.minecraft("gear_blade"), mg_trigger);
+		// 임시 조합법
 		Gear_Blade_recipe.shape("/",
 								"/",
 								":");

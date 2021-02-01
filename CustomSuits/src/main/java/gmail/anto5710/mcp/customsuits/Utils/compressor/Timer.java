@@ -27,6 +27,7 @@ public class Timer {
 		origin = -1; accu = 0;
 	}
 
+	@SuppressWarnings("unused")
 	private static double toMM(double px) {
 		return 10*px*2.54/127.68;
 	}

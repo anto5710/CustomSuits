@@ -20,8 +20,8 @@ import gmail.anto5710.mcp.customsuits.CustomSuits.suit.PlayerEffect;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
 import gmail.anto5710.mcp.customsuits.Utils.MathUtil;
 import gmail.anto5710.mcp.customsuits.Utils.SuitUtils;
-import gmail.anto5710.mcp.customsuits.Utils.damagiom.DamageMode;
 import gmail.anto5710.mcp.customsuits.Utils.damagiom.DamageControl;
+import gmail.anto5710.mcp.customsuits.Utils.damagiom.DamageMode;
 import gmail.anto5710.mcp.customsuits.Utils.damagiom.DamageUtil;
 import gmail.anto5710.mcp.customsuits.Utils.items.InventoryUtil;
 import gmail.anto5710.mcp.customsuits.Utils.items.ItemUtil;
@@ -135,10 +135,10 @@ public class MachineGun implements Listener{
 	@EventHandler
 	public void gun(PlayerInteractEvent clickevent) throws InterruptedException {
 		Player player = clickevent.getPlayer();
-		ItemStack Gun = CustomSuitPlugin.gunitem;
-
+		ItemStack gunitem = CustomSuitPlugin.gunitem;
+		
 		if (SuitUtils.isRightClick(clickevent) && CustomSuitPlugin.isMarkEntity(player)
-				&& MachineGun.checkGun(player, Gun)) {
+				&& MachineGun.checkGun(player, gunitem)) {
 			ItemStack gun = InventoryUtil.getMainItem(player);
 			String name = ItemUtil.getName(gun);
 			String[] values = name.split(gun_regex);

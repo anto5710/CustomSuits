@@ -41,7 +41,6 @@ public class SuitWeapons implements Listener {
 	public static CustomSuitPlugin plugin;
 	private static Material suitlauncher = Values.SuitLauncher;
 	
-	
 	public SuitWeapons(CustomSuitPlugin plugin) {
 		SuitWeapons.plugin = plugin;
 		tnter = new TNTLauncher(plugin, 1);
@@ -89,6 +88,7 @@ public class SuitWeapons implements Listener {
 		Player p = e.getPlayer();
 		if(CustomSuitPlugin.isMarkEntity(p)){
 			boolean wasGliding = p.isGliding();
+			@SuppressWarnings("deprecation")
 			boolean toGlide = !p.isOnGround() && e.isSneaking(); 
 			p.setFlying(p.isFlying() && !toGlide);
 			p.setGliding(toGlide);
@@ -108,6 +108,7 @@ public class SuitWeapons implements Listener {
 		}
 	}
 	
+	@SuppressWarnings("deprecation")
 	@EventHandler
 	public void toggleGlide(EntityToggleGlideEvent e){
 		if(e.getEntityType() == EntityType.PLAYER){

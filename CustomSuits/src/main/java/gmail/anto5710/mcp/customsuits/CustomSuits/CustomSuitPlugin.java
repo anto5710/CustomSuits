@@ -124,6 +124,7 @@ public class CustomSuitPlugin extends JavaPlugin {
 	public static SuitEffecter suitEffecter; 
 	public static SpawningDao dao;
 	public static IronBamboo bamboomer; 
+	public static MainGear gearer;
 	
 	private static Map<Player, SuitIUISetting> settings = new HashMap<>();
 
@@ -254,7 +255,8 @@ public class CustomSuitPlugin extends JavaPlugin {
 		
 		addLore(CustomSuitPlugin.mg_trigger, "Press 《Q》 to catapult the left anchor", 
 								  			"Press 《E》 to catapult the right anchor");
-		suffix(mg_trigger, Attribute.GENERIC_ATTACK_SPEED, 3);
+		suffix(mg_trigger, Attribute.GENERIC_ATTACK_SPEED, 3, EquipmentSlot.HAND);
+		suffix(mg_trigger, Attribute.GENERIC_ATTACK_SPEED, 3, EquipmentSlot.OFF_HAND);
 				
 		Enchant.englow(mg_ironbamboo);
 		addLore(mg_ironbamboo, "A precious strain of bamboo pertrified with steel");
@@ -279,7 +281,9 @@ public class CustomSuitPlugin extends JavaPlugin {
 		manager.registerEvents(new MachineGun(this), this);
 		manager.registerEvents(new DamageControl(this), this);
 		
-		manager.registerEvents(new MainGear(this,2), this);
+		gearer= new MainGear(this, 2);
+		
+		manager.registerEvents(gearer, this);
 		manager.registerEvents(MainGear.spindler, this);
 		
 		Recipe.addRecipes(getServer());

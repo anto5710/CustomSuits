@@ -24,11 +24,9 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.event.block.BlockFertilizeEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
-import org.bukkit.event.entity.EntityDropItemEvent;
 import org.bukkit.inventory.ItemStack;
 
 import com.google.common.collect.Sets;
@@ -175,7 +173,7 @@ public class IronBamboo extends LinearEncompassor<Block>{
 	@EventHandler
 	public void onBambooDrop(BlockDropItemEvent e) {		
 		Block brokenBlock = e.getBlock();
-		brokenBlock.getRelative(BlockFace.EAST).setType(Material.REDSTONE_BLOCK);
+//		brokenBlock.getRelative(BlockFace.EAST).setType(Material.REDSTONE_BLOCK);
 		
 		if(isBamboo(e.getBlockState().getType())) {
 			int count = coutFrom(brokenBlock);

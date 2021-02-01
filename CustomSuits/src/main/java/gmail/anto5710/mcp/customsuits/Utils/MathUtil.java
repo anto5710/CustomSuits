@@ -2,7 +2,7 @@ package gmail.anto5710.mcp.customsuits.Utils;
 
 import javax.annotation.Nonnull;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_16_R2.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_16_R3.entity.CraftEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;

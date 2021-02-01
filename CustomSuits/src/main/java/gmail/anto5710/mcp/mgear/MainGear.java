@@ -25,11 +25,11 @@ import gmail.anto5710.mcp.customsuits.Utils.encompassor.standardized.SSMapEncomp
 import gmail.anto5710.mcp.customsuits.Utils.items.InventoryUtil;
 import gmail.anto5710.mcp.customsuits.Utils.items.ItemUtil;
 import gmail.anto5710.mcp.customsuits.Utils.particles.ParticleUtil;
-import net.minecraft.server.v1_16_R2.PacketPlayOutAnimation;
+import net.minecraft.server.v1_16_R3.PacketPlayOutAnimation;
 
 public class MainGear extends SSMapEncompassor<Player, Spindle[]>{
 	public static ActiveSpindleEffector spindler;
-	public static final String trigger_name = ChatColor.DARK_RED+"Klingen-auslöser"; 
+	public static final String trigger_name = ChatColor.DARK_RED+"3D Maneuver Gear"; 
 	
 	public MainGear(CustomSuitPlugin plugin, long period) {
 		super(plugin, period);
@@ -114,13 +114,25 @@ public class MainGear extends SSMapEncompassor<Player, Spindle[]>{
 		if(InventoryUtil.inMainHand(p, CustomSuitPlugin.mg_trigger)){
 			ItemStack trigger = InventoryUtil.getMainItem(p);
 			Vector v = s.getTension();
-			ItemUtil.name(trigger, MainGear.trigger_name+ 
-					String.format(ColorUtil.colorf("( Gas: ▮%s<//>▮ "
+			
+			
+			String leftatus = ChatColor.DARK_RED+"▮", rightatus = ChatColor.DARK_RED+"▮";
+			Spindle[] spindles = CustomSuitPlugin.gearer.get(p);
+			if(spindles!=null && spindles.length==2) {
+				if(spindles[0]!=null && spindles[0].hasCatapulted()) leftatus = ChatColor.RED+"╹";
+				
+				if(spindles[1]!=null && spindles[1].hasCatapulted()) rightatus = ChatColor.RED+"╹";
+			}
+			
+			
+			ItemUtil.name(trigger,  trigger_name +
+					String.format(ColorUtil.colorf("(Gas: %s%s<//>%s "
 							+ "|| Δ<b><i>x<//>: <yellow>%.2f<//>"
 							+ " | Δ<b><i>y<//>: <yellow>%.2f<//>"
-							+ " | Δ<b><i>z<//>: <yellow>%.2f<//> )"),
+							+ " | Δ<b><i>z<//>: <yellow>%.2f<//>)"),
 					
-					gaage(10, s.getGas(), ChatColor.WHITE+"▤", ChatColor.GRAY+"▤"), v.getX(), v.getY(), v.getZ()));
+					leftatus, gaage(10, s.getGas(), ChatColor.WHITE+"▤", ChatColor.GRAY+"▤"), rightatus, 
+					v.getX(), v.getY(), v.getZ()));
 		}	
 	}
 	
@@ -134,23 +146,23 @@ public class MainGear extends SSMapEncompassor<Player, Spindle[]>{
 	}
 	
 	@EventHandler
+	public void left(PlayerDropItemEvent e){
+		Player p = e.getPlayer();
+		if(ItemUtil.compare(CustomSuitPlugin.mg_trigger, InventoryUtil.getOffItem(p)) && InventoryUtil.droppedFromMainHand(e)){
+			autoregister(p);
+			
+			toggle(get(p)[0]);
+			e.setCancelled(true);
+		}
+	}
+	
+	@EventHandler
 	public void right(PlayerSwapHandItemsEvent e){
 		Player p = (Player) e.getPlayer();
 		if(ItemUtil.compare(CustomSuitPlugin.mg_trigger, e.getOffHandItem())){
 			autoregister(p);
 			
 			toggle(get(p)[1]);
-			e.setCancelled(true);
-		}
-	}
-	
-	@EventHandler
-	public void left(PlayerDropItemEvent e){
-		Player p = e.getPlayer();
-		if(ItemUtil.compare(CustomSuitPlugin.mg_trigger, InventoryUtil.getOffItem(p)) && InventoryUtil.droppedFromMainHand(e)){
-			autoregister(p);
-		
-			toggle(get(p)[0]);
 			e.setCancelled(true);
 		}
 	}

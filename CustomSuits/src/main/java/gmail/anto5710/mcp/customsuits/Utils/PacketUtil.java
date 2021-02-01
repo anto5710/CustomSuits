@@ -5,24 +5,24 @@ import java.util.Arrays;
 import javax.annotation.Nonnull;
 
 import org.bukkit.Server;
-import org.bukkit.craftbukkit.v1_16_R2.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_16_R2.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_16_R2.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_16_R3.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import com.mojang.datafixers.util.Pair;
 
-import net.minecraft.server.v1_16_R2.EnumItemSlot;
-import net.minecraft.server.v1_16_R2.Packet;
-import net.minecraft.server.v1_16_R2.PacketPlayOutEntityDestroy;
-import net.minecraft.server.v1_16_R2.PacketPlayOutEntityEquipment;
-import net.minecraft.server.v1_16_R2.PlayerConnection;
+import net.minecraft.server.v1_16_R3.EnumItemSlot;
+import net.minecraft.server.v1_16_R3.Packet;
+import net.minecraft.server.v1_16_R3.PacketPlayOutEntityDestroy;
+import net.minecraft.server.v1_16_R3.PacketPlayOutEntityEquipment;
+import net.minecraft.server.v1_16_R3.PlayerConnection;
 
 public class PacketUtil {
 	
-	public static net.minecraft.server.v1_16_R2.Entity nmsEntiy(@Nonnull Entity e){
+	public static net.minecraft.server.v1_16_R3.Entity nmsEntiy(@Nonnull Entity e){
 		return ((CraftEntity)e).getHandle();
 	}
 	
@@ -61,7 +61,7 @@ public class PacketUtil {
 		if(e==null) return null;
 			
 		int id = ((CraftEntity)e).getHandle().getId();
-		Pair<EnumItemSlot, net.minecraft.server.v1_16_R2.ItemStack> pair = new Pair<>(slot, CraftItemStack.asNMSCopy(item));
+		Pair<EnumItemSlot, net.minecraft.server.v1_16_R3.ItemStack> pair = new Pair<>(slot, CraftItemStack.asNMSCopy(item));
 		
 		return new PacketPlayOutEntityEquipment(id, Arrays.asList(pair));
 //		return new PacketPlayOutEntityEquipment(id, slot, CraftItemStack.asNMSCopy(item));

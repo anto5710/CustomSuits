@@ -5,7 +5,6 @@ import java.util.concurrent.ArrayBlockingQueue;
 
 import javax.annotation.Nonnull;
 
-
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -14,6 +13,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+
 import gmail.anto5710.mcp.customsuits.CustomSuits.InvetoryGUI.Inventories;
 import gmail.anto5710.mcp.customsuits.CustomSuits.suit.CustomEntities;
 import gmail.anto5710.mcp.customsuits.Setting.Values;
@@ -79,7 +79,7 @@ public class SuitIUISetting{
 	}
 	
 	public void applyModifiers(){
-		modify(mainitem(), helmetEnchants);
+		modify(helmet(), helmetEnchants);
 		modify(chestplate(), chestEnchants);
 		modify(leggings(), leggingsEnchants);
 		modify(boots(), bootsEnchants);
@@ -91,7 +91,8 @@ public class SuitIUISetting{
 		if (!ItemUtil.isAir(item) && enchantInven != null) {
 			ItemUtil.name(item, ChatColor.AQUA + Values.SuitName + Values.SuitInforegex + level());
 		
-			int level = (int) Math.sqrt(level());
+//			int level = (int) Math.sqrt(level());
+			
 			enchantInven.forEach(book ->{ if(book!=null) Enchant.exscribe(item, book, level);});
 		}
 	}
